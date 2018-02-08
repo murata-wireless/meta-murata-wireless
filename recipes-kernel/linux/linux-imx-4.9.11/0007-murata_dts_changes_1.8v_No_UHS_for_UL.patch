@@ -1,0 +1,13 @@
+diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
+index 5be0191..b58b578 100755
+--- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
++++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
+@@ -63,7 +63,7 @@
+ 	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
+ 	pinctrl-1 = <&pinctrl_usdhc1_100mhz &pinctrl_wifi>;
+ 	pinctrl-2 = <&pinctrl_usdhc1_200mhz &pinctrl_wifi>;
+-//	no-1-8-v; /* Murata - comment out for UHS mode */
++	no-1-8-v; /* Murata - comment out for UHS mode */
+ 	non-removable;
+ 	cap-power-off-card;
+ 	pm-ignore-notify; 
