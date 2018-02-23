@@ -46,10 +46,10 @@ SRC_URI += "https://github.com/murata-wireless/cyw-bt-patch/raw/morty-orga/CYW43
 SRC_URI += "https://github.com/murata-wireless/cyw-bt-patch/raw/morty-orga/CYW43430A1.1DX.hcd;name=archive40"
 SRC_URI += "https://github.com/murata-wireless/cyw-bt-patch/raw/morty-orga/README_BT_PATCHFILES;name=archive41"
 SRC_URI += "https://github.com/murata-wireless/cyw-bt-patch/raw/morty-orga/CYW4350C0.1BB.hcd;name=archive42"
+SRC_URI += "https://github.com/murata-wireless/cyw-bt-patch/raw/morty-orga/CYW4354A2.1CX.hcd;name=archive43"
+
 
 #murata-master for hcd file
-#SRC_URI += "https://github.com/murata-wireless/cyw-bt-patch/raw/morty-orga/murata-master/CYW4335C0.ZP.hcd;name=archive42"
-#SRC_URI += "https://github.com/murata-wireless/cyw-bt-patch/raw/morty-orga/murata-master/CYW4345C0.1MW.hcd;name=archive43"
 #SRC_URI += "https://github.com/murata-wireless/cyw-bt-patch/raw/morty-orga/murata-master/CYW43012C0.1LV.hcd;name=archive44"
 #SRC_URI += "https://github.com/murata-wireless/cyw-bt-patch/raw/morty-orga/murata-master/CYW43341B0.1BW.hcd;name=archive45"
 #SRC_URI += "https://github.com/murata-wireless/cyw-bt-patch/raw/morty-orga/murata-master/CYW43430A1.1DX.hcd;name=archive46"
@@ -169,11 +169,10 @@ SRC_URI[archive41.md5sum] = "e0a0362499a37905ae4b471ee15df8a8"
 SRC_URI[archive41.sha256sum] = "fc2f1db717004970d5489840f170490745778df3959b33bb5ae0c5f1b2f9688c"
 SRC_URI[archive42.md5sum] = "d6a60d308d5ac8277c704d11149dc1c2"
 SRC_URI[archive42.sha256sum] = "69430eb0915584bfa8c2e34370ac136f928e621dcf504f024730b9f4094520fa"
-
+SRC_URI[archive43.md5sum] = "621c477d794e1b19625f2bc896c82e2c"
+SRC_URI[archive43.sha256sum] = "ec0066ef0be5e63e28b7e3e6dd5beaa30ac65f68a26b457a826e6f60fe7590a2"
 
 #murata-master for hcd files
-#SRC_URI[archive43.md5sum] = "ea188bde0d4e2c46560dd2158ee1e45b"
-#SRC_URI[archive43.sha256sum] = "467951cc33dc5b8a2bc4e0cc5ab43d6c625fac26fa22509bf7a810d2a968067e"
 #SRC_URI[archive44.md5sum] = "909aaf2c23467255852b37bf701bdb70"
 #SRC_URI[archive44.sha256sum] = "376d300c99fd07d2843b0db4b602695e712e48113b992cd02ac974b8aecffdd6"
 #SRC_URI[archive45.md5sum] = "54d140ac2503c5d34631cb30c4c3657e"
@@ -186,8 +185,8 @@ SRC_URI[archive48.md5sum] = "35976ab973cdece456c0727c2e4b324a"
 SRC_URI[archive48.sha256sum] = "402051c47605d038dd408532963d7b8cfc3a5341824de382914175aca0b70626"
 
 # wl 64-bit
-SRC_URI[archive49.md5sum] = "dd77547875b660408c61ab145fbc0997"
-SRC_URI[archive49.sha256sum] = "5250aa02ebe852bd25998b00670b4fbb164695cafb2f24f620bda322ee3e2c25"
+SRC_URI[archive49.md5sum] = "dd1d3a6ac3b27d629f846f9d15f19d2b"
+SRC_URI[archive49.sha256sum] = "56756dd73e98020b64c0667f3f9f5b5757b6ccb5bec5edaed2981859c1366e73"
 
 #SRC_URI[archive50.md5sum] = "ca7a386965df8d424fda8cfd38d77a74"
 #SRC_URI[archive50.sha256sum] = "937c6b6916d956525742df44f00ec87e1cea027740c955076fb30d0838512367"
@@ -269,6 +268,8 @@ do_install () {
         install -m 444 ${WORKDIR}/CYW43012C0.1LV.hcd ${D}${sysconfdir}/firmware/BCM43012C0.1LV.hcd
         install -m 444 ${WORKDIR}/CYW43341B0.1BW.hcd ${D}${sysconfdir}/firmware/BCM43341B0.1BW.hcd
         install -m 444 ${WORKDIR}/CYW43430A1.1DX.hcd ${D}${sysconfdir}/firmware/BCM43430A1.1DX.hcd
+        install -m 444 ${WORKDIR}/CYW4350C0.1BB.hcd ${D}${sysconfdir}/firmware/BCM4350C0.1BB.hcd
+        install -m 444 ${WORKDIR}/CYW4354A2.1CX.hcd ${D}${sysconfdir}/firmware/BCM4354A2.1CX.hcd
         install -m 444 ${WORKDIR}/README_BT_PATCHFILES ${D}${sysconfdir}/firmware
 
 
@@ -279,6 +280,7 @@ do_install () {
         install -m 444 ${WORKDIR}/CYW43341B0.1BW.hcd ${D}${sysconfdir}/firmware/murata-master/BCM43341B0.1BW.hcd
         install -m 444 ${WORKDIR}/CYW43430A1.1DX.hcd ${D}${sysconfdir}/firmware/murata-master/BCM43430A1.1DX.hcd
         install -m 444 ${WORKDIR}/CYW4350C0.1BB.hcd  ${D}${sysconfdir}/firmware/murata-master/BCM4350C0.1BB.hcd
+        install -m 444 ${WORKDIR}/CYW4354A2.1CX.hcd  ${D}${sysconfdir}/firmware/murata-master/BCM4354A2.1CX.hcd
 
         install -m 444 ${WORKDIR}/README_BT_PATCHFILES ${D}${sysconfdir}/firmware/murata-master
 
