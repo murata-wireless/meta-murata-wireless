@@ -7,9 +7,6 @@ GRN='\033[1;32m' # Green font to flag pass
 YLW='\033[1;33m' # Yellow font for highlighting
 NC='\033[0m' # No Color
 
-#For cleaning up of directories
-#sh cleanup.sh
-
 clear
 #echo "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 
@@ -51,24 +48,24 @@ echo "2) Verifying Script Version"
 echo "---------------------------"
 
 
-GITHUB_PATH="\""https://github.com/jameelkareem/cyw-script-utils.git"\""
+GITHUB_PATH="\""https://github.com/murata-wireless/meta-murata-wireless.git"\""
 echo "Fetching latest script from Murata Github."
 echo "Cloning $GITHUB_PATH"
-echo "Creating "\""cyw-script-utils"\"" subfolder."
+echo "Creating "\""meta-murata-wireless"\"" subfolder."
 
 
-# check to see if there is already a folder with name, "cyw-script-utils"
+# check to see if there is already a folder with name, "meta-murata-wireless"
 # if it is, then fetch the latest files
-# else clone cyw-script-utils
-TEST_DIR_NAME=cyw-script-utils
+# else clone meta-murata-wireless
+TEST_DIR_NAME=meta-murata-wireless
 if [ -d "$TEST_DIR_NAME" ]; then
-	cd $TEST_DIR_NAME/latest
+	cd $TEST_DIR_NAME/cyw-script-utils/latest
 	git fetch --all 		--quiet
 	git reset --hard origin/master 	--quiet
 	git pull origin master 		--quiet
 else
-	git clone https://github.com/jameelkareem/cyw-script-utils.git --quiet
-	cd $TEST_DIR_NAME/latest
+	git clone https://github.com/murata-wireless/meta-murata-wireless.git --quiet
+	cd $TEST_DIR_NAME/cyw-script-utils/latest
 fi
 
 export SCRIPT_DIR=`pwd`
@@ -107,7 +104,7 @@ else
 	if [ "$PROCEED_UPDATE_OPTION" = "y" ] || [ "$PROCEED_UPDATE_OPTION" = "Y" ] || [ "$PROCEED_UPDATE_OPTION" = "" ]; then
 		echo "Update to latest version using following copy command:"
 		echo " "
-		echo ""\$ "cp ./cyw-script-utils/latest/Murata-Wireless_Yocto_Build.sh ."
+		echo ""\$ "cp ./meta-murata-wireless/cyw-script-utils/latest/Murata-Wireless_Yocto_Build.sh ."
 		echo " "
 		echo -e "${YLW}Exiting script.....${NC}"
        		exit
