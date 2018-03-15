@@ -7,6 +7,7 @@ GRN='\033[1;32m' # Green font to flag pass
 YLW='\033[1;33m' # Yellow font for highlighting
 NC='\033[0m' # No Color
 
+
 clear
 #echo "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 
