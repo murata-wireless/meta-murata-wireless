@@ -1,12 +1,11 @@
 #!/bin/bash
-VERSION=03152018
+VERSION=03142018
 
 # Use colors to highlight pass/fail conditions. 
 RED='\033[1;31m' # Red font to flag errors
 GRN='\033[1;32m' # Green font to flag pass
 YLW='\033[1;33m' # Yellow font for highlighting
 NC='\033[0m' # No Color
-
 
 clear
 #echo "12345678901234567890123456789012345678901234567890123456789012345678901234567890"

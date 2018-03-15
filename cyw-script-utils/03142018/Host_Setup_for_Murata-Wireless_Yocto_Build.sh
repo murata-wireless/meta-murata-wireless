@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=03152018
+VERSION=03142018
 
 # Murata cript File used to do necessary host setup on Ubuntu 16.04, 14.04 or 12.04 for Linux i.MX Yocto image build. 
 #
@@ -7,7 +7,6 @@ VERSION=03152018
 # Script assumes that "root" is not executing it. 
 #  
 # Use colors to highlight pass/fail conditions. 
-
 
 RED='\033[1;31m' # Red font to flag errors
 GRN='\033[1;32m' # Green font to flag pass
