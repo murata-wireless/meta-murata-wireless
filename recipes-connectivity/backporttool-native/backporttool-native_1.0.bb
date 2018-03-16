@@ -8,7 +8,7 @@ inherit native
 
 SYSTEMD_AUTO_ENABLE = "disable"
 
-SRC_URI =  "https://github.com/murata-wireless/cyw-fmac-v4.12-orga/raw/imx-krogoth-orga/imx-krogoth-orga_${PV}.tar.gz;name=archive1"
+SRC_URI =  "https://github.com/murata-wireless/cyw-fmac-v4.12-orga/raw/imx-krogoth-orga/imx-krogoth-orga_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-krogoth-orga/LICENSE;name=archive99"
 
 SRC_URI[archive1.md5sum] = "1dd7470c8236f694f58e49f4172746d3"
@@ -18,8 +18,8 @@ SRC_URI[archive1.sha256sum] = "8d9931f5bd48bc0bac281febb2527510b85e26939ae0c575c
 SRC_URI[archive99.md5sum] = "b234ee4d69f5fce4486a80fdaf4a4263"
 SRC_URI[archive99.sha256sum] = "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
 
-S = "${WORKDIR}/imx-krogoth-orga-${PV}"
-B = "${WORKDIR}/imx-krogoth-orga-${PV}/"
+S = "${WORKDIR}/backporttool-native-${PV}"
+B = "${WORKDIR}/backporttool-native-${PV}/"
 
 DEPENDS = "linux-imx"
 
@@ -43,7 +43,7 @@ do_compile () {
         echo "KLIB_BUILD: ${KLIB_BUILD} "
         echo "KBUILD_OUTPUT: ${KBUILD_OUTPUT}"
 
-        cp -a ${TMPDIR}/work/x86_64-linux/imx-krogoth-orga/r1.0-r0/imx-krogoth-orga_r1.0/. .
+        cp -a ${TMPDIR}/work/x86_64-linux/backporttool-native/1.0-r0/imx-krogoth-orga_r1.0/. .
 
         oe_runmake KLIB="${STAGING_KERNEL_DIR}" KLIB_BUILD="${STAGING_KERNEL_BUILDDIR}" defconfig-brcmfmac
 
