@@ -215,27 +215,39 @@ while true; do
 done
 
 
+iMX8mortyStableReleaseTag="imx8-morty-orga_r1.1"
+iMXmortyStableReleaseTag="imx-morty-orga_r1.2"
+iMXkrogothStableReleaseTag="imx-krogoth-orga_r1.1"
+
+iMX8mortyDeveloperRelease="imx8-morty-orga"
+iMXmortyDeveloperRelease="imx-morty-orga"
+iMXkrogothDeveloperRelease="imx-krogoth-orga"
+
+
 #Based on FMAC_VERSION
 if [ "$FMAC_VERSION" = "1" ]; then
 	#------------ Stable Release ----------------
 	# imx8-morty-orga_r1.0
 	if [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "1" ]; then
 		BRANCH_RELEASE_OPTION=1
-		BRANCH_RELEASE_NAME=imx8-morty-orga_r1.1
+		BRANCH_RELEASE_NAME="$iMX8mortyStableReleaseTag"
+
 		iMXYoctoRelease="4.9.51 8MQ Beta"
 		YoctoBranch="morty"
 		fmacversion="orga"
 	# morty-orga_r1.0
 	elif [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "2" ]; then
 		BRANCH_RELEASE_OPTION=2
-		BRANCH_RELEASE_NAME=imx-morty-orga_r1.2
+		BRANCH_RELEASE_NAME="$iMXmortyStableReleaseTag"
+		
 		iMXYoctoRelease="4.9.11_1.0.0 GA"
 		YoctoBranch="morty"
 		fmacversion="orga"
 	# krogoth-orga_r1.0
 	elif [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "3" ]; then
 		BRANCH_RELEASE_OPTION=3
-		BRANCH_RELEASE_NAME=imx-krogoth-orga_r1.1
+		BRANCH_RELEASE_NAME="$iMXkrogothStableReleaseTag"
+		
 		iMXYoctoRelease="4.1.15_2.0.0 GA"
 		YoctoBranch="krogoth"
 		fmacversion="orga"
@@ -243,21 +255,21 @@ if [ "$FMAC_VERSION" = "1" ]; then
 	# imx8-morty
 	elif   [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "1" ]; then
 		BRANCH_RELEASE_OPTION=4
-		BRANCH_RELEASE_NAME=imx8-morty-orga
+		BRANCH_RELEASE_NAME="$iMX8mortyDeveloperRelease"
 		iMXYoctoRelease="4.9.51 8MQ Beta"
 		YoctoBranch="morty"
 		fmacversion="orga"
 	# morty-orga
 	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "2" ]; then
 		BRANCH_RELEASE_OPTION=5
-		BRANCH_RELEASE_NAME=imx-morty-orga
+		BRANCH_RELEASE_NAME="$iMXmortyDeveloperRelease"
 		iMXYoctoRelease="4.9.11_1.0.0 GA"
 		YoctoBranch="morty"
 		fmacversion="orga"
 	# krogoth-orga
 	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "3" ]; then
 		BRANCH_RELEASE_OPTION=6
-		BRANCH_RELEASE_NAME=imx-krogoth-orga
+		BRANCH_RELEASE_NAME="$iMXkrogothDeveloperRelease"
 		iMXYoctoRelease="4.1.15_2.0.0 GA"
 		YoctoBranch="krogoth"
 		fmacversion="orga"
@@ -990,13 +1002,13 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	fi
 	done
 	
-	if [ "$BRANCH_RELEASE_NAME" = "imx8-morty-orga" ] || [ "$BRANCH_RELEASE_NAME" = "imx8-morty-orga_r1.0" ] ; then
+	if [ "$BRANCH_RELEASE_NAME" = "$iMX8mortyDeveloperName" ] || [ "$BRANCH_RELEASE_NAME" = "$iMX8mortyStableReleaseTag" ] ; then
 		#echo "DEBUG:: IMX8"
 		repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-morty -m imx-4.9.51-8mq_beta.xml
-	elif [ "$BRANCH_RELEASE_NAME" = "imx-morty-orga" ] || [ "$BRANCH_RELEASE_NAME" = "imx-morty-orga_r1.1" ] ; then
+	elif [ "$BRANCH_RELEASE_NAME" = "$iMXmortyDeveloperName" ] || [ "$BRANCH_RELEASE_NAME" = "$iMXmortyStableReleaseTag" ] ; then
 		#echo "DEBUG:: MORTY"
 		repo init -u https://source.codeaurora.org/external/imx/fsl-arm-yocto-bsp.git -b imx-morty -m imx-4.9.11-1.0.0_ga.xml
-	elif [ "$BRANCH_RELEASE_NAME" = "imx-krogoth-orga" ] || [ "$BRANCH_RELEASE_NAME" = "imx-krogoth-orga_r1.0" ] ; then
+	elif [ "$BRANCH_RELEASE_NAME" = "$iMXkrogothDeveloperName" ] || [ "$BRANCH_RELEASE_NAME" = "$iMXkrogothStableReleaseTag" ] ; then
 		#echo "DEBUG:: KROGOTH"
 		repo init -u https://source.codeaurora.org/external/imx/fsl-arm-yocto-bsp.git -b imx-4.1-krogoth -m imx-4.1.15-2.0.0.xml
 	fi
