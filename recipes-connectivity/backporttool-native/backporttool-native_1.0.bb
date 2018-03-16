@@ -8,7 +8,7 @@ inherit native
 
 SYSTEMD_AUTO_ENABLE = "disable"
 
-SRC_URI =  "https://github.com/murata-wireless/cyw-fmac-v4.12-orga/raw/imx8-morty-orga/imx8-morty-orga_${PV}.tar.gz;name=archive1"
+SRC_URI =  "https://github.com/murata-wireless/cyw-fmac-v4.12-orga/raw/imx8-morty-orga/imx8-morty-orga_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx8-morty-orga/LICENSE;name=archive99"
 
 SRC_URI[archive1.md5sum] = "328ae8be684f171cf4f1d474770779c0"
@@ -18,8 +18,8 @@ SRC_URI[archive1.sha256sum] = "d090cf1da20b363ab680060f10dfe25273a6d3200b76108cc
 SRC_URI[archive99.md5sum] = "b234ee4d69f5fce4486a80fdaf4a4263"
 SRC_URI[archive99.sha256sum] = "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
 
-S = "${WORKDIR}/imx8-morty-orga-${PV}"
-B = "${WORKDIR}/imx8-morty-orga-${PV}/"
+S = "${WORKDIR}/backporttool-native-${PV}"
+B = "${WORKDIR}/backporttool-native-${PV}/"
 
 DEPENDS = "linux-imx"
 
@@ -43,7 +43,7 @@ do_compile () {
         echo "KLIB_BUILD: ${KLIB_BUILD} "
         echo "KBUILD_OUTPUT: ${KBUILD_OUTPUT}"
 
-        cp -a ${TMPDIR}/work/x86_64-linux/imx8-morty-orga/r1.0-r0/imx8-morty-orga_r1.0/. .
+        cp -a ${TMPDIR}/work/x86_64-linux/backporttool-native/1.0-r0/imx8-morty-orga_r1.0/. .
 
         oe_runmake KLIB="${STAGING_KERNEL_DIR}" KLIB_BUILD="${STAGING_KERNEL_BUILDDIR}" defconfig-brcmfmac
 

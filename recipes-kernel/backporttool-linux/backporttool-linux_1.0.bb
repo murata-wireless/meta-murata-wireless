@@ -16,7 +16,7 @@ SRC_URI[archive99.sha256sum] = "8177f97513213526df2cf6184d8ff986c675afb514d4e68a
 inherit linux-kernel-base kernel-arch
 
 DEPENDS = " linux-imx"
-DEPENDS += " imx8-morty-orga"
+DEPENDS += " backporttool-native"
 
 S = "${WORKDIR}/backporttool-linux-1.0"
 B = "${WORKDIR}/backporttool-linux-1.0/"
@@ -40,7 +40,7 @@ do_compile() {
         unset LDFLAGS
         
 
-        cp -a ${TMPDIR}/work/x86_64-linux/imx8-morty-orga/r1.0-r0/imx8-morty-orga-r1.0/. .
+        cp -a ${TMPDIR}/work/x86_64-linux/backporttool-native/1.0-r0/backporttool-native-1.0/. .
 
 #       make clean
 
