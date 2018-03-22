@@ -151,13 +151,8 @@ echo -e "${GRN}Murata: Ubuntu Linux host environment verified, necessary host pa
 
 
 echo " "
-echo "4) GIT Configuration"
-echo "--------------------"
-echo " "
-
-echo " "
-echo "4.1) Verifying User name and email ID"
-echo "-------------------------------------"
+echo "4) GIT Configuration:"
+echo "---------------------"
 echo " "
 
 # Print out git username and email address before exiting script.
