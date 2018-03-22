@@ -8,7 +8,7 @@ inherit native
 
 SYSTEMD_AUTO_ENABLE = "disable"
 
-SRC_URI =  "https://github.com/murata-wireless/cyw-fmac-v4.12-orga/raw/imx8-morty-orga/imx8-morty-orga_r${PV}.tar.gz;name=archive1"
+SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx8-morty-orga/imx8-morty-orga_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx8-morty-orga/LICENSE;name=archive99"
 
 SRC_URI[archive1.md5sum] = "328ae8be684f171cf4f1d474770779c0"
