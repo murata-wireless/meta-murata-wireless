@@ -1,5 +1,5 @@
-Title: README_Meta-Murata-Wireless.txt
-Date:  March 14th, 2018
+Title: README.txt
+Date:  March 22nd, 2018
 
 Description: 
 ============
@@ -16,7 +16,7 @@ desired Yocto Linux image.
 
 Folder Contents: 
 ================
-Host_Setup_for_Murata-Wireless_Yocto_Build.sh:
+Host_Setup_for_Yocto.sh:
 ---------------------------------------------- 
 Script which first verifies then initializes Linux environment for building Murata-customized Yocto image.
 Open a terminal and run the command: 
