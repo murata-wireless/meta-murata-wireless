@@ -67,9 +67,9 @@ SRC_URI[archive2.sha256sum] = "109ae675f931f7dc6a3d1409a9b18d2fd14aa1fb00b8bc4be
 SRC_URI[archive3.md5sum] = "993f4b4693f25049e10a9a6f8430dca6"
 SRC_URI[archive3.sha256sum] = "d52808db96233a66d2f5b5193513a7fec37bed3b01e1452916e3d4194dd47798"
 
-
-SRC_URI[archive4.md5sum] = "8f5ff13473d46769b1a5158edd25e570"
-SRC_URI[archive4.sha256sum] = "fa0d7ade09034776ac80b42410230f91cc4a01be4e04dfcc5498d68012389498"
+# brcmfmac43012-sdio.txt
+SRC_URI[archive4.md5sum] = "5f8f8e5ad4b03a5afdb5ef091b44a41a"
+SRC_URI[archive4.sha256sum] = "d39f832da143a7ba9f30b0406790545e84bbfb01efaadf576cf4fd37adc3d487"
 
 SRC_URI[archive5.md5sum] = "6f8478d1f0fcdcceb8e4ec8b4e92c69c"  
 SRC_URI[archive5.sha256sum] = "154cdef77d0a18f66dec1bf34a4759bee956bec8d396eb58f2b141051907f415"
@@ -117,8 +117,9 @@ SRC_URI[archive19.md5sum] = "1df9dc31218512222c95c55fecfff46f"
 SRC_URI[archive19.sha256sum] = "3cc5476d4bae51ad558cab0caa40b707548f2b5a1e20e4f81908ec50cffe199c"
 
 # murata-master -- BEGIN
-SRC_URI[archive24.md5sum] = "8f5ff13473d46769b1a5158edd25e570"
-SRC_URI[archive24.sha256sum] = "fa0d7ade09034776ac80b42410230f91cc4a01be4e04dfcc5498d68012389498"
+# brcmfmac43012-sdio.1LV.txt
+SRC_URI[archive24.md5sum] = "5f8f8e5ad4b03a5afdb5ef091b44a41a"
+SRC_URI[archive24.sha256sum] = "d39f832da143a7ba9f30b0406790545e84bbfb01efaadf576cf4fd37adc3d487"
 
 SRC_URI[archive25.md5sum] = "3baf1bb04581b46ed861919b6ee80176"
 SRC_URI[archive25.sha256sum] = "98acd589e3a9022363a4ade1df293c15a48ec4a5f13acab795a3ff36a5d28f35"
@@ -288,8 +289,8 @@ do_install () {
 #        install -m 444 ${WORKDIR}/CYW43341B0.1BW.hcd ${D}${sysconfdir}/firmware/murata-master
 #        install -m 444 ${WORKDIR}/CYW43430A1.1DX.hcd ${D}${sysconfdir}/firmware/murata-master
 
-        install -m 444 ${WORKDIR}/CYW43430A1.1DX.1dB_Less.hcd ${D}${sysconfdir}/firmware/murata-master
-        install -m 444 ${WORKDIR}/CYW43430A1.1DX.2dB_Less.hcd ${D}${sysconfdir}/firmware/murata-master
+        install -m 444 ${WORKDIR}/CYW43430A1.1DX.1dB_Less.hcd ${D}${sysconfdir}/firmware/murata-master/BCM43430A1.1DX.1dB_Less.hcd
+        install -m 444 ${WORKDIR}/CYW43430A1.1DX.2dB_Less.hcd ${D}${sysconfdir}/firmware/murata-master/BCM43430A1.1DX.2dB_Less.hcd
 
         install -d ${D}${sbindir}
         install -m 755 ${WORKDIR}/wl ${D}${sbindir}/wl

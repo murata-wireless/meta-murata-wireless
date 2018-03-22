@@ -4,7 +4,7 @@ DESCRIPTION = "Cypress FMAC backport"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
-SRC_URI =  "https://github.com/murata-wireless/cyw-fmac-v4.12-orga/raw/imx-krogoth-orga/imx-krogoth-orga_r1.0.tar.gz;name=archive1"
+SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-krogoth-orga/imx-krogoth-orga_r1.0.tar.gz;name=archive1"
 SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-krogoth-orga/LICENSE;name=archive99"
           
 SRC_URI[archive1.md5sum] = "1dd7470c8236f694f58e49f4172746d3"
