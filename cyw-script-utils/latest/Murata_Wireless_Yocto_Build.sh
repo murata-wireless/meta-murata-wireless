@@ -73,9 +73,9 @@ fi
 export SCRIPT_DIR=`pwd`
 #echo "Latest folder path: $SCRIPT_DIR"
 
-# Scan through the file Murata-Wireless_Yocto_Build.sh to fetch the Revision Information
+# Scan through the file Murata_Wireless_Yocto_Build.sh to fetch the Revision Information
 COUNTER=0
-input_file_path="$SCRIPT_DIR/Murata-Wireless_Yocto_Build.sh"
+input_file_path="$SCRIPT_DIR/Murata_Wireless_Yocto_Build.sh"
 
 while IFS= read -r LATEST_VER
 do
@@ -87,7 +87,7 @@ done < "$input_file_path"
 
 cd $BSP_DIR
 
-# read first and second line of Murata-Wireless_Yocto_Build.sh script
+# read first and second line of Murata_Wireless_Yocto_Build.sh script
 IFS== read FIRST_LINE LATEST_VER <<< $LATEST_VER
 
 # Check for latest revision
@@ -105,7 +105,7 @@ else
 	if [ "$PROCEED_UPDATE_OPTION" = "y" ] || [ "$PROCEED_UPDATE_OPTION" = "Y" ] || [ "$PROCEED_UPDATE_OPTION" = "" ]; then
 		echo "Update to latest version using following copy command:"
 		echo " "
-		echo ""\$ "cp ./meta-murata-wireless/cyw-script-utils/latest/Murata-Wireless_Yocto_Build.sh ."
+		echo ""\$ "cp ./meta-murata-wireless/cyw-script-utils/latest/Murata_Wireless_Yocto_Build.sh ."
 		echo " "
 		echo -e "${YLW}Exiting script.....${NC}"
        		exit
@@ -154,8 +154,13 @@ echo "------------------------"
 ORGA_FMAC=""\""orga"\""   (v4.12)"
 BATTRA_FMAC=""\""battra"\"" (v4.14)"
 
-echo     "1. $ORGA_FMAC"
-echo -e  "2. $BATTRA_FMAC"
+echo     " "
+echo     "-------------------------------------------------------------"
+echo     "| Entry | "\""fmac"\"" version                                    |"
+echo     "|-------|---------------------------------------------------|"
+echo     "|  1.   | $ORGA_FMAC - Previous release               |"
+echo -e  "|  2.   | $BATTRA_FMAC - ${GRN}Latest and Highly recommended${NC}  |"
+echo     "-------------------------------------------------------------"
 
 while true; do
 	read -p "Select which entry? " FMAC_VERSION
@@ -1114,10 +1119,14 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	esac
 
 	cd $BUILD_DIR
-	
+
 	echo " "
-	echo -e "${YLW}WARNING!!! Build will take several hours to complete.${NC}"
+	echo "11) Starting Build Now."
+	echo "-----------------------"
 	echo " "
+	echo -e "${YLW}NOTE: depending on machine type, build may take 1-7 hours to complete.${NC}"
+	echo " "
+        echo ""\'"Y"\'" to continue, "\'"n"\'" aborts build."
 	echo -e -n "Do you want to start the build ? ${GRN}Y${NC}/${YLW}n${NC}: "
 	read PROCEED_BUILD
 
