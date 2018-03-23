@@ -11,8 +11,8 @@ SYSTEMD_AUTO_ENABLE = "disable"
 SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-krogoth-battra/imx-krogoth-battra_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-krogoth-battra/LICENSE;name=archive99"
 
-SRC_URI[archive1.md5sum] = "567583e950c0fe4cc14b37ded8258f22"
-SRC_URI[archive1.sha256sum] = "079ed3494353cea92ca5e2baf122c73007699dd43f29bcdc8c74d251979887cb"
+SRC_URI[archive1.md5sum] = "781dfa0e2a969f0685376235bcc7100e"
+SRC_URI[archive1.sha256sum] = "80c6ca2ab3d57ecc8f46a4eff1ee67f4a9d8faf687ee5e5b8672f130f3b79f18"
 
 #LICENSE
 SRC_URI[archive99.md5sum] = "b234ee4d69f5fce4486a80fdaf4a4263"
