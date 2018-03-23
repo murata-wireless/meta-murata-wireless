@@ -1119,10 +1119,14 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	esac
 
 	cd $BUILD_DIR
-	
+
 	echo " "
-	echo -e "${YLW}WARNING!!! Build will take several hours to complete.${NC}"
+	echo "11) Starting Build Now."
+	echo "-----------------------"
 	echo " "
+	echo -e "${YLW}NOTE: depending on machine type, build may take 1-7 hours to complete.${NC}"
+	echo " "
+        echo ""\'"Y"\'" to continue, "\'"n"\'" aborts build."
 	echo -e -n "Do you want to start the build ? ${GRN}Y${NC}/${YLW}n${NC}: "
 	read PROCEED_BUILD
 
