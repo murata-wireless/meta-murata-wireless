@@ -154,8 +154,13 @@ echo "------------------------"
 ORGA_FMAC=""\""orga"\""   (v4.12)"
 BATTRA_FMAC=""\""battra"\"" (v4.14)"
 
-echo     "1. $ORGA_FMAC"
-echo -e  "2. $BATTRA_FMAC"
+echo     " "
+echo     "-------------------------------------------------------------"
+echo     "| Entry | "\""fmac"\"" version                                    |"
+echo     "|-------|---------------------------------------------------|"
+echo     "|  1.   | $ORGA_FMAC - Previous release               |"
+echo -e  "|  2.   | $BATTRA_FMAC - ${GRN}Latest and Highly recommended${NC}  |"
+echo     "-------------------------------------------------------------"
 
 while true; do
 	read -p "Select which entry? " FMAC_VERSION
