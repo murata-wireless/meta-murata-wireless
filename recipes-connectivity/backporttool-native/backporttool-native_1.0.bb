@@ -43,7 +43,7 @@ do_compile () {
         echo "KLIB_BUILD: ${KLIB_BUILD} "
         echo "KBUILD_OUTPUT: ${KBUILD_OUTPUT}"
 
-        cp -a ${TMPDIR}/work/x86_64-linux/backporttool-native/1.0-r0/imx-morty-battra_r1.0/. .
+        cp -Rfap ${TMPDIR}/work/x86_64-linux/backporttool-native/1.0-r0/imx-morty-battra_r1.0/. .
 
         oe_runmake KLIB="${STAGING_KERNEL_DIR}" KLIB_BUILD="${STAGING_KERNEL_BUILDDIR}" defconfig-brcmfmac
 
