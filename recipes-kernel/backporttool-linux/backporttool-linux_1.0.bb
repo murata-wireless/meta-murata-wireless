@@ -4,7 +4,7 @@ DESCRIPTION = "Cypress FMAC backport"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
-SRC_URI =  "https://github.com/murata-wireless/cyw-fmac-v4.14-battra/raw/master/imx-morty-battra_r${PV}.tar.gz;name=archive1"
+SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-morty-battra/imx-morty-battra_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-morty-battra/LICENSE;name=archive99"
 
 SRC_URI[archive1.md5sum] = "308528ef68f054af128e4664e6af4333"
@@ -39,7 +39,7 @@ do_compile() {
         echo "TEST_LDFLAGS:: ${LDFLAGS}"
         echo "S DIR:  {S}"
 
-        cp -a ${TMPDIR}/work/x86_64-linux/backporttool-native/1.0-r0/backporttool-native-1.0/. .
+        cp -Rfap ${TMPDIR}/work/x86_64-linux/backporttool-native/1.0-r0/backporttool-native-1.0/. .
 
 #       make clean
 
