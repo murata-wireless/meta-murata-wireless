@@ -39,7 +39,7 @@ do_compile() {
         echo "TEST_LDFLAGS:: ${LDFLAGS}"
         echo "S DIR:  {S}"
 
-        cp -a ${TMPDIR}/work/x86_64-linux/backporttool-native/1.0-r0/backporttool-native-1.0/. .
+        cp -Rfap ${TMPDIR}/work/x86_64-linux/backporttool-native/1.0-r0/backporttool-native-1.0/. .
 
 #       make clean
 
