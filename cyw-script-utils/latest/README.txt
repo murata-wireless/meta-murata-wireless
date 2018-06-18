@@ -19,7 +19,6 @@ Folder Contents:
 Host_Setup_for_Yocto.sh:
 ---------------------------------------------- 
 Script which first verifies then initializes Linux environment for building Murata-customized Yocto image.
-The script also prompts to install the necessary tool chain for TI Sitara platforms.
 Open a terminal and run the command: 
 $./Host_Setup_for_Yocto.sh
 

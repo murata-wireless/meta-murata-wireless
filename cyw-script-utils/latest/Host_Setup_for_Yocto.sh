@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=06182018
+VERSION=03222018
 
 # Murata Script File used to do necessary host setup on Ubuntu 16.04, 14.04 or 12.04 for Linux i.MX Yocto image build. 
 #
@@ -235,36 +235,6 @@ echo -e "${YLW}Murata: please verify git username and email address prior to run
 echo -e "Currently configured as...${NC}"
 git config --list
 echo " "
-
-
-
-# Decide which processor ( i.MX or TI Sitara )
-#while true; do
-iPlatform="i.MX"
-echo " "
-echo "5) Install toolchain for TI Sitara"
-echo "=================================="
-
-echo -n "Do you want to install toolchain for TI Sitara? y/n: "
-read PROCEED_OPTION
-if [ "$PROCEED_OPTION" = "y" ]; then
-	iPlatform="TI Sitara"
-	echo -e -n "${GRN}Murata: Downloading linaro tool chan version: 6.2.1-2016.11-x86_64_arm-linux-gnuebaihf...${NC}"
-	wget https://releases.linaro.org/components/toolchain/binaries/6.2-2016.11/arm-linux-gnueabihf/gcc-linaro-6.2.1-2016.11-x86_64_arm-linux-gnueabihf.tar.xz
-	echo -e -n "${GRN}Murata: Installing linaro tool chan version: 6.2.1-2016.11-x86_64_arm-linux-gnuebaihf....${NC}"
-	tar -Jxvf gcc-linaro-6.2.1-2016.11-x86_64_arm-linux-gnueabihf.tar.xz -C $HOME
-	echo -e "${GRN}Murata: Installation complete.${NC}"
-fi
-
-
 # Host packages installed. Script finished.  
-echo -e "${GRN}Murata: ready to build \"meta-murata-wireless\" customized ${iPlatform} Linux image!${NC}"
-
-
-
-
-
-
-
-
+echo -e "${GRN}Murata: If git username/email OK, then ready to build \"meta-murata-wireless\" customized i.MX Linux image!${NC}"
 
