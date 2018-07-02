@@ -11,8 +11,8 @@ SYSTEMD_AUTO_ENABLE = "disable"
 SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx8-morty-battra/imx8-morty-battra_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx8-morty-battra/LICENSE;name=archive99"
 
-SRC_URI[archive1.md5sum] = "5eb044d8628d58ae532cdaa33aa83511"
-SRC_URI[archive1.sha256sum] = "83616dbc051bb0aeab6896718a43002c814cf69e0483b4212c77a5f1e67d644d"
+SRC_URI[archive1.md5sum] = "6f6eb847f3354fbad155388390b22ec4"
+SRC_URI[archive1.sha256sum] = "0192e1d5ead4e7ae9b97420bfbb4c1bd09c1aba939bbe516b1e0f5e2bfe698ef"
 
 #LICENSE
 SRC_URI[archive99.md5sum] = "b234ee4d69f5fce4486a80fdaf4a4263"
