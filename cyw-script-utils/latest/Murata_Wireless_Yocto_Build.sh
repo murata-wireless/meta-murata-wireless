@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=06182018
+VERSION=07252018
 
 # Use colors to highlight pass/fail conditions. 
 RED='\033[1;31m' # Red font to flag errors
@@ -556,19 +556,22 @@ echo "5) Select "\""fmac"\"" version"
 echo "------------------------"
 ORGA_FMAC=""\""orga"\""   (v4.12)"
 BATTRA_FMAC=""\""battra"\"" (v4.14)"
+MOTHRA_FMAC=""\""mothra"\"" (v4.14)"
 
 echo     " "
 echo     "-------------------------------------------------------------"
 echo     "| Entry | "\""fmac"\"" version                                    |"
 echo     "|-------|---------------------------------------------------|"
 echo     "|  1.   | $ORGA_FMAC - Previous release               |"
-echo -e  "|  2.   | $BATTRA_FMAC - ${GRN}Latest and Highly recommended${NC}  |"
+echo     "|  2.   | $BATTRA_FMAC - Previous release               |"
+echo -e  "|  3.   | $MOTHRA_FMAC - ${GRN}Latest and Highly recommended${NC}  |"
 echo     "-------------------------------------------------------------"
 
 while true; do
 	read -p "Select which entry? " FMAC_VERSION
-	if [ "$FMAC_VERSION" = "1" ] || [ "$FMAC_VERSION" = "2" ]; then
-		#echo "FMAC DEBUG:: $FMAC_VERSION"
+echo "FMAC DEBUG:: $FMAC_VERSION"
+	if [ "$FMAC_VERSION" = "1" ] || [ "$FMAC_VERSION" = "2" ]  || [ "$FMAC_VERSION" = "3" ]; then
+		echo "FMAC DEBUG2:: $FMAC_VERSION"
 		break
 	else
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
@@ -637,6 +640,33 @@ done
 		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-battra    |" 
 		echo "----------------------------------------------------------------------------"
 		break
+	elif [ "$FMAC_VERSION" = "3" ] && [ "$BRANCH_TAG_OPTION" = "y" ]; then
+		echo -e "${GRN}Selected : $MOTHRA_FMAC${NC}"
+		echo " "
+		echo "6) Select i.MX Yocto Release"
+		echo "----------------------------"
+		echo " "
+		echo "------------------------------------------------------------------------------"
+		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\""   |"
+		echo "|     |      Release     | branch  | Supported     |     Release Tag         |"
+		echo "|-----|------------------|---------|---------------|-------------------------|"
+		echo "|  1  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-mothra_r1.0   |"
+		echo "------------------------------------------------------------------------------"
+		break
+	elif [ "$FMAC_VERSION" = "3" ] && [ "$BRANCH_TAG_OPTION" = "n" ]; then
+		echo -e "${GRN}Selected : $MOTHRA_FMAC${NC}"
+		echo " "
+		echo "6) Select i.MX Yocto Release"
+		echo "----------------------------"
+		echo " "
+		echo "----------------------------------------------------------------------------"
+		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\"" |"
+		echo "|     |      Release     | branch  | Supported     |     Developer Tag     |"
+		echo "|-----|------------------|---------|---------------|-----------------------|"
+		echo "|  1  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-mothra      |"
+		echo "----------------------------------------------------------------------------"
+		break
+
 	else
 		echo -e "${RED}Error: That is not a valid choice, try again.${NC}"
 		echo $'\n'
@@ -646,7 +676,7 @@ done
 while true; do
 	read -p "Select which entry? " ENTRY
 	if [ "$ENTRY" = "1" ] || [ "$ENTRY" = "2" ] || [ "$ENTRY" = "3" ]; then
-		#echo "DEBUG:: $ENTRY"
+		echo "DEBUG:: $ENTRY"
 		break
 	else
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
@@ -670,6 +700,15 @@ iMXkrogothbattraStableReleaseTag="imx-krogoth-battra_r1.1"
 iMX8mortybattraDeveloperRelease="imx8-morty-battra"
 iMXmortybattraDeveloperRelease="imx-morty-battra"
 iMXkrogothbattraDeveloperRelease="imx-krogoth-battra"
+
+iMX8mortymothraStableReleaseTag="imx8-morty-mothra_r1.0"
+iMXmortymothraStableReleaseTag="imx-morty-mothra_r1.0"
+iMXkrogothmothraStableReleaseTag="imx-krogoth-mothra_r1.0"
+
+iMX8mortymothraDeveloperRelease="imx8-morty-mothra"
+iMXmortymothraDeveloperRelease="imx-morty-mothra"
+iMXkrogothmothraDeveloperRelease="imx-krogoth-mothra"
+
 
 imx8mortyYocto="4.9.51 8MQ Beta"
 imxmortyYocto="4.9.11_1.0.0 GA"
@@ -778,6 +817,26 @@ elif [ "$FMAC_VERSION" = "2" ]; then
 		fmacversion="$BATTRA_FMAC"
 
 	fi
+
+elif [ "$FMAC_VERSION" = "3" ]; then
+	# morty-mothra_r1.0
+	if [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "1" ]; then
+		BRANCH_RELEASE_OPTION=2
+		BRANCH_RELEASE_NAME="$iMXmortymothraStableReleaseTag"
+		iMXYoctoRelease="$imxmortyYocto"
+		YoctoBranch="morty"
+		fmacversion="$MOTHRA_FMAC"
+
+	# morty-mothra
+	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "1" ]; then
+		BRANCH_RELEASE_OPTION=5
+		BRANCH_RELEASE_NAME="$iMXmortymothraDeveloperRelease"
+		iMXYoctoRelease="$imxmortyYocto"
+		YoctoBranch="morty"
+		fmacversion="$MOTHRA_FMAC"
+
+	fi
+
 fi
 
 while true; do

@@ -1,0 +1,142 @@
+diff --git a/arch/arm/boot/dts/imx7ulp-evk-sd1.dts b/arch/arm/boot/dts/imx7ulp-evk-sd1.dts
+index 1dddfb214..4c03338 100644
+--- a/arch/arm/boot/dts/imx7ulp-evk-sd1.dts
++++ b/arch/arm/boot/dts/imx7ulp-evk-sd1.dts
+@@ -23,10 +23,6 @@
+ 	};
+ };
+ 
+-&bcmdhd_wlan_0 {
+-	status = "disabled";
+-};
+-
+ &lpuart6 {
+ 	status = "disabled";
+ };
+diff --git a/arch/arm/boot/dts/imx7ulp-evk.dts b/arch/arm/boot/dts/imx7ulp-evk.dts
+index 0ff23f4..aa221af 100644
+--- a/arch/arm/boot/dts/imx7ulp-evk.dts
++++ b/arch/arm/boot/dts/imx7ulp-evk.dts
+@@ -21,12 +21,10 @@
+ 		stdout-path = &lpuart4;
+ 	};
+ 
+-	bcmdhd_wlan_0: bcmdhd_wlan@0 {
+-		compatible = "android,bcmdhd_wlan";
+-		wlreg_on-supply = <&wlreg_on>;
+-		bcmdhd_fw = "/lib/firmware/bcm/1DX_BCM4343W/fw_bcmdhd.bin";
+-		bcmdhd_nv = "/lib/firmware/bcm/1DX_BCM4343W/bcmdhd.1DX.SDIO.cal";
+-	};
++	usdhc1_pwrseq: usdhc1_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;   /* WL_REG_ON -- PTE6 */
++ 	};
+ 
+ 	memory {
+ 		device_type = "memory";
+@@ -50,7 +48,7 @@
+ 
+ 	modem_reset: modem-reset {
+ 		compatible = "gpio-reset";
+-		reset-gpios = <&gpio2 7 GPIO_ACTIVE_LOW>;
++		reset-gpios = <&gpio2 7 GPIO_ACTIVE_LOW>;  /* BT_REG_ON -- PTE7 */
+ 		reset-delay-us = <1000>;
+ 		#reset-cells = <0>;
+ 	};
+@@ -60,16 +58,6 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+-		wlreg_on: fixedregulator@100 {
+-			compatible = "regulator-fixed";
+-			regulator-min-microvolt = <5000000>;
+-			regulator-max-microvolt = <5000000>;
+-			regulator-name = "wlreg_on";
+-			gpio = <&gpio2 6 GPIO_ACTIVE_HIGH>;
+-			startup-delay-us = <100>;
+-			enable-active-high;
+-		};
+-
+ 		reg_usb_otg1_vbus: regulator@0 {
+ 			compatible = "regulator-fixed";
+ 			reg = <0>;
+@@ -93,6 +81,16 @@
+ 			enable-active-high;
+ 		};
+ 
++		/* Murata -- powers external SD card slot. Keep turned on at all times - necessary for Bluetooth only operation. */
++		reg_vsd_3v3b: regulator@2 {
++			compatible = "regulator-fixed";
++			reg = <2>;
++			regulator-name = "VSD_3V3B";
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3300000>;   
++			regulator-always-on; 
++		};
++
+ 	};
+ 
+ 	extcon_usb1: extcon_usb1 {
+@@ -234,7 +232,8 @@
+ 				ULP1_PAD_PTE11__LPUART6_RX	0x3
+ 				ULP1_PAD_PTE9__LPUART6_RTS_B	0x3
+ 				ULP1_PAD_PTE8__LPUART6_CTS_B	0x3
+-				ULP1_PAD_PTE7__PTE7		0x20000 /* BT_REG_ON */
++				ULP1_PAD_PTE7__PTE7		0x20000 /* BT_REG_ON -- only enable output buffer */
++				ULP1_PAD_PTE12__PTE12		0x10000 /* BT_HOST_WAKE -- only enable input buffer */
+ 			>;
+ 		};
+ 
+@@ -332,7 +331,8 @@
+ 
+ 		pinctrl_wifi: wifigrp {
+ 			fsl,pins = <
+-				ULP1_PAD_PTE6__PTE6		0x20043 /* WL_REG_ON */
++				ULP1_PAD_PTE6__PTE6		0x20000 /* WL_REG_ON -- only enable output buffer */
++				ULP1_PAD_PTE13__PTE13		0x10000 /* WL_HOST_WAKE -- only enable input buffer */
+ 			>;
+ 		};
+ 
+@@ -464,6 +464,7 @@
+ 	pinctrl-0 = <&pinctrl_lpuart6>;
+ 	pinctrl-1 = <&pinctrl_lpuart6>;
+ 	resets = <&modem_reset>;
++//	fsl,uart-has-rtscts; /* Murata -- flow control ? */
+ 	status = "okay";
+ };
+ 
+@@ -522,13 +523,26 @@
+ };
+ 
+ &usdhc1 {
+-	pinctrl-names = "default", "sleep";
+-	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
+-	pinctrl-1 = <&pinctrl_usdhc1 &pinctrl_wifi>;
+-	non-removable;
+-	keep-power-in-suspend;
+-	cd-post;
+-	pm-ignore-notify;
+-	wifi-host;
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
++ 	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
++ 	pinctrl-1 = <&pinctrl_usdhc1 &pinctrl_wifi>;
++	pinctrl-2 = <&pinctrl_usdhc1 &pinctrl_wifi>;
++	pinctrl-3 = <&pinctrl_usdhc1 &pinctrl_wifi>;
+ 	status = "okay";
++ 	non-removable;
++	cap-power-off-card;
++	pm-ignore-notify; 
++ 	wifi-host;
++//	sd-uhs-sdr25;  /* workaround for incorrectly initialized Type 1LV - shows incorrect support for SDR104 mode */
++//	max-frequency = <50000000>;  /* workaround for incorrectly initialized Type 1LV */
++	mmc-pwrseq = <&usdhc1_pwrseq>;
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpio2>;
++		interrupts = <13 IRQ_TYPE_LEVEL_HIGH>;  /* WL_HOST_WAKE = GPIO2_IO13 active high. */
++		interrupt-names = "host-wake";
++	};
+ };

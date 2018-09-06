@@ -1,0 +1,99 @@
+diff --git a/arch/arm/boot/dts/imx6sx-sdb-btwifi.dts b/arch/arm/boot/dts/imx6sx-sdb-btwifi.dts
+old mode 100644
+new mode 100755
+index 8dc07bf..ea25915
+--- a/arch/arm/boot/dts/imx6sx-sdb-btwifi.dts
++++ b/arch/arm/boot/dts/imx6sx-sdb-btwifi.dts
+@@ -39,12 +39,13 @@
+ 			>;
+ 		};
+ 
++		/* Murata: Modify UART for 1.8V signaling to match WLAN SDIO VIO. */
+ 		pinctrl_uart3: uart3grp {
+ 			fsl,pins = <
+-				MX6SX_PAD_SD3_DATA4__UART3_RX		0x1b0b1
+-				MX6SX_PAD_SD3_DATA5__UART3_TX		0x1b0b1
+-				MX6SX_PAD_SD3_DATA7__UART3_CTS_B	0x1b0b1
+-				MX6SX_PAD_SD3_DATA6__UART3_RTS_B	0x1b0b1
++				MX6SX_PAD_SD3_DATA4__UART3_RX		0x4001b0b1
++				MX6SX_PAD_SD3_DATA5__UART3_TX		0x4001b0b1
++				MX6SX_PAD_SD3_DATA7__UART3_CTS_B	0x4001b0b1
++				MX6SX_PAD_SD3_DATA6__UART3_RTS_B	0x4001b0b1
+ 			>;
+ 		};
+ 
+@@ -58,6 +59,7 @@
+ 		};
+ 
+ 		/* Murata change SD3 to 4-bit SDIO only; use upper 4-bits for UART. */
++		/* Add entries for 100 and 200 MHz signaling for UHS SDIO operation. */
+ 		pinctrl_wifi: wifigrp {
+ 			fsl,pins = <
+ 				MX6SX_PAD_SD3_CMD__USDHC3_CMD		0x17069
+@@ -73,6 +75,36 @@
+ 				MX6SX_PAD_SD2_DATA2__GPIO6_IO_10	0x13069 /* WL_REG_ON */
+ 			>;
+ 		};
++		pinctrl_wifi_100mhz: wifigrp-100mhz {
++			fsl,pins = <
++				MX6SX_PAD_SD3_CMD__USDHC3_CMD		0x170b9
++				MX6SX_PAD_SD3_CLK__USDHC3_CLK		0x100b9
++				MX6SX_PAD_SD3_DATA0__USDHC3_DATA0	0x170b9
++				MX6SX_PAD_SD3_DATA1__USDHC3_DATA1	0x170b9
++				MX6SX_PAD_SD3_DATA2__USDHC3_DATA2	0x170b9
++				MX6SX_PAD_SD3_DATA3__USDHC3_DATA3	0x170b9
++				MX6SX_PAD_KEY_COL0__GPIO2_IO_10		0x17059 /* CD */
++				MX6SX_PAD_KEY_ROW0__GPIO2_IO_15		0x17059 /* WP */
++				/* Murata Module control signals */
++				MX6SX_PAD_SD2_DATA1__GPIO6_IO_9         0x13069 /* WL_HOST_WAKE */
++				MX6SX_PAD_SD2_DATA2__GPIO6_IO_10	0x13069 /* WL_REG_ON */
++			>;
++		};
++		pinctrl_wifi_200mhz: wifigrp-200mhz {
++			fsl,pins = <
++				MX6SX_PAD_SD3_CMD__USDHC3_CMD		0x170f9
++				MX6SX_PAD_SD3_CLK__USDHC3_CLK		0x100f9
++				MX6SX_PAD_SD3_DATA0__USDHC3_DATA0	0x170f9
++				MX6SX_PAD_SD3_DATA1__USDHC3_DATA1	0x170f9
++				MX6SX_PAD_SD3_DATA2__USDHC3_DATA2	0x170f9
++				MX6SX_PAD_SD3_DATA3__USDHC3_DATA3	0x170f9
++				MX6SX_PAD_KEY_COL0__GPIO2_IO_10		0x17059 /* CD */
++				MX6SX_PAD_KEY_ROW0__GPIO2_IO_15		0x17059 /* WP */
++				/* Murata Module control signals */
++				MX6SX_PAD_SD2_DATA1__GPIO6_IO_9         0x13069 /* WL_HOST_WAKE */
++				MX6SX_PAD_SD2_DATA2__GPIO6_IO_10	0x13069 /* WL_REG_ON */
++			>;
++		};
+ 	};
+ };
+ 
+@@ -98,21 +130,23 @@
+ &usdhc3 {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "state_100mhz", "state_200mhz"; /* Murata -- add 100 and 200 Mhz entries for UHS mode */
+ 	pinctrl-0 = <&pinctrl_wifi>;
++	pinctrl-1 = <&pinctrl_wifi_100mhz>;
++	pinctrl-2 = <&pinctrl_wifi_200mhz>;
+ 	bus-width = <4>;
+-	no-1-8-v;	/* force 3.3V VIO */
++//	no-1-8-v;	/* Murata - comment out for UHS mode */
+ 	non-removable;
+ 	cap-power-off-card;
+ 	pm-ignore-notify; 
+-	wifi-host; 
++	wifi-host;
+ 	mmc-pwrseq = <&usdhc3_pwrseq>;
+ 	status = "okay";
+ 	brcmf: bcrmf@1 {
+ 		reg = <1>;
+ 		compatible = "brcm,bcm4329-fmac";
+-		interrupt-parent = <&gpio6>;
+-		interrupts = <9 IRQ_TYPE_LEVEL_HIGH>;  /* WL_HOST_WAKE = GPIO6_IO9 active high. Change to IRQ_TYPE_EDGE_RISING for 1BW and SN8000. */
+-		interrupt-names = "host-wake";
++//		interrupt-parent = <&gpio6>;  /* Murata - disable OOB IRQ as voltage signaling is not compatible */
++//		interrupts = <9 IRQ_TYPE_LEVEL_HIGH>;  /* WL_HOST_WAKE = GPIO6_IO9 active high. Change to IRQ_TYPE_EDGE_RISING for 1BW and SN8000. */
++//		interrupt-names = "host-wake";
+ 	};
+ };
