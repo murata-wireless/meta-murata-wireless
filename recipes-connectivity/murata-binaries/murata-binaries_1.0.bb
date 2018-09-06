@@ -8,6 +8,7 @@ SRC_URI = " \
 	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=mothra;destsuffix=cyw-fmac-nvram \
 	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=morty-mothra;destsuffix=cyw-bt-patch \
 	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=mothra;destsuffix=cyw-fmac-utils-imx32 \
+	file://10-network.rules \
 "
 
 SRCREV_cyw-fmac-fw="400d2128fbb3986cb36f20e6d479c1f13dd512f8"
@@ -58,7 +59,15 @@ do_install () {
         install -m 444 ${S}//cyw-bt-patch/CYW4354A2.1CX.hcd   ${D}${sysconfdir}/firmware/BCM4354A2.1CX.hcd
 	install -m 444 ${S}//cyw-bt-patch/README_BT_PATCHFILE ${D}${sysconfdir}/firmware
 
-	install -m 444 ${D}${sysconfdir}/firmware/*.hcd       ${D}${sysconfdir}/firmware/murata-master
+#	install -m 444 ${D}${sysconfdir}/firmware/*.hcd       ${D}${sysconfdir}/firmware/murata-master
+        install -m 444 ${S}//cyw-bt-patch/CYW4335C0.ZP.hcd    ${D}${sysconfdir}/firmware/murata-master/_BCM4335C0.ZP.hcd
+        install -m 444 ${S}//cyw-bt-patch/CYW4345C0.1MW.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4345C0.1MW.hcd
+        install -m 444 ${S}//cyw-bt-patch/CYW43012C0.1LV.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43012C0.1LV.hcd
+        install -m 444 ${S}//cyw-bt-patch/CYW43341B0.1BW.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43341B0.1BW.hcd
+        install -m 444 ${S}//cyw-bt-patch/CYW43430A1.1DX.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43430A1.1DX.hcd
+        install -m 444 ${S}//cyw-bt-patch/CYW4350C0.1BB.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4350C0.1BB.hcd
+        install -m 444 ${S}//cyw-bt-patch/CYW4354A2.1CX.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4354A2.1CX.hcd
+	install -m 444 ${S}//cyw-bt-patch/README_BT_PATCHFILE ${D}${sysconfdir}/firmware
 	install -m 444 ${S}//cyw-bt-patch/README_BT_PATCHFILE ${D}${sysconfdir}/firmware/murata-master
 
 #       Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/brcm folder
@@ -88,6 +97,7 @@ do_install () {
 	install -m 444 ${S}/cyw-fmac-nvram/brcmfmac43455-sdio.1MW.txt    ${D}/lib/firmware/brcm/brcmfmac43455-sdio.txt
 	install -m 444 ${S}/cyw-fmac-nvram/README_NVRAM                  ${D}/lib/firmware/brcm
 
+	install -m 444 ${S}/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
 
 #       Copying wl tool binary to /usr/sbin
 	install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
