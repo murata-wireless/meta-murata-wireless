@@ -11,8 +11,8 @@ SYSTEMD_AUTO_ENABLE = "disable"
 SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-morty-mothra/imx-morty-mothra_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-morty-mothra/LICENSE;name=archive99"
 
-SRC_URI[archive1.md5sum] = "2067b0e55336856d89c5e0b6a931e584"
-SRC_URI[archive1.sha256sum] = "4192bf0abe55fffd1ca5f9785e28abec2fbcb168084a22dbfacd066f493fb2f7"
+SRC_URI[archive1.md5sum] = "ece3be38ad0519e0ab7490adbc14f411"
+SRC_URI[archive1.sha256sum] = "cd23242e06aa80a3a4104172884c5671bfd58baf34e12b25652f5c80fd1396ad"
 
 #LICENSE
 SRC_URI[archive99.md5sum] = "b234ee4d69f5fce4486a80fdaf4a4263"
