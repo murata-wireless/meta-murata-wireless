@@ -48,6 +48,7 @@ do_install () {
 	install -d ${D}/etc/firmware
 	install -d ${D}/etc/firmware/murata-master
 	install -d ${D}/usr/sbin
+	install -d ${D}/etc/udev/rules.d
 
 #       Copying *.HCD files to etc/firmware and etc/firmware/murata-master
         install -m 444 ${S}//cyw-bt-patch/CYW4335C0.ZP.hcd    ${D}${sysconfdir}/firmware/BCM4335C0.ZP.hcd
