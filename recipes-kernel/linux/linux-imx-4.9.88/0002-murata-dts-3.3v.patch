@@ -1,0 +1,838 @@
+diff --git a/arch/arm/boot/dts/imx6dqscm-qwks-rev3-btwifi.dtsi b/arch/arm/boot/dts/imx6dqscm-qwks-rev3-btwifi.dtsi
+index dc41db6..e096ca2 100644
+--- a/arch/arm/boot/dts/imx6dqscm-qwks-rev3-btwifi.dtsi
++++ b/arch/arm/boot/dts/imx6dqscm-qwks-rev3-btwifi.dtsi
+@@ -4,6 +4,8 @@
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
++ * 
++ * Murata: modified to support WLAN FMAC driver with OOB IRQ configuration. 
+  */
+ 
+ / {
+@@ -14,22 +16,9 @@
+ 		#reset-cells = <0>;
+ 	};
+ 
+-	regulators {
+-		wlreg_on: fixedregulator@100 {
+-			compatible = "regulator-fixed";
+-			regulator-min-microvolt = <5000000>;
+-			regulator-max-microvolt = <5000000>;
+-			regulator-name = "wlreg_on";
+-			gpio = <&gpio6 5 0>;
+-			startup-delay-us = <100>;
+-			enable-active-high;
+-		};
+-	};
+-
+-	bcmdhd_wlan_0: bcmdhd_wlan@0 {
+-		compatible = "android,bcmdhd_wlan";
+-		wlreg_on-supply = <&wlreg_on>;
+-		gpios = <&gpio6 4 0>; /* WL_HOST_WAKE */
++	usdhc2_pwrseq: usdhc2_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio6 5 GPIO_ACTIVE_LOW>;
+ 	};
+ };
+ 
+@@ -43,14 +32,25 @@
+ };
+ 
+ &usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_wifi>;
+ 	bus-width = <4>;
+ 	no-1-8-v;
+ 	non-removable;
+-	cd-post;
+-	pm-ignore-notify;
+-	wifi-host;
++	cap-power-off-card;
++	pm-ignore-notify; 
++	wifi-host; 
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++	status = "okay";
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpio6>;
++		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;  /* WL_HOST_WAKE = GPIO6_IO4 active high. Change to IRQ_TYPE_EDGE_RISING for 1BW and SN8000. */
++		interrupt-names = "host-wake";
++	};
+ };
+ 
+ &iomuxc {
+@@ -70,8 +70,8 @@
+ 				MX6QDL_PAD_SD2_DAT1__SD2_DATA1		0x17059
+ 				MX6QDL_PAD_SD2_DAT2__SD2_DATA2		0x17059
+ 				MX6QDL_PAD_SD2_DAT3__SD2_DATA3		0x17059
+-				MX6QDL_PAD_CSI0_DAT19__GPIO6_IO05	0x13069
+-				MX6QDL_PAD_CSI0_DAT18__GPIO6_IO04	0x13069
++				MX6QDL_PAD_CSI0_DAT19__GPIO6_IO05	0x13069  /* WL_REG_ON */
++				MX6QDL_PAD_CSI0_DAT18__GPIO6_IO04	0x13069  /* WL_HOST_WAKE */
+ 			>;
+ 		};
+ 		pinctrl_uart4: uart4grp {
+diff --git a/arch/arm/boot/dts/imx6qdl-sabresd-btwifi.dtsi b/arch/arm/boot/dts/imx6qdl-sabresd-btwifi.dtsi
+index 7164a9e..93a79e5 100644
+--- a/arch/arm/boot/dts/imx6qdl-sabresd-btwifi.dtsi
++++ b/arch/arm/boot/dts/imx6qdl-sabresd-btwifi.dtsi
+@@ -14,6 +14,8 @@
+  * WL_REG_ON/BT_REG_ON/WL_HOST_WAKE are connected via ribbon cable (J13 connector
+  * on board).
+  * ==> Hardware modification is required. Refer to schematic.
++ *
++ * Murata: modified to support WLAN FMAC driver with OOB IRQ configuration. 
+  */
+ 
+ / {
+@@ -29,22 +31,9 @@
+ 		#reset-cells = <0>;
+ 	};
+ 
+-	regulators {
+-		wlreg_on: fixedregulator@100 {
+-			compatible = "regulator-fixed";
+-			regulator-min-microvolt = <5000000>;
+-			regulator-max-microvolt = <5000000>;
+-			regulator-name = "wlreg_on";
+-			gpio = <&gpio4 7 0>;
+-			startup-delay-us = <100>;
+-			enable-active-high;
+-		};
+-	};
+-
+-	bcmdhd_wlan_0: bcmdhd_wlan@0 {
+-		compatible = "android,bcmdhd_wlan";
+-		gpios = <&gpio4 6 0>; /* WL_HOST_WAKE */
+-		wlreg_on-supply = <&wlreg_on>;
++	usdhc2_pwrseq: usdhc2_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio4 7 GPIO_ACTIVE_LOW>;
+ 	};
+ };
+ 
+@@ -56,7 +45,7 @@
+ 	imx6qdl-sabresd-murata-v2 {
+ 		pinctrl_btreg: btreggrp {
+ 			fsl,pins = <
+-				MX6QDL_PAD_GPIO_2__GPIO1_IO02 0x1b0b0
++				MX6QDL_PAD_GPIO_2__GPIO1_IO02 0x1b0b0  /* BT_REG_ON */
+ 			>;
+ 		};
+ 
+@@ -94,12 +83,23 @@
+ };
+ 
+ &usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_wifi>;
+ 	bus-width = <4>;
+ 	no-1-8-v;
+ 	non-removable;
+-	cd-post;
+-	pm-ignore-notify;
+-	wifi-host;
++	cap-power-off-card;
++	pm-ignore-notify; 
++	wifi-host; 
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpio4>;
++		interrupts = <6 IRQ_TYPE_LEVEL_HIGH>;  /* WL_HOST_WAKE = GPIO4_IO6 active high. Change to IRQ_TYPE_EDGE_RISING for 1BW and SN8000. */
++		interrupt-names = "host-wake";
++	};
+ };
+diff --git a/arch/arm/boot/dts/imx6sl-evk-btwifi.dts b/arch/arm/boot/dts/imx6sl-evk-btwifi.dts
+index 4eac83e..3f1a584 100644
+--- a/arch/arm/boot/dts/imx6sl-evk-btwifi.dts
++++ b/arch/arm/boot/dts/imx6sl-evk-btwifi.dts
+@@ -12,6 +12,8 @@
+  * Bluetooth UART connect via SD1 EMMC/MMC Plus pinout.
+  * WL_REG_ON/BT_REG_ON/WL_HOST_WAKE are connected from SD Card Extender on SD3
+  * slot.
++ * 
++ * Murata: modified to support WLAN FMAC driver with OOB IRQ configuration. 
+  */
+ #include "imx6sl-evk.dts"
+ 
+@@ -23,22 +25,9 @@
+ 		#reset-cells = <0>;
+ 	};
+ 
+-	regulators {
+-		wlreg_on: fixedregulator@100 {
+-			compatible = "regulator-fixed";
+-			regulator-min-microvolt = <5000000>;
+-			regulator-max-microvolt = <5000000>;
+-			regulator-name = "wlreg_on";
+-			gpio = <&gpio5 16 0>;
+-			startup-delay-us = <100>;
+-			enable-active-high;
+-		};
+-	};
+-
+-	bcmdhd_wlan_0: bcmdhd_wlan@0 {
+-		compatible = "android,bcmdhd_wlan";
+-		gpios = <&gpio5 20 0>; /* WL_HOST_WAKE */
+-		wlreg_on-supply = <&wlreg_on>;
++	usdhc1_pwrseq: usdhc1_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio5 16 GPIO_ACTIVE_LOW>;
+ 	};
+ };
+ 
+@@ -73,6 +62,7 @@
+ 		};
+ 	};
+ };
++
+ /* Murata: declare UART4 interface for Bluetooth. */
+ &uart4 {
+ 	pinctrl-names = "default";
+@@ -87,14 +77,25 @@
+ };
+ 
+ &usdhc1 {
++	#address-cells = <1>;
++	#size-cells = <0>;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_wifi>;
+ 	bus-width = <4>;
+ 	no-1-8-v;
+ 	non-removable;
+-	cd-post;
+-	pm-ignore-notify;
+-	wifi-host;
++	cap-power-off-card;
++	pm-ignore-notify; 
++	wifi-host; 
++	mmc-pwrseq = <&usdhc1_pwrseq>;
++	status = "okay";
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpio5>;
++		interrupts = <20 IRQ_TYPE_LEVEL_HIGH>;  /* WL_HOST_WAKE = GPIO5_IO20 active high. Change to IRQ_TYPE_EDGE_RISING for 1BW and SN8000. */
++		interrupt-names = "host-wake";
++	};
+ };
+ 
+ &usdhc3 {
+diff --git a/arch/arm/boot/dts/imx6sll-evk-btwifi.dts b/arch/arm/boot/dts/imx6sll-evk-btwifi.dts
+index db30b1f..65312ae 100644
+--- a/arch/arm/boot/dts/imx6sll-evk-btwifi.dts
++++ b/arch/arm/boot/dts/imx6sll-evk-btwifi.dts
+@@ -10,6 +10,8 @@
+  * NOTE: This DTS file is written for plugging in Murata Wi-Fi/BT EVK into Slot
+  * SD1 and using Murata i.MX InterConnect Ver 2.0 Adapter. Bluetooth UART &
+  * control signals are connected via ribbon cable (J4 connector).
++ * 
++ * Murata: modified to support WLAN FMAC driver with OOB IRQ configuration. 
+  */
+ 
+ #include "imx6sll-evk.dts"
+@@ -22,22 +24,9 @@
+ 		#reset-cells = <0>;
+ 	};
+ 
+-	regulators {
+-		wlreg_on: fixedregulator@100 {
+-			compatible = "regulator-fixed";
+-			regulator-min-microvolt = <5000000>;
+-			regulator-max-microvolt = <5000000>;
+-			regulator-name = "wlreg_on";
+-			gpio = <&gpio3 24 0>;
+-			startup-delay-us = <100>;
+-			enable-active-high;
+-		};
+-	};
+-
+-	bcmdhd_wlan_0: bcmdhd_wlan@0 {
+-		compatible = "android,bcmdhd_wlan";
+-		wlreg_on-supply = <&wlreg_on>;
+-		gpios = <&gpio3 26 0>;          /* WL_HOST_WAKE */
++	usdhc3_pwrseq: usdhc3_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio3 24 GPIO_ACTIVE_LOW>;
+ 	};
+ };
+ 
+@@ -73,11 +62,22 @@
+ };
+ 
+ &usdhc3 {
++	#address-cells = <1>;
++	#size-cells = <0>;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_wifi>;
+ 	no-1-8-v;
+ 	non-removable;
+-	cd-post;
+-	pm-ignore-notify;
+-	wifi-host; /* add hook for SD card detect mechanism for BCMDHD driver */
++	cap-power-off-card;
++	pm-ignore-notify; 
++	wifi-host; 
++	mmc-pwrseq = <&usdhc3_pwrseq>;
++	status = "okay";
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpio3>;
++		interrupts = <26 IRQ_TYPE_LEVEL_HIGH>;  /* WL_HOST_WAKE = GPIO3_IO26 active high. Change to IRQ_TYPE_EDGE_RISING for 1BW and SN8000. */
++		interrupt-names = "host-wake";
++	};
+ };
+diff --git a/arch/arm/boot/dts/imx6sx-sdb-btwifi.dts b/arch/arm/boot/dts/imx6sx-sdb-btwifi.dts
+index 698e49e..8dc07bf 100644
+--- a/arch/arm/boot/dts/imx6sx-sdb-btwifi.dts
++++ b/arch/arm/boot/dts/imx6sx-sdb-btwifi.dts
+@@ -11,6 +11,8 @@
+  * slot using Murata i.MX InterConnect Ver 1.0 Adapter AND SD Card Extender on
+  * SD2 slot. Bluetooth UART connects via SD3 EMMC/MMC Plus pinout.
+  * WL_REG_ON/BT_REG_ON/WL_HOST_WAKE connect via SD Card Extender.
++ * 
++ * Murata: modified to support WLAN FMAC driver with OOB IRQ configuration.
+  */
+ 
+ #include "imx6sx-sdb.dts"
+@@ -23,23 +25,9 @@
+ 		#reset-cells = <0>;
+ 	};
+ 
+-	regulators {
+-		wlreg_on: fixedregulator@100 {
+-			compatible = "regulator-fixed";
+-			regulator-min-microvolt = <5000000>;
+-			regulator-max-microvolt = <5000000>;
+-			regulator-name = "wlreg_on";
+-			gpio = <&gpio6 10 0>;
+-			startup-delay-us = <100>;
+-			enable-active-high;
+-		};
+-	};
+-
+-	bcmdhd_wlan_0: bcmdhd_wlan@0 {
+-		compatible = "android,bcmdhd_wlan";
+-		/* WL_HOST_WAKE: SD2_DAT1 (gpio6 9) */
+-		gpios = <&gpio6 9 0>;
+-		wlreg_on-supply = <&wlreg_on>;
++	usdhc3_pwrseq: usdhc3_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio6 10 GPIO_ACTIVE_LOW>;
+ 	};
+ };
+ 
+@@ -108,13 +96,23 @@
+ };
+ 
+ &usdhc3 {
++	#address-cells = <1>;
++	#size-cells = <0>;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_wifi>;
+ 	bus-width = <4>;
+ 	no-1-8-v;	/* force 3.3V VIO */
+ 	non-removable;
+-	cd-post;
+-	pm-ignore-notify;
+-	wifi-host;	/* pull in card detect mechanism for BCMDHD driver */
++	cap-power-off-card;
++	pm-ignore-notify; 
++	wifi-host; 
++	mmc-pwrseq = <&usdhc3_pwrseq>;
+ 	status = "okay";
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpio6>;
++		interrupts = <9 IRQ_TYPE_LEVEL_HIGH>;  /* WL_HOST_WAKE = GPIO6_IO9 active high. Change to IRQ_TYPE_EDGE_RISING for 1BW and SN8000. */
++		interrupt-names = "host-wake";
++	};
+ };
+diff --git a/arch/arm/boot/dts/imx6sxscm-evb-btwifi.dtsi b/arch/arm/boot/dts/imx6sxscm-evb-btwifi.dtsi
+index 3658389..2bd3d79 100644
+--- a/arch/arm/boot/dts/imx6sxscm-evb-btwifi.dtsi
++++ b/arch/arm/boot/dts/imx6sxscm-evb-btwifi.dtsi
+@@ -4,6 +4,8 @@
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
++ * 
++ * Murata: modified to support WLAN FMAC driver with OOB IRQ configuration. 
+  */
+ 
+ / {
+@@ -14,26 +16,15 @@
+ 		#reset-cells = <0>;
+ 	};
+ 
++	usdhc2_pwrseq: usdhc2_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio4 8 GPIO_ACTIVE_LOW>;
++	};
++
+ 	regulators {
+-		wlreg_on: fixedregulator@100 {
+-			compatible = "regulator-fixed";
+-			regulator-min-microvolt = <5000000>;
+-			regulator-max-microvolt = <5000000>;
+-			regulator-name = "wlreg_on";
+-			gpio = <&gpio4 8 0>;
+-			startup-delay-us = <100>;
+-			enable-active-high;
+-		};
+ 		vcc_sd3: regulator@0 {
+ 			status = "disabled";
+ 		};
+-
+-	};
+-
+-	bcmdhd_wlan_0: bcmdhd_wlan@0 {
+-		compatible = "android,bcmdhd_wlan";
+-		wlreg_on-supply = <&wlreg_on>;
+-		gpios = <&gpio7 9 0>; /* WL_HOST_WAKE */
+ 	};
+ };
+ 
+@@ -97,8 +88,8 @@
+ 				MX6SX_PAD_SD2_DATA2__USDHC2_DATA2	0x17069
+ 				MX6SX_PAD_SD2_DATA3__USDHC2_DATA3	0x17069
+ 				/* Murata Module control signals */
+-				MX6SX_PAD_NAND_DATA04__GPIO4_IO_8	0x13069
+-				MX6SX_PAD_SD3_DATA7__GPIO7_IO_9         0x13069
++				MX6SX_PAD_NAND_DATA04__GPIO4_IO_8	0x13069  /* WL_REG_ON */
++				MX6SX_PAD_SD3_DATA7__GPIO7_IO_9         0x13069  /* WL_HOST_WAKE */
+ 			>;
+ 		};
+ 	};
+@@ -114,11 +105,23 @@
+ };
+ 
+ &usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
+ 	pinctrl-0 = <&pinctrl_wifi>;
+ 	bus-width = <4>;
+ 	non-removable;
+-	cd-post;
+-	pm-ignore-notify;
++	cap-power-off-card;
++	pm-ignore-notify; 
++	wifi-host; 
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++	status = "okay";
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpio7>;
++		interrupts = <9 IRQ_TYPE_LEVEL_HIGH>;  /* WL_HOST_WAKE = GPIO7_IO9 active high */
++		interrupt-names = "host-wake";
++	};
+ };
+ 
+ &usdhc3 {
+diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk.dts b/arch/arm/boot/dts/imx6ul-14x14-evk.dts
+index da2ae89..9c2c819 100644
+--- a/arch/arm/boot/dts/imx6ul-14x14-evk.dts
++++ b/arch/arm/boot/dts/imx6ul-14x14-evk.dts
+@@ -204,12 +204,26 @@
+ 	};
+ };
+ 
++/* Murata: need to redefine FEC1 and FEC2 constructs to keep MDIO declarations independent. 
++ * Needed by OOB IRQ functionality - see imx6ul-evk-btwifi-oob.dtsi 
++ */
++
+ &fec1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_enet1>;
+ 	phy-mode = "rmii";
+ 	phy-handle = <&ethphy0>;
+ 	status = "okay";
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethphy0: ethernet-phy@2 {
++			compatible = "ethernet-phy-ieee802.3-c22";
++			reg = <2>;
++		};
++	};
+ };
+ 
+ &fec2 {
+@@ -223,11 +237,6 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+-		ethphy0: ethernet-phy@2 {
+-			compatible = "ethernet-phy-ieee802.3-c22";
+-			reg = <2>;
+-		};
+-
+ 		ethphy1: ethernet-phy@1 {
+ 			compatible = "ethernet-phy-ieee802.3-c22";
+ 			reg = <1>;
+diff --git a/arch/arm/boot/dts/imx6ul-9x9-evk.dts b/arch/arm/boot/dts/imx6ul-9x9-evk.dts
+index 29896ea..d3a4353 100644
+--- a/arch/arm/boot/dts/imx6ul-9x9-evk.dts
++++ b/arch/arm/boot/dts/imx6ul-9x9-evk.dts
+@@ -196,12 +196,26 @@
+ 	};
+ };
+ 
++/* Murata: need to redefine FEC1 and FEC2 constructs to keep MDIO declarations independent. 
++ * Needed by OOB IRQ functionality - see imx6ul-evk-btwifi-oob.dtsi 
++ */
++
+ &fec1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_enet1>;
+ 	phy-mode = "rmii";
+ 	phy-handle = <&ethphy0>;
+ 	status = "okay";
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethphy0: ethernet-phy@2 {
++			compatible = "ethernet-phy-ieee802.3-c22";
++			reg = <2>;
++		};
++	};
+ };
+ 
+ &fec2 {
+@@ -215,11 +229,6 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+-		ethphy0: ethernet-phy@2 {
+-			compatible = "ethernet-phy-ieee802.3-c22";
+-			reg = <2>;
+-		};
+-
+ 		ethphy1: ethernet-phy@1 {
+ 			compatible = "ethernet-phy-ieee802.3-c22";
+ 			reg = <1>;
+diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi-oob.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi-oob.dtsi
+index cd7a5e6..d372412 100644
+--- a/arch/arm/boot/dts/imx6ul-evk-btwifi-oob.dtsi
++++ b/arch/arm/boot/dts/imx6ul-evk-btwifi-oob.dtsi
+@@ -4,14 +4,9 @@
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License version 2 as
+  * published by the Free Software Foundation.
++ * Murata: modified file for Cypress FMAC driver with OOB IRQ configuration. 
+  */
+ 
+-&bcmdhd_wlan_0 {
+-	/* Need to define WL_HOST_WAKE for OOB IRQ: ENET2_RX_ER (gpio2_15) */
+-	/* Hardware modification is needed on imx6ul evk for using OOB. */
+-	gpios = <&gpio2 15 0>;  /* WL_HOST_WAKE */
+-};
+-
+ &pinctrl_wifi {
+ 	fsl,pins = <
+ 		/* MUXing for WL_HOST_WAKE */
+@@ -24,7 +19,18 @@
+  * the secondary ethernet port (FEC2). Hardware re-work is to remove
+  * R1633 and populate R1704 with 0 Ohm resistor.
+  * Refer to Murata Hardware Reference Manual for more details.
++ * Murata: dependency on redefining FEC1 and FEC2 to keep MDIO declarations independent. 
+  */
++
+ &fec2 {
+-	status="disabled";
++	status = "disabled";
++};
++
++/* Murata: add OOB IRQ definition for FMAC driver. */
++&usdhc1 {
++	brcmf: bcrmf@1 {
++		interrupt-parent = <&gpio2>;
++		interrupts = <15 IRQ_TYPE_LEVEL_HIGH>;  /* WL_HOST_WAKE = GPIO2_IO15 active high. Change to IRQ_TYPE_EDGE_RISING for 1BW and SN8000. */
++		interrupt-names = "host-wake";
++	};
+ };
+diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
+index d4810bd..ff8a432 100644
+--- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
++++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
+@@ -10,6 +10,9 @@
+  * NOTE: This DTS file is written for plugging in Murata Wi-Fi/BT EVK into Slot
+  * SD1 and using Murata i.MX InterConnect Ver 2.0 Adapter. Bluetooth UART &
+  * control signals are connected via ribbon cable (J1701 connector).
++ *
++ * Murata: modified to support WLAN FMAC driver with SDIO in-band interrupt: default HW configuration for i.MX6UL(L) EVK. 
++ * For OOB IRQ configuration refer to imx6ul-evk-btwifi-oob.dtsi file and corresponding i.MX6UL(L) DTB files that include it. 
+  */
+ 
+ / {
+@@ -20,28 +23,16 @@
+ 		#reset-cells = <0>;
+ 	};
+ 
+-	regulators {
+-		wlreg_on: fixedregulator@100 {
+-			compatible = "regulator-fixed";
+-			regulator-min-microvolt = <5000000>;
+-			regulator-max-microvolt = <5000000>;
+-			regulator-name = "wlreg_on";
+-			gpio = <&gpio5 1 0>;
+-			startup-delay-us = <100>;
+-			enable-active-high;
+-		};
+-	};
+-
+-	bcmdhd_wlan_0: bcmdhd_wlan@0 {
+-		compatible = "android,bcmdhd_wlan";
+-		wlreg_on-supply = <&wlreg_on>;
++	usdhc1_pwrseq: usdhc1_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
+ 	};
+ };
+ 
+ &iomuxc {
+ 	pinctrl_wifi: wifigrp {
+ 		fsl,pins = <
+-			MX6UL_PAD_SNVS_TAMPER1__GPIO5_IO01 0x03029
++			MX6UL_PAD_SNVS_TAMPER1__GPIO5_IO01 0x03029  /* WL_REG_ON */
+ 		>;
+ 	};
+ };
+@@ -55,18 +46,26 @@
+ };
+ 
+ &usdhc1 {
++	#address-cells = <1>;
++	#size-cells = <0>;
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
+ 	no-1-8-v;
+ 	non-removable;
+-	cd-post;
+-	pm-ignore-notify;
+-	wifi-host; /* add hook for SD card detect mechanism for BCMDHD driver */
++	cap-power-off-card;
++	pm-ignore-notify; 
++	wifi-host; 
++	mmc-pwrseq = <&usdhc1_pwrseq>;
++
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	};
+ };
+ 
+ &gpio_spi {
+ 	/* Murata: modify default setting so that BT_nPWD/BT_REG_ON
+ 	 * is low (0V) during kernel boot.
+ 	 */
+-	registers-default = /bits/ 8 <0x47>;
++	registers-default = /bits/ 8 <0x47>;	/* BT_REG_ON */
+ };
+diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk.dts b/arch/arm/boot/dts/imx6ull-14x14-evk.dts
+index cd2a076..d038c1c 100644
+--- a/arch/arm/boot/dts/imx6ull-14x14-evk.dts
++++ b/arch/arm/boot/dts/imx6ull-14x14-evk.dts
+@@ -167,12 +167,26 @@
+ 	};
+ };
+ 
++/* Murata: need to redefine FEC1 and FEC2 constructs to keep MDIO declarations independent. 
++ * Needed by OOB IRQ functionality - see imx6ul-evk-btwifi-oob.dtsi 
++ */
++
+ &fec1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_enet1>;
+ 	phy-mode = "rmii";
+ 	phy-handle = <&ethphy0>;
+ 	status = "okay";
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethphy0: ethernet-phy@2 {
++			compatible = "ethernet-phy-ieee802.3-c22";
++			reg = <2>;
++		};
++	};
+ };
+ 
+ &fec2 {
+@@ -186,11 +200,6 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+-		ethphy0: ethernet-phy@2 {
+-			compatible = "ethernet-phy-ieee802.3-c22";
+-			reg = <2>;
+-		};
+-
+ 		ethphy1: ethernet-phy@1 {
+ 			compatible = "ethernet-phy-ieee802.3-c22";
+ 			reg = <1>;
+diff --git a/arch/arm/boot/dts/imx6ull-9x9-evk.dts b/arch/arm/boot/dts/imx6ull-9x9-evk.dts
+index 8f7c6f8..55ddde4 100644
+--- a/arch/arm/boot/dts/imx6ull-9x9-evk.dts
++++ b/arch/arm/boot/dts/imx6ull-9x9-evk.dts
+@@ -196,12 +196,26 @@
+ 	};
+ };
+ 
++/* Murata: need to redefine FEC1 and FEC2 constructs to keep MDIO declarations independent. 
++ * Needed by OOB IRQ functionality - see imx6ul-evk-btwifi-oob.dtsi 
++ */
++
+ &fec1 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_enet1>;
+ 	phy-mode = "rmii";
+ 	phy-handle = <&ethphy0>;
+ 	status = "okay";
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethphy0: ethernet-phy@2 {
++			compatible = "ethernet-phy-ieee802.3-c22";
++			reg = <2>;
++		};
++	};
+ };
+ 
+ &fec2 {
+@@ -215,11 +229,6 @@
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+ 
+-		ethphy0: ethernet-phy@2 {
+-			compatible = "ethernet-phy-ieee802.3-c22";
+-			reg = <2>;
+-		};
+-
+ 		ethphy1: ethernet-phy@1 {
+ 			compatible = "ethernet-phy-ieee802.3-c22";
+ 			reg = <1>;
+diff --git a/arch/arm/boot/dts/imx7d-sdb.dts b/arch/arm/boot/dts/imx7d-sdb.dts
+index f126906..c33c54d 100644
+--- a/arch/arm/boot/dts/imx7d-sdb.dts
++++ b/arch/arm/boot/dts/imx7d-sdb.dts
+@@ -38,6 +38,8 @@
+  *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+  *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+  *     OTHER DEALINGS IN THE SOFTWARE.
++ * 
++ * Murata: modified to support WLAN FMAC driver with OOB IRQ. 
+  */
+ 
+ /dts-v1/;
+@@ -59,6 +61,11 @@
+ 		#reset-cells = <0>;
+ 	};
+ 
++	usdhc2_pwrseq: usdhc2_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio4 21 GPIO_ACTIVE_LOW>;
++	};
++
+ 	regulators {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+@@ -111,16 +118,6 @@
+ 			off-on-delay = <20000>;
+ 			enable-active-high;
+ 		};
+-
+-		wlreg_on: fixedregulator@6 {
+-			compatible = "regulator-fixed";
+-			regulator-min-microvolt = <5000000>;
+-			regulator-max-microvolt = <5000000>;
+-			regulator-name = "wlreg_on";
+-			gpio = <&gpio4 21 GPIO_ACTIVE_HIGH>;
+-			startup-delay-us = <100>;
+-			enable-active-high;
+-		};
+ 	};
+ 
+ 	backlight {
+@@ -131,12 +128,6 @@
+ 		status = "okay";
+ 	};
+ 
+-	bcmdhd_wlan_0: bcmdhd_wlan@0 {
+-		compatible = "android,bcmdhd_wlan";
+-		gpios = <&gpio4 20 0>;		/* WL_HOST_WAKE */
+-		wlreg_on-supply = <&wlreg_on>;
+-	};
+-
+ 	pxp_v4l2_out {
+ 		compatible = "fsl,imx7d-pxp-v4l2", "fsl,imx6sx-pxp-v4l2", "fsl,imx6sl-pxp-v4l2";
+ 		status = "okay";
+@@ -771,17 +762,25 @@
+ };
+ 
+ &usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
+ 	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+ 	pinctrl-0 = <&pinctrl_usdhc2>;
+ 	pinctrl-1 = <&pinctrl_usdhc2_100mhz>;
+ 	pinctrl-2 = <&pinctrl_usdhc2_200mhz>;
+-	enable-sdio-wakeup;
+-	keep-power-in-suspend;
+ 	non-removable;
+-	cd-post;
+-	pm-ignore-notify;
+-	wifi-host;
++	cap-power-off-card;
++	pm-ignore-notify; 
++	wifi-host; 
++	mmc-pwrseq = <&usdhc2_pwrseq>;
+ 	status = "okay";
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++		interrupt-parent = <&gpio4>;
++		interrupts = <20 IRQ_TYPE_LEVEL_HIGH>;  /* WL_HOST_WAKE = GPIO4_IO20 active high */
++		interrupt-names = "host-wake";
++	};
+ };
+ 
+ &usdhc3 {
+@@ -1175,6 +1174,8 @@
+ 				MX7D_PAD_SD2_DATA1__SD2_DATA1		0x5a
+ 				MX7D_PAD_SD2_DATA2__SD2_DATA2		0x5a
+ 				MX7D_PAD_SD2_DATA3__SD2_DATA3		0x5a
++				MX7D_PAD_ECSPI2_MOSI__GPIO4_IO21	0x19 /* WL_REG_ON */
++				MX7D_PAD_ECSPI2_SCLK__GPIO4_IO20	0x19 /* WL_HOST_WAKE */
+ 			>;
+ 		};
+ 
+@@ -1186,6 +1187,8 @@
+ 				MX7D_PAD_SD2_DATA1__SD2_DATA1		0x5b
+ 				MX7D_PAD_SD2_DATA2__SD2_DATA2		0x5b
+ 				MX7D_PAD_SD2_DATA3__SD2_DATA3		0x5b
++				MX7D_PAD_ECSPI2_MOSI__GPIO4_IO21	0x19 /* WL_REG_ON */
++				MX7D_PAD_ECSPI2_SCLK__GPIO4_IO20	0x19 /* WL_HOST_WAKE */
+ 			>;
+ 		};
+ 

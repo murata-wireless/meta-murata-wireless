@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=06182018
+VERSION=08022018
 
 # Murata Script File used to do necessary host setup on Ubuntu 16.04, 14.04 or 12.04 for Linux i.MX Yocto image build. 
 #
