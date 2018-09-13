@@ -8,8 +8,8 @@ inherit native
 
 SYSTEMD_AUTO_ENABLE = "disable"
 
-SRC_URI =  "https://github.com/jameelkareem-pre-release-rocko/cyw-fmac/raw/imx-krogoth-mothra/imx-krogoth-mothra_r${PV}.tar.gz;name=archive1"
-SRC_URI += "https://github.com/jameelkareem-pre-release-rocko/meta-murata-wireless/raw/imx-krogoth-mothra/LICENSE;name=archive99"
+SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-krogoth-mothra/imx-krogoth-mothra_r${PV}.tar.gz;name=archive1"
+SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-krogoth-mothra/LICENSE;name=archive99"
 
 SRC_URI[archive1.md5sum] = "3839051ffac7e8ee65ca4f4a89e87e2d"
 SRC_URI[archive1.sha256sum] = "b24013bebdf747a68ef1c67bce5cb05bdce4bb858eabcbb3e83a8fccd5e8b01f"
