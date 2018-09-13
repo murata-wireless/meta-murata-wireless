@@ -570,7 +570,7 @@ while true; do
 	read -p "Select which entry? " FMAC_VERSION
 echo "FMAC DEBUG:: $FMAC_VERSION"
 	if [ "$FMAC_VERSION" = "1" ] || [ "$FMAC_VERSION" = "2" ]  || [ "$FMAC_VERSION" = "3" ]; then
-		echo "DEBUG:: SELECTION OF FMAC :: $FMAC_VERSION"
+		#echo "DEBUG:: SELECTION OF FMAC :: $FMAC_VERSION"
 		break
 	else
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
@@ -679,7 +679,7 @@ done
 while true; do
 	read -p "Select which entry? " ENTRY
 	if [ "$ENTRY" = "1" ] || [ "$ENTRY" = "2" ] || [ "$ENTRY" = "3" ]; then
-		echo "DEBUG:: $ENTRY"
+		#echo "DEBUG:: $ENTRY"
 		break
 	else
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
@@ -826,7 +826,7 @@ elif [ "$FMAC_VERSION" = "2" ]; then
 elif [ "$FMAC_VERSION" = "3" ]; then
 	# rocko-mothra_r1.0
 	if [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "1" ]; then
-		echo "DEBUG:: rocko-mothra_r1.0"
+		#echo "DEBUG:: rocko-mothra_r1.0"
 		BRANCH_RELEASE_OPTION=1
 		BRANCH_RELEASE_NAME="$iMXrockomothraStableReleaseTag"
 		iMXYoctoRelease="$imxrockoYocto"
@@ -835,7 +835,7 @@ elif [ "$FMAC_VERSION" = "3" ]; then
 
 	# rocko-mothra
 	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "1" ]; then
-		echo "DEBUG:: rocko-mothra"
+		#echo "DEBUG:: rocko-mothra"
 		BRANCH_RELEASE_OPTION=2
 		BRANCH_RELEASE_NAME="$iMXrockomothraDeveloperRelease"
 		iMXYoctoRelease="$imxrockoYocto"
@@ -844,7 +844,7 @@ elif [ "$FMAC_VERSION" = "3" ]; then
 
 	# morty-mothra_r1.0
 	elif [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "2" ]; then
-		echo "DEBUG:: morty-mothra_r1.0"
+		#echo "DEBUG:: morty-mothra_r1.0"
 		BRANCH_RELEASE_OPTION=3
 		BRANCH_RELEASE_NAME="$iMXmortymothraStableReleaseTag"
 		iMXYoctoRelease="$imxmortyYocto"
@@ -853,7 +853,7 @@ elif [ "$FMAC_VERSION" = "3" ]; then
 
 	# morty-mothra
 	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "2" ]; then
-		echo "DEBUG:: morty-mothra"
+		#echo "DEBUG:: morty-mothra"
 		BRANCH_RELEASE_OPTION=4
 		BRANCH_RELEASE_NAME="$iMXmortymothraDeveloperRelease"
 		iMXYoctoRelease="$imxmortyYocto"
@@ -862,7 +862,7 @@ elif [ "$FMAC_VERSION" = "3" ]; then
 
 	# krogoth-mothra_r1.0
 	elif [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "3" ]; then
-		echo "DEBUG:: krogoth-mothra_r1.0"
+		#echo "DEBUG:: krogoth-mothra_r1.0"
 		BRANCH_RELEASE_OPTION=5
 		BRANCH_RELEASE_NAME="$iMXkrogothmothraStableReleaseTag"
 		iMXYoctoRelease="$imxkrogothYocto"
@@ -870,7 +870,7 @@ elif [ "$FMAC_VERSION" = "3" ]; then
 		fmacversion="$MOTHRA_FMAC"
 	# krogoth-mothra
 	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "3" ]; then
-		echo "DEBUG:: krogoth-mothra"
+		#echo "DEBUG:: krogoth-mothra"
 		BRANCH_RELEASE_OPTION=6
 		BRANCH_RELEASE_NAME="$iMXkrogothmothraDeveloperRelease"
 		iMXYoctoRelease="$imxkrogothYocto"
@@ -886,7 +886,7 @@ fi
 # if FMAC selection [3] is Mothra, proceed with 11 targets.
 
 if [ "$FMAC_VERSION" = "3" ]; then
-	echo "DEBUG:: krogoth-mothra"
+	#echo "DEBUG:: krogoth-mothra"
 	#exit
 	while true; do
 
@@ -2177,7 +2177,7 @@ fi
 #BRANCH=morty-mothra
 if [ "$FMAC_VERSION" = "3" ]; then
 	if [ $BRANCH_RELEASE_OPTION = "3" ] || [ $BRANCH_RELEASE_OPTION = "4" ]; then
-		echo "DEBUG FOR MORTY-MOTHRA-1:: IMX6 and 7"
+		#echo "DEBUG FOR MORTY-MOTHRA-1:: IMX6 and 7"
 		echo -e "VIO Signaling                   : ${GRN}$VIO_SIGNALING_STRING${NC}"	
 	fi
 fi
@@ -2243,16 +2243,16 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	
 	# Invoke Repo Init based on Yocto Release
 	if [ "$iMXYoctoRelease" = "$imxrockoYocto" ]; then
-		echo "DEBUG:: IMXALL"
+		#echo "DEBUG:: IMXALL"
 		repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-rocko -m imx-4.9.88-2.0.0_ga.xml
 	elif [ "$iMXYoctoRelease" = "$imx8mortyYocto" ]; then
-		echo "DEBUG:: IMX8"
+		#echo "DEBUG:: IMX8"
 		repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-morty -m imx-4.9.51-8mq_beta.xml
 	elif [ "$iMXYoctoRelease" = "$imxmortyYocto"  ]; then
-		echo "DEBUG:: MORTY"
+		#echo "DEBUG:: MORTY"
 		repo init -u https://source.codeaurora.org/external/imx/fsl-arm-yocto-bsp.git -b imx-morty -m imx-4.9.11-1.0.0_ga.xml
 	elif [ "$iMXYoctoRelease" = "$imxkrogothYocto"  ]; then
-		echo "DEBUG:: KROGOTH"
+		#echo "DEBUG:: KROGOTH"
 		repo init -u https://source.codeaurora.org/external/imx/fsl-arm-yocto-bsp.git -b imx-4.1-krogoth -m imx-4.1.15-2.0.0.xml
 	fi
 
@@ -2292,7 +2292,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 
 		#TARGET_NAME=imx8mqevk => rocko-mothra
 		if [ "$FMAC_VERSION" = "3" ] && [ "$TARGET_NAME" = "imx8mqevk" ]; then
-			echo "DEBUG FOR IMX8-rocko: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
+			#echo "DEBUG FOR IMX8-rocko: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
 			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 				cp $LINUX_SRC $LINUX_DEST
 			fi
@@ -2301,7 +2301,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 			cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
 			cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 $BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
 		elif [ "$FMAC_VERSION" = "3" ] && [ "$TARGET_NAME" != "imx8mqevk" ]; then
-			echo "DEBUG FOR IMX6,7-rocko: COPYING bb appends files"
+			#echo "DEBUG FOR IMX6,7-rocko: COPYING bb appends files"
 			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 				cp $LINUX_SRC $LINUX_DEST
 			fi
@@ -2310,7 +2310,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 		#BRANCH=morty-mothra
 		if [ "$FMAC_VERSION" = "3" ]; then
 			if [ $BRANCH_RELEASE_OPTION = "3" ] || [ $BRANCH_RELEASE_OPTION = "4" ] || [ $BRANCH_RELEASE_OPTION = "5" ] || [ $BRANCH_RELEASE_OPTION = "6" ]; then
-				echo "DEBUG FOR MORTY/KROGOTH-MOTHRA:: IMX6 and 7: COPYING bb appends"
+				#echo "DEBUG FOR MORTY/KROGOTH-MOTHRA:: IMX6 and 7: COPYING bb appends"
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 					cp $LINUX_SRC $LINUX_DEST
 				fi
