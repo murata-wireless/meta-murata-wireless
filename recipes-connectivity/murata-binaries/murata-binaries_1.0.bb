@@ -4,15 +4,16 @@ LICENSE = "BSD"
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
 SRC_URI = " \
-	git://github.com/jameelkareem-pre-release-rocko/cyw-fmac-fw;protocol=http;branch=mothra;destsuffix=cyw-fmac-fw \
-	git://github.com/jameelkareem-pre-release-rocko/cyw-fmac-nvram;protocol=http;branch=mothra;destsuffix=cyw-fmac-nvram \
-	git://github.com/jameelkareem-pre-release-rocko/cyw-bt-patch;protocol=http;branch=krogoth-mothra;destsuffix=cyw-bt-patch \
-	git://github.com/jameelkareem-pre-release-rocko/cyw-fmac-utils-imx32;protocol=http;branch=mothra;destsuffix=cyw-fmac-utils-imx32 \
+	git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=mothra;destsuffix=cyw-fmac-fw \
+	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=mothra;destsuffix=cyw-fmac-nvram \
+	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=krogoth-mothra;destsuffix=cyw-bt-patch \
+	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=mothra;destsuffix=cyw-fmac-utils-imx32 \
+	file://10-network.rules \
 "
 
 SRCREV_cyw-fmac-fw="400d2128fbb3986cb36f20e6d479c1f13dd512f8"
 SRCREV_cyw-fmac-nvram="5c31182a8b779ae88b589ddb15dd69d43dec29b3"
-SRCREV_cyw-bt-patch="268df690598b42692c836ab6863d921f01e1ca38"
+SRCREV_cyw-bt-patch="7056d7c533773ef5012b008c5e30c3a8037514a7"
 SRCREV_cyw-fmac-utils-imx32="95b79c0a2064e742f3605c3937d93f1c0a377587"
 
 SRCREV_default = "${AUTOREV}"
@@ -67,7 +68,7 @@ do_install () {
         install -m 444 ${S}//cyw-bt-patch/CYW43430A1.1DX.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43430A1.1DX.hcd
         install -m 444 ${S}//cyw-bt-patch/CYW4350C0.1BB.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4350C0.1BB.hcd
         install -m 444 ${S}//cyw-bt-patch/CYW4354A2.1CX.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4354A2.1CX.hcd
-        install -m 444 ${S}//cyw-bt-patch/CYW4349B1.1FD.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4349B1.1FD.hcd
+#        install -m 444 ${S}//cyw-bt-patch/CYW4349B1.1FD.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4349B1.1FD.hcd
 	install -m 444 ${S}//cyw-bt-patch/README_BT_PATCHFILE ${D}${sysconfdir}/firmware/murata-master
 
 #       Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/brcm folder
