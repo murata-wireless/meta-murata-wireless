@@ -7,8 +7,8 @@ LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a42
 SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-krogoth-mothra/imx-krogoth-mothra_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-krogoth-mothra/LICENSE;name=archive99"
 
-SRC_URI[archive1.md5sum] = "3839051ffac7e8ee65ca4f4a89e87e2d"
-SRC_URI[archive1.sha256sum] = "b24013bebdf747a68ef1c67bce5cb05bdce4bb858eabcbb3e83a8fccd5e8b01f"
+SRC_URI[archive1.md5sum] = "7dab1a301f104a19e161eede5ca12668"
+SRC_URI[archive1.sha256sum] = "d001fd7a510df3edfa3e0e2d7804db865df353e9596dc6af217867b8f8e404ee"
 
 #LICENSE
 SRC_URI[archive99.md5sum] = "b234ee4d69f5fce4486a80fdaf4a4263"
