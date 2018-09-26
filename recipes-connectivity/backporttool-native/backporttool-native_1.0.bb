@@ -2,6 +2,7 @@ SUMMARY = "Cypress Backport tool"
 LICENSE = "GPLv2.0"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
+FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-${PV}:"
 
 inherit systemd
 inherit native
@@ -10,6 +11,10 @@ SYSTEMD_AUTO_ENABLE = "disable"
 
 SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-krogoth-mothra/imx-krogoth-mothra_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-krogoth-mothra/LICENSE;name=archive99"
+SRC_URI += "file://0001-murata-customization-version-update.patch;patchdir=${WORKDIR}/imx-krogoth-mothra_r${PV}"
+SRC_URI += "file://0002-brcmfmac-fix-4339-CRC-error-under-SDIO-3.0-SDR104-mo-updated.patch;patchdir=${WORKDIR}/imx-krogoth-mothra_r${PV}"
+#SRC_URI += "file://0003-murata-rx-transmit-max-perf.patch;patchdir=${WORKDIR}/imx-krogoth-mothra_r${PV}"
+SRC_URI += "file://0004-murata-1FD-initialization-fix.patch;patchdir=${WORKDIR}/imx-krogoth-mothra_r${PV}"
 
 SRC_URI[archive1.md5sum] = "7dab1a301f104a19e161eede5ca12668"
 SRC_URI[archive1.sha256sum] = "d001fd7a510df3edfa3e0e2d7804db865df353e9596dc6af217867b8f8e404ee"
