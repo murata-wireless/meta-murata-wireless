@@ -7,7 +7,7 @@ index 87815e5..4061080 100644
  
  	/* Print fw version info */
 -	brcmf_info("Murata Customized Version: imx-morty-mothra_r1.0;\n");
-+	brcmf_info("Murata Customized Version: imx-morty-mothra_r1.1;\n");
++	brcmf_info("Murata Customized Version: imx-krogoth-mothra_r1.1;\n");
  	brcmf_info("Firmware version = %s\n", buf);
  
  	/* locate firmware version number for ethtool */
