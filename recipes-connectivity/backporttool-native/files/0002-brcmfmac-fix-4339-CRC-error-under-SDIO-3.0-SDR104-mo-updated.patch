@@ -1,0 +1,45 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index 08b9fa2..34edc92 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -54,6 +54,8 @@
+ #define DEFAULT_F2_WATERMARK    0x8
+ #define CY_4373_F2_WATERMARK    0x40
+ #define CY_43012_F2_WATERMARK    0x60
++#define CY_4339_F2_WATERMARK    48
++#define CY_4339_MES              80
+ 
+ #ifdef DEBUG
+ 
+@@ -146,6 +148,8 @@ struct rte_console {
+ #define SBSDIO_DEVCTL_PADS_ISO		0x08
+ /* 1: enable F2 Watermark */
+ #define SBSDIO_DEVCTL_F2WM_ENAB		0x10
++/* Enable busy capability for MES access */
++#define SBSDIO_MESBUSYCTRL_ENAB		0x80
+ /* Force SD->SB reset mapping (rev 11) */
+ #define SBSDIO_DEVCTL_SB_RST_CTL	0x30
+ /*   Determined by CoreControl bit */
+@@ -4295,6 +4299,22 @@ static void brcmf_sdio_firmware_callback(struct device *dev, int err,
+ 			brcmf_sdiod_regwb(sdiodev,
+ 					  SBSDIO_DEVICE_CTL, devctl, &err);
+ 			break;
++
++		case SDIO_DEVICE_ID_BROADCOM_4339:
++			brcmf_sdiod_regwb(sdiodev,
++					  SBSDIO_WATERMARK,
++					  CY_4339_F2_WATERMARK, &err);
++			devctl = brcmf_sdiod_regrb(sdiodev,
++						   SBSDIO_DEVICE_CTL, &err);
++			devctl |= SBSDIO_DEVCTL_F2WM_ENAB;
++			brcmf_sdiod_regwb(sdiodev,
++					  SBSDIO_DEVICE_CTL, devctl, &err);
++			brcmf_sdiod_regwb(sdiodev,
++					  SBSDIO_FUNC1_MESBUSYCTRL,
++					  (CY_4339_MES | SBSDIO_MESBUSYCTRL_ENAB),
++					  &err);
++ 			break;
++
+ 		default:
+ 			brcmf_sdiod_regwb(sdiodev, SBSDIO_WATERMARK, DEFAULT_F2_WATERMARK, &err);
+ 			break;
