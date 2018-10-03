@@ -249,7 +249,7 @@ while true; do
 	fi
 done
 
-="am437x-morty-battra_r1.0"
+TiSitaramortybattraStableReleaseTagam437x="am437x-morty-battra_r1.0"
 TiSitaramortybattraStableReleaseTagam572x="am572x-morty-battra_r1.0"
 TiSitaramortybattraStableReleaseTagam335x="am335x-morty-battra_r1.0"
 
@@ -365,13 +365,13 @@ case $BRANCH_RELEASE_OPTION in
 	echo "------------------------------------------------"
 	echo "| Entry  |  Target Name  | TI Sitara Platform  |"
 	echo "|--------|---------------|---------------------|"
-	echo "|  1     |  am572x-evm   | General Purpose EVK |"
+	echo "|  1     |  am57xx-evm   | General Purpose EVK |"
 	echo "------------------------------------------------"
 	echo -n "Select your entry: "
 	read TARGET_OPTION
 	case $TARGET_OPTION in
 		1)
-		TARGET_NAME="am572x-evm"
+		TARGET_NAME="am57xx-evm"
 		break
 		;;
 
