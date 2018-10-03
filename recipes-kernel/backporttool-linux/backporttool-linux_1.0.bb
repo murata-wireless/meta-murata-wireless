@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a42
 
 COMPATIBLE_MACHINE = "am335x-evm"
 
-SRC_URI =  "https://github.com/murata-wireless/cyw-fmac-v4.14-battra/raw/master/imx-morty-battra_r${PV}.tar.gz;name=archive1"
+SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-morty-battra_r${PV}/imx-morty-battra_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-morty-battra/LICENSE;name=archive99"
 
 SRC_URI[archive1.md5sum] = "308528ef68f054af128e4664e6af4333"

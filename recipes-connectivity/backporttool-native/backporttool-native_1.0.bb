@@ -10,7 +10,7 @@ inherit native
 
 SYSTEMD_AUTO_ENABLE = "disable"
 
-SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-morty-battra/imx-morty-battra_r${PV}.tar.gz;name=archive1"
+SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-morty-battra_r${PV}/imx-morty-battra_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-morty-battra/LICENSE;name=archive99"
 
 SRC_URI[archive1.md5sum] = "308528ef68f054af128e4664e6af4333"
