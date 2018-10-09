@@ -455,7 +455,7 @@ read REPLY
 
 if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	echo " "
-	echo "10) No End User License Agreement(EULA)"
+	echo "10) Fetching Repositories"
 	echo "---------------------------------------"
 	echo " "
 	echo "********************************************************************************"
