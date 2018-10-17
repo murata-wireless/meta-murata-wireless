@@ -556,6 +556,7 @@ echo "------------------------"
 ORGA_FMAC=""\""orga"\""   (v4.12)"
 BATTRA_FMAC=""\""battra"\"" (v4.14)"
 MOTHRA_FMAC=""\""mothra"\"" (v4.14)"
+MANDA_FMAC=""\""manda"\"" (v4.14)"
 
 echo     " "
 echo     "-------------------------------------------------------------"
@@ -563,7 +564,8 @@ echo     "| Entry | "\""fmac"\"" version                                    |"
 echo     "|-------|---------------------------------------------------|"
 echo     "|  1.   | $ORGA_FMAC - Previous release               |"
 echo     "|  2.   | $BATTRA_FMAC - Previous release               |"
-echo -e  "|  3.   | $MOTHRA_FMAC - ${GRN}Latest and Highly recommended${NC}  |"
+echo     "|  3.   | $MOTHRA_FMAC - Previous release              |"
+echo -e  "|  4.   | $MANDA_FMAC - ${GRN}Latest and Highly recommended${NC}  |"
 echo     "-------------------------------------------------------------"
 
 while true; do
