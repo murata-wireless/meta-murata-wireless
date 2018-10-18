@@ -1,7 +1,7 @@
 From 946683f115b1855462b843bb79d55041898afb5a Mon Sep 17 00:00:00 2001
 From: Eliad Peller <eliad@wizery.com>
 Date: Tue, 30 Jan 2018 15:16:22 +0800
-Subject: [PATCH 17/21] driver_nl80211: check 4-way handshake offload support
+Subject: [PATCH 17/35] driver_nl80211: check 4-way handshake offload support
 
 commit 0ff08f96367eaedd7f0554c62d59b4a713a584b2 master.
 
@@ -18,7 +18,7 @@ Signed-off-by: Andrei Otcheretianski <andrei.otcheretianski@intel.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/src/drivers/driver_nl80211_capa.c b/src/drivers/driver_nl80211_capa.c
-index 6adc3f6..3844739 100644
+index 6adc3f6d33dc..384473937dfe 100644
 --- a/src/drivers/driver_nl80211_capa.c
 +++ b/src/drivers/driver_nl80211_capa.c
 @@ -362,6 +362,12 @@ static void wiphy_info_ext_feature_flags(struct wiphy_info_data *info,

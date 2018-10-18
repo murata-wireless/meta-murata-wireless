@@ -1,7 +1,7 @@
-From 3b0af80f87308cc9710a7683c36dee2f5c6b6755 Mon Sep 17 00:00:00 2001
+From 8c6c08777778d435627b726aac7e0d01476fee42 Mon Sep 17 00:00:00 2001
 From: Jouni Malinen <j@w1.fi>
 Date: Fri, 22 Sep 2017 11:25:02 +0300
-Subject: [PATCH 7/9] WNM: Ignore WNM-Sleep Mode Response without pending
+Subject: [PATCH 07/35] WNM: Ignore WNM-Sleep Mode Response without pending
  request
 
 commit adae51f8b94d63313a9a922b95a402ad3f182320 master.
@@ -19,7 +19,7 @@ Signed-off-by: Jouni Malinen <j@w1.fi>
  1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/wpa_supplicant/wnm_sta.c b/wpa_supplicant/wnm_sta.c
-index 1b3409c..67a07ff 100644
+index 1b3409c1fb71..67a07ff7b1e7 100644
 --- a/wpa_supplicant/wnm_sta.c
 +++ b/wpa_supplicant/wnm_sta.c
 @@ -260,7 +260,7 @@ static void ieee802_11_rx_wnmsleep_resp(struct wpa_supplicant *wpa_s,

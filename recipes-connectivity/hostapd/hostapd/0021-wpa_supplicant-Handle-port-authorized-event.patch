@@ -1,7 +1,7 @@
 From c1526c8673a2fce5fed595fad4a80ce73eeeed30 Mon Sep 17 00:00:00 2001
 From: Avraham Stern <avraham.stern@intel.com>
 Date: Tue, 30 Jan 2018 15:37:28 +0800
-Subject: [PATCH 21/21] wpa_supplicant: Handle port authorized event
+Subject: [PATCH 21/35] wpa_supplicant: Handle port authorized event
 
 commit b8e88d357a28997167cebbe65621e8e77e6f9a34 master
 
@@ -16,7 +16,7 @@ Signed-off-by: Avraham Stern <avraham.stern@intel.com>
  1 file changed, 16 insertions(+), 5 deletions(-)
 
 diff --git a/wpa_supplicant/events.c b/wpa_supplicant/events.c
-index abe3b47..995fb9d 100644
+index abe3b476773d..995fb9d6bc72 100644
 --- a/wpa_supplicant/events.c
 +++ b/wpa_supplicant/events.c
 @@ -3404,18 +3404,26 @@ static void wpa_supplicant_notify_avoid_freq(struct wpa_supplicant *wpa_s,

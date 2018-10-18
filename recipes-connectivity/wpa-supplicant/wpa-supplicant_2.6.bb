@@ -46,6 +46,20 @@ SRC_URI = "http://w1.fi/releases/wpa_supplicant-${PV}.tar.gz  \
            file://0020-nl80211-Handle-port-authorized-event.patch;apply=yes \
            file://0021-wpa_supplicant-Handle-port-authorized-event.patch;apply=yes \
            file://0022-murata-wpa_supplication-Add-server-in-hs20.patch;apply=yes \
+	   file://0022-wpa_supplicant-Notify-Neighbor-Report-for-driver-tri.patch;apply=yes \
+           file://0023-driver_nl80211-Fix-802.1X-auth-failure-when-offloadi.patch;apply=yes \
+           file://0024-Sync-with-mac80211-next.git-include-uapi-linux-nl802.patch;apply=yes \
+    	   file://0025-Sync-with-mac80211-next.git-include-uapi-linux-nl802.patch;apply=yes \
+    	   file://0026-Sync-with-mac80211-next.git-include-uapi-linux-nl802.patch;apply=yes \
+    	   file://0027-wpa_supplicant-SAE-Allow-SAE-password-to-be-configured-separately-S.patch;apply=yes \
+    	   file://0028-wpa_supplicant-Fix-sae_password-documentation-in-wpa_supplicant-to-.patch;apply=yes \
+    	   file://0029-wpa_supplicant-Add-more-debug-prints-for-wpa_sm_set_pmk-calls.patch;apply=yes \
+    	   file://0030-wpa_supplicant-SAE-Fix-default-PMK-configuration-for-PMKSA-caching-.patch;apply=yes \
+    	   file://0031-nl80211-Use-RSN_AUTH_KEY_MGMT_-instead-of-WLAN_AKM_S.patch;apply=yes \
+    	   file://0032-non-upstream-Sync-with-Linux-kernel-nl80211.h-for-SA.patch;apply=yes \
+    	   file://0033-nl80211-Check-SAE-authentication-offload-support.patch;apply=yes \
+    	   file://0034-SAE-Pass-SAE-password-on-connect-for-SAE-authenticat.patch;apply=yes \
+    	   file://0035-WPA-Ignore-unauthenticated-encrypted-EAPOL-Key-data.patch;apply=yes \
 "
 
 SRC_URI[md5sum] = "091569eb4440b7d7f2b4276dbfc03c3c"

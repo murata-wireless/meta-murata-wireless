@@ -1,7 +1,7 @@
 From 2ef89c21bf534113c2da2d24bed279747abbc639 Mon Sep 17 00:00:00 2001
 From: Avraham Stern <avraham.stern@intel.com>
 Date: Tue, 30 Jan 2018 15:21:44 +0800
-Subject: [PATCH 18/21] nl80211: Add API to set the PMK to the driver
+Subject: [PATCH 18/35] nl80211: Add API to set the PMK to the driver
 
 commit 05fc7c68f6a9a7149b45241cf63cbc0cae28bdf4 master.
 
@@ -14,7 +14,7 @@ Signed-off-by: Avraham Stern <avraham.stern@intel.com>
  1 file changed, 38 insertions(+)
 
 diff --git a/src/drivers/driver_nl80211.c b/src/drivers/driver_nl80211.c
-index 93273d2..124e0d7 100644
+index 93273d26019d..124e0d711578 100644
 --- a/src/drivers/driver_nl80211.c
 +++ b/src/drivers/driver_nl80211.c
 @@ -2646,6 +2646,40 @@ static int issue_key_mgmt_set_key(struct wpa_driver_nl80211_data *drv,

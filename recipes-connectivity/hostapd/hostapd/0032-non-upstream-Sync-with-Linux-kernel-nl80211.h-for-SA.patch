@@ -1,0 +1,82 @@
+From e065e3de2b8daa52541044d9f1b48062f78d0b71 Mon Sep 17 00:00:00 2001
+From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
+Date: Wed, 29 Aug 2018 14:06:47 +0800
+Subject: [PATCH 32/35] non-upstream: Sync with Linux kernel nl80211.h for SAE
+ offload support
+
+This brings in nl80211 definitions for SAE offload support.
+
+Signed-off-by: Chung-Hsien Hsu <stanley.hsu@cypress.com>
+
+---
+ src/drivers/nl80211_copy.h | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/src/drivers/nl80211_copy.h b/src/drivers/nl80211_copy.h
+index 7acc16f34942..a4a3d5f33d05 100644
+--- a/src/drivers/nl80211_copy.h
++++ b/src/drivers/nl80211_copy.h
+@@ -235,6 +235,15 @@
+  */
+ 
+ /**
++ * DOC: SAE authentication offload
++ *
++ * By setting @NL80211_EXT_FEATURE_SAE_OFFLOAD flag drivers can indicate they
++ * support offloading SAE authentication for WPA3-Personal networks. In
++ * %NL80211_CMD_CONNECT the password for SAE should be specified using
++ * %NL80211_ATTR_SAE_PASSWORD.
++ */
++
++/**
+  * enum nl80211_commands - supported nl80211 commands
+  *
+  * @NL80211_CMD_UNSPEC: unspecified command to catch errors
+@@ -2241,6 +2250,10 @@ enum nl80211_commands {
+  *	association request when used with NL80211_CMD_NEW_STATION). Can be set
+  *	only if %NL80211_STA_FLAG_WME is set.
+  *
++ * @NL80211_ATTR_SAE_PASSWORD: attribute for passing SAE password material. It
++ *	is used with %NL80211_CMD_CONNECT to provide password for offloading
++ *	SAE authentication for WPA3-Personal networks.
++ *
+  * @NUM_NL80211_ATTR: total number of nl80211_attrs available
+  * @NL80211_ATTR_MAX: highest attribute number currently defined
+  * @__NL80211_ATTR_AFTER_LAST: internal use
+@@ -2682,6 +2695,8 @@ enum nl80211_attrs {
+ 
+ 	NL80211_ATTR_HE_CAPABILITY,
+ 
++	NL80211_ATTR_SAE_PASSWORD,
++
+ 	/* add attributes here, update the policy in nl80211.c */
+ 
+ 	__NL80211_ATTR_AFTER_LAST,
+@@ -4233,6 +4248,7 @@ enum nl80211_mfp {
+ enum nl80211_wpa_versions {
+ 	NL80211_WPA_VERSION_1 = 1 << 0,
+ 	NL80211_WPA_VERSION_2 = 1 << 1,
++	NL80211_WPA_VERSION_3 = 1 << 2,
+ };
+ 
+ /**
+@@ -5223,6 +5239,8 @@ enum nl80211_feature_flags {
+  * @NL80211_EXT_FEATURE_SCAN_MIN_PREQ_CONTENT: Driver/device can omit all data
+  *	except for supported rates from the probe request content if requested
+  *	by the %NL80211_SCAN_FLAG_MIN_PREQ_CONTENT flag.
++ * @NL80211_EXT_FEATURE_SAE_OFFLOAD: Device wants to do SAE authentication in
++ *	station mode (SAE password is passed as part of the connect command).
+  *
+  * @NUM_NL80211_EXT_FEATURES: number of extended features.
+  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
+@@ -5259,6 +5277,7 @@ enum nl80211_ext_feature_index {
+ 	NL80211_EXT_FEATURE_TXQS,
+ 	NL80211_EXT_FEATURE_SCAN_RANDOM_SN,
+ 	NL80211_EXT_FEATURE_SCAN_MIN_PREQ_CONTENT,
++	NL80211_EXT_FEATURE_SAE_OFFLOAD,
+ 
+ 	/* add new features before the definition below */
+ 	NUM_NL80211_EXT_FEATURES,
+-- 
+2.1.0
+

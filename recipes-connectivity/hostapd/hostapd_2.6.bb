@@ -36,6 +36,15 @@ SRC_URI = " \
     file://0019-driver-Add-port-authorized-event.patch;apply=yes \
     file://0020-nl80211-Handle-port-authorized-event.patch;apply=yes \
     file://0021-murata-hostapd-conf.patch;apply=yes \
+    file://0023-driver_nl80211-Fix-802.1X-auth-failure-when-offloadi.patch;apply=yes \    
+    file://0024-Sync-with-mac80211-next.git-include-uapi-linux-nl802.patch;apply=yes \
+    file://0025-Sync-with-mac80211-next.git-include-uapi-linux-nl802.patch;apply=yes \
+    file://0026-Sync-with-mac80211-next.git-include-uapi-linux-nl802.patch;apply=yes \
+    file://0031-nl80211-Use-RSN_AUTH_KEY_MGMT_-instead-of-WLAN_AKM_S.patch;apply=yes \
+    file://0032-non-upstream-Sync-with-Linux-kernel-nl80211.h-for-SA.patch;apply=yes \
+    file://0033-nl80211-Check-SAE-authentication-offload-support.patch;apply=yes \
+    file://0034-SAE-Pass-SAE-password-on-connect-for-SAE-authenticat.patch;apply=yes \
+    file://0035-WPA-Ignore-unauthenticated-encrypted-EAPOL-Key-data.patch;apply=yes \
     file://udhcpd.conf \
 "
 

@@ -1,7 +1,7 @@
 From ee06e4556e8b03bb091e5756d5285f8a47655d76 Mon Sep 17 00:00:00 2001
 From: Avraham Stern <avraham.stern@intel.com>
 Date: Tue, 30 Jan 2018 15:32:21 +0800
-Subject: [PATCH 20/21] nl80211: Handle port authorized event
+Subject: [PATCH 20/35] nl80211: Handle port authorized event
 
 commit a8c45d47d3a424b454bb5dd012f73ae3ba8f3c32 master.
 
@@ -14,7 +14,7 @@ Signed-off-by: Avraham Stern <avraham.stern@intel.com>
  1 file changed, 22 insertions(+)
 
 diff --git a/src/drivers/driver_nl80211_event.c b/src/drivers/driver_nl80211_event.c
-index 762e3ac..3247a5c 100644
+index 762e3acc2807..3247a5c1e783 100644
 --- a/src/drivers/driver_nl80211_event.c
 +++ b/src/drivers/driver_nl80211_event.c
 @@ -2055,6 +2055,25 @@ static void nl80211_reg_change_event(struct wpa_driver_nl80211_data *drv,

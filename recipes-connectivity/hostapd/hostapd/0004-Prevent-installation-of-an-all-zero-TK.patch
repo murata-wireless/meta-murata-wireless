@@ -1,7 +1,7 @@
-From dd98138c910bc67c67f1ac3ab2170eab04ccf350 Mon Sep 17 00:00:00 2001
+From 681ab3b9a07f663026e859e7b4e613ef8166a7b8 Mon Sep 17 00:00:00 2001
 From: Mathy Vanhoef <Mathy.Vanhoef@cs.kuleuven.be>
 Date: Fri, 29 Sep 2017 04:22:51 +0200
-Subject: [PATCH 4/9] Prevent installation of an all-zero TK
+Subject: [PATCH 04/35] Prevent installation of an all-zero TK
 
 commit 53bb18cc8b7a4da72e47e4b3752d0d2135cffb23 master.
 
@@ -23,7 +23,7 @@ Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@cs.kuleuven.be>
  3 files changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/src/common/wpa_common.h b/src/common/wpa_common.h
-index d200285..1021ccb 100644
+index d2002857ae86..1021ccb05a71 100644
 --- a/src/common/wpa_common.h
 +++ b/src/common/wpa_common.h
 @@ -215,6 +215,7 @@ struct wpa_ptk {
@@ -35,7 +35,7 @@ index d200285..1021ccb 100644
  
  struct wpa_gtk {
 diff --git a/src/rsn_supp/wpa.c b/src/rsn_supp/wpa.c
-index 7a2c68d..0550a41 100644
+index 7a2c68d56f53..0550a412fcc7 100644
 --- a/src/rsn_supp/wpa.c
 +++ b/src/rsn_supp/wpa.c
 @@ -510,7 +510,6 @@ static void wpa_supplicant_process_1_of_4(struct wpa_sm *sm,
@@ -65,7 +65,7 @@ index 7a2c68d..0550a41 100644
  	if (sm->wpa_ptk_rekey) {
  		eloop_cancel_timeout(wpa_sm_rekey_ptk, sm, NULL);
 diff --git a/src/rsn_supp/wpa_i.h b/src/rsn_supp/wpa_i.h
-index 9a54631..41f371f 100644
+index 9a54631888cf..41f371f26c69 100644
 --- a/src/rsn_supp/wpa_i.h
 +++ b/src/rsn_supp/wpa_i.h
 @@ -24,7 +24,6 @@ struct wpa_sm {

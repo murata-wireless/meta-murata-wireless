@@ -1,7 +1,7 @@
 From d476899661dcd2a89e116a033a6e56b4900ed9dd Mon Sep 17 00:00:00 2001
 From: Jouni Malinen <j@w1.fi>
 Date: Thu, 27 Oct 2016 15:01:44 +0300
-Subject: [PATCH 09/21] Sync with mac80211-next.git
+Subject: [PATCH 09/35] Sync with mac80211-next.git
  include/uapi/linux/nl80211.h
 
 commit e76e950eac9af12f01de0f65386a87e34b63ade3 master.
@@ -14,7 +14,7 @@ Signed-off-by: Jouni Malinen <j@w1.fi>
  1 file changed, 304 insertions(+), 6 deletions(-)
 
 diff --git a/src/drivers/nl80211_copy.h b/src/drivers/nl80211_copy.h
-index 2206941..a268a00 100644
+index 220694151434..a268a009528a 100644
 --- a/src/drivers/nl80211_copy.h
 +++ b/src/drivers/nl80211_copy.h
 @@ -48,6 +48,7 @@
