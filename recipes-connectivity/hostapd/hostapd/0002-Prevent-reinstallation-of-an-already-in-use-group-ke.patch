@@ -1,7 +1,7 @@
-From 61b0da21ad939ae1df3ae8f6cbda8f0e4dfe38b3 Mon Sep 17 00:00:00 2001
+From 8f075e4a5e1305fe3ec4a33c80276890b40b5341 Mon Sep 17 00:00:00 2001
 From: Mathy Vanhoef <Mathy.Vanhoef@cs.kuleuven.be>
 Date: Wed, 12 Jul 2017 16:03:24 +0200
-Subject: [PATCH 2/9] Prevent reinstallation of an already in-use group key
+Subject: [PATCH 02/35] Prevent reinstallation of an already in-use group key
 
 commit cb5132bb35698cc0c743e34fe0e845dfc4c3e410 master.
 
@@ -19,7 +19,7 @@ Signed-off-by: Mathy Vanhoef <Mathy.Vanhoef@cs.kuleuven.be>
  3 files changed, 87 insertions(+), 44 deletions(-)
 
 diff --git a/src/common/wpa_common.h b/src/common/wpa_common.h
-index af1d0f0..d200285 100644
+index af1d0f0c6efb..d2002857ae86 100644
 --- a/src/common/wpa_common.h
 +++ b/src/common/wpa_common.h
 @@ -217,6 +217,17 @@ struct wpa_ptk {
@@ -41,7 +41,7 @@ index af1d0f0..d200285 100644
  /* WPA IE version 1
   * 00-50-f2:1 (OUI:OUI type)
 diff --git a/src/rsn_supp/wpa.c b/src/rsn_supp/wpa.c
-index 3c47879..95bd7be 100644
+index 3c4787925e20..95bd7be1e1ed 100644
 --- a/src/rsn_supp/wpa.c
 +++ b/src/rsn_supp/wpa.c
 @@ -714,6 +714,15 @@ static int wpa_supplicant_install_gtk(struct wpa_sm *sm,
@@ -233,7 +233,7 @@ index 3c47879..95bd7be 100644
  	} else {
  		wpa_printf(MSG_DEBUG, "Unknown element id");
 diff --git a/src/rsn_supp/wpa_i.h b/src/rsn_supp/wpa_i.h
-index f653ba6..afc9e37 100644
+index f653ba6e041d..afc9e371fa72 100644
 --- a/src/rsn_supp/wpa_i.h
 +++ b/src/rsn_supp/wpa_i.h
 @@ -31,6 +31,10 @@ struct wpa_sm {
