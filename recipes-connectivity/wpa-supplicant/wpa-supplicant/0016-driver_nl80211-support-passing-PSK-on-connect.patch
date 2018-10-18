@@ -1,7 +1,7 @@
 From 73c28263a973671de5bce6b9fe1f5a49e981c114 Mon Sep 17 00:00:00 2001
 From: Eliad Peller <eliad@wizery.com>
 Date: Tue, 30 Jan 2018 15:11:54 +0800
-Subject: [PATCH 16/21] driver_nl80211: support passing PSK on connect
+Subject: [PATCH 16/35] driver_nl80211: support passing PSK on connect
 
 commit 730c5a1d098dbdb5edb6c5a7ed5e6ba84503e94c master.
 
@@ -14,7 +14,7 @@ Signed-off-by: Eliad Peller <eliadx.peller@intel.com>
  1 file changed, 9 insertions(+)
 
 diff --git a/src/drivers/driver_nl80211.c b/src/drivers/driver_nl80211.c
-index 1210d43..93273d2 100644
+index 1210d4356087..93273d26019d 100644
 --- a/src/drivers/driver_nl80211.c
 +++ b/src/drivers/driver_nl80211.c
 @@ -4953,6 +4953,15 @@ static int nl80211_connect_common(struct wpa_driver_nl80211_data *drv,
