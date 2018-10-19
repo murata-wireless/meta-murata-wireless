@@ -7,8 +7,8 @@ LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a42
 SRC_URI =  "https://github.com/jameelkareem-sample/cyw-fmac/raw/imx-rocko-manda/imx-rocko-manda_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/jameelkareem-sample/meta-murata-wireless/raw/imx-rocko-manda/LICENSE;name=archive99"
 
-SRC_URI[archive1.md5sum] = "3801bb7585598b2f252516d040e76cc4"
-SRC_URI[archive1.sha256sum] = "4fc2bfe8c1d3b86f63b43fa6b16685edd50a2e4f9248cb3146dad113dc2f7c0f"
+SRC_URI[archive1.md5sum] = "8f8885d03484b6df625475a4c4b13937"
+SRC_URI[archive1.sha256sum] = "cf97ea1587cfeb363776e9f1e144c5cb94a623adc4aaa6520a25b1d2317f1218"
 
 #LICENSE
 SRC_URI[archive99.md5sum] = "b234ee4d69f5fce4486a80fdaf4a4263"
