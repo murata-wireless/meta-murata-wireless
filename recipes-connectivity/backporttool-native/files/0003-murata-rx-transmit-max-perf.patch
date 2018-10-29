@@ -1,0 +1,13 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+index 4061080..7bf5e57 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+@@ -79,7 +79,7 @@ static int brcmf_eap_restrict;
+ module_param_named(eap_restrict, brcmf_eap_restrict, int, 0400);
+ MODULE_PARM_DESC(eap_restrict, "Block non-802.1X frames until auth finished");
+ 
+-static int brcmf_sdio_wq_highpri;
++static int brcmf_sdio_wq_highpri=1;
+ module_param_named(sdio_wq_highpri, brcmf_sdio_wq_highpri, int, 0);
+ MODULE_PARM_DESC(sdio_wq_highpri, "SDIO workqueue is set to high priority");
+ 

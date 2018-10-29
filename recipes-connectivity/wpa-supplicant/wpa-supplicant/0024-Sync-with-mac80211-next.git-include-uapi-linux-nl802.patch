@@ -1,0 +1,46 @@
+From da9a81edbf1d34801a88cbe3de9620be288c3133 Mon Sep 17 00:00:00 2001
+From: Jouni Malinen <j@w1.fi>
+Date: Mon, 19 Mar 2018 19:08:15 +0200
+Subject: [PATCH 24/35] Sync with mac80211-next.git
+ include/uapi/linux/nl80211.h
+
+commit ebe61e564c19fb6319bd7f31aa6f0593858090d6 master.
+
+This brings in nl80211 definitions as of 2018-02-13.
+
+Signed-off-by: Jouni Malinen <j@w1.fi>
+---
+ src/drivers/nl80211_copy.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/drivers/nl80211_copy.h b/src/drivers/nl80211_copy.h
+index ca3d5a613fc0..c13c84304be3 100644
+--- a/src/drivers/nl80211_copy.h
++++ b/src/drivers/nl80211_copy.h
+@@ -2626,6 +2626,7 @@ enum nl80211_attrs {
+ 	NL80211_ATTR_EXTERNAL_AUTH_SUPPORT,
+ 
+ 	NL80211_ATTR_NSS,
++	NL80211_ATTR_ACK_SIGNAL,
+ 
+ 	/* add attributes here, update the policy in nl80211.c */
+ 
+@@ -2947,6 +2948,7 @@ enum nl80211_sta_bss_param {
+  * @NL80211_STA_INFO_RX_DURATION: aggregate PPDU duration for all frames
+  *	received from the station (u64, usec)
+  * @NL80211_STA_INFO_PAD: attribute used for padding for 64-bit alignment
++ * @NL80211_STA_INFO_ACK_SIGNAL: signal strength of the last ACK frame(u8, dBm)
+  * @__NL80211_STA_INFO_AFTER_LAST: internal
+  * @NL80211_STA_INFO_MAX: highest possible station info attribute
+  */
+@@ -2985,6 +2987,7 @@ enum nl80211_sta_info {
+ 	NL80211_STA_INFO_TID_STATS,
+ 	NL80211_STA_INFO_RX_DURATION,
+ 	NL80211_STA_INFO_PAD,
++	NL80211_STA_INFO_ACK_SIGNAL,
+ 
+ 	/* keep last */
+ 	__NL80211_STA_INFO_AFTER_LAST,
+-- 
+2.1.0
+

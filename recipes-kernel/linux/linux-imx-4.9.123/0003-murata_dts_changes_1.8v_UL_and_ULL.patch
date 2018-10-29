@@ -1,0 +1,49 @@
+diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
+old mode 100644
+new mode 100755
+index ff8a432..5be0191
+--- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
++++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
+@@ -35,6 +35,16 @@
+ 			MX6UL_PAD_SNVS_TAMPER1__GPIO5_IO01 0x03029  /* WL_REG_ON */
+ 		>;
+ 	};
++
++	/* Murata: define UART2 for 1.8V signaling to match WLAN SDIO VIO. */
++	pinctrl_uart2_1_8v: uart2grp_1_8v {
++		fsl,pins = <
++			MX6UL_PAD_UART2_TX_DATA__UART2_DCE_TX	0x4001b0b1
++			MX6UL_PAD_UART2_RX_DATA__UART2_DCE_RX	0x4001b0b1
++			MX6UL_PAD_UART3_RX_DATA__UART2_DCE_RTS	0x4001b0b1
++			MX6UL_PAD_UART3_TX_DATA__UART2_DCE_CTS	0x4001b0b1
++		>;
++	};
+ };
+ 
+ &reg_sd1_vmmc {
+@@ -42,19 +52,22 @@
+ };
+ 
+ &uart2 {
++	pinctrl-0 = <&pinctrl_uart2_1_8v>;  /* re-declare UART2 for 1.8V VIO signaling */
+ 	resets = <&modem_reset>;
+ };
+ 
+ &usdhc1 {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "state_100mhz", "state_200mhz"; /* Murata -- add 100 and 200 Mhz entries for UHS mode */
+ 	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
+-	no-1-8-v;
++	pinctrl-1 = <&pinctrl_usdhc1_100mhz &pinctrl_wifi>;
++	pinctrl-2 = <&pinctrl_usdhc1_200mhz &pinctrl_wifi>;
++//	no-1-8-v; /* Murata - comment out for UHS mode */
+ 	non-removable;
+ 	cap-power-off-card;
+ 	pm-ignore-notify; 
+-	wifi-host; 
++	wifi-host;
+ 	mmc-pwrseq = <&usdhc1_pwrseq>;
+ 
+ 	brcmf: bcrmf@1 {

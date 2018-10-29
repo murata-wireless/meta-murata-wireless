@@ -48,8 +48,8 @@ echo "2) Verifying Script Version"
 echo "---------------------------"
 
 
-GITHUB_PATH="\""https://github.com/murata-wireless/meta-murata-wireless.git"\""
-META_MURATA_WIRELESS_GIT="https://github.com/murata-wireless/meta-murata-wireless.git"
+GITHUB_PATH="\""https://github.com/jameelkareem-rocko/meta-murata-wireless.git"\""
+META_MURATA_WIRELESS_GIT="https://github.com/jameelkareem-rocko/meta-murata-wireless.git"
 
 echo "Fetching latest script from Murata Github."
 echo "Cloning $GITHUB_PATH"
@@ -122,11 +122,6 @@ LINUX_SRC=""
 LINUX_DEST=""
 VIO_SIGNALING_STRING=""
 CWD=""
-ORGA_FMAC_INDEX="1"
-BATTRA_FMAC_INDEX="2"
-MOTHRA_FMAC_INDEX="3"
-MANDA_FMAC_INDEX="4"
-
 
 echo " "
 echo "3) Select Release Type"
@@ -254,6 +249,7 @@ while true; do
 	fi
 done
 
+
 TiSitaramortybattraStableReleaseTagam437x="am437x-morty-battra_r1.0"
 TiSitaramortybattraStableReleaseTagam572x="am572x-morty-battra_r1.0"
 TiSitaramortybattraStableReleaseTagam335x="am335x-morty-battra_r1.0"
@@ -370,13 +366,13 @@ case $BRANCH_RELEASE_OPTION in
 	echo "------------------------------------------------"
 	echo "| Entry  |  Target Name  | TI Sitara Platform  |"
 	echo "|--------|---------------|---------------------|"
-	echo "|  1     |  am57xx-evm   | General Purpose EVK |"
+	echo "|  1     |  am572x-evm   | General Purpose EVK |"
 	echo "------------------------------------------------"
 	echo -n "Select your entry: "
 	read TARGET_OPTION
 	case $TARGET_OPTION in
 		1)
-		TARGET_NAME="am57xx-evm"
+		TARGET_NAME="am572x-evm"
 		break
 		;;
 
@@ -460,7 +456,7 @@ read REPLY
 
 if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	echo " "
-	echo "10) Fetching Repositories"
+	echo "10) No End User License Agreement(EULA)"
 	echo "---------------------------------------"
 	echo " "
 	echo "********************************************************************************"
@@ -561,7 +557,6 @@ echo "------------------------"
 ORGA_FMAC=""\""orga"\""   (v4.12)"
 BATTRA_FMAC=""\""battra"\"" (v4.14)"
 MOTHRA_FMAC=""\""mothra"\"" (v4.14)"
-MANDA_FMAC=""\""manda"\""  (v4.14)"
 
 echo     " "
 echo     "-------------------------------------------------------------"
@@ -569,15 +564,14 @@ echo     "| Entry | "\""fmac"\"" version                                    |"
 echo     "|-------|---------------------------------------------------|"
 echo     "|  1.   | $ORGA_FMAC - Previous release               |"
 echo     "|  2.   | $BATTRA_FMAC - Previous release               |"
-echo     "|  3.   | $MOTHRA_FMAC - Previous release               |"
-echo -e  "|  4.   | $MANDA_FMAC - ${GRN}Latest and Highly recommended${NC}  |"
+echo -e  "|  3.   | $MOTHRA_FMAC - ${GRN}Latest and Highly recommended${NC}  |"
 echo     "-------------------------------------------------------------"
 
 while true; do
 	read -p "Select which entry? " FMAC_VERSION
 echo "FMAC DEBUG:: $FMAC_VERSION"
-	if [ "$FMAC_VERSION" = $ORGA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $BATTRA_FMAC_INDEX ]  || [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
-		#echo "DEBUG:: SELECTION OF FMAC :: $FMAC_VERSION"
+	if [ "$FMAC_VERSION" = "1" ] || [ "$FMAC_VERSION" = "2" ]  || [ "$FMAC_VERSION" = "3" ]; then
+		echo "DEBUG:: SELECTION OF FMAC :: $FMAC_VERSION"
 		break
 	else
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
@@ -585,8 +579,8 @@ echo "FMAC DEBUG:: $FMAC_VERSION"
 	fi
 done
 
-#FMAC_VERSION="1" for ORGA - STABLE
-	if [ "$FMAC_VERSION" = $ORGA_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "y" ]; then
+#FMAC_VERSION="1"
+	if [ "$FMAC_VERSION" = "1" ] && [ "$BRANCH_TAG_OPTION" = "y" ]; then
 		echo -e "${GRN}Selected : $ORGA_FMAC${NC}"
 		echo " "
 		echo "6) Select i.MX Yocto Release"
@@ -601,8 +595,7 @@ done
 		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-orga_r1.2 |" 
 		echo "----------------------------------------------------------------------------"
 		break
-#FMAC_VERSION="1" for ORGA - DEVELOPER
-	elif [ "$FMAC_VERSION" = $ORGA_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "n" ]; then
+	elif [ "$FMAC_VERSION" = "1" ] && [ "$BRANCH_TAG_OPTION" = "n" ]; then
 		echo -e "${GRN}Selected : $ORGA_FMAC${NC}"
 		echo " "
 		echo "6) Select i.MX Yocto Release"
@@ -617,8 +610,7 @@ done
 		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-orga      |" 
 		echo "----------------------------------------------------------------------------"
 		break
-#FMAC_VERSION="2" for BATTRA - STABLE
-	elif [ "$FMAC_VERSION" = $BATTRA_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "y" ]; then
+	elif [ "$FMAC_VERSION" = "2" ] && [ "$BRANCH_TAG_OPTION" = "y" ]; then
 		echo -e "${GRN}Selected : $BATTRA_FMAC${NC}"
 		echo " "
 		echo "6) Select i.MX Yocto Release"
@@ -633,8 +625,7 @@ done
 		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-battra_r1.1 |" 
 		echo "------------------------------------------------------------------------------"
 		break
-#FMAC_VERSION="2" for BATTRA - DEVELOPER
-	elif [ "$FMAC_VERSION" = $BATTRA_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "n" ]; then
+	elif [ "$FMAC_VERSION" = "2" ] && [ "$BRANCH_TAG_OPTION" = "n" ]; then
 		echo -e "${GRN}Selected : $BATTRA_FMAC${NC}"
 		echo " "
 		echo "6) Select i.MX Yocto Release"
@@ -649,8 +640,7 @@ done
 		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-battra    |" 
 		echo "----------------------------------------------------------------------------"
 		break
-#FMAC_VERSION="3" for MOTHRA - STABLE
-	elif [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "y" ]; then
+	elif [ "$FMAC_VERSION" = "3" ] && [ "$BRANCH_TAG_OPTION" = "y" ]; then
 		echo -e "${GRN}Selected : $MOTHRA_FMAC${NC}"
 		echo " "
 		echo "6) Select i.MX Yocto Release"
@@ -662,11 +652,9 @@ done
 		echo "|-----|------------------|---------|---------------|-------------------------|"
 		echo "|  1  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-mothra_r1.0   |"
 		echo "|  2  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-mothra_r1.0   |"
-		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-mothra_r1.0 |"
 		echo "------------------------------------------------------------------------------"
 		break
-#FMAC_VERSION="3" for MOTHRA - DEVELOPER
-	elif [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "n" ]; then
+	elif [ "$FMAC_VERSION" = "3" ] && [ "$BRANCH_TAG_OPTION" = "n" ]; then
 		echo -e "${GRN}Selected : $MOTHRA_FMAC${NC}"
 		echo " "
 		echo "6) Select i.MX Yocto Release"
@@ -678,39 +666,6 @@ done
 		echo "|-----|------------------|---------|---------------|-----------------------|"
 		echo "|  1  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-mothra      |"
 		echo "|  2  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-mothra      |"
-		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-mothra    |"
-		echo "----------------------------------------------------------------------------"
-		break
-#FMAC_VERSION="3" for MANDA - STABLE
-	elif [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "y" ]; then
-		echo -e "${GRN}Selected : $MANDA_FMAC${NC}"
-		echo " "
-		echo "6) Select i.MX Yocto Release"
-		echo "----------------------------"
-		echo " "
-		echo "------------------------------------------------------------------------------"
-		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\""   |"
-		echo "|     |      Release     | branch  | Supported     |     Release Tag         |"
-		echo "|-----|------------------|---------|---------------|-------------------------|"
-		echo "|  1  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-manda_r1.0    |"
-		echo "|  2  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-manda_r1.0   |"
-		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-manda_r1.0 |"
-		echo "------------------------------------------------------------------------------"
-		break
-#FMAC_VERSION="3" for MANDA - DEVELOPER
-	elif [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "n" ]; then
-		echo -e "${GRN}Selected : $MANDA_FMAC${NC}"
-		echo " "
-		echo "6) Select i.MX Yocto Release"
-		echo "----------------------------"
-		echo " "
-		echo "----------------------------------------------------------------------------"
-		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\"" |"
-		echo "|     |      Release     | branch  | Supported     |     Developer Tag     |"
-		echo "|-----|------------------|---------|---------------|-----------------------|"
-		echo "|  1  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-manda       |"
-		echo "|  2  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-manda       |"
-		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-manda     |"
 		echo "----------------------------------------------------------------------------"
 		break
 
@@ -720,10 +675,11 @@ done
 	fi
 done
 
+#ToDo:: if fmac selection is Mothra, then only two options are allowed. Hence, ENTRY = 3 is invalid.
 while true; do
 	read -p "Select which entry? " ENTRY
 	if [ "$ENTRY" = "1" ] || [ "$ENTRY" = "2" ] || [ "$ENTRY" = "3" ]; then
-		#echo "DEBUG:: $ENTRY"
+		echo "DEBUG:: $ENTRY"
 		break
 	else
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
@@ -753,29 +709,13 @@ iMXrockomothraDeveloperRelease="imx-rocko-mothra"
 iMXmortymothraStableReleaseTag="imx-morty-mothra_r1.0"
 iMXmortymothraDeveloperRelease="imx-morty-mothra"
 
-iMXkrogothmothraStableReleaseTag="imx-krogoth-mothra_r1.0"
-iMXkrogothmothraDeveloperRelease="imx-krogoth-mothra"
-
-iMXrockomandaStableReleaseTag="imx-rocko-manda_r1.0"
-iMXrockomandaDeveloperRelease="imx-rocko-manda"
-
-iMXmortymandaStableReleaseTag="imx-morty-manda_r1.0"
-iMXmortymandaDeveloperRelease="imx-morty-manda"
-
-iMXkrogothmandaStableReleaseTag="imx-krogoth-manda_r1.0"
-iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
-
-
-imxrockoYocto="4.9.88_2.0.0 GA"
 imx8mortyYocto="4.9.51 8MQ Beta"
 imxmortyYocto="4.9.11_1.0.0 GA"
 imxkrogothYocto="4.1.15_2.0.0 GA"
-
-
+imxrockoYocto="4.9.88_2.0.0 GA"
 
 #Based on FMAC_VERSION
-#FOR ORGA
-if [ "$FMAC_VERSION" = $ORGA_FMAC_INDEX ]; then
+if [ "$FMAC_VERSION" = "1" ]; then
 	#------------ Stable Release ----------------
 	# imx8-morty-orga_r1.0
 	if [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "1" ]; then
@@ -826,8 +766,7 @@ if [ "$FMAC_VERSION" = $ORGA_FMAC_INDEX ]; then
 		YoctoBranch="krogoth"
 		fmacversion="$ORGA_FMAC"
 	fi
-#FOR BATTRA
-elif [ "$FMAC_VERSION" = $BATTRA_FMAC_INDEX ]; then
+elif [ "$FMAC_VERSION" = "2" ]; then
 	# imx8-morty-battra_r1.0
 	if [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "1" ]; then
 		BRANCH_RELEASE_OPTION=1
@@ -878,11 +817,11 @@ elif [ "$FMAC_VERSION" = $BATTRA_FMAC_INDEX ]; then
 		fmacversion="$BATTRA_FMAC"
 
 	fi
-#FOR MOTHRA
-elif [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ]; then
+
+elif [ "$FMAC_VERSION" = "3" ]; then
 	# rocko-mothra_r1.0
 	if [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "1" ]; then
-		#echo "DEBUG:: rocko-mothra_r1.0"
+		echo "DEBUG:: rocko-mothra_r1.0"
 		BRANCH_RELEASE_OPTION=1
 		BRANCH_RELEASE_NAME="$iMXrockomothraStableReleaseTag"
 		iMXYoctoRelease="$imxrockoYocto"
@@ -891,7 +830,7 @@ elif [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ]; then
 
 	# rocko-mothra
 	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "1" ]; then
-		#echo "DEBUG:: rocko-mothra"
+		echo "DEBUG:: rocko-mothra"
 		BRANCH_RELEASE_OPTION=2
 		BRANCH_RELEASE_NAME="$iMXrockomothraDeveloperRelease"
 		iMXYoctoRelease="$imxrockoYocto"
@@ -900,7 +839,7 @@ elif [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ]; then
 
 	# morty-mothra_r1.0
 	elif [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "2" ]; then
-		#echo "DEBUG:: morty-mothra_r1.0"
+		echo "DEBUG:: morty-mothra_r1.0"
 		BRANCH_RELEASE_OPTION=3
 		BRANCH_RELEASE_NAME="$iMXmortymothraStableReleaseTag"
 		iMXYoctoRelease="$imxmortyYocto"
@@ -909,86 +848,12 @@ elif [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ]; then
 
 	# morty-mothra
 	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "2" ]; then
-		#echo "DEBUG:: morty-mothra"
+		echo "DEBUG:: morty-mothra"
 		BRANCH_RELEASE_OPTION=4
 		BRANCH_RELEASE_NAME="$iMXmortymothraDeveloperRelease"
 		iMXYoctoRelease="$imxmortyYocto"
 		YoctoBranch="morty"
 		fmacversion="$MOTHRA_FMAC"
-
-	# krogoth-mothra_r1.0
-	elif [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "3" ]; then
-		#echo "DEBUG:: krogoth-mothra_r1.0"
-		BRANCH_RELEASE_OPTION=5
-		BRANCH_RELEASE_NAME="$iMXkrogothmothraStableReleaseTag"
-		iMXYoctoRelease="$imxkrogothYocto"
-		YoctoBranch="krogoth"
-		fmacversion="$MOTHRA_FMAC"
-	# krogoth-mothra
-	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "3" ]; then
-		#echo "DEBUG:: krogoth-mothra"
-		BRANCH_RELEASE_OPTION=6
-		BRANCH_RELEASE_NAME="$iMXkrogothmothraDeveloperRelease"
-		iMXYoctoRelease="$imxkrogothYocto"
-		YoctoBranch="krogoth"
-		fmacversion="$MOTHRA_FMAC"
-
-	fi
-
-#FOR MANDA
-elif [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
-	# rocko-manda_r1.0
-	if [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "1" ]; then
-		#echo "DEBUG:: rocko-manda_r1.0"
-		BRANCH_RELEASE_OPTION=1
-		BRANCH_RELEASE_NAME="$iMXrockomandaStableReleaseTag"
-		iMXYoctoRelease="$imxrockoYocto"
-		YoctoBranch="rocko"
-		fmacversion="$MANDA_FMAC"
-
-	# rocko-manda
-	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "1" ]; then
-		#echo "DEBUG:: rocko-manda"
-		BRANCH_RELEASE_OPTION=2
-		BRANCH_RELEASE_NAME="$iMXrockomandaDeveloperRelease"
-		iMXYoctoRelease="$imxrockoYocto"
-		YoctoBranch="rocko"
-		fmacversion="$MANDA_FMAC"
-
-	# morty-manda_r1.0
-	elif [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "2" ]; then
-		#echo "DEBUG:: morty-mandad_r1.0"
-		BRANCH_RELEASE_OPTION=3
-		BRANCH_RELEASE_NAME="$iMXmortymandaStableReleaseTag"
-		iMXYoctoRelease="$imxmortyYocto"
-		YoctoBranch="morty"
-		fmacversion="$MANDA_FMAC"
-
-	# morty-manda
-	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "2" ]; then
-		#echo "DEBUG:: morty-manda"
-		BRANCH_RELEASE_OPTION=4
-		BRANCH_RELEASE_NAME="$iMXmortymandaDeveloperRelease"
-		iMXYoctoRelease="$imxmortyYocto"
-		YoctoBranch="morty"
-		fmacversion="$MANDA_FMAC"
-
-	# krogoth-manda_r1.0
-	elif [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "3" ]; then
-		#echo "DEBUG:: krogoth-manda_r1.0"
-		BRANCH_RELEASE_OPTION=5
-		BRANCH_RELEASE_NAME="$iMXkrogothmandaStableReleaseTag"
-		iMXYoctoRelease="$imxkrogothYocto"
-		YoctoBranch="krogoth"
-		fmacversion="$MANDA_FMAC"
-	# krogoth-manda
-	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "3" ]; then
-		#echo "DEBUG:: krogoth-manda"
-		BRANCH_RELEASE_OPTION=6
-		BRANCH_RELEASE_NAME="$iMXkrogothmandaDeveloperRelease"
-		iMXYoctoRelease="$imxkrogothYocto"
-		YoctoBranch="krogoth"
-		fmacversion="$MANDA_FMAC"
 
 	fi
 
@@ -997,106 +862,103 @@ fi
 
 # if FMAC selection is Orga or Battra, then proceed with 10 targets.
 # if FMAC selection [3] is Mothra, proceed with 11 targets.
-# if FMAC selection [4] is Manda, proceed with 11 targets.
 
-if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
-	#echo "DEBUG:: krogoth-mothra"
-	#exit
+if [ "$FMAC_VERSION" = "3" ]; then
+while true; do
+
+case $BRANCH_RELEASE_OPTION in
+
+	1|2)
+	# For Branch/Tag : ---------------------imx-rocko-mothra / r_1.0-------------------------------
+	echo -e "${GRN}Selected: $iMXYoctoRelease ${NC}"
+	echo $'\n'
+
+#       Prompting the user to select TARGET
 	while true; do
+	echo " "
+	echo "7) Select Target"
+	echo "----------------"
+	echo " "
+	echo "------------------------------------------------------"
+	echo "| Entry  |    Target Name    | i.MX Platform         |"
+	echo "|--------|-------------------|-----------------------|"
+	echo "|  1     |  imx7dsabresd     | i.MX 7Dual SDB        |"
+	echo "|  2     |  imx6qpsabresd    | i.MX 6QuadPlus SDB    |"
+	echo "|  3     |  imx6qsabresd     | i.MX 6Quad SDB        |"
+	echo "|  4     |  imx6dlsabresd    | i.MX 6DualLite SDB    |"
+	echo "|  5     |  imx6sxsabresd    | i.MX 6SX  SDB         |"
+	echo "|  6     |  imx6slevk        | i.MX 6SL  EVK         |"
+	echo "|  7     |  imx6ulevk        | i.MX 6UL  EVK         |"
+	echo "|  8     |  imx6ull14x14evk  | i.MX 6ULL EVK(14x14)  |"
+	echo "|  9     |  imx6ull9x9evk    | i.MX 6ULL EVK(9x9)    |"
+	echo "|  10    |  imx7ulpevk       | i.MX 7ULP EVK         |"
+	echo "|  11    |  imx8mqevk        | i.MX 8MQuad EVK       |"
+	echo "------------------------------------------------------"
+	echo -n "Select your entry: "
+	read TARGET_OPTION
 
-		case $BRANCH_RELEASE_OPTION in
+	case $TARGET_OPTION in
+		1)
+		TARGET_NAME=imx7dsabresd
+		break
+		;;
 
-			1|2)
-			# For Branch/Tag : ---------------------imx-rocko-mothra / r_1.0-------------------------------
-			echo -e "${GRN}Selected: $iMXYoctoRelease ${NC}"
-			echo $'\n'
+		2)
+		TARGET_NAME=imx6qpsabresd
+		break
+		;;
 
-		#       Prompting the user to select TARGET
-			while true; do
-			echo " "
-			echo "7) Select Target"
-			echo "----------------"
-			echo " "
-			echo "------------------------------------------------------"
-			echo "| Entry  |    Target Name    | i.MX Platform         |"
-			echo "|--------|-------------------|-----------------------|"
-			echo "|  1     |  imx7dsabresd     | i.MX 7Dual SDB        |"
-			echo "|  2     |  imx6qpsabresd    | i.MX 6QuadPlus SDB    |"
-			echo "|  3     |  imx6qsabresd     | i.MX 6Quad SDB        |"
-			echo "|  4     |  imx6dlsabresd    | i.MX 6DualLite SDB    |"
-			echo "|  5     |  imx6sxsabresd    | i.MX 6SX  SDB         |"
-			echo "|  6     |  imx6slevk        | i.MX 6SL  EVK         |"
-			echo "|  7     |  imx6ulevk        | i.MX 6UL  EVK         |"
-			echo "|  8     |  imx6ull14x14evk  | i.MX 6ULL EVK(14x14)  |"
-			echo "|  9     |  imx6ull9x9evk    | i.MX 6ULL EVK(9x9)    |"
-			echo "|  10    |  imx7ulpevk       | i.MX 7ULP EVK         |"
-			echo "|  11    |  imx8mqevk        | i.MX 8MQuad EVK       |"
-			echo "------------------------------------------------------"
-			echo -n "Select your entry: "
-			read TARGET_OPTION
+		3)
+		TARGET_NAME=imx6qsabresd
+		break
+		;;
 
-			case $TARGET_OPTION in
-				1)
-				TARGET_NAME=imx7dsabresd
-				break
-				;;
+		4)
+		TARGET_NAME=imx6dlsabresd
+		break
+		;;
 
-				2)
-				TARGET_NAME=imx6qpsabresd
-				break
-				;;
+		5)
+		TARGET_NAME=imx6sxsabresd
+		break
+		;;
 
-				3)
-				TARGET_NAME=imx6qsabresd
-				break
-				;;
+		6)
+		TARGET_NAME=imx6slevk
+		break
+		;;
 
-				4)
-				TARGET_NAME=imx6dlsabresd
-				break
-				;;
+		7)
+		TARGET_NAME=imx6ulevk
+		break
+		;;
 
-				5)
-				TARGET_NAME=imx6sxsabresd
-				break
-				;;
+		8)
+		TARGET_NAME=imx6ull14x14evk
+		break
+		;;
 
-				6)
-				TARGET_NAME=imx6slevk
-				break
-				;;
+		9)
+		TARGET_NAME=imx6ull9x9evk
+		break
+		;;
 
-				7)
-				TARGET_NAME=imx6ulevk
-				break
-				;;
+		10)
+		TARGET_NAME=imx7ulpevk
+		break
+		;;
 
-				8)
-				TARGET_NAME=imx6ull14x14evk
-				break
-				;;
+		11)
+		LINUX_SRC=linux-imx_4.9.88.bbappend.8MQ
+		LINUX_DEST=linux-imx_4.9.88.bbappend
+		TARGET_NAME=imx8mqevk
+		break
+		;;
 
-				9)
-				TARGET_NAME=imx6ull9x9evk
-				break
-				;;
-
-				10)
-				TARGET_NAME=imx7ulpevk
-				break
-				;;
-
-				11)
-				LINUX_SRC=linux-imx_4.9.88.bbappend.8MQ
-				LINUX_DEST=linux-imx_4.9.88.bbappend
-				TARGET_NAME=imx8mqevk
-				break
-				;;
-
-				*)
-				echo -e "${RED}That is not a valid choice, try again.${NC}"
-				;;
-			esac
+		*)
+		echo -e "${RED}That is not a valid choice, try again.${NC}"
+		;;
+	esac
 	done
 
 	echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
@@ -1450,183 +1312,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 #	End - Prompt user to select VIO Signaling
 	break
 	;;
-
-	# For Branch : ---------------------------imx-krogoth-mothra---------------------------
-	5|6)
-	echo -e "${GRN}Selected: $iMXYoctoRelease ${NC}"
-	echo $'\n'
-
-	while true; do
-	echo " "
-	echo "7) Select target"
-	echo "----------------"
-	echo " "
-	echo "------------------------------------------------------"
-	echo "| Entry  |    Target Name    | i.MX Platform         |"
-	echo "|--------|-------------------|-----------------------|"
-	echo "|  1     |  imx7dsabresd     | i.MX 7Dual SDB        |"
-	echo "|  2     |  imx6qpsabresd    | i.MX 6QuadPlus SDB    |"
-	echo "|  3     |  imx6qsabresd     | i.MX 6Quad SDB        |"
-	echo "|  4     |  imx6dlsabresd    | i.MX 6DualLite SDB    |"
-	echo "|  5     |  imx6sxsabresd    | i.MX 6SX  SDB         |"
-	echo "|  6     |  imx6slevk        | i.MX 6SL  EVK         |"
-	echo "|  7     |  imx6ulevk        | i.MX 6UL  EVK         |"
-	echo "|  8     |  imx6ull14x14evk  | i.MX 6ULL EVK(14x14)  |"
-	echo "|  9     |  imx6ull9x9evk    | i.MX 6ULL EVK(9x9)    |"
-	echo "------------------------------------------------------"
-	echo -n "Select your entry: "
-	read TARGET_OPTION
-	case $TARGET_OPTION in
-		1)
-		TARGET_NAME=imx7dsabresd
-		break
-		;;
-
-		2)
-		TARGET_NAME=imx6qpsabresd
-		break
-		;;
-
-		3)
-		TARGET_NAME=imx6qsabresd
-		break
-		;;
-
-		4)
-		TARGET_NAME=imx6dlsabresd
-		break
-		;;
-
-		5)
-		TARGET_NAME=imx6sxsabresd
-		break
-		;;
-
-		6)
-		TARGET_NAME=imx6slevk
-		break
-		;;
-
-		7)
-		TARGET_NAME=imx6ulevk
-		break
-		;;
-
-		8)
-		TARGET_NAME=imx6ull14x14evk
-		break
-		;;
-
-		9)
-		TARGET_NAME=imx6ull9x9evk
-		break
-		;;
-
-		*)
-		echo -e "${RED}That is not a valid choice, try again.${NC}"
-		;;
-	esac
-	done
-
-	echo -e "${GRN}Selected target : $TARGET_NAME ${NC}"
-	echo $'\n'
-
-#	Start - Prompt user to select VIO Signaling
-	if [ "$TARGET_NAME" = "imx6ulevk" ] ||  [ "$TARGET_NAME" = "imx6ull14x14evk" ] ||  [ "$TARGET_NAME" = "imx6ull9x9evk" ]; then
-		while true; do
-		echo " "
-		echo "7.1) Select VIO Signaling"
-		echo "-------------------------"
-		echo " "
-		echo    "------------------------------------------------------------------------------"
-		echo    "| Entry  |  Options                                                          |"
-		echo    "|--------|-------------------------------------------------------------------|"
-		echo    "|   1.   | 1.8V VIO signaling with UHS support                               |"
-		echo -e "|   2.   | 1.8V VIO signaling ${YLW}without${NC} UHS support                            |"
-		echo -e "|   ${GRN}3.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC}                            |"
-		echo     "------------------------------------------------------------------------------"
-		echo " "
-                echo " Refer to Murata Quickstart Guide for more details:"
-                echo " - Murata Wi-Fi BT Solution for i.MX Quick Start Guide (Linux) 5.x.pdf"
-		echo " "
-
-		echo -n "Select your entry: "
-		read VIO_SIGNALING_OPTION
-		case $VIO_SIGNALING_OPTION in
-			1)
-			LINUX_SRC=linux-imx_4.1.15.bbappend.6UL_6ULL@1.8V
-			LINUX_DEST=linux-imx_4.1.15.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
-			break
-			;;
-
-			2)
-			LINUX_SRC=linux-imx_4.1.15.bbappend.6UL_6ULL@1.8V_No_UHS
-			LINUX_DEST=linux-imx_4.1.15.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support - ${YLW}HW mods needed${NC}"
-			break
-			;;
-
-			3)
-			LINUX_SRC=linux-imx_4.1.15.bbappend
-			LINUX_DEST=linux-imx_4.1.15.bbappend
-			VIO_SIGNALING_STRING="3.3V VIO signaling"
-			break
-			;;
-
-			*)
-			echo -e "${RED}That is not a valid choice, try again.${NC}"
-			;;
-		esac
-		done
-		echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
-	fi
-
-	if [ "$TARGET_NAME" = "imx6sxsabresd" ]; then
-		while true; do
-		echo " "
-		echo "7.1) Select VIO Signaling"
-		echo "-------------------------"
-		echo " "
-		echo "-------------------------------------------------"
-		echo "| Entry  |  Options                             |"
-		echo "|--------|--------------------------------------|"
-		echo "|   1.   | 1.8V VIO signaling with UHS support  |"
-		echo -e "|   ${GRN}2.${NC}   | ${GRN}3.3V VIO signaling${NC}                   |"
-		echo "-------------------------------------------------"
-		echo " "
-                echo " Refer to Murata Quickstart Guide for more details:"
-                echo " - Murata Wi-Fi BT Solution for i.MX Quick Start Guide (Linux) 5.x.pdf"
-		echo " "
-
-		echo -n "Select your entry: "
-		read VIO_SIGNALING_OPTION
-		case $VIO_SIGNALING_OPTION in
-			1)
-			LINUX_SRC=linux-imx_4.1.15.bbappend.6SX@1.8V
-			LINUX_DEST=linux-imx_4.1.15.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
-			break
-			;;
-
-			2)
-			LINUX_SRC=linux-imx_4.1.15.bbappend
-			LINUX_DEST=linux-imx_4.1.15.bbappend
-			VIO_SIGNALING_STRING="3.3V VIO signaling"
-			break
-			;;
-
-			*)
-			echo -e "${RED}That is not a valid choice, try again.${NC}"
-			;;
-		esac
-		done
-		echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
-	fi
-#	End - Prompt user to select VIO Signaling
-	break
-	;;
-
 
 
 	# For Retry : ------------------------------Retry-------------------------------------------
@@ -2291,7 +1976,7 @@ fi
 #BRANCH=morty-mothra
 if [ "$FMAC_VERSION" = "3" ]; then
 	if [ $BRANCH_RELEASE_OPTION = "3" ] || [ $BRANCH_RELEASE_OPTION = "4" ]; then
-		#echo "DEBUG FOR MORTY-MOTHRA-1:: IMX6 and 7"
+		echo "DEBUG FOR MORTY-MOTHRA-1:: IMX6 and 7"
 		echo -e "VIO Signaling                   : ${GRN}$VIO_SIGNALING_STRING${NC}"	
 	fi
 fi
@@ -2357,16 +2042,16 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	
 	# Invoke Repo Init based on Yocto Release
 	if [ "$iMXYoctoRelease" = "$imxrockoYocto" ]; then
-		#echo "DEBUG:: IMXALL"
+		echo "DEBUG:: IMXALL"
 		repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-rocko -m imx-4.9.88-2.0.0_ga.xml
 	elif [ "$iMXYoctoRelease" = "$imx8mortyYocto" ]; then
-		#echo "DEBUG:: IMX8"
+		echo "DEBUG:: IMX8"
 		repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-morty -m imx-4.9.51-8mq_beta.xml
 	elif [ "$iMXYoctoRelease" = "$imxmortyYocto"  ]; then
-		#echo "DEBUG:: MORTY"
+		echo "DEBUG:: MORTY"
 		repo init -u https://source.codeaurora.org/external/imx/fsl-arm-yocto-bsp.git -b imx-morty -m imx-4.9.11-1.0.0_ga.xml
 	elif [ "$iMXYoctoRelease" = "$imxkrogothYocto"  ]; then
-		#echo "DEBUG:: KROGOTH"
+		echo "DEBUG:: KROGOTH"
 		repo init -u https://source.codeaurora.org/external/imx/fsl-arm-yocto-bsp.git -b imx-4.1-krogoth -m imx-4.1.15-2.0.0.xml
 	fi
 
@@ -2406,7 +2091,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 
 		#TARGET_NAME=imx8mqevk => rocko-mothra
 		if [ "$FMAC_VERSION" = "3" ] && [ "$TARGET_NAME" = "imx8mqevk" ]; then
-			#echo "DEBUG FOR IMX8-rocko: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
+			echo "DEBUG FOR IMX8-rocko: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
 			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 				cp $LINUX_SRC $LINUX_DEST
 			fi
@@ -2415,7 +2100,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 			cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
 			cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 $BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
 		elif [ "$FMAC_VERSION" = "3" ] && [ "$TARGET_NAME" != "imx8mqevk" ]; then
-			#echo "DEBUG FOR IMX6,7-rocko: COPYING bb appends files"
+			echo "DEBUG FOR IMX6,7-rocko: COPYING bb appends files"
 			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 				cp $LINUX_SRC $LINUX_DEST
 			fi
@@ -2423,8 +2108,8 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 
 		#BRANCH=morty-mothra
 		if [ "$FMAC_VERSION" = "3" ]; then
-			if [ $BRANCH_RELEASE_OPTION = "3" ] || [ $BRANCH_RELEASE_OPTION = "4" ] || [ $BRANCH_RELEASE_OPTION = "5" ] || [ $BRANCH_RELEASE_OPTION = "6" ]; then
-				#echo "DEBUG FOR MORTY/KROGOTH-MOTHRA:: IMX6 and 7: COPYING bb appends"
+			if [ $BRANCH_RELEASE_OPTION = "3" ] || [ $BRANCH_RELEASE_OPTION = "4" ]; then
+				echo "DEBUG FOR MORTY-MOTHRA:: IMX6 and 7: COPYING bb appends"
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 					cp $LINUX_SRC $LINUX_DEST
 				fi
