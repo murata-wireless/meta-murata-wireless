@@ -1,0 +1,22 @@
+diff --git a/src/drivers/driver_nl80211.c b/src/drivers/driver_nl80211.c
+index f7c0553..475691e 100644
+--- a/src/drivers/driver_nl80211.c
++++ b/src/drivers/driver_nl80211.c
+@@ -39,6 +39,17 @@
+ #include "rfkill.h"
+ #include "driver_nl80211.h"
+ 
++/*
++ * Added by Murata, somehow, Yocto build environment doesn't detect
++ * the following two defines.
++ */
++#ifndef RSN_AUTH_KEY_MGMT_FT_802_1X
++#define RSN_AUTH_KEY_MGMT_FT_802_1X RSN_SELECTOR(0x00, 0x0f, 0xac, 3)
++#endif
++
++#ifndef RSN_AUTH_KEY_MGMT_FT_PSK
++#define RSN_AUTH_KEY_MGMT_FT_PSK RSN_SELECTOR(0x00, 0x0f, 0xac, 4)
++#endif
+ 
+ #ifndef CONFIG_LIBNL20
+ /*

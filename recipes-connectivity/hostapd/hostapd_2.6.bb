@@ -45,6 +45,7 @@ SRC_URI = " \
     file://0033-nl80211-Check-SAE-authentication-offload-support.patch;apply=yes \
     file://0034-SAE-Pass-SAE-password-on-connect-for-SAE-authenticat.patch;apply=yes \
     file://0035-WPA-Ignore-unauthenticated-encrypted-EAPOL-Key-data.patch;apply=yes \
+    file://0036-murata-undefined-macro-error-with-wpa_supplicant_and_hostapd.patch;apply=yes \
     file://udhcpd.conf \
 "
 
