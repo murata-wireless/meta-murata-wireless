@@ -60,6 +60,7 @@ SRC_URI = "http://w1.fi/releases/wpa_supplicant-${PV}.tar.gz  \
     	   file://0033-nl80211-Check-SAE-authentication-offload-support.patch;apply=yes \
     	   file://0034-SAE-Pass-SAE-password-on-connect-for-SAE-authenticat.patch;apply=yes \
     	   file://0035-WPA-Ignore-unauthenticated-encrypted-EAPOL-Key-data.patch;apply=yes \
+	   file://0036-murata-undefined-macro-error-with-wpa_supplicant_and_hostapd.patch;apply=yes \
 "
 
 SRC_URI[md5sum] = "091569eb4440b7d7f2b4276dbfc03c3c"
