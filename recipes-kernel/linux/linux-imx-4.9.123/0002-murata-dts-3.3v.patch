@@ -791,10 +791,10 @@ index 8445a25..49d8fe3 100644
  	};
  };
  
-+&pcie_phy{
++/*&pcie_phy{
 +       status = "okay";
 +};
-+
++*/
  &pcie {
  	pinctrl-names = "default";
  	reset-gpio = <&gpio_spi 1 GPIO_ACTIVE_LOW>;
