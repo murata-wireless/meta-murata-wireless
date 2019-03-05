@@ -1,8 +1,7 @@
 #!/bin/bash
 VERSION=10262018
-export DEBUG_LOG=`pwd`
-echo "time: "$(date)>>$DEBUG_LOG/log.txt
-# Use colors to highlight pass/fail conditions.
+
+# Use colors to highlight pass/fail conditions. 
 RED='\033[1;31m' # Red font to flag errors
 GRN='\033[1;32m' # Green font to flag pass
 YLW='\033[1;33m' # Yellow font for highlighting
@@ -28,7 +27,7 @@ else
                 exit
 fi
 
-# Get Ubuntu release version; make sure it is either 16.04, 14.04 or 12.04.
+# Get Ubuntu release version; make sure it is either 16.04, 14.04 or 12.04. 
 Ubuntu_Release=$(lsb_release -r -s)
 if [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
                 echo -e "Murata: Verified Ubuntu Release:${NC}     " ${GRN}$Ubuntu_Release${NC}
@@ -36,10 +35,10 @@ else
                 echo -e "${RED}Murata: Only Ubuntu versions 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
 		echo -e "Exiting script.....${NC}"
                 exit
-fi
+fi 
 
 
-# Ubuntu Distro and Version verified. Now add necessary commands.
+# Ubuntu Distro and Version verified. Now add necessary commands. 
 
 # BSP directory
 export BSP_DIR=`pwd`
@@ -95,14 +94,14 @@ IFS== read FIRST_LINE LATEST_VER <<< $LATEST_VER
 if [ "$VERSION" = "$LATEST_VER" ]; then
 	echo    "Latest:  $LATEST_VER"
 	echo -e "Current: $VERSION${GRN}........PASS${NC}"
-else
+else 
 	echo    "Latest:  $LATEST_VER"
 	echo -e "Current: ${YLW}$VERSION........MISMATCH${NC}"
 	echo " "
 
         echo -n -e "Do you want to update build script? ${GRN}Y${NC}/${YLW}n${NC}: "
 	read PROCEED_UPDATE_OPTION
-
+	
 	if [ "$PROCEED_UPDATE_OPTION" = "y" ] || [ "$PROCEED_UPDATE_OPTION" = "Y" ] || [ "$PROCEED_UPDATE_OPTION" = "" ]; then
 		echo "Update to latest version using following copy command:"
 		echo " "
@@ -204,7 +203,7 @@ while true; do
 		break
 	else
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
-		echo $'\n'
+		echo $'\n'	
 	fi
 done
 
@@ -220,7 +219,7 @@ done
 		echo "|-----|-----------|---------|------------|---------------------------|"
 		echo "|  1  | 4.9.69    | morty   | am437x     | am437x-morty-battra_r1.0  |"
 		echo "|  2  | 4.9.69    | morty   | am572x     | am572x-morty-battra_r1.0  |"
-		echo "|  3  | 4.9.69    | morty   | am335x     | am335x-morty-battra_r1.0  |"
+		echo "|  3  | 4.9.69    | morty   | am335x     | am335x-morty-battra_r1.0  |" 
 		echo "----------------------------------------------------------------------"
 		break
 	elif [ "$FMAC_VERSION" = "1" ] && [ "$BRANCH_TAG_OPTION" = "n" ]; then
@@ -235,7 +234,7 @@ done
 		echo "|-----|-----------|---------|------------|---------------------------|"
 		echo "|  1  | 4.9.69    | morty   | am437x     | am437x-morty-battra       |"
 		echo "|  2  | 4.9.69    | morty   | am572x     | am572x-morty-battra       |"
-		echo "|  3  | 4.9.69    | morty   | am335x     | am335x-morty-battra       |"
+		echo "|  3  | 4.9.69    | morty   | am335x     | am335x-morty-battra       |" 
 		echo "----------------------------------------------------------------------"
 		break
 	else
@@ -251,7 +250,7 @@ while true; do
 		break
 	else
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
-		echo $'\n'
+		echo $'\n'	
 	fi
 done
 
@@ -1112,32 +1111,16 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 				#echo "DEBUG:: Copying 123 bbappend file for 8MQ"
 				#LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
 				#LINUX_DEST=linux-imx_4.9.123.bbappend
-        #LINUX_SRC=linux-imx_4.9.88.bbappend.8MQ
-				#LINUX_DEST=linux-imx_4.9.88.bbappend
 
 				#echo "DEBUG:: Before copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
-
-        echo "1119">>$DEBUG_LOG/log.txt
-        echo "1120 YoctoBranch : "$YoctoBranch>>$DEBUG_LOG/log.txt
-        echo "1121 BRANCH_RELEASE_NAME : "$BRANCH_RELEASE_NAME>>$DEBUG_LOG/log.txt
-        echo "1122 iMXYoctoRelease:"$iMXYoctoRelease>>$DEBUG_LOG/log.txt
-        echo "1123 imxrockoYocto:"$imxrockoYocto>>$DEBUG_LOG/log.txt
-        echo "1124 imxrockominiYocto:"$imxrockominiYocto>>$DEBUG_LOG/log.txt
-
-
-        if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
-          echo "1127 we are dealing with L4.9.123!">>$DEBUG_LOG/log.txt
-          LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
-          LINUX_DEST=linux-imx_4.9.123.bbappend
-          echo "1133 LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ">>$DEBUG_LOG/log.txt
-          echo "1134 LINUX_DEST=linux-imx_4.9.123.bbappend">>$DEBUG_LOG/log.txt
-        elif [ "$iMXYoctoRelease" = "$imxrockoYocto" ]; then
-          echo "1131 we are dealing with L4.9.88">>$DEBUG_LOG/log.txt
-          LINUX_SRC=linux-imx_4.9.88.bbappend.8MQ
-          LINUX_DEST=linux-imx_4.9.88.bbappend
-          echo "1126 LINUX_SRC=linux-imx_4.9.88.bbappend.8MQ">>$DEBUG_LOG/log.txt
-          echo "1127 LINUX_DEST=linux-imx_4.9.88.bbappend">>$DEBUG_LOG/log.txt
-        fi
+				
+				if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
+				  LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
+				  LINUX_DEST=linux-imx_4.9.123.bbappend
+				elif [ "$iMXYoctoRelease" = "$imxrockoYocto" ]; then
+				  LINUX_SRC=linux-imx_4.9.88.bbappend.8MQ
+				  LINUX_DEST=linux-imx_4.9.88.bbappend
+				fi
 
 				TARGET_NAME=imx8mqevk
 				break
@@ -1146,8 +1129,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 				12)
 				LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
 				LINUX_DEST=linux-imx_4.9.123.bbappend
-        echo "1125 LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ">>$DEBUG_LOG/log.txt
-        echo "1126 LINUX_DEST=linux-imx_4.9.123.bbappend">>$DEBUG_LOG/log.txt
 				TARGET_NAME=imx8qmmek
 				break
 				;;
@@ -1155,8 +1136,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 				13)
 				LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
 				LINUX_DEST=linux-imx_4.9.123.bbappend
-        echo "1134 LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ">>$DEBUG_LOG/log.txt
-        echo "1135 LINUX_DEST=linux-imx_4.9.123.bbappend">>$DEBUG_LOG/log.txt
 				TARGET_NAME=imx8qxpmek
 				break
 				;;
@@ -1164,8 +1143,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 				14)
 				LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
 				LINUX_DEST=linux-imx_4.9.123.bbappend
-        echo "1143 LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ">>$DEBUG_LOG/log.txt
-        echo "1144 LINUX_DEST=linux-imx_4.9.123.bbappend">>$DEBUG_LOG/log.txt
 				TARGET_NAME=imx8mmevk
 				break
 				;;
@@ -1205,8 +1182,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 						1)
 						LINUX_SRC=linux-imx_4.9.123.bbappend.6UL_6ULL@1.8V
 						LINUX_DEST=linux-imx_4.9.123.bbappend
-            echo "1192 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-            echo "1193 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 						VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
 						break
 						;;
@@ -1214,21 +1189,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 						2)
 						LINUX_SRC=linux-imx_4.9.123.bbappend.6UL_6ULL@1.8V_No_UHS
 						LINUX_DEST=linux-imx_4.9.123.bbappend
-            echo "1201 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-            echo "1202 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
-            echo "BRANCH_RELEASE_NAME="$BRANCH_RELEASE_NAME>>$DEBUG_LOG/log.txt
-            echo "YoctoBranch="$YoctoBranch>>$DEBUG_LOG/log.txt
-            echo "fmacversion="$fmacversion>>$DEBUG_LOG/log.txt
-            if [ ["$iMXYoctoRelease" = "$imxrockominiYocto"] ];then
-                echo "we are dealing with L4.9.123!">>$DEBUG_LOG/log.txt
-            elif [[ "$iMXYoctoRelease" = "$imxrockoYocto" ]]; then
-              #statements
-              echo "we are dealing with L4.9.88">>$DEBUG_LOG/log.txt
-
-            fi
-
-
-
 						VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support - ${YLW}HW mods needed${NC}"
 						break
 						;;
@@ -1236,8 +1196,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 						3)
 						LINUX_SRC=linux-imx_4.9.123.bbappend
 						LINUX_DEST=linux-imx_4.9.123.bbappend
-            echo "1210 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-            echo "1211 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 						VIO_SIGNALING_STRING="3.3V VIO signaling (No HW mods needed)"
 						break
 						;;
@@ -1413,8 +1371,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 				11)
 				LINUX_SRC=linux-imx_4.9.88.bbappend.8MQ
 				LINUX_DEST=linux-imx_4.9.88.bbappend
-        echo "1373 LINUX_SRC=linux-imx_4.9.88.bbappend.8MQ">>$DEBUG_LOG/log.txt
-        echo "1374 LINUX_DEST=linux-imx_4.9.88.bbappend">>$DEBUG_LOG/log.txt
 				TARGET_NAME=imx8mqevk
 				break
 				;;
@@ -1454,9 +1410,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 			1)
 			LINUX_SRC=linux-imx_4.9.88.bbappend.6UL_6ULL@1.8V
 			LINUX_DEST=linux-imx_4.9.88.bbappend
-      echo "1422 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "1423 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
-
 			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
 			break
 			;;
@@ -1464,8 +1417,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 			2)
 			LINUX_SRC=linux-imx_4.9.88.bbappend.6UL_6ULL@1.8V_No_UHS
 			LINUX_DEST=linux-imx_4.9.88.bbappend
-      echo "1432 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "1433 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 			VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support - ${YLW}HW mods needed${NC}"
 			break
 			;;
@@ -1473,8 +1424,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 			3)
 			LINUX_SRC=linux-imx_4.9.88.bbappend
 			LINUX_DEST=linux-imx_4.9.88.bbappend
-      echo "1441 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "1442 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 			VIO_SIGNALING_STRING="3.3V VIO signaling (No HW mods needed)"
 			break
 			;;
@@ -1510,8 +1459,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 			1)
 			LINUX_SRC=linux-imx_4.9.88.bbappend.6SX@1.8V
 			LINUX_DEST=linux-imx_4.9.88.bbappend
-      echo "1478 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "1479 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
 			break
 			;;
@@ -1689,8 +1636,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 			2)
 			LINUX_SRC=linux-imx_4.9.11.bbappend.6UL_6ULL@1.8V_No_UHS
 			LINUX_DEST=linux-imx_4.9.11.bbappend
-      echo "1657 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "1658 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 			VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support - ${YLW}HW mods needed${NC}"
 			break
 			;;
@@ -1698,8 +1643,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 			3)
 			LINUX_SRC=linux-imx_4.9.11.bbappend
 			LINUX_DEST=linux-imx_4.9.11.bbappend
-      echo "1666 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "1667 LINUX_DEST=">>$DEBUG_LOG/log.txt
 			VIO_SIGNALING_STRING="3.3V VIO signaling (No HW mods needed)"
 			break
 			;;
@@ -1902,8 +1845,6 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 			2)
 			LINUX_SRC=linux-imx_4.1.15.bbappend.6UL_6ULL@1.8V_No_UHS
 			LINUX_DEST=linux-imx_4.1.15.bbappend
-      echo "1870 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "1871 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 			VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support - ${YLW}HW mods needed${NC}"
 			break
 			;;
@@ -2126,8 +2067,6 @@ case $BRANCH_RELEASE_OPTION in
 			1)
 			LINUX_SRC=linux-imx_4.9.11.bbappend.6UL_6ULL@1.8V
 			LINUX_DEST=linux-imx_4.9.11.bbappend
-      echo "2094 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "2095 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
 			break
 			;;
@@ -2135,8 +2074,6 @@ case $BRANCH_RELEASE_OPTION in
 			2)
 			LINUX_SRC=linux-imx_4.9.11.bbappend.6UL_6ULL@1.8V_No_UHS
 			LINUX_DEST=linux-imx_4.9.11.bbappend
-      echo "2103 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "2104 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 			VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support - ${YLW}HW mods needed${NC}"
 			break
 			;;
@@ -2339,8 +2276,6 @@ case $BRANCH_RELEASE_OPTION in
 			1)
 			LINUX_SRC=linux-imx_4.1.15.bbappend.6UL_6ULL@1.8V
 			LINUX_DEST=linux-imx_4.1.15.bbappend
-      echo "2307 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "2308 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
 			break
 			;;
@@ -2348,8 +2283,6 @@ case $BRANCH_RELEASE_OPTION in
 			2)
 			LINUX_SRC=linux-imx_4.1.15.bbappend.6UL_6ULL@1.8V_No_UHS
 			LINUX_DEST=linux-imx_4.1.15.bbappend
-      echo "2316 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "2317 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 			VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support - ${YLW}HW mods needed${NC}"
 			break
 			;;
@@ -2357,8 +2290,6 @@ case $BRANCH_RELEASE_OPTION in
 			3)
 			LINUX_SRC=linux-imx_4.1.15.bbappend
 			LINUX_DEST=linux-imx_4.1.15.bbappend
-      echo "2325 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "2326 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 			VIO_SIGNALING_STRING="3.3V VIO signaling"
 			break
 			;;
@@ -2394,8 +2325,6 @@ case $BRANCH_RELEASE_OPTION in
 			1)
 			LINUX_SRC=linux-imx_4.1.15.bbappend.6SX@1.8V
 			LINUX_DEST=linux-imx_4.1.15.bbappend
-      echo "2362 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "2363 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
 			break
 			;;
@@ -2403,8 +2332,6 @@ case $BRANCH_RELEASE_OPTION in
 			2)
 			LINUX_SRC=linux-imx_4.1.15.bbappend
 			LINUX_DEST=linux-imx_4.1.15.bbappend
-      echo "2371 LINUX_SRC="$LINUX_SRC>>$DEBUG_LOG/log.txt
-      echo "2372 LINUX_DEST="$LINUX_DEST>>$DEBUG_LOG/log.txt
 			VIO_SIGNALING_STRING="3.3V VIO signaling"
 			break
 			;;
@@ -2446,13 +2373,13 @@ echo "Murata default DISTRO & Image pre-selected are:"
 echo -e "${GRN}DISTRO: $DISTRO_NAME${NC}"
 echo -e "${GRN}Image:  $IMAGE_NAME${NC}"
 echo " "
-echo -e -n "Proceed with this configuration? ${GRN}Y${NC}/${YLW}n${NC}: "
+echo -e -n "Proceed with this configuration? ${GRN}Y${NC}/${YLW}n${NC}: " 
 read PROMPT
 
 if [ "$PROMPT" = "n" ] || [ "$PROMPT" = "N" ]; then
 	echo -e "${YLW}Select unsupported options (for DISTRO and Image) by entering: "\""U"\"" at the next prompt."
 	echo " "
-	echo -e -n "Do you REALLY want to proceed ?: U${NC}: "
+	echo -e -n "Do you REALLY want to proceed ?: U${NC}: " 
 	read PROMPT
 
 
@@ -2467,7 +2394,7 @@ if [ "$PROMPT" = "n" ] || [ "$PROMPT" = "N" ]; then
 			echo "|   1   | fsl-imx-x11       | Only X11 graphics                            |"
 			echo "|   2   | fsl-imx-wayland   | Wayland weston graphics                      |"
 			echo "|   3   | fsl-imx-xwayland  | Wayland graphics and X11. X11 applications   |"
-			echo "|       |                   | using EGL are not supported                  |"
+			echo "|       |                   | using EGL are not supported                  |"  
 			echo "|   4   | fsl-imx-fb        | Frame Buffer graphics - no X11 or Wayland    |"
 			echo "----------------------------------------------------------------------------"
 
@@ -2496,7 +2423,7 @@ if [ "$PROMPT" = "n" ] || [ "$PROMPT" = "N" ]; then
 					DISTRO_NAME=fsl-imx-fb
 					break
 					;;
-
+	
 					*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					;;
@@ -2506,7 +2433,7 @@ if [ "$PROMPT" = "n" ] || [ "$PROMPT" = "N" ]; then
 		else
 			echo -e "${GRN}Proceeding with Murata default DISTRO: $DISTRO_NAME${NC}"
 		fi
-
+	
 	#       Prompting the user to select which image to build
 	  	if [ "$PROMPT" = "U" ] || [ "$PROMPT" = "u" ]; then
 
@@ -2583,7 +2510,7 @@ if [ "$PROMPT" = "n" ] || [ "$PROMPT" = "N" ]; then
 		else
 			echo -e "${GRN}Proceeding with Murata default Image:  $IMAGE_NAME${NC}"
 		fi
-
+	
 else
 	echo -e "${GRN}Proceeding with Murata defaults.${NC}"
 fi
@@ -2653,7 +2580,7 @@ fi
 if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
 	if [ $BRANCH_RELEASE_OPTION = "3" ] || [ $BRANCH_RELEASE_OPTION = "4" ]; then
 		#echo "DEBUG FOR MORTY-MOTHRA/MANDA-1:: IMX6 and 7"
-		echo -e "VIO Signaling                   : ${GRN}$VIO_SIGNALING_STRING${NC}"
+		echo -e "VIO Signaling                   : ${GRN}$VIO_SIGNALING_STRING${NC}"	
 	fi
 fi
 
@@ -2677,13 +2604,13 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
        #echo "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
 	echo "********************************************************************************"
 	echo "* Thank you for entering necessary configuration!                             *"
-	echo "* Please be patient to complete the last phase of the build script process.    *"
+	echo "* Please be patient to complete the last phase of the build script process.    *"  
 	echo "* Final steps of the build script require user to review and accept            *"
 	echo "* NXP/Freescale Software License Agreement.                                    *"
 	echo "*                                                                              *"
 	echo -e "* ${YLW}NOTE: It may take several minutes to display EULA Agreement.                 ${NC}*"
 	echo "*                                                                              *"
-	echo -e "* User is prompted to enter space bar to fully display EULA Agreement OR "\'"q"\'"   *"
+	echo -e "* User is prompted to enter space bar to fully display EULA Agreement OR "\'"q"\'"   *" 
 	echo "* to quit reading entire EULA.                                                 *"
 	echo "*                                                                              *"
 	echo "* Please enter space bar (repeatedly)  OR 'q' until you see the final EULA     *"
@@ -2694,7 +2621,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	echo "* Please make sure to enter 'y', so build script continues.                    *"
 	echo "* Once EULA has been successfully accepted following line is displayed:        *"
 	echo "*                                                                              *"
-	echo -e "* ${GRN}EULA has been accepted.${NC}                                                      *"
+	echo -e "* ${GRN}EULA has been accepted.${NC}                                                      *"    
 	echo "*                                                                              *"
 	echo "* Once EULA is accepted, final step (last User Prompt) is to kick off Yocto    *"
         echo "* build.                                                                       *"
@@ -2715,7 +2642,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
 	fi
 	done
-
+	
 	# Invoke Repo Init based on Yocto Release
 	if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
 		#echo "DEBUG:: IMXALL-ROCKO-MINI"
@@ -2771,13 +2698,6 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 
 		#TARGET_NAME=imx8mqevk => rocko-mothra
 		# MOTHRA is supported for ROCKO, MORTY and KROGOTH.
-    echo "FMAC_VERSION: "$FMAC_VERSION >>$DEBUG_LOG/log.txt
-    echo "MOTHRA_FMAC_INDEX: "$MOTHRA_FMAC_INDEX >>$DEBUG_LOG/log.txt
-    echo "TARGET_NAME: "$TARGET_NAME>>$DEBUG_LOG/log.txt
-    echo "LINUX_SRC: "$LINUX_SRC>>$DEBUG_LOG/log.txt
-    echo "LINUX_DEST: "$LINUX_DEST>>$DEBUG_LOG/log.txt
-
-
 		if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ]; then
 			#echo "DEBUG:: MOTHRA-LOADING"
 		    	if [ "$TARGET_NAME" = "imx8mqevk" ]; then
@@ -2793,19 +2713,6 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 			      		$BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
 				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 \
 			      		$BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
-
-        echo "2727">>$DEBUG_LOG/log.txt
-
-        echo "mv '$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bb">>$DEBUG_LOG/log.txt
-        echo "'$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bbx">>$DEBUG_LOG/log.txt
-        echo "mv '$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bb">>$DEBUG_LOG/log.txt
-    		echo "'$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bbx">>$DEBUG_LOG/log.txt
-    		echo "cp -f '$'BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8">>$DEBUG_LOG/log.txt
-    		echo "'$'BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb">>$DEBUG_LOG/log.txt
-    		echo "cp -f '$'BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8">>$DEBUG_LOG/log.txt
-    		echo "'$'BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb">>$DEBUG_LOG/log.txt
-
-
 		    	elif [ "$TARGET_NAME" != "imx8mqevk" ]; then
 				#echo "DEBUG:: FOR IMX6,7-rocko: COPYING bb appends files"
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
@@ -2825,7 +2732,6 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 
 		# MANDA is supported for ROCKO-MINI, ROCKO, MORTY and KROGOTH.
 		#TARGET_NAME=imx8mqevk => rocko-manda
-
 		if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$iMXYoctoRelease" = "$imxrockoYocto" ]; then
 			#echo "DEBUG:: MANDA-LOADING-FOR-ROCKO"
 			if [ "$TARGET_NAME" = "imx8mqevk" ]; then
@@ -2841,18 +2747,6 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 					$BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
 				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 \
 					$BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
-
-        echo "2775">>$DEBUG_LOG/log.txt
-        echo "mv '$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bb ">>$DEBUG_LOG/log.txt
-        echo "'$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bbx">>$DEBUG_LOG/log.txt
-        echo "mv '$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bb">>$DEBUG_LOG/log.txt
-        echo "'$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bbx">>$DEBUG_LOG/log.txt
-        echo "cp -f '$'BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8">>$DEBUG_LOG/log.txt
-        echo "'$'BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb">>$DEBUG_LOG/log.txt
-        echo "cp -f \$BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8">>$DEBUG_LOG/log.txt
-        echo "'$'BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb">>$DEBUG_LOG/log.txt
-
-
 			elif [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$TARGET_NAME" != "imx8mqevk" ]; then
 				#echo "DEBUG:: FOR IMX6,7-rocko: COPYING bb appends files"
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
@@ -2870,7 +2764,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 		fi
 
 		#TARGET_NAME=imx8mqevk => rocko-mini-manda
-		if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
+		if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then 
 			#echo "DEBUG:: MANDA-LOADING-FOR-ROCKO-MINI"
 			if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qmmek" ] || [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8mmevk" ]; then
 				#echo "DEBUG FOR IMX8-rocko-mini: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
@@ -2880,36 +2774,15 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 					cp $LINUX_SRC $LINUX_DEST
 					#echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
 				fi
-
-        #echo $IMAGE_NAME>>log.txt
-        echo "------------------------------------">>$DEBUG_LOG/log.txt
-        echo "FMAC VERSION: $FMAC_VERSION">>$DEBUG_LOG/log.txt
-        echo "iMX Yocto Release: $iMXYoctoRelease">>$DEBUG_LOG/log.txt
-
-
-        #cp $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bb \
-        mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bb \
+        			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bb \
 					$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bbx
-				#cp $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bb \
-        mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bb \
+        			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bb \
 					$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bbx
 				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 \
 					$BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
 				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 \
 					$BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
-
-        #echo "cp '$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bb">>$DEBUG_LOG/log.txt
-        echo "mv '$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bb">>$DEBUG_LOG/log.txt
-  			echo "'$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bbx">>$DEBUG_LOG/log.txt
-  			#echo "cp '$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bb">>$DEBUG_LOG/log.txt
-        echo "mv '$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bb">>$DEBUG_LOG/log.txt
-  			echo "'$'BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bbx">>$DEBUG_LOG/log.txt
-  			echo "cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8">>$DEBUG_LOG/log.txt
-  			echo "'$'BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb">>$DEBUG_LOG/log.txt
-  			echo "cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8">>$DEBUG_LOG/log.txt
-  			echo "'$'BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb">>$DEBUG_LOG/log.txt
-
-			else
+			else 
 				#echo "DEBUG FOR IMX6,7-rocko-mini: COPYING bb appends files"
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 					cp $LINUX_SRC $LINUX_DEST
@@ -2931,8 +2804,6 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 
 	if [ "$PROCEED_BUILD" = "y" ] || [ "$PROCEED_BUILD" = "Y" ] || [ "$PROCEED_BUILD" = "" ] ; then
 		bitbake $IMAGE_NAME
-    echo "lastly....">>$DEBUG_LOG/log.txt
-    echo $IMAGE_NAME>>$DEBUG_LOG/log.txt
 		exit
 	else
 		echo -e "${RED}Exiting script.....${NC}"
@@ -2945,3 +2816,10 @@ fi
 
 fi
 #*************************************** For i.MX - end *****************************************
+
+
+
+
+
+
+
