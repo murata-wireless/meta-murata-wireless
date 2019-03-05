@@ -847,3 +847,20 @@ index 8445a25..49d8fe3 100644
  			>;
  		};
  
+diff --git a/arch/arm/boot/dts/imx7d.dtsi b/arch/arm/boot/dts/imx7d.dtsi
+index ad2fce8..c8cd9b3 100644
+--- a/arch/arm/boot/dts/imx7d.dtsi
++++ b/arch/arm/boot/dts/imx7d.dtsi
+@@ -303,6 +303,12 @@
+ 		status = "disabled";
+ 	};
+ 
++	pcie_phy: pcie-phy@306d0000 {
++		  compatible = "fsl,imx-pcie-phy";
++		  reg = <0x306d0000 0x10000>;
++		  status = "disabled";
++	};
++
+ 	epdc: epdc@306f0000 {
+ 		compatible = "fsl,imx7d-epdc";
+ 		interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
