@@ -174,7 +174,7 @@ while true; do
 		break
 	else
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
-		echo $'\n'
+		echo $'\n'	
 	fi
 done
 
@@ -465,7 +465,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	echo " "
 	echo "********************************************************************************"
 	echo "* Thank you for entering necessary configuration!                              *"
-	echo "* Please be patient to complete the last phase of the build script process.    *"
+	echo "* Please be patient to complete the last phase of the build script process.    *"  
 	echo "* Final steps of the build script require user to wait till the repositories   *"
 	echo "* gets downloaded.                                                             *"
 	echo -e "* ${YLW}NOTE: It may take several minutes to download repositories.                  ${NC}*"
@@ -489,7 +489,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
 	fi
 	done
-
+	
 	# Invoke Repo Init based on Yocto Release
 	if [ "$TiSitaraYoctoRelease" = "$TiSitaramortyYoctoam437x" ] || [ "$TiSitaraYoctoRelease" = "$TiSitaramortyYoctoam572x" ] || [ "$TiSitaraYoctoRelease" = "$TiSitaramortyYoctoam335x" ]; then
 		git clone git://arago-project.org/git/projects/oe-layersetup.git tisdk
@@ -575,7 +575,7 @@ echo "FMAC DEBUG:: $FMAC_VERSION"
 		break
 	else
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
-		echo $'\n'
+		echo $'\n'	
 	fi
 done
 
@@ -592,7 +592,7 @@ done
 		echo "|-----|------------------|---------|---------------|-----------------------|"
 		echo "|  1  | 4.9.51 8MQ Beta  | morty   | 8             | imx8-morty-orga_r1.2  |"
 		echo "|  2  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-orga_r1.3   |"
-		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-orga_r1.2 |"
+		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-orga_r1.2 |" 
 		echo "----------------------------------------------------------------------------"
 		break
 #FMAC_VERSION="1" for ORGA - DEVELOPER
@@ -608,7 +608,7 @@ done
 		echo "|-----|------------------|---------|---------------|-----------------------|"
 		echo "|  1  | 4.9.51 8MQ Beta  | morty   | 8             | imx8-morty-orga       |"
 		echo "|  2  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-orga        |"
-		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-orga      |"
+		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-orga      |" 
 		echo "----------------------------------------------------------------------------"
 		break
 #FMAC_VERSION="2" for BATTRA - STABLE
@@ -624,7 +624,7 @@ done
 		echo "|-----|------------------|---------|---------------|-------------------------|"
 		echo "|  1  | 4.9.51 8MQ Beta  | morty   | 8             | imx8-morty-battra_r1.1  |"
 		echo "|  2  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-battra_r1.1   |"
-		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-battra_r1.1 |"
+		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-battra_r1.1 |" 
 		echo "------------------------------------------------------------------------------"
 		break
 #FMAC_VERSION="2" for BATTRA - DEVELOPER
@@ -640,7 +640,7 @@ done
 		echo "|-----|------------------|---------|---------------|-----------------------|"
 		echo "|  1  | 4.9.51 8MQ Beta  | morty   | 8             | imx8-morty-battra     |"
 		echo "|  2  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-battra      |"
-		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-battra    |"
+		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-battra    |" 
 		echo "----------------------------------------------------------------------------"
 		break
 #FMAC_VERSION="3" for MOTHRA - STABLE
@@ -723,7 +723,7 @@ while true; do
 		break
 	else
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
-		echo $'\n'
+		echo $'\n'	
 	fi
 done
 
