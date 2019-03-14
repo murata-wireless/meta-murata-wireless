@@ -1,8 +1,8 @@
 diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index c107c29..ca3f278 100644
+index 742a8f5..dc41be1 100644
 --- a/arch/arm/boot/dts/Makefile
 +++ b/arch/arm/boot/dts/Makefile
-@@ -368,6 +368,7 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+@@ -388,6 +388,7 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
  	imx6ul-14x14-ddr3-arm2-wm8958.dtb \
  	imx6ul-14x14-evk.dtb \
  	imx6ul-14x14-evk-btwifi.dtb \
@@ -10,7 +10,7 @@ index c107c29..ca3f278 100644
  	imx6ul-14x14-evk-csi.dtb \
  	imx6ul-14x14-evk-emmc.dtb \
  	imx6ul-14x14-evk-gpmi-weim.dtb \
-@@ -375,6 +376,7 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+@@ -395,6 +396,7 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
  	imx6ul-14x14-lpddr2-arm2.dtb \
  	imx6ul-9x9-evk.dtb \
  	imx6ul-9x9-evk-btwifi.dtb \
@@ -18,7 +18,7 @@ index c107c29..ca3f278 100644
  	imx6ul-9x9-evk-csi.dtb \
  	imx6ul-9x9-evk-ldo.dtb
  dtb-$(CONFIG_SOC_IMX6ULL) += \
-@@ -396,11 +398,13 @@ dtb-$(CONFIG_SOC_IMX6ULL) += \
+@@ -416,11 +418,13 @@ dtb-$(CONFIG_SOC_IMX6ULL) += \
  	imx6ull-14x14-ddr3-arm2-wm8958.dtb \
  	imx6ull-14x14-evk.dtb \
  	imx6ull-14x14-evk-btwifi.dtb \
@@ -27,12 +27,11 @@ index c107c29..ca3f278 100644
  	imx6ull-14x14-evk-gpmi-weim.dtb \
  	imx6ull-14x14-evk-usb-certi.dtb \
  	imx6ull-9x9-evk.dtb \
--	imx6ull-9x9-evk-btwifi.dtb
-+	imx6ull-9x9-evk-btwifi.dtb \
-+	imx6ull-9x9-evk-btwifi-oob.dtb
- dtb-$(CONFIG_SOC_IMX7D) += \
- 	imx7d-12x12-lpddr3-arm2.dtb \
- 	imx7d-12x12-lpddr3-arm2-m4.dtb \
+ 	imx6ull-9x9-evk-btwifi.dtb \
++	imx6ull-9x9-evk-btwifi-oob.dtb \
+ 	imx6ull-9x9-evk-ldo.dtb
+ dtb-$(CONFIG_SOC_IMX6SLL) += \
+ 	imx6sll-lpddr2-arm2.dtb \
 diff --git a/arch/arm/boot/dts/imx6qdl-sabresd-btwifi.dtsi b/arch/arm/boot/dts/imx6qdl-sabresd-btwifi.dtsi
 index 5e697a0..0bfa9e9 100644
 --- a/arch/arm/boot/dts/imx6qdl-sabresd-btwifi.dtsi
@@ -332,7 +331,7 @@ index 0000000..dfd1545
 +#include "imx6ul-14x14-evk-btwifi.dts"
 +#include "imx6ul-evk-btwifi-oob.dtsi"
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk.dts b/arch/arm/boot/dts/imx6ul-14x14-evk.dts
-index b4abb5b..0d917c6 100644
+index d643665..3937aa6 100644
 --- a/arch/arm/boot/dts/imx6ul-14x14-evk.dts
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk.dts
 @@ -168,12 +168,24 @@
@@ -391,10 +390,10 @@ index 0000000..54fa0f8
 +#include "imx6ul-9x9-evk-btwifi.dts"
 +#include "imx6ul-evk-btwifi-oob.dtsi"
 diff --git a/arch/arm/boot/dts/imx6ul-9x9-evk.dts b/arch/arm/boot/dts/imx6ul-9x9-evk.dts
-index 7a6e8c8..3c54d15 100644
+index 32520d2..cc67f58 100644
 --- a/arch/arm/boot/dts/imx6ul-9x9-evk.dts
 +++ b/arch/arm/boot/dts/imx6ul-9x9-evk.dts
-@@ -185,12 +185,24 @@
+@@ -187,12 +187,24 @@
  	};
  };
  
@@ -419,7 +418,7 @@ index 7a6e8c8..3c54d15 100644
  };
  
  &fec2 {
-@@ -204,11 +216,6 @@
+@@ -206,11 +218,6 @@
  		#address-cells = <1>;
  		#size-cells = <0>;
  
@@ -581,7 +580,7 @@ index 0000000..4b50422
 +#include "imx6ull-14x14-evk-btwifi.dts"
 +#include "imx6ul-evk-btwifi-oob.dtsi"
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk.dts b/arch/arm/boot/dts/imx6ull-14x14-evk.dts
-index e44fa9d..b39eecf 100644
+index b0fb913..48c815d 100644
 --- a/arch/arm/boot/dts/imx6ull-14x14-evk.dts
 +++ b/arch/arm/boot/dts/imx6ull-14x14-evk.dts
 @@ -168,12 +168,24 @@
@@ -640,10 +639,10 @@ index 0000000..5840a67
 +#include "imx6ull-9x9-evk-btwifi.dts"
 +#include "imx6ul-evk-btwifi-oob.dtsi"
 diff --git a/arch/arm/boot/dts/imx6ull-9x9-evk.dts b/arch/arm/boot/dts/imx6ull-9x9-evk.dts
-index 9ca45fa..6045fcb 100644
+index 6a772ef..414af0f 100644
 --- a/arch/arm/boot/dts/imx6ull-9x9-evk.dts
 +++ b/arch/arm/boot/dts/imx6ull-9x9-evk.dts
-@@ -185,12 +185,24 @@
+@@ -187,12 +187,24 @@
  	};
  };
  
@@ -668,7 +667,7 @@ index 9ca45fa..6045fcb 100644
  };
  
  &fec2 {
-@@ -204,11 +216,6 @@
+@@ -206,11 +218,6 @@
  		#address-cells = <1>;
  		#size-cells = <0>;
  
