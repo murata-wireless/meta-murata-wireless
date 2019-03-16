@@ -681,7 +681,7 @@ index 9ca45fa..6045fcb 100644
  			compatible = "ethernet-phy-ieee802.3-c22";
  			reg = <1>;
 diff --git a/arch/arm/boot/dts/imx7d-sdb.dts b/arch/arm/boot/dts/imx7d-sdb.dts
-index 8f03224..10b89b3 100644
+index 8f03224..2f0ecf3 100644
 --- a/arch/arm/boot/dts/imx7d-sdb.dts
 +++ b/arch/arm/boot/dts/imx7d-sdb.dts
 @@ -4,6 +4,8 @@
@@ -742,7 +742,15 @@ index 8f03224..10b89b3 100644
  	};
  };
  
-@@ -841,6 +839,7 @@
+@@ -551,7 +549,6 @@
+ 	imx7d-sdb {
+ 		pinctrl_hog_1: hoggrp-1 {
+ 			fsl,pins = <
+-				MX7D_PAD_ECSPI2_SS0__GPIO4_IO23	0x19 /* BT_REG_ON */
+ 				MX7D_PAD_EPDC_BDR0__GPIO2_IO28	0x59 /* headphone detect */
+ 			>;
+ 		};
+@@ -841,6 +838,7 @@
  				MX7D_PAD_ECSPI1_SCLK__UART6_DCE_RX 0x79
  				MX7D_PAD_ECSPI1_SS0__UART6_DCE_CTS 0x79
  				MX7D_PAD_ECSPI1_MISO__UART6_DCE_RTS 0x79
@@ -750,7 +758,7 @@ index 8f03224..10b89b3 100644
  			>;
  		};
  
-@@ -913,6 +912,8 @@
+@@ -913,6 +911,8 @@
  				MX7D_PAD_SD2_DATA1__SD2_DATA1   0x5a
  				MX7D_PAD_SD2_DATA2__SD2_DATA2   0x5a
  				MX7D_PAD_SD2_DATA3__SD2_DATA3   0x5a
@@ -759,7 +767,7 @@ index 8f03224..10b89b3 100644
  			>;
  		};
  
-@@ -924,6 +925,8 @@
+@@ -924,6 +924,8 @@
  				MX7D_PAD_SD2_DATA1__SD2_DATA1   0x5b
  				MX7D_PAD_SD2_DATA2__SD2_DATA2   0x5b
  				MX7D_PAD_SD2_DATA3__SD2_DATA3   0x5b
@@ -768,7 +776,7 @@ index 8f03224..10b89b3 100644
  			>;
  		};
  
-@@ -1125,6 +1128,7 @@
+@@ -1125,6 +1127,7 @@
  	assigned-clocks = <&clks IMX7D_UART6_ROOT_SRC>;
  	assigned-clock-parents = <&clks IMX7D_PLL_SYS_MAIN_240M_CLK>;
  	fsl,uart-has-rtscts;
@@ -776,7 +784,7 @@ index 8f03224..10b89b3 100644
  	status = "okay";
  };
  
-@@ -1156,17 +1160,25 @@
+@@ -1156,17 +1159,25 @@
  };
  
  &usdhc2 {
