@@ -733,7 +733,7 @@ index 9991169..25e9361 100644
  			compatible = "ethernet-phy-ieee802.3-c22";
  			reg = <1>;
 diff --git a/arch/arm/boot/dts/imx7d-sdb.dts b/arch/arm/boot/dts/imx7d-sdb.dts
-index 8445a25..49d8fe3 100644
+index 8445a25..eb89637 100644
 --- a/arch/arm/boot/dts/imx7d-sdb.dts
 +++ b/arch/arm/boot/dts/imx7d-sdb.dts
 @@ -38,6 +38,8 @@
@@ -798,6 +798,15 @@ index 8445a25..49d8fe3 100644
  &pcie {
  	pinctrl-names = "default";
  	reset-gpio = <&gpio_spi 1 GPIO_ACTIVE_LOW>;
+@@ -729,7 +724,7 @@
+ 	/* for DTE mode, add below change */
+ 	/* fsl,dte-mode; */
+ 	/* pinctrl-0 = <&pinctrl_uart5dte>; */
+-	status = "okay";
++	status = "disabled";
+ };
+ 
+ &uart6 {
 @@ -771,17 +766,25 @@
  };
  
@@ -829,6 +838,15 @@ index 8445a25..49d8fe3 100644
  };
  
  &usdhc3 {
+@@ -805,7 +808,7 @@
+ &gpmi {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_gpmi_nand_1>;
+-	status = "disabled";
++	status = "okay";
+ 	nand-on-flash-bbt;
+ };
+ 
 @@ -1175,6 +1178,8 @@
  				MX7D_PAD_SD2_DATA1__SD2_DATA1		0x5a
  				MX7D_PAD_SD2_DATA2__SD2_DATA2		0x5a
@@ -847,3 +865,20 @@ index 8445a25..49d8fe3 100644
  			>;
  		};
  
+diff --git a/arch/arm/boot/dts/imx7d.dtsi b/arch/arm/boot/dts/imx7d.dtsi
+index ad2fce8..c8cd9b3 100644
+--- a/arch/arm/boot/dts/imx7d.dtsi
++++ b/arch/arm/boot/dts/imx7d.dtsi
+@@ -303,6 +303,12 @@
+ 		status = "disabled";
+ 	};
+ 
++	pcie_phy: pcie-phy@306d0000 {
++		  compatible = "fsl,imx-pcie-phy";
++		  reg = <0x306d0000 0x10000>;
++		  status = "disabled";
++	};
++
+ 	epdc: epdc@306f0000 {
+ 		compatible = "fsl,imx7d-epdc";
+ 		interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
