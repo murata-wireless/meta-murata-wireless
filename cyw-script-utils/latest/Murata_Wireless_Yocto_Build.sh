@@ -1109,9 +1109,19 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 
 				11)
 				#echo "DEBUG:: Copying 123 bbappend file for 8MQ"
-				LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
-				LINUX_DEST=linux-imx_4.9.123.bbappend
+				#LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
+				#LINUX_DEST=linux-imx_4.9.123.bbappend
+
 				#echo "DEBUG:: Before copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
+				
+				if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
+				  LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
+				  LINUX_DEST=linux-imx_4.9.123.bbappend
+				elif [ "$iMXYoctoRelease" = "$imxrockoYocto" ]; then
+				  LINUX_SRC=linux-imx_4.9.88.bbappend.8MQ
+				  LINUX_DEST=linux-imx_4.9.88.bbappend
+				fi
+
 				TARGET_NAME=imx8mqevk
 				break
 				;;
@@ -2764,9 +2774,9 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 					cp $LINUX_SRC $LINUX_DEST
 					#echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
 				fi
-				cp $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bb \
+        			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bb \
 					$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bbx
-				cp $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bb \
+        			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bb \
 					$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bbx
 				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 \
 					$BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
