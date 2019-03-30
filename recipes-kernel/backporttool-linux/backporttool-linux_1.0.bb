@@ -4,8 +4,8 @@ DESCRIPTION = "Cypress FMAC backport"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
-SRC_URI =  "https://github.com/jameelkareem-sample/cyw-fmac/raw/imx-krogoth-mandad/imx-krogoth-manda_r${PV}.tar.gz;name=archive1"
-SRC_URI += "https://github.com/jameelkareem-sample/meta-murata-wireless/raw/imx-krogoth-manda/LICENSE;name=archive99"
+SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-krogoth-mandad/imx-krogoth-manda_r${PV}.tar.gz;name=archive1"
+SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-krogoth-manda/LICENSE;name=archive99"
 
 SRC_URI[archive1.md5sum] = "24f7dfcea193799e1d99a3b228406b98"
 SRC_URI[archive1.sha256sum] = "21ee3417473ad7c262abfc84c0cffa0791ba5066589dd53023bc581ea9435652"

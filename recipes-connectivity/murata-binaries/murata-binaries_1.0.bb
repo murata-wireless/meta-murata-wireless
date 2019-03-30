@@ -4,10 +4,10 @@ LICENSE = "BSD"
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
 SRC_URI = " \
-	git://github.com/jameelkareem-sample/cyw-fmac-fw;protocol=http;branch=manda;destsuffix=cyw-fmac-fw \
-	git://github.com/jameelkareem-sample/cyw-fmac-nvram;protocol=http;branch=manda;destsuffix=cyw-fmac-nvram \
-	git://github.com/jameelkareem-sample/cyw-bt-patch;protocol=http;branch=krogoth-manda;destsuffix=cyw-bt-patch \
-	git://github.com/jameelkareem-sample/cyw-fmac-utils-imx32;protocol=http;branch=manda;destsuffix=cyw-fmac-utils-imx32 \
+	git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=manda;destsuffix=cyw-fmac-fw \
+	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=manda;destsuffix=cyw-fmac-nvram \
+	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=krogoth-manda;destsuffix=cyw-bt-patch \
+	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=manda;destsuffix=cyw-fmac-utils-imx32 \
 	file://10-network.rules \
 "
 
