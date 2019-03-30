@@ -10,8 +10,8 @@ inherit native
 
 SYSTEMD_AUTO_ENABLE = "disable"
 
-SRC_URI =  "https://github.com/jameelkareem-sample/cyw-fmac/raw/imx-morty-manda/imx-morty-manda_r${PV}.tar.gz;name=archive1"
-SRC_URI += "https://github.com/jameelkareem-sample/meta-murata-wireless/raw/imx-morty-manda/LICENSE;name=archive99"
+SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-morty-manda/imx-morty-manda_r${PV}.tar.gz;name=archive1"
+SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-morty-manda/LICENSE;name=archive99"
 #SRC_URI += "file://0001-murata-customization-version-update.patch;patchdir=${WORKDIR}/imx-morty-manda_r${PV}"
 #SRC_URI += "file://0002-brcmfmac-fix-4339-CRC-error-under-SDIO-3.0-SDR104-mo-updated.patch;patchdir=${WORKDIR}/imx-morty-manda_r${PV}"
 #SRC_URI += "file://0003-murata-rx-transmit-max-perf.patch;patchdir=${WORKDIR}/imx-morty-manda_r${PV}"
