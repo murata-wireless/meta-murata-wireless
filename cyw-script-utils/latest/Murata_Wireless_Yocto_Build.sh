@@ -2729,8 +2729,17 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 			fi
 		fi
 
-
-		# MANDA is supported for ROCKO-MINI, ROCKO, MORTY and KROGOTH.
+		# MANDA is supported for ROCKO-MINI, ROCKO, MORTY and KROGOTH.	
+		
+		# For TARGET_NAME = imx6ulevk, imx6ull14x14evk, imx6ull9x9evk,and imx6sxsabresd, they can have 1.8V, need to update bbappend accordingly
+                if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] ; then
+                	if [ "$TARGET_NAME" = "imx6ulevk" ] ||  [ "$TARGET_NAME" = "imx6ull14x14evk" ] ||  [ "$TARGET_NAME" = "imx6ull9x9evk" ] ||  [ "$TARGET_NAME" = "imx6sxsabresd" ] ]; then
+        			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+          				cp $LINUX_SRC $LINUX_DEST
+        			fi
+      			fi
+    		fi
+		
 		#TARGET_NAME=imx8mqevk => rocko-manda
 		if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$iMXYoctoRelease" = "$imxrockoYocto" ]; then
 			#echo "DEBUG:: MANDA-LOADING-FOR-ROCKO"
