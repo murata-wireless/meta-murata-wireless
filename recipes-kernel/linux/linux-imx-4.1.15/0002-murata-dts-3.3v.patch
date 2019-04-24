@@ -94,11 +94,12 @@ index 0000000..602f401
 +#include "imx6q-sabresd-btwifi-m2-oob.dtsi"
 diff --git a/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2.dts b/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2.dts
 new file mode 100644
-index 0000000..47f2495
+index 0000000..4742495
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2.dts
-@@ -0,0 +1 @@
-+#include "imx6dl-sabresd-btwifi.dts"
+@@ -0,0 +1,2 @@
++#include "imx6dl-sabresd.dts"
++#include "imx6qdl-sabresd-btwifi-m2.dtsi"
 diff --git a/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dts
 new file mode 100644
 index 0000000..2e8b621
@@ -131,11 +132,121 @@ index 0000000..48845c8
 +};
 diff --git a/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2.dts b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2.dts
 new file mode 100644
-index 0000000..24c7d39
+index 0000000..7985b59
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2.dts
-@@ -0,0 +1 @@
-+#include "imx6q-sabresd-btwifi.dts"
+@@ -0,0 +1,2 @@
++#include "imx6q-sabresd.dts"
++#include "imx6qdl-sabresd-btwifi-m2.dtsi"
+diff --git a/arch/arm/boot/dts/imx6qdl-sabresd-btwifi-m2.dtsi b/arch/arm/boot/dts/imx6qdl-sabresd-btwifi-m2.dtsi
+new file mode 100644
+index 0000000..08d9098
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6qdl-sabresd-btwifi-m2.dtsi
+@@ -0,0 +1,103 @@
++/*
++ * Copyright (C) 2015 Freescale Semiconductor, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++/*
++ * NOTE: This DTS file is written for plugging in Murata Wi-Fi/BT EVK into SD2
++ * slot using Murata i.MX InterConnect Ver 2.0 Adapter & connecting Bluetooth
++ * UART & control signals via ribbon cable.
++ * This configuration supports both WLAN and Bluetooth.
++ * WL_REG_ON/BT_REG_ON/WL_HOST_WAKE are connected via ribbon cable (J13 connector
++ * on board).
++ * ==> Hardware modification is required. Refer to schematic.
++ *
++ * Murata: modified to support WLAN FMAC driver with OOB IRQ configuration.
++ */
++
++/ {
++	leds {
++		compatible = "gpio-leds";
++		status = "disabled";
++	};
++
++	modem_reset: modem-reset {
++		compatible = "gpio-reset";
++		reset-gpios = <&gpio1 2 GPIO_ACTIVE_LOW>;
++		reset-delay-us = <1000>;
++		#reset-cells = <0>;
++	};
++
++	usdhc2_pwrseq: usdhc2_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio4 7 GPIO_ACTIVE_LOW>;
++ 	};
++};
++
++&ecspi1 {
++	status = "disabled";
++};
++
++&iomuxc {
++	imx6qdl-sabresd-murata-v2 {
++		pinctrl_btreg: btreggrp {
++			fsl,pins = <
++				MX6QDL_PAD_GPIO_2__GPIO1_IO02 0x1b0b0  /* BT_REG_ON */
++			>;
++		};
++
++		/* add MUXing entry for SD2 4-bit interface and configure control pins */
++		pinctrl_wifi: wifigrp {
++			fsl,pins = <
++				MX6QDL_PAD_SD2_CMD__SD2_CMD		0x17059
++				MX6QDL_PAD_SD2_CLK__SD2_CLK		0x10059
++				MX6QDL_PAD_SD2_DAT0__SD2_DATA0		0x17059
++				MX6QDL_PAD_SD2_DAT1__SD2_DATA1		0x17059
++				MX6QDL_PAD_SD2_DAT2__SD2_DATA2		0x17059
++				MX6QDL_PAD_SD2_DAT3__SD2_DATA3		0x17059
++				MX6QDL_PAD_KEY_ROW0__GPIO4_IO07		0x13069	/* WL_REG_ON */
++				MX6QDL_PAD_KEY_COL0__GPIO4_IO06		0x13069	/* WL_HOST_WAKE */
++			>;
++		};
++	};
++};
++
++/* re-defining gpio_leds removes conflict with BT_REG_ON */
++&pinctrl_gpio_leds {
++	fsl,pins = <
++	>;
++};
++
++&uart5 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart5_1
++		     &pinctrl_btreg>;
++	fsl,uart-has-rtscts;
++	resets = <&modem_reset>;
++	status = "okay";
++	/* for DTE mode, add below change */
++	/* fsl,dte-mode; */
++	/* pinctrl-0 = <&pinctrl_uart5dte_1>; */
++};
++
++&usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_wifi>;
++	bus-width = <4>;
++	no-1-8-v;
++	non-removable;
++	cap-power-off-card;
++	pm-ignore-notify; 
++	wifi-host;
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	};
++};
 diff --git a/arch/arm/boot/dts/imx6qdl-sabresd-btwifi.dtsi b/arch/arm/boot/dts/imx6qdl-sabresd-btwifi.dtsi
 index 5e697a0..0bfa9e9 100644
 --- a/arch/arm/boot/dts/imx6qdl-sabresd-btwifi.dtsi
@@ -252,28 +363,131 @@ index 0000000..b08baf8
 +#include "imx6q-sabresd-btwifi-m2-oob.dtsi"
 diff --git a/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2.dts b/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2.dts
 new file mode 100644
-index 0000000..0bb090d
+index 0000000..1c4a097
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2.dts
-@@ -0,0 +1 @@
-+#include "imx6qp-sabresd-btwifi.dts"
+@@ -0,0 +1,2 @@
++#include "imx6qp-sabresd.dts"
++#include "imx6qdl-sabresd-btwifi-m2.dtsi"
 diff --git a/arch/arm/boot/dts/imx6sl-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6sl-evk-btwifi-m2.dts
 new file mode 100644
-index 0000000..ec6c693
+index 0000000..95c01df
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6sl-evk-btwifi-m2.dts
-@@ -0,0 +1 @@
-+#include "imx6sl-evk-btwifi.dts"
+@@ -0,0 +1,103 @@
++//#include "imx6sl-evk-btwifi.dts"
++/*
++ * Copyright (C) 2015 Freescale Semiconductor, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++/* NOTE: This DTS file is written for plugging in Murata Wi-Fi/BT EVK into SD1
++ * slot using Murata i.MX InterConnect Ver 1.0 Adapter AND wiring in control
++ * signals with SD Card Extender on SD3 slot.
++ * Bluetooth UART connect via SD1 EMMC/MMC Plus pinout.
++ * WL_REG_ON/BT_REG_ON/WL_HOST_WAKE are connected from SD Card Extender on SD3
++ * slot.
++ *
++ * Murata: modified to support WLAN FMAC driver with OOB IRQ configuration.
++ */
++#include "imx6sl-evk.dts"
++
++/ {
++	modem_reset: modem-reset {
++		compatible = "gpio-reset";
++		reset-gpios = <&gpio5 17 GPIO_ACTIVE_LOW>;
++		reset-delay-us = <1000>;
++		#reset-cells = <0>;
++	};
++
++	usdhc1_pwrseq: usdhc1_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio5 16 GPIO_ACTIVE_LOW>;
++ 	};
++};
++
++&iomuxc {
++	imx6sl-evk-murata-v1_sdext {
++		/* Only MUX SD1_DAT0..3 lines so UART4 can be MUXed on higher data lines. */
++		pinctrl_btreg: btreggrp {
++			fsl,pins = <
++				MX6SL_PAD_SD3_DAT3__GPIO5_IO17          0x13069 /* BT_REG_ON */
++			>;
++		};
++		pinctrl_wifi: wifigrp {
++			fsl,pins = <
++				MX6SL_PAD_SD1_CMD__SD1_CMD		0x17059
++				MX6SL_PAD_SD1_CLK__SD1_CLK		0x10059
++				MX6SL_PAD_SD1_DAT0__SD1_DATA0		0x17059
++				MX6SL_PAD_SD1_DAT1__SD1_DATA1		0x17059
++				MX6SL_PAD_SD1_DAT2__SD1_DATA2		0x17059
++				MX6SL_PAD_SD1_DAT3__SD1_DATA3		0x17059
++				MX6SL_PAD_SD3_DAT1__GPIO5_IO20		0x13069 /* WL_HOST_WAKE */
++				MX6SL_PAD_SD3_DAT2__GPIO5_IO16		0x13069 /* WL_REG_ON */
++			>;
++		};
++
++		pinctrl_usdhc3_1: usdhc3grp-1 {
++			fsl,pins = <
++				MX6SL_PAD_SD3_CMD__SD3_CMD		0x17059
++				MX6SL_PAD_SD3_CLK__SD3_CLK		0x10059
++				MX6SL_PAD_SD3_DAT0__SD3_DATA0		0x17059
++			>;
++		};
++	};
++};
++
++/* Murata: declare UART4 interface for Bluetooth. */
++&uart4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart4_1
++		     &pinctrl_btreg>;
++	fsl,uart-has-rtscts;
++	resets = <&modem_reset>;
++	status = "okay";
++	/* for DTE mode, add below change */
++	/* fsl,dte-mode; */
++	/* pinctrl-0 = <&pinctrl_uart4dte_1>; */
++};
++
++&usdhc1 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_wifi>;
++	bus-width = <4>;
++	no-1-8-v;
++	non-removable;
++	cap-power-off-card;
++	pm-ignore-notify;
++	wifi-host;
++	mmc-pwrseq = <&usdhc1_pwrseq>;
++	status = "okay";
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	};
++};
++
++&usdhc3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usdhc3_1>;
++	bus-width = <1>;
++	no-1-8-v;
++};
 diff --git a/arch/arm/boot/dts/imx6sl-evk-btwifi.dts b/arch/arm/boot/dts/imx6sl-evk-btwifi.dts
-index b740c81..ea4a50d 100644
+index b740c81..bb64aab2 100644
 --- a/arch/arm/boot/dts/imx6sl-evk-btwifi.dts
 +++ b/arch/arm/boot/dts/imx6sl-evk-btwifi.dts
 @@ -12,32 +12,33 @@
   * Bluetooth UART connect via SD1 EMMC/MMC Plus pinout.
   * WL_REG_ON/BT_REG_ON/WL_HOST_WAKE are connected from SD Card Extender on SD3
   * slot.
-+ * 
-+ * Murata: modified to support WLAN FMAC driver with OOB IRQ configuration. 
++ *
++ * Murata: modified to support WLAN FMAC driver with OOB IRQ configuration.
   */
  #include "imx6sl-evk.dts"
  
@@ -343,11 +557,9 @@ index b740c81..ea4a50d 100644
  	no-1-8-v;
  	non-removable;
 -	cd-post;
--	pm-ignore-notify;
--	wifi-host;
 +	cap-power-off-card;
-+	pm-ignore-notify; 
-+	wifi-host; 
+ 	pm-ignore-notify;
+ 	wifi-host;
 +	mmc-pwrseq = <&usdhc1_pwrseq>;
 +	status = "okay";
 +	brcmf: bcrmf@1 {
