@@ -1,13 +1,29 @@
 diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-index 5be0191..b58b578 100755
+index 5be0191..7f2bfd5 100755
 --- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
 +++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-@@ -63,7 +63,7 @@
+@@ -11,8 +11,8 @@
+  * SD1 and using Murata i.MX InterConnect Ver 2.0 Adapter. Bluetooth UART &
+  * control signals are connected via ribbon cable (J1701 connector).
+  *
+- * Murata: modified to support WLAN FMAC driver with SDIO in-band interrupt: default HW configuration for i.MX6UL(L) EVK. 
+- * For OOB IRQ configuration refer to imx6ul-evk-btwifi-oob.dtsi file and corresponding i.MX6UL(L) DTB files that include it. 
++ * Murata: modified to support WLAN FMAC driver with SDIO in-band interrupt: default HW configuration for i.MX6UL(L) EVK.
++ * For OOB IRQ configuration refer to imx6ul-evk-btwifi-oob.dtsi file and corresponding i.MX6UL(L) DTB files that include it.
+  */
+ 
+ / {
+@@ -63,10 +63,11 @@
  	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
  	pinctrl-1 = <&pinctrl_usdhc1_100mhz &pinctrl_wifi>;
  	pinctrl-2 = <&pinctrl_usdhc1_200mhz &pinctrl_wifi>;
 -//	no-1-8-v; /* Murata - comment out for UHS mode */
-+	no-1-8-v; /* Murata - comment out for UHS mode */
++	max-frequency = <50000000>;
++	//no-1-8-v; /* Murata - comment out for UHS mode */
  	non-removable;
  	cap-power-off-card;
- 	pm-ignore-notify; 
+-	pm-ignore-notify; 
++	pm-ignore-notify;
+ 	wifi-host;
+ 	mmc-pwrseq = <&usdhc1_pwrseq>;
+ 
