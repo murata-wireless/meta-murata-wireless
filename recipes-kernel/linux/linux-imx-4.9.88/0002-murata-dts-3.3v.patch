@@ -1,3 +1,102 @@
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index a27f489..915976f 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -353,6 +353,8 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
+ 	imx6dl-sabrelite.dtb \
+ 	imx6dl-sabresd.dtb \
+ 	imx6dl-sabresd-btwifi.dtb \
++	imx6dl-sabresd-btwifi-m2.dtb \
++	imx6dl-sabresd-btwifi-m2-oob.dtb \
+ 	imx6dl-sabresd-hdcp.dtb \
+ 	imx6dl-sabresd-ldo.dtb \
+ 	imx6dl-ts4900.dtb \
+@@ -418,6 +420,8 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
+ 	imx6q-sabrelite.dtb \
+ 	imx6q-sabresd.dtb \
+ 	imx6q-sabresd-btwifi.dtb \
++	imx6q-sabresd-btwifi-m2.dtb \
++	imx6q-sabresd-btwifi-m2-oob.dtb \
+ 	imx6q-sabresd-hdcp.dtb \
+ 	imx6q-sabresd-ldo.dtb \
+ 	imx6q-sabresd-enetirq.dtb \
+@@ -441,6 +445,8 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
+ 	imx6qp-sabreauto-flexcan1.dtb \
+ 	imx6qp-sabreauto-gpmi-weim.dtb \
+ 	imx6qp-sabresd-btwifi.dtb \
++	imx6qp-sabresd-btwifi-m2.dtb \
++	imx6qp-sabresd-btwifi-m2-oob.dtb \
+ 	imx6qp-sabresd-hdcp.dtb \
+ 	imx6qp-sabresd-ldo.dtb \
+ 	imx6qp-sabresd-ldo-pcie-cert.dtb \
+@@ -448,6 +454,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
+ dtb-$(CONFIG_SOC_IMX6SL) += \
+ 	imx6sl-evk.dtb \
+ 	imx6sl-evk-btwifi.dtb \
++	imx6sl-evk-btwifi-m2.dtb \
+ 	imx6sl-evk-ldo.dtb \
+ 	imx6sl-evk-csi.dtb \
+ 	imx6sl-evk-uart.dtb \
+@@ -462,6 +469,8 @@ dtb-$(CONFIG_SOC_IMX6SX) += \
+ 	imx6sx-sdb-reva-ldo.dtb \
+ 	imx6sx-sdb.dtb	\
+ 	imx6sx-sdb-btwifi.dtb \
++	imx6sx-sdb-btwifi-m2.dtb \
++	imx6sx-sdb-btwifi-m2-oob.dtb \
+ 	imx6sx-sdb-emmc.dtb \
+ 	imx6sx-sdb-lcdif1.dtb \
+ 	imx6sx-sdb-ldo.dtb	\
+@@ -484,6 +493,8 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+ 	imx6ul-14x14-evk.dtb \
+ 	imx6ul-14x14-evk-btwifi.dtb \
+ 	imx6ul-14x14-evk-btwifi-oob.dtb \
++	imx6ul-14x14-evk-btwifi-m2.dtb \
++	imx6ul-14x14-evk-btwifi-m2-oob.dtb \
+ 	imx6ul-14x14-evk-csi.dtb \
+ 	imx6ul-14x14-evk-emmc.dtb \
+ 	imx6ul-14x14-evk-gpmi-weim.dtb \
+@@ -505,6 +516,8 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+ 	imx6ul-9x9-evk.dtb \
+ 	imx6ul-9x9-evk-btwifi.dtb \
+ 	imx6ul-9x9-evk-btwifi-oob.dtb \
++	imx6ul-9x9-evk-btwifi-m2.dtb \
++	imx6ul-9x9-evk-btwifi-m2-oob.dtb \
+ 	imx6ul-9x9-evk-csi.dtb \
+ 	imx6ul-9x9-evk-ldo.dtb
+ dtb-$(CONFIG_SOC_IMX6ULL) += \
+@@ -527,12 +540,16 @@ dtb-$(CONFIG_SOC_IMX6ULL) += \
+ 	imx6ull-14x14-evk.dtb \
+ 	imx6ull-14x14-evk-btwifi.dtb \
+ 	imx6ull-14x14-evk-btwifi-oob.dtb \
++	imx6ull-14x14-evk-btwifi-m2.dtb \
++	imx6ull-14x14-evk-btwifi-m2-oob.dtb \
+ 	imx6ull-14x14-evk-emmc.dtb \
+ 	imx6ull-14x14-evk-gpmi-weim.dtb \
+ 	imx6ull-14x14-evk-usb-certi.dtb \
+ 	imx6ull-9x9-evk.dtb \
+ 	imx6ull-9x9-evk-btwifi.dtb \
+ 	imx6ull-9x9-evk-btwifi-oob.dtb \
++	imx6ull-9x9-evk-btwifi-m2.dtb \
++	imx6ull-9x9-evk-btwifi-m2-oob.dtb \
+ 	imx6ull-9x9-evk-ldo.dtb
+ dtb-$(CONFIG_SOC_IMX6SLL) += \
+ 	imx6sll-lpddr2-arm2.dtb \
+diff --git a/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2-oob.dts
+new file mode 100644
+index 0000000..602f401
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2-oob.dts
+@@ -0,0 +1,2 @@
++#include "imx6dl-sabresd-btwifi-m2.dts"
++#include "imx6q-sabresd-btwifi-m2-oob.dtsi"
+diff --git a/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2.dts b/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2.dts
+new file mode 100644
+index 0000000..4742495
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2.dts
+@@ -0,0 +1,2 @@
++#include "imx6dl-sabresd.dts"
++#include "imx6qdl-sabresd-btwifi-m2.dtsi"
 diff --git a/arch/arm/boot/dts/imx6dqscm-qwks-rev3-btwifi.dtsi b/arch/arm/boot/dts/imx6dqscm-qwks-rev3-btwifi.dtsi
 index dc41db6..e096ca2 100644
 --- a/arch/arm/boot/dts/imx6dqscm-qwks-rev3-btwifi.dtsi
@@ -77,6 +176,153 @@ index dc41db6..e096ca2 100644
  			>;
  		};
  		pinctrl_uart4: uart4grp {
+diff --git a/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dts
+new file mode 100644
+index 0000000..2e8b621
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dts
+@@ -0,0 +1,2 @@
++#include "imx6q-sabresd-btwifi-m2.dts"
++#include "imx6q-sabresd-btwifi-m2-oob.dtsi"
+diff --git a/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dtsi b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dtsi
+new file mode 100644
+index 0000000..48845c8
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dtsi
+@@ -0,0 +1,16 @@
++&iomuxc {
++	imx6qdl-sabresd-murata-v2 {
++		/* add MUXing entry for SD2 4-bit interface and configure control pins */
++		pinctrl_wifi_oob: pinctrl_wifi {
++			fsl,pins = <
++				MX6QDL_PAD_KEY_COL0__GPIO4_IO06		0x0b000	/* WL_HOST_WAKE */
++			>;
++		};
++	};
++};
++
++&brcmf{
++	interrupt-parent = <&gpio4>;
++	interrupts = <6 IRQ_TYPE_LEVEL_LOW>;
++	interrupt-names = "host-wake";
++};
+diff --git a/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2.dts b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2.dts
+new file mode 100644
+index 0000000..7985b59
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2.dts
+@@ -0,0 +1,2 @@
++#include "imx6q-sabresd.dts"
++#include "imx6qdl-sabresd-btwifi-m2.dtsi"
+diff --git a/arch/arm/boot/dts/imx6qdl-sabresd-btwifi-m2.dtsi b/arch/arm/boot/dts/imx6qdl-sabresd-btwifi-m2.dtsi
+new file mode 100644
+index 0000000..08d9098
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6qdl-sabresd-btwifi-m2.dtsi
+@@ -0,0 +1,103 @@
++/*
++ * Copyright (C) 2015 Freescale Semiconductor, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++/*
++ * NOTE: This DTS file is written for plugging in Murata Wi-Fi/BT EVK into SD2
++ * slot using Murata i.MX InterConnect Ver 2.0 Adapter & connecting Bluetooth
++ * UART & control signals via ribbon cable.
++ * This configuration supports both WLAN and Bluetooth.
++ * WL_REG_ON/BT_REG_ON/WL_HOST_WAKE are connected via ribbon cable (J13 connector
++ * on board).
++ * ==> Hardware modification is required. Refer to schematic.
++ *
++ * Murata: modified to support WLAN FMAC driver with OOB IRQ configuration.
++ */
++
++/ {
++	leds {
++		compatible = "gpio-leds";
++		status = "disabled";
++	};
++
++	modem_reset: modem-reset {
++		compatible = "gpio-reset";
++		reset-gpios = <&gpio1 2 GPIO_ACTIVE_LOW>;
++		reset-delay-us = <1000>;
++		#reset-cells = <0>;
++	};
++
++	usdhc2_pwrseq: usdhc2_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio4 7 GPIO_ACTIVE_LOW>;
++ 	};
++};
++
++&ecspi1 {
++	status = "disabled";
++};
++
++&iomuxc {
++	imx6qdl-sabresd-murata-v2 {
++		pinctrl_btreg: btreggrp {
++			fsl,pins = <
++				MX6QDL_PAD_GPIO_2__GPIO1_IO02 0x1b0b0  /* BT_REG_ON */
++			>;
++		};
++
++		/* add MUXing entry for SD2 4-bit interface and configure control pins */
++		pinctrl_wifi: wifigrp {
++			fsl,pins = <
++				MX6QDL_PAD_SD2_CMD__SD2_CMD		0x17059
++				MX6QDL_PAD_SD2_CLK__SD2_CLK		0x10059
++				MX6QDL_PAD_SD2_DAT0__SD2_DATA0		0x17059
++				MX6QDL_PAD_SD2_DAT1__SD2_DATA1		0x17059
++				MX6QDL_PAD_SD2_DAT2__SD2_DATA2		0x17059
++				MX6QDL_PAD_SD2_DAT3__SD2_DATA3		0x17059
++				MX6QDL_PAD_KEY_ROW0__GPIO4_IO07		0x13069	/* WL_REG_ON */
++				MX6QDL_PAD_KEY_COL0__GPIO4_IO06		0x13069	/* WL_HOST_WAKE */
++			>;
++		};
++	};
++};
++
++/* re-defining gpio_leds removes conflict with BT_REG_ON */
++&pinctrl_gpio_leds {
++	fsl,pins = <
++	>;
++};
++
++&uart5 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart5_1
++		     &pinctrl_btreg>;
++	fsl,uart-has-rtscts;
++	resets = <&modem_reset>;
++	status = "okay";
++	/* for DTE mode, add below change */
++	/* fsl,dte-mode; */
++	/* pinctrl-0 = <&pinctrl_uart5dte_1>; */
++};
++
++&usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_wifi>;
++	bus-width = <4>;
++	no-1-8-v;
++	non-removable;
++	cap-power-off-card;
++	pm-ignore-notify; 
++	wifi-host;
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	};
++};
 diff --git a/arch/arm/boot/dts/imx6qdl-sabresd-btwifi.dtsi b/arch/arm/boot/dts/imx6qdl-sabresd-btwifi.dtsi
 index 7164a9e..93a79e5 100644
 --- a/arch/arm/boot/dts/imx6qdl-sabresd-btwifi.dtsi
@@ -152,6 +398,130 @@ index 7164a9e..93a79e5 100644
 +		interrupt-names = "host-wake";
 +	};
  };
+diff --git a/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2-oob.dts
+new file mode 100644
+index 0000000..b08baf8
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2-oob.dts
+@@ -0,0 +1,2 @@
++#include "imx6qp-sabresd-btwifi-m2.dts"
++#include "imx6q-sabresd-btwifi-m2-oob.dtsi"
+diff --git a/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2.dts b/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2.dts
+new file mode 100644
+index 0000000..1c4a097
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2.dts
+@@ -0,0 +1,2 @@
++#include "imx6qp-sabresd.dts"
++#include "imx6qdl-sabresd-btwifi-m2.dtsi"
+diff --git a/arch/arm/boot/dts/imx6sl-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6sl-evk-btwifi-m2.dts
+new file mode 100644
+index 0000000..d3d1df2
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6sl-evk-btwifi-m2.dts
+@@ -0,0 +1,102 @@
++/*
++ * Copyright (C) 2015 Freescale Semiconductor, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++/* NOTE: This DTS file is written for plugging in Murata Wi-Fi/BT EVK into SD1
++ * slot using Murata i.MX InterConnect Ver 1.0 Adapter AND wiring in control
++ * signals with SD Card Extender on SD3 slot.
++ * Bluetooth UART connect via SD1 EMMC/MMC Plus pinout.
++ * WL_REG_ON/BT_REG_ON/WL_HOST_WAKE are connected from SD Card Extender on SD3
++ * slot.
++ *
++ * Murata: modified to support WLAN FMAC driver with OOB IRQ configuration.
++ */
++#include "imx6sl-evk.dts"
++
++/ {
++	modem_reset: modem-reset {
++		compatible = "gpio-reset";
++		reset-gpios = <&gpio5 17 GPIO_ACTIVE_LOW>;
++		reset-delay-us = <1000>;
++		#reset-cells = <0>;
++	};
++
++	usdhc1_pwrseq: usdhc1_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&gpio5 16 GPIO_ACTIVE_LOW>;
++ 	};
++};
++
++&iomuxc {
++	imx6sl-evk-murata-v1_sdext {
++		/* Only MUX SD1_DAT0..3 lines so UART4 can be MUXed on higher data lines. */
++		pinctrl_btreg: btreggrp {
++			fsl,pins = <
++				MX6SL_PAD_SD3_DAT3__GPIO5_IO17          0x13069 /* BT_REG_ON */
++			>;
++		};
++		pinctrl_wifi: wifigrp {
++			fsl,pins = <
++				MX6SL_PAD_SD1_CMD__SD1_CMD		0x17059
++				MX6SL_PAD_SD1_CLK__SD1_CLK		0x10059
++				MX6SL_PAD_SD1_DAT0__SD1_DATA0		0x17059
++				MX6SL_PAD_SD1_DAT1__SD1_DATA1		0x17059
++				MX6SL_PAD_SD1_DAT2__SD1_DATA2		0x17059
++				MX6SL_PAD_SD1_DAT3__SD1_DATA3		0x17059
++				MX6SL_PAD_SD3_DAT1__GPIO5_IO20		0x13069 /* WL_HOST_WAKE */
++				MX6SL_PAD_SD3_DAT2__GPIO5_IO16		0x13069 /* WL_REG_ON */
++			>;
++		};
++
++		pinctrl_usdhc3_1: usdhc3grp-1 {
++			fsl,pins = <
++				MX6SL_PAD_SD3_CMD__SD3_CMD		0x17059
++				MX6SL_PAD_SD3_CLK__SD3_CLK		0x10059
++				MX6SL_PAD_SD3_DAT0__SD3_DATA0		0x17059
++			>;
++		};
++	};
++};
++
++/* Murata: declare UART4 interface for Bluetooth. */
++&uart4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart4_1
++		     &pinctrl_btreg>;
++	fsl,uart-has-rtscts;
++	resets = <&modem_reset>;
++	status = "okay";
++	/* for DTE mode, add below change */
++	/* fsl,dte-mode; */
++	/* pinctrl-0 = <&pinctrl_uart4dte_1>; */
++};
++
++&usdhc1 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_wifi>;
++	bus-width = <4>;
++	no-1-8-v;
++	non-removable;
++	cap-power-off-card;
++	pm-ignore-notify;
++	wifi-host;
++	mmc-pwrseq = <&usdhc1_pwrseq>;
++	status = "okay";
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	};
++};
++
++&usdhc3 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usdhc3_1>;
++	bus-width = <1>;
++	no-1-8-v;
++};
 diff --git a/arch/arm/boot/dts/imx6sl-evk-btwifi.dts b/arch/arm/boot/dts/imx6sl-evk-btwifi.dts
 index 4eac83e..3f1a584 100644
 --- a/arch/arm/boot/dts/imx6sl-evk-btwifi.dts
@@ -293,6 +663,128 @@ index db30b1f..65312ae 100644
 +		interrupt-names = "host-wake";
 +	};
  };
+diff --git a/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2-oob.dts
+new file mode 100644
+index 0000000..0a19a8d
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2-oob.dts
+@@ -0,0 +1,2 @@
++#include "imx6sx-sdb-btwifi-m2.dts"
++#include "imx6sx-sdb-btwifi-m2-oob.dtsi"
+diff --git a/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2-oob.dtsi b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2-oob.dtsi
+new file mode 100644
+index 0000000..452bbef
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2-oob.dtsi
+@@ -0,0 +1,18 @@
++&iomuxc {
++	imx6sx-sdb-murata-v1_sdext {
++		pinctrl_wifi_oob: pinctrl_wifi {
++			fsl,pins = <
++				// Murata Module control signals -- not connected (R327 and need to disable ENET1 CLK)
++				MX6SX_PAD_ENET1_RX_CLK__GPIO2_IO_4	0x0b000 /* WL_HOST_WAKE */
++			>;
++		};
++	};
++};
++&fec1 {
++	status = "disabled";
++};
++&brcmf{
++	interrupt-parent = <&gpio2>;
++	interrupts = <4 IRQ_TYPE_LEVEL_LOW>;
++	interrupt-names = "host-wake";
++};
+diff --git a/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2.dts b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2.dts
+new file mode 100644
+index 0000000..3038da0
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2.dts
+@@ -0,0 +1,2 @@
++#include "imx6sx-sdb.dts"
++#include "imx6sx-sdb-btwifi-m2.dtsi"
+diff --git a/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2.dtsi b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2.dtsi
+new file mode 100644
+index 0000000..4c7d8d7
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2.dtsi
+@@ -0,0 +1,76 @@
++/*
++ * Copyright (C) 2015 Freescale Semiconductor, Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++/*
++ * NOTE: This DTS file is written for plugging in Murata Wi-Fi/BT EVK into SD3
++ * slot using Murata i.MX InterConnect Ver 1.0 Adapter AND SD Card Extender on
++ * SD2 slot. Bluetooth UART connects via SD3 EMMC/MMC Plus pinout.
++ * WL_REG_ON/BT_REG_ON/WL_HOST_WAKE connect via SD Card Extender.
++ */
++
++/ {
++	modem_reset: modem-reset {
++		compatible = "gpio-reset";
++		reset-gpios = <&gpio4 10 GPIO_ACTIVE_LOW>;
++		reset-delay-us = <1000>;
++		#reset-cells = <0>;
++	};
++
++	usdhc2_pwrseq: usdhc2_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++//		reset-gpios = <&gpio2 4 GPIO_ACTIVE_LOW>;  /* currently not implemented */
++	};
++};
++
++&iomuxc {
++	imx6sx-sdb-murata-wifibt {
++		pinctrl_bt: btgrp {
++			fsl,pins = <
++				MX6SX_PAD_NAND_DATA06__GPIO4_IO_10	0x13069 /* BT_REG_ON */
++			>;
++		};
++
++		pinctrl_wifi: wifigrp {
++			fsl,pins = <
++				/* Murata Module control signals -- not connected (R327 and need to disable ENET1 CLK) */
++//				MX6SX_PAD_ENET1_RX_CLK__GPIO2_IO_4	0x13069 /* WL_REG_ON */
++			>;
++		};
++	};
++};
++
++&uart5 { /* for bluetooth */
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart5 &pinctrl_bt>;
++	uart-has-rtscts;
++	resets = <&modem_reset>;
++	status = "okay";
++	/* for DTE mode, add below change */
++	/* fsl,dte-mode;*/
++	/* pinctrl-0 = <&pinctrl_uart5dte_1>; */
++};
++
++
++&usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usdhc2 &pinctrl_wifi>;
++	bus-width = <4>;
++	no-1-8-v;	/* force 3.3V VIO */
++	non-removable;
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++	pm-ignore-notify;
++	cap-power-off-card;
++	status = "okay";
++
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	};
++};
 diff --git a/arch/arm/boot/dts/imx6sx-sdb-btwifi.dts b/arch/arm/boot/dts/imx6sx-sdb-btwifi.dts
 index 698e49e..8dc07bf 100644
 --- a/arch/arm/boot/dts/imx6sx-sdb-btwifi.dts
@@ -442,6 +934,21 @@ index 3658389..2bd3d79 100644
  };
  
  &usdhc3 {
+diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob.dts
+new file mode 100644
+index 0000000..5826e96
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob.dts
+@@ -0,0 +1,2 @@
++#include "imx6ul-14x14-evk-btwifi-m2.dts"
++#include "imx6ul-evk-btwifi-m2-oob.dtsi"
+diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
+new file mode 100644
+index 0000000..3747cb0
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
+@@ -0,0 +1 @@
++#include "imx6ul-14x14-evk-btwifi.dts"
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk.dts b/arch/arm/boot/dts/imx6ul-14x14-evk.dts
 index da2ae89..9c2c819 100644
 --- a/arch/arm/boot/dts/imx6ul-14x14-evk.dts
@@ -485,6 +992,21 @@ index da2ae89..9c2c819 100644
  		ethphy1: ethernet-phy@1 {
  			compatible = "ethernet-phy-ieee802.3-c22";
  			reg = <1>;
+diff --git a/arch/arm/boot/dts/imx6ul-9x9-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6ul-9x9-evk-btwifi-m2-oob.dts
+new file mode 100644
+index 0000000..43e64d2
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ul-9x9-evk-btwifi-m2-oob.dts
+@@ -0,0 +1,2 @@
++#include "imx6ul-9x9-evk-btwifi-m2.dts"
++#include "imx6ul-evk-btwifi-oob.dtsi"
+diff --git a/arch/arm/boot/dts/imx6ul-9x9-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ul-9x9-evk-btwifi-m2.dts
+new file mode 100644
+index 0000000..e2830c1
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ul-9x9-evk-btwifi-m2.dts
+@@ -0,0 +1 @@
++#include "imx6ul-9x9-evk-btwifi.dts"
 diff --git a/arch/arm/boot/dts/imx6ul-9x9-evk.dts b/arch/arm/boot/dts/imx6ul-9x9-evk.dts
 index 29896ea..d3a4353 100644
 --- a/arch/arm/boot/dts/imx6ul-9x9-evk.dts
@@ -528,6 +1050,43 @@ index 29896ea..d3a4353 100644
  		ethphy1: ethernet-phy@1 {
  			compatible = "ethernet-phy-ieee802.3-c22";
  			reg = <1>;
+diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi-m2-oob.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi-m2-oob.dtsi
+new file mode 100644
+index 0000000..70d58d2
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ul-evk-btwifi-m2-oob.dtsi
+@@ -0,0 +1,31 @@
++/*
++ * Copyright (C) 2017 NXP
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++&pinctrl_wifi {
++	fsl,pins = <
++		/* MUXing for WL_HOST_WAKE */
++		MX6UL_PAD_ENET2_RX_ER__GPIO2_IO15  0x0b000  /* input: 100K Pull-up */
++	>;
++};
++
++/*
++ * For WL_HOST_WAKE (OOB_IRQ) to function correctly, we must disable
++ * the secondary ethernet port (FEC2). Hardware re-work is to remove
++ * R1633 and populate R1704 with 0 Ohm resistor.
++ * Refer to Murata Hardware Reference Manual for more details.
++ */
++&fec2 {
++	status = "disabled";
++};
++
++&brcmf {
++	interrupt-parent = <&gpio2>;
++	interrupts = <15 IRQ_TYPE_LEVEL_LOW>;
++	interrupt-names = "host-wake";
++};
++
 diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi-oob.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi-oob.dtsi
 index cd7a5e6..d372412 100644
 --- a/arch/arm/boot/dts/imx6ul-evk-btwifi-oob.dtsi
@@ -646,6 +1205,21 @@ index d4810bd..ff8a432 100644
 -	registers-default = /bits/ 8 <0x47>;
 +	registers-default = /bits/ 8 <0x47>;	/* BT_REG_ON */
  };
+diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob.dts
+new file mode 100644
+index 0000000..618f222
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob.dts
+@@ -0,0 +1,2 @@
++#include "imx6ull-14x14-evk-btwifi-m2.dts"
++#include "imx6ul-evk-btwifi-m2-oob.dtsi"
+diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts
+new file mode 100644
+index 0000000..ad0c048
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts
+@@ -0,0 +1 @@
++#include "imx6ull-14x14-evk-btwifi.dts"
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk.dts b/arch/arm/boot/dts/imx6ull-14x14-evk.dts
 index cd2a076..d038c1c 100644
 --- a/arch/arm/boot/dts/imx6ull-14x14-evk.dts
@@ -689,6 +1263,21 @@ index cd2a076..d038c1c 100644
  		ethphy1: ethernet-phy@1 {
  			compatible = "ethernet-phy-ieee802.3-c22";
  			reg = <1>;
+diff --git a/arch/arm/boot/dts/imx6ull-9x9-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6ull-9x9-evk-btwifi-m2-oob.dts
+new file mode 100644
+index 0000000..5f77946
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ull-9x9-evk-btwifi-m2-oob.dts
+@@ -0,0 +1,2 @@
++#include "imx6ull-9x9-evk-btwifi-m2.dts"
++#include "imx6ul-evk-btwifi-m2-oob.dtsi"
+diff --git a/arch/arm/boot/dts/imx6ull-9x9-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ull-9x9-evk-btwifi-m2.dts
+new file mode 100644
+index 0000000..21fe495
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ull-9x9-evk-btwifi-m2.dts
+@@ -0,0 +1 @@
++#include "imx6ull-9x9-evk-btwifi.dts"
 diff --git a/arch/arm/boot/dts/imx6ull-9x9-evk.dts b/arch/arm/boot/dts/imx6ull-9x9-evk.dts
 index 8f7c6f8..55ddde4 100644
 --- a/arch/arm/boot/dts/imx6ull-9x9-evk.dts
