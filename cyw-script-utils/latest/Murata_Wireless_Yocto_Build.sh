@@ -686,10 +686,10 @@ done
 		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\""     |"
 		echo "|     |      Release     | branch  | Supported     |     Release Tag           |"
 		echo "|-----|------------------|---------|---------------|---------------------------|"
-		echo "|  1  | 4.9.123_2.3.0 GA | rocko   | 6,7,8         | imx-rocko-mini-manda_r1.0 |"
-		echo "|  2  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-manda_r1.0      |"
-		echo "|  3  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-manda_r1.0      |"
-		echo "|  4  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-manda_r1.0    |"
+		echo "|  1  | 4.9.123_2.3.0 GA | rocko   | 6,7,8         | imx-rocko-mini-manda_r2.0 |"
+		echo "|  2  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-manda_r2.0      |"
+		echo "|  3  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-manda_r2.0      |"
+		echo "|  4  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-manda_r2.0    |"
 		echo "--------------------------------------------------------------------------------"
 		break
 #FMAC_VERSION="4" for MANDA - DEVELOPER
@@ -752,16 +752,16 @@ iMXmortymothraDeveloperRelease="imx-morty-mothra"
 iMXkrogothmothraStableReleaseTag="imx-krogoth-mothra_r1.0"
 iMXkrogothmothraDeveloperRelease="imx-krogoth-mothra"
 
-iMXrockominimandaStableReleaseTag="imx-rocko-mini-manda_r1.0"
+iMXrockominimandaStableReleaseTag="imx-rocko-mini-manda_r2.0"
 iMXrockominimandaDeveloperRelease="imx-rocko-mini-manda"
 
-iMXrockomandaStableReleaseTag="imx-rocko-manda_r1.0"
+iMXrockomandaStableReleaseTag="imx-rocko-manda_r2.0"
 iMXrockomandaDeveloperRelease="imx-rocko-manda"
 
-iMXmortymandaStableReleaseTag="imx-morty-manda_r1.0"
+iMXmortymandaStableReleaseTag="imx-morty-manda_r2.0"
 iMXmortymandaDeveloperRelease="imx-morty-manda"
 
-iMXkrogothmandaStableReleaseTag="imx-krogoth-manda_r1.0"
+iMXkrogothmandaStableReleaseTag="imx-krogoth-manda_r2.0"
 iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
 
 imxrockominiYocto="4.9.123_2.3.0 GA"
@@ -937,9 +937,9 @@ elif [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ]; then
 #FOR MANDA
 elif [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
 
-	# rocko-mini-manda_r1.0
+	# rocko-mini-manda_r2.0
 	if [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "1" ]; then
-		#echo "DEBUG:: rocko-mini-manda_r1.0"
+		#echo "DEBUG:: rocko-mini-manda_r2.0"
 		BRANCH_RELEASE_OPTION=1
 		BRANCH_RELEASE_NAME="$iMXrockominimandaStableReleaseTag"
 		iMXYoctoRelease="$imxrockominiYocto"
@@ -955,9 +955,9 @@ elif [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
 		YoctoBranch="rocko"
 		fmacversion="$MANDA_FMAC"
 
-	# rocko-manda_r1.0
+	# rocko-manda_r2.0
 	elif [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "2" ]; then
-		#echo "DEBUG:: rocko-manda_r1.0"
+		#echo "DEBUG:: rocko-manda_r2.0"
 		BRANCH_RELEASE_OPTION=3
 		BRANCH_RELEASE_NAME="$iMXrockomandaStableReleaseTag"
 		iMXYoctoRelease="$imxrockoYocto"
@@ -973,9 +973,9 @@ elif [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
 		YoctoBranch="rocko"
 		fmacversion="$MANDA_FMAC"
 
-	# morty-manda_r1.0
+	# morty-manda_r2.0
 	elif [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "3" ]; then
-		#echo "DEBUG:: morty-manda_r1.0"
+		#echo "DEBUG:: morty-manda_r2.0"
 		BRANCH_RELEASE_OPTION=5
 		BRANCH_RELEASE_NAME="$iMXmortymandaStableReleaseTag"
 		iMXYoctoRelease="$imxmortyYocto"
@@ -991,9 +991,9 @@ elif [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
 		YoctoBranch="morty"
 		fmacversion="$MANDA_FMAC"
 
-	# krogoth-manda_r1.0
+	# krogoth-manda_r2.0
 	elif [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "4" ]; then
-		#echo "DEBUG:: krogoth-manda_r1.0"
+		#echo "DEBUG:: krogoth-manda_r2.0"
 		BRANCH_RELEASE_OPTION=7
 		BRANCH_RELEASE_NAME="$iMXkrogothmandaStableReleaseTag"
 		iMXYoctoRelease="$imxkrogothYocto"
