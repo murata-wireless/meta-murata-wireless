@@ -1167,9 +1167,8 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 					echo    "------------------------------------------------------------------------------"
 					echo    "| Entry  |  Options                                                          |"
 					echo    "|--------|-------------------------------------------------------------------|"
-					echo    "|   1.   | 1.8V VIO signaling with UHS support                               |"
-					echo -e "|   2.   | 1.8V VIO signaling ${YLW}without${NC} UHS support                            |"
-					echo -e "|   ${GRN}3.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC}                            |"
+					echo -e "|   1.   | 1.8V VIO signaling ${YLW}without${NC} UHS support ${YLW}(max SDIO clk = 50MHz)${NC}     |"
+					echo -e "|   ${GRN}2.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC}                            |"
 					echo    "------------------------------------------------------------------------------"
 					echo " "
 					echo " Refer to Murata Quickstart Guide for more details:"
@@ -1180,20 +1179,13 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 					read VIO_SIGNALING_OPTION
 					case $VIO_SIGNALING_OPTION in
 						1)
-						LINUX_SRC=linux-imx_4.9.123.bbappend.6UL_6ULL@1.8V
+						LINUX_SRC=linux-imx_4.9.123.bbappend.6UL_6ULL@1.8V_No_UHS
 						LINUX_DEST=linux-imx_4.9.123.bbappend
-						VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
+						VIO_SIGNALING_STRING="1.8V VIO signaling ${YLW}without${NC} UHS support ${YLW}(max SDIO clk = 50MHz)${NC} - ${YLW}HW mods needed${NC}"
 						break
 						;;
 
 						2)
-						LINUX_SRC=linux-imx_4.9.123.bbappend.6UL_6ULL@1.8V_No_UHS
-						LINUX_DEST=linux-imx_4.9.123.bbappend
-						VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support - ${YLW}HW mods needed${NC}"
-						break
-						;;
-
-						3)
 						LINUX_SRC=linux-imx_4.9.123.bbappend
 						LINUX_DEST=linux-imx_4.9.123.bbappend
 						VIO_SIGNALING_STRING="3.3V VIO signaling (No HW mods needed)"
@@ -1209,78 +1201,21 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 				fi
 
 				if [ "$TARGET_NAME" = "imx6sxsabresd" ]; then
-					while true; do
-					echo " "
-					echo "7.1) Select VIO Signaling"
-					echo "-------------------------"
-					echo " "
-					echo "---------------------------------------------------"
-					echo "| Entry  |  Options                               |"
-					echo "|--------|----------------------------------------|"
-					echo "|   1.   | 1.8V VIO signaling with UHS support    |"
-					echo -e "|   ${GRN}2.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC} |"
-					echo "--------------------------------------------------"
-					echo " "
-					echo " Refer to Murata Quickstart Guide for more details:"
-					echo " - Murata Wi-Fi BT Solution for i.MX Quick Start Guide (Linux) 5.x.pdf"
-					echo " "
-
-					echo -n "Select your entry: "
-					read VIO_SIGNALING_OPTION
-					case $VIO_SIGNALING_OPTION in
-						1)
-						LINUX_SRC=linux-imx_4.9.123.bbappend.6SX@1.8V
-						LINUX_DEST=linux-imx_4.9.123.bbappend
-						VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
-						break
-						;;
-
-						2)
-						LINUX_SRC=linux-imx_4.9.123.bbappend
-						LINUX_DEST=linux-imx_4.9.123.bbappend
-						VIO_SIGNALING_STRING="3.3V VIO signaling"
-						break
-						;;
-
-						*)
-						echo -e "${RED}That is not a valid choice, try again.${NC}"
-						;;
-					esac
-					done
+					LINUX_SRC=linux-imx_4.9.123.bbappend
+					LINUX_DEST=linux-imx_4.9.123.bbappend
+					#echo " "
+					echo -e "${YLW} If you are using uSD-M2 Adapter ${NC}"
+					echo -e "${YLW}  - Please plug the adapter in SD2 slot${NC}"
+					VIO_SIGNALING_STRING="3.3V VIO signaling"
 					echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
+					#echo " "
 				fi
 
 				if [ "$TARGET_NAME" = "imx7ulpevk" ]; then
-					while true; do
-					echo " "
-					echo "7.1) Select VIO Signaling"
-					echo "-------------------------"
-					echo " "
-					echo "-------------------------------------------------"
-					echo "| Entry  |  Options                             |"
-					echo "|--------|--------------------------------------|"
-					echo "|   1.   | 1.8V VIO signaling with UHS support  |"
-					echo "-------------------------------------------------"
-					echo " "
-					echo " Refer to Murata Quickstart Guide for more details:"
-					echo " - Murata Wi-Fi BT Solution for i.MX Quick Start Guide (Linux) 5.x.pdf"
-					echo " "
-					echo -n  "Select your entry: "
-					read VIO_SIGNALING_OPTION
-					case $VIO_SIGNALING_OPTION in
-						1)
-						LINUX_SRC=linux-imx_4.9.123.bbappend.7ULP@1.8V
-						LINUX_DEST=linux-imx_4.9.123.bbappend
-						VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
-						break
-						;;
-
-						*)
-						echo -e "${RED}That is not a valid choice, try again.${NC}"
-						;;
-					esac
-					done
-					echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
+					LINUX_SRC=linux-imx_4.9.123.bbappend
+					LINUX_DEST=linux-imx_4.9.123.bbappend
+					VIO_SIGNALING_STRING="3.3V VIO signaling"
+					echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"          
 				fi
 			#	End - Prompt user to select VIO Signaling
 				break
@@ -1395,9 +1330,8 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 		echo    "------------------------------------------------------------------------------"
 		echo    "| Entry  |  Options                                                          |"
 		echo    "|--------|-------------------------------------------------------------------|"
-		echo    "|   1.   | 1.8V VIO signaling with UHS support                               |"
-		echo -e "|   2.   | 1.8V VIO signaling ${YLW}without${NC} UHS support                            |"
-		echo -e "|   ${GRN}3.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC}                            |"
+		echo -e "|   1.   | 1.8V VIO signaling ${YLW}without${NC} UHS support ${YLW}(max SDIO clk = 50MHz)${NC}     |"
+		echo -e "|   ${GRN}2.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC}                            |"
 		echo    "------------------------------------------------------------------------------"
 		echo " "
                 echo " Refer to Murata Quickstart Guide for more details:"
@@ -1408,20 +1342,13 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 		read VIO_SIGNALING_OPTION
 		case $VIO_SIGNALING_OPTION in
 			1)
-			LINUX_SRC=linux-imx_4.9.88.bbappend.6UL_6ULL@1.8V
+			LINUX_SRC=linux-imx_4.9.88.bbappend.6UL_6ULL@1.8V_No_UHS
 			LINUX_DEST=linux-imx_4.9.88.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
+			VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support ${YLW}(max SDIO clk = 50MHz)${NC}"
 			break
 			;;
 
 			2)
-			LINUX_SRC=linux-imx_4.9.88.bbappend.6UL_6ULL@1.8V_No_UHS
-			LINUX_DEST=linux-imx_4.9.88.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support - ${YLW}HW mods needed${NC}"
-			break
-			;;
-
-			3)
 			LINUX_SRC=linux-imx_4.9.88.bbappend
 			LINUX_DEST=linux-imx_4.9.88.bbappend
 			VIO_SIGNALING_STRING="3.3V VIO signaling (No HW mods needed)"
@@ -1437,77 +1364,18 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 	fi
 
 	if [ "$TARGET_NAME" = "imx6sxsabresd" ]; then
-		while true; do
-		echo " "
-		echo "7.1) Select VIO Signaling"
-		echo "-------------------------"
-		echo " "
-		echo "---------------------------------------------------"
-		echo "| Entry  |  Options                               |"
-		echo "|--------|----------------------------------------|"
-		echo "|   1.   | 1.8V VIO signaling with UHS support    |"
-		echo -e "|   ${GRN}2.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC} |"
-		echo "--------------------------------------------------"
-		echo " "
-                echo " Refer to Murata Quickstart Guide for more details:"
-                echo " - Murata Wi-Fi BT Solution for i.MX Quick Start Guide (Linux) 5.x.pdf"
-		echo " "
-
-		echo -n "Select your entry: "
-		read VIO_SIGNALING_OPTION
-		case $VIO_SIGNALING_OPTION in
-			1)
-			LINUX_SRC=linux-imx_4.9.88.bbappend.6SX@1.8V
-			LINUX_DEST=linux-imx_4.9.88.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
-			break
-			;;
-
-			2)
-			LINUX_SRC=linux-imx_4.9.88.bbappend
-			LINUX_DEST=linux-imx_4.9.88.bbappend
-			VIO_SIGNALING_STRING="3.3V VIO signaling"
-			break
-			;;
-
-			*)
-			echo -e "${RED}That is not a valid choice, try again.${NC}"
-			;;
-		esac
-		done
+		LINUX_SRC=linux-imx_4.9.88.bbappend
+		LINUX_DEST=linux-imx_4.9.88.bbappend
+		VIO_SIGNALING_STRING="3.3V VIO signaling"
+		echo -e "${YLW} If you are using uSD-M2 Adapter ${NC}"
+		echo -e "${YLW}  - Please plug the adapter in SD2 slot${NC}"
 		echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
 	fi
 
 	if [ "$TARGET_NAME" = "imx7ulpevk" ]; then
-		while true; do
-		echo " "
-		echo "7.1) Select VIO Signaling"
-		echo "-------------------------"
-		echo " "
-		echo "-------------------------------------------------"
-		echo "| Entry  |  Options                             |"
-		echo "|--------|--------------------------------------|"
-		echo "|   1.   | 1.8V VIO signaling with UHS support  |"
-		echo "-------------------------------------------------"
-		echo " "
-                echo " Refer to Murata Quickstart Guide for more details:"
-                echo " - Murata Wi-Fi BT Solution for i.MX Quick Start Guide (Linux) 5.x.pdf"
-		echo " "
-		echo -n  "Select your entry: "
-		read VIO_SIGNALING_OPTION
-		case $VIO_SIGNALING_OPTION in
-			1)
-			LINUX_SRC=linux-imx_4.9.88.bbappend.7ULP@1.8V
-			LINUX_DEST=linux-imx_4.9.88.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
-			break
-			;;
-
-			*)
-			echo -e "${RED}That is not a valid choice, try again.${NC}"
-			;;
-		esac
-		done
+		LINUX_SRC=linux-imx_4.9.88.bbappend
+		LINUX_DEST=linux-imx_4.9.88.bbappend
+		VIO_SIGNALING_STRING="3.3V VIO signaling"
 		echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
 	fi
 #	End - Prompt user to select VIO Signaling
@@ -1614,9 +1482,8 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 		echo    "------------------------------------------------------------------------------"
 		echo    "| Entry  |  Options                                                          |"
 		echo    "|--------|-------------------------------------------------------------------|"
-		echo    "|   1.   | 1.8V VIO signaling with UHS support                               |"
-		echo -e "|   2.   | 1.8V VIO signaling ${YLW}without${NC} UHS support                            |"
-		echo -e "|   ${GRN}3.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC}                            |"
+		echo -e "|   1.   | 1.8V VIO signaling ${YLW}without${NC} UHS support ${YLW}(max SDIO clk = 50MHz)${NC}     |"
+		echo -e "|   ${GRN}2.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC}                            |"
 		echo    "------------------------------------------------------------------------------"
 		echo " "
                 echo " Refer to Murata Quickstart Guide for more details:"
@@ -1627,20 +1494,13 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 		read VIO_SIGNALING_OPTION
 		case $VIO_SIGNALING_OPTION in
 			1)
-			LINUX_SRC=linux-imx_4.9.11.bbappend.6UL_6ULL@1.8V
+			LINUX_SRC=linux-imx_4.9.11.bbappend.6UL_6ULL@1.8V_No_UHS
 			LINUX_DEST=linux-imx_4.9.11.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
+			VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support - ${YLW}(max SDIO clk = 50MHz)${NC}"
 			break
 			;;
 
 			2)
-			LINUX_SRC=linux-imx_4.9.11.bbappend.6UL_6ULL@1.8V_No_UHS
-			LINUX_DEST=linux-imx_4.9.11.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support - ${YLW}HW mods needed${NC}"
-			break
-			;;
-
-			3)
 			LINUX_SRC=linux-imx_4.9.11.bbappend
 			LINUX_DEST=linux-imx_4.9.11.bbappend
 			VIO_SIGNALING_STRING="3.3V VIO signaling (No HW mods needed)"
@@ -1656,77 +1516,18 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 	fi
 
 	if [ "$TARGET_NAME" = "imx6sxsabresd" ]; then
-		while true; do
-		echo " "
-		echo "7.1) Select VIO Signaling"
-		echo "-------------------------"
-		echo " "
-		echo "---------------------------------------------------"
-		echo "| Entry  |  Options                               |"
-		echo "|--------|----------------------------------------|"
-		echo "|   1.   | 1.8V VIO signaling with UHS support    |"
-		echo -e "|   ${GRN}2.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC} |"
-		echo "--------------------------------------------------"
-		echo " "
-                echo " Refer to Murata Quickstart Guide for more details:"
-                echo " - Murata Wi-Fi BT Solution for i.MX Quick Start Guide (Linux) 5.x.pdf"
-		echo " "
-
-		echo -n "Select your entry: "
-		read VIO_SIGNALING_OPTION
-		case $VIO_SIGNALING_OPTION in
-			1)
-			LINUX_SRC=linux-imx_4.9.11.bbappend.6SX@1.8V
-			LINUX_DEST=linux-imx_4.9.11.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
-			break
-			;;
-
-			2)
-			LINUX_SRC=linux-imx_4.9.11.bbappend
-			LINUX_DEST=linux-imx_4.9.11.bbappend
-			VIO_SIGNALING_STRING="3.3V VIO signaling"
-			break
-			;;
-
-			*)
-			echo -e "${RED}That is not a valid choice, try again.${NC}"
-			;;
-		esac
-		done
+		LINUX_SRC=linux-imx_4.9.11.bbappend
+		LINUX_DEST=linux-imx_4.9.11.bbappend
+		VIO_SIGNALING_STRING="3.3V VIO signaling"
+		echo -e "${YLW} If you are using uSD-M2 Adapter ${NC}"
+		echo -e "${YLW}  - Please plug the adapter in SD2 slot${NC}"
 		echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
 	fi
 
 	if [ "$TARGET_NAME" = "imx7ulpevk" ]; then
-		while true; do
-		echo " "
-		echo "7.1) Select VIO Signaling"
-		echo "-------------------------"
-		echo " "
-		echo "-------------------------------------------------"
-		echo "| Entry  |  Options                             |"
-		echo "|--------|--------------------------------------|"
-		echo "|   1.   | 1.8V VIO signaling with UHS support  |"
-		echo "-------------------------------------------------"
-		echo " "
-                echo " Refer to Murata Quickstart Guide for more details:"
-                echo " - Murata Wi-Fi BT Solution for i.MX Quick Start Guide (Linux) 5.x.pdf"
-		echo " "
-		echo -n  "Select your entry: "
-		read VIO_SIGNALING_OPTION
-		case $VIO_SIGNALING_OPTION in
-			1)
-			LINUX_SRC=linux-imx_4.9.11.bbappend.7ULP@1.8V
-			LINUX_DEST=linux-imx_4.9.11.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
-			break
-			;;
-
-			*)
-			echo -e "${RED}That is not a valid choice, try again.${NC}"
-			;;
-		esac
-		done
+		LINUX_SRC=linux-imx_4.9.11.bbappend
+		LINUX_DEST=linux-imx_4.9.11.bbappend
+		VIO_SIGNALING_STRING="3.3V VIO signaling"
 		echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
 	fi
 #	End - Prompt user to select VIO Signaling
@@ -1823,9 +1624,8 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 		echo    "------------------------------------------------------------------------------"
 		echo    "| Entry  |  Options                                                          |"
 		echo    "|--------|-------------------------------------------------------------------|"
-		echo    "|   1.   | 1.8V VIO signaling with UHS support                               |"
-		echo -e "|   2.   | 1.8V VIO signaling ${YLW}without${NC} UHS support                            |"
-		echo -e "|   ${GRN}3.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC}                            |"
+		echo -e "|   1.   | 1.8V VIO signaling ${YLW}without${NC} UHS support ${YLW}(max SDIO clk = 50MHz)${NC}     |"
+		echo -e "|   ${GRN}2.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC}                            |"
 		echo     "------------------------------------------------------------------------------"
 		echo " "
                 echo " Refer to Murata Quickstart Guide for more details:"
@@ -1836,20 +1636,13 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 		read VIO_SIGNALING_OPTION
 		case $VIO_SIGNALING_OPTION in
 			1)
-			LINUX_SRC=linux-imx_4.1.15.bbappend.6UL_6ULL@1.8V
+			LINUX_SRC=linux-imx_4.1.15.bbappend.6UL_6ULL@1.8V_No_UHS
 			LINUX_DEST=linux-imx_4.1.15.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
+			VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support - ${YLW}(max SDIO clk = 50MHz)${NC}"
 			break
 			;;
 
 			2)
-			LINUX_SRC=linux-imx_4.1.15.bbappend.6UL_6ULL@1.8V_No_UHS
-			LINUX_DEST=linux-imx_4.1.15.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling without UHS support - ${YLW}HW mods needed${NC}"
-			break
-			;;
-
-			3)
 			LINUX_SRC=linux-imx_4.1.15.bbappend
 			LINUX_DEST=linux-imx_4.1.15.bbappend
 			VIO_SIGNALING_STRING="3.3V VIO signaling"
@@ -1865,44 +1658,9 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 	fi
 
 	if [ "$TARGET_NAME" = "imx6sxsabresd" ]; then
-		while true; do
-		echo " "
-		echo "7.1) Select VIO Signaling"
-		echo "-------------------------"
-		echo " "
-		echo "-------------------------------------------------"
-		echo "| Entry  |  Options                             |"
-		echo "|--------|--------------------------------------|"
-		echo "|   1.   | 1.8V VIO signaling with UHS support  |"
-		echo -e "|   ${GRN}2.${NC}   | ${GRN}3.3V VIO signaling${NC}                   |"
-		echo "-------------------------------------------------"
-		echo " "
-                echo " Refer to Murata Quickstart Guide for more details:"
-                echo " - Murata Wi-Fi BT Solution for i.MX Quick Start Guide (Linux) 5.x.pdf"
-		echo " "
-
-		echo -n "Select your entry: "
-		read VIO_SIGNALING_OPTION
-		case $VIO_SIGNALING_OPTION in
-			1)
-			LINUX_SRC=linux-imx_4.1.15.bbappend.6SX@1.8V
-			LINUX_DEST=linux-imx_4.1.15.bbappend
-			VIO_SIGNALING_STRING="1.8V VIO signaling with UHS support - ${YLW}HW mods needed${NC}"
-			break
-			;;
-
-			2)
-			LINUX_SRC=linux-imx_4.1.15.bbappend
-			LINUX_DEST=linux-imx_4.1.15.bbappend
-			VIO_SIGNALING_STRING="3.3V VIO signaling"
-			break
-			;;
-
-			*)
-			echo -e "${RED}That is not a valid choice, try again.${NC}"
-			;;
-		esac
-		done
+		LINUX_SRC=linux-imx_4.1.15.bbappend
+		LINUX_DEST=linux-imx_4.1.15.bbappend
+		VIO_SIGNALING_STRING="3.3V VIO signaling"
 		echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
 	fi
 #	End - Prompt user to select VIO Signaling
