@@ -3,9 +3,7 @@
 
 echo "INTERNAL_MIRROR = \"http://localhost\"" >> conf/local.conf
 echo "CORE_IMAGE_EXTRA_INSTALL += \" hostap-conf hostap-utils hostapd murata-binaries iperf3 \"" >> conf/local.conf
-
 echo "BBLAYERS += \" \${BSPDIR}/sources/meta-murata-wireless \"" >> conf/bblayers.conf
-
 echo ""
 echo "CORRECTION: Murata modified the following files"
 echo "  - bblayers.conf present in <BUILD_DIR>/conf"
