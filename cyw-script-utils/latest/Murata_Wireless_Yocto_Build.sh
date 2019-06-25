@@ -703,6 +703,7 @@ done
 		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\"" |"
 		echo "|     |      Release     | branch  | Supported     |     Developer Tag     |"
 		echo "|-----|------------------|---------|---------------|-----------------------|"
+		echo "|  0  | 4.14.98_2.0.0 GA | sumo    | 6,7,8         | imx-sumo-manda        |"
 		echo "|  1  | 4.9.123_2.3.0 GA | rocko   | 6,7,8         | imx-rocko-mini-manda  |"
 		echo "|  2  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-manda       |"
 		echo "|  3  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-manda       |"
@@ -764,6 +765,10 @@ iMXmortymandaDeveloperRelease="imx-morty-manda"
 iMXkrogothmandaStableReleaseTag="imx-krogoth-manda_r2.0"
 iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
 
+iMXsumomandaStableReleaseTag="imx-sumo-manda_r1.0"
+iMXsumomandaDeveloperRelease="imx-sumo-manda"
+
+imxsumoYocto="4.14.98_2.0.0 GA"
 imxrockominiYocto="4.9.123_2.3.0 GA"
 imxrockoYocto="4.9.88_2.0.0 GA"
 imx8mortyYocto="4.9.51 8MQ Beta"
@@ -1006,6 +1011,24 @@ elif [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
 		BRANCH_RELEASE_NAME="$iMXkrogothmandaDeveloperRelease"
 		iMXYoctoRelease="$imxkrogothYocto"
 		YoctoBranch="krogoth"
+		fmacversion="$MANDA_FMAC"
+
+	# sumo-manda_r1.0
+	elif [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "0" ]; then
+		echo "DEBUG:: sumo-manda_r1.0"
+		BRANCH_RELEASE_OPTION=9
+		BRANCH_RELEASE_NAME="$iMXsumomandaStableReleaseTag"
+		iMXYoctoRelease="$imxsumoYocto"
+		YoctoBranch="sumo"
+		fmacversion="$MANDA_FMAC"
+
+	# sumo-manda
+	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "0" ]; then
+		echo "DEBUG:: sumo-manda"
+		BRANCH_RELEASE_OPTION=10
+		BRANCH_RELEASE_NAME="$iMXsumomandaDeveloperRelease"
+		iMXYoctoRelease="$imxsumoYocto"
+		YoctoBranch="sumo"
 		fmacversion="$MANDA_FMAC"
 
 	fi
@@ -1683,7 +1706,128 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 	break
 	;;
 
+	9|10)
+	# For Branch/Tag : ---------------------imx-sumo-mothra / r_1.0 (developer | stable)-------------------------------
+	echo -e "${GRN}Selected: $iMXYoctoRelease ${NC}"
+	echo $'\n'
 
+	#       Prompting the user to select TARGET
+	while true; do
+	echo " "
+	echo "7) Select Target"
+	echo "----------------"
+	echo " "
+	echo "------------------------------------------------------"
+	echo "| Entry  |    Target Name    | i.MX Platform         |"
+	echo "|--------|-------------------|-----------------------|"
+	echo "|  1     |  imx7dsabresd     | i.MX 7Dual SDB        |"
+	echo "|  2     |  imx6qpsabresd    | i.MX 6QuadPlus SDB    |"
+	echo "|  3     |  imx6qsabresd     | i.MX 6Quad SDB        |"
+	echo "|  4     |  imx6dlsabresd    | i.MX 6DualLite SDB    |"
+	echo "|  5     |  imx6sxsabresd    | i.MX 6SX  SDB         |"
+	echo "|  6     |  imx6slevk        | i.MX 6SL  EVK         |"
+	echo "|  7     |  imx6ulevk        | i.MX 6UL  EVK         |"
+	echo "|  8     |  imx6ull14x14evk  | i.MX 6ULL EVK(14x14)  |"
+	echo "|  9     |  imx6ull9x9evk    | i.MX 6ULL EVK(9x9)    |"
+	echo "|  10    |  imx7ulpevk       | i.MX 7ULP EVK         |"
+	echo "|  11    |  imx8mqevk        | i.MX 8MQuad EVK       |"
+	echo "|  12    |  imx8qmmek        | i.MX 8MQuad mini EVK  |"
+	echo "|  13    |  imx8qxpmek       | i.MX 8MQuadXPlus EVK  |"
+	echo "|  14    |  imx8mmevk        | i.MX 8M Mini EVK      |"
+	echo "------------------------------------------------------"
+	echo -n "Select your entry: "
+	read TARGET_OPTION
+	case $TARGET_OPTION in
+	1)
+	TARGET_NAME=imx7dsabresd
+	break
+	;;
+
+	2)
+	TARGET_NAME=imx6qpsabresd
+	break
+	;;
+
+	3)
+	TARGET_NAME=imx6qsabresd
+	break
+	;;
+
+	4)
+	TARGET_NAME=imx6dlsabresd
+	break
+	;;
+
+	5)
+	TARGET_NAME=imx6sxsabresd
+	break
+	;;
+
+	6)
+	TARGET_NAME=imx6slevk
+	break
+	;;
+
+	7)
+	TARGET_NAME=imx6ulevk
+	break
+	;;
+
+	8)
+	TARGET_NAME=imx6ull14x14evk
+	break
+	;;
+
+	9)
+	TARGET_NAME=imx6ull9x9evk
+	break
+	;;
+
+	10)
+	TARGET_NAME=imx7ulpevk
+	break
+	;;
+
+	11)
+	TARGET_NAME=imx8mqevk
+	LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
+	LINUX_DEST=linux-imx_4.14.98.bbappend
+    	break
+    	;;
+
+    	12)
+   	TARGET_NAME=imx8qmmek
+    	LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
+    	LINUX_DEST=linux-imx_4.14.98.bbappend
+    	break
+    	;;
+
+    	13)
+    	TARGET_NAME=imx8qxpmek
+    	LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
+    	LINUX_DEST=linux-imx_4.14.98.bbappend
+    	break
+    	;;
+
+    	14)
+    	TARGET_NAME=imx8mmevk
+    	LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
+    	LINUX_DEST=linux-imx_4.14.98.bbappend
+    	break
+    	;;
+
+    	*)
+    	echo -e "${RED}13That is not a valid choice, try again.${NC}"
+    	;;
+  esac
+done
+
+echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
+echo $'\n'
+
+  #	End - Prompt user to select VIO Signaling
+  break
+  ;;
 
 	# For Retry : ------------------------------Retry-------------------------------------------
 	*)
@@ -2135,7 +2279,7 @@ IMAGE_NAME=core-image-base
 
 # change the defaults for DISTRO for rocko-mini
 #  ERROR - Only Wayland distros are supported for i.MX 8 or i.MX 8M
-if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
+if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ] || [ "$iMXYoctoRelease" = "$imxsumoYocto" ]; then
 	DISTRO_NAME=fsl-imx-wayland
 fi
 
@@ -2418,7 +2562,10 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	done
 	
 	# Invoke Repo Init based on Yocto Release
-	if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
+  	if [ "$iMXYoctoRelease" = "$imxsumoYocto" ]; then
+		#echo "DEBUG:: IMXALL-SUMO"
+		repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-sumo -m imx-4.14.98-2.0.0_ga.xml
+	elif [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
 		#echo "DEBUG:: IMXALL-ROCKO-MINI"
 		repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-rocko -m imx-4.9.123-2.3.0-8mm_ga.xml
 	elif [ "$iMXYoctoRelease" = "$imxrockoYocto" ]; then
@@ -2572,6 +2719,27 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 				fi
 			fi
 		fi
+
+    #for sumo-manda
+	if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$iMXYoctoRelease" = "$imxsumoYocto" ]; then
+		mv $BSP_DIR/sources/meta-openembedded/meta-oe/recipes-connectivity/hostapd/hostapd_2.6.bb $BSP_DIR/sources/meta-openembedded/meta-oe/recipes-connectivity/hostapd/hostapd_2.6.bbx
+  		mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-connectivity/hostapd/hostapd_%.bbappend $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-connectivity/hostapd/hostapd_%.bbappendx
+      		mv $BSP_DIR/sources/poky/meta/recipes-connectivity/wpa-supplicant/wpa-supplicant_2.6.bb $BSP_DIR/sources/poky/meta/recipes-connectivity/wpa-supplicant/wpa-supplicant_2.6.bbx
+      		mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-connectivity/wpa-supplicant/wpa-supplicant_%.bbappend $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-connectivity/wpa-supplicant/wpa-supplicant_%.bbappendx
+
+      	if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+      		#echo "DEBUG:: Before copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
+       		cp $LINUX_SRC $LINUX_DEST
+        	#echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
+      	fi
+
+      	if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qmmek" ] || [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8mmevk" ]; then
+        	cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 \
+		$BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
+      	fi
+
+
+    fi
 
 	cd $BUILD_DIR
 
