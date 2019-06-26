@@ -719,7 +719,7 @@ done
 
 while true; do
 	read -p "Select which entry? " ENTRY
-	if [ "$ENTRY" = "1" ] || [ "$ENTRY" = "2" ] || [ "$ENTRY" = "3" ] || [ "$ENTRY" = "4" ]; then
+	if [ "$ENTRY" = "0" ] || [ "$ENTRY" = "1" ] || [ "$ENTRY" = "2" ] || [ "$ENTRY" = "3" ] || [ "$ENTRY" = "4" ]; then
 		#echo "DEBUG:: $ENTRY"
 		break
 	else
