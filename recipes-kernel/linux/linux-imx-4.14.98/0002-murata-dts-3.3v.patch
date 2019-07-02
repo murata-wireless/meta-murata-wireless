@@ -137,7 +137,7 @@ index 0000000..7985b59
 +#include "imx6qdl-sabresd-btwifi-m2.dtsi"
 diff --git a/arch/arm/boot/dts/imx6qdl-sabresd-btwifi-m2.dtsi b/arch/arm/boot/dts/imx6qdl-sabresd-btwifi-m2.dtsi
 new file mode 100644
-index 0000000..08d9098
+index 0000000..a74bad0
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6qdl-sabresd-btwifi-m2.dtsi
 @@ -0,0 +1,103 @@
@@ -195,12 +195,12 @@ index 0000000..08d9098
 +		/* add MUXing entry for SD2 4-bit interface and configure control pins */
 +		pinctrl_wifi: wifigrp {
 +			fsl,pins = <
-+				MX6QDL_PAD_SD2_CMD__SD2_CMD		0x17059
-+				MX6QDL_PAD_SD2_CLK__SD2_CLK		0x10059
-+				MX6QDL_PAD_SD2_DAT0__SD2_DATA0		0x17059
-+				MX6QDL_PAD_SD2_DAT1__SD2_DATA1		0x17059
-+				MX6QDL_PAD_SD2_DAT2__SD2_DATA2		0x17059
-+				MX6QDL_PAD_SD2_DAT3__SD2_DATA3		0x17059
++				MX6QDL_PAD_SD2_CMD__SD2_CMD		0x17069
++				MX6QDL_PAD_SD2_CLK__SD2_CLK		0x10069
++				MX6QDL_PAD_SD2_DAT0__SD2_DATA0		0x17069
++				MX6QDL_PAD_SD2_DAT1__SD2_DATA1		0x17069
++				MX6QDL_PAD_SD2_DAT2__SD2_DATA2		0x17069
++				MX6QDL_PAD_SD2_DAT3__SD2_DATA3		0x17069
 +				MX6QDL_PAD_KEY_ROW0__GPIO4_IO07		0x13069	/* WL_REG_ON */
 +				MX6QDL_PAD_KEY_COL0__GPIO4_IO06		0x13069	/* WL_HOST_WAKE */
 +			>;
