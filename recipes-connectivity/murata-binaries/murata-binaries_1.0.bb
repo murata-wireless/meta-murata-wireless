@@ -6,14 +6,14 @@ LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741
 SRC_URI = " \
 	git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=manda;destsuffix=cyw-fmac-fw \
 	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=manda;destsuffix=cyw-fmac-nvram \
-	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=rocko-manda;destsuffix=cyw-bt-patch \
+	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=sumo-manda;destsuffix=cyw-bt-patch \
 	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=manda;destsuffix=cyw-fmac-utils-imx32 \
 	file://10-network.rules \
 "
 
-SRCREV_cyw-fmac-fw="9a813ba411870cffd4ec20d30623035773564da9"
-SRCREV_cyw-fmac-nvram="d27f1bf105fa1e5b828e355793b88d4b66188411"
-SRCREV_cyw-bt-patch="748462f0b02ec4aeb500bedd60780ac51c37be31"
+SRCREV_cyw-fmac-fw="c5872f0b8cf7bfb0335ee2c293b552d3d7da931e"
+SRCREV_cyw-fmac-nvram="aec2050ba41e007480fc509d4acdfd204d1a248d"
+SRCREV_cyw-bt-patch="19c6747c2c399177a94cd5febd288d85e48ef3a4"
 SRCREV_cyw-fmac-utils-imx32="b1cbd9170dd96ac73102aeee5d73b11575e1028a"
 
 SRCREV_default = "${AUTOREV}"
