@@ -11,9 +11,9 @@ SRC_URI = " \
 	file://10-network.rules \
 "
 
-SRCREV_cyw-fmac-fw="400d2128fbb3986cb36f20e6d479c1f13dd512f8"
-SRCREV_cyw-fmac-nvram="5c31182a8b779ae88b589ddb15dd69d43dec29b3"
-SRCREV_cyw-bt-patch="268df690598b42692c836ab6863d921f01e1ca38"
+SRCREV_cyw-fmac-fw="d810709364dce9771394e787f3366cac8ef82020"
+SRCREV_cyw-fmac-nvram="7946555202d33556639821ec5c15b2b76bad2e6d"
+SRCREV_cyw-bt-patch="80995c1d8bf1546dbc7be77fef1cd8f616675527"
 SRCREV_cyw-fmac-utils-imx32="95b79c0a2064e742f3605c3937d93f1c0a377587"
 
 SRCREV_default = "${AUTOREV}"
@@ -81,7 +81,7 @@ do_install () {
 	install -m 444 ${S}/cyw-fmac-fw/brcmfmac43012-sdio.1LV.clm_blob ${D}/lib/firmware/brcm/brcmfmac43012-sdio.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/brcmfmac43430-sdio.1DX.clm_blob ${D}/lib/firmware/brcm/brcmfmac43430-sdio.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/brcmfmac43455-sdio.1HK.clm_blob ${D}/lib/firmware/brcm/brcmfmac43455-sdio.clm_blob
-	
+
 #       Copying NVRAM files (*.txt) to lib/firmware/brcm and lib/firmware/brcm/murata-master
 	install -m 444 ${S}/cyw-fmac-nvram/*.txt ${D}/lib/firmware/brcm/murata-master
 	install -m 444 ${S}/cyw-fmac-nvram/brcmfmac4339-sdio.ZP.txt ${D}/lib/firmware/brcm/brcmfmac4339-sdio.txt
