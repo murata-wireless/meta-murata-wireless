@@ -10,9 +10,9 @@ SRC_URI = " \
 	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=battra;destsuffix=cyw-fmac-utils-imx32 \
 "
 
-SRCREV_cyw-fmac-fw="8b818105f91a247b04c87aad40232b76b47b99b0"
-SRCREV_cyw-fmac-nvram="f2ec90e2bbd971477ae6868fe517262643c7aba5"
-SRCREV_cyw-bt-patch="72ea5d89b5cb9214feda70b7c09628de826cf932"
+SRCREV_cyw-fmac-fw="7df4a2c6e632f4a5264b55e0d227064c0fb25c34"
+SRCREV_cyw-fmac-nvram="d7c6228f21c8b329279f88f14258bc4648b8c2fb"
+SRCREV_cyw-bt-patch="c000e2fe6fdefa9a29449764731d6ce041c16a21"
 SRCREV_cyw-fmac-utils-imx32="060688dfe76df98751207c8146268ce7fd80b6ab"
 
 SRCREV_default = "${AUTOREV}"
@@ -74,7 +74,7 @@ do_install () {
 	install -m 444 ${S}/cyw-fmac-fw/brcmfmac43455-sdio.1HK.clm_blob ${D}/lib/firmware/brcm/brcmfmac43455-sdio.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/README_FIRMWARE                 ${D}/lib/firmware/brcm
 	install -m 444 ${S}/cyw-fmac-fw/README_FIRMWARE                 ${D}/lib/firmware/brcm/murata-master
-	
+
 #       Copying NVRAM files (*.txt) to lib/firmware/brcm and lib/firmware/brcm/murata-master
 	install -m 444 ${S}/cyw-fmac-nvram/*.txt                         ${D}/lib/firmware/brcm/murata-master
 	install -m 444 ${S}/cyw-fmac-nvram/README_NVRAM                  ${D}/lib/firmware/brcm/murata-master
@@ -108,4 +108,3 @@ FILES_${PN}-mfgtest = " \
 "
 
 INSANE_SKIP_${PN} += "build-deps"
-
