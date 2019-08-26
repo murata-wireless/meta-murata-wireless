@@ -738,32 +738,32 @@ iMXmortyorgaDeveloperRelease="imx-morty-orga"
 iMXkrogothorgaDeveloperRelease="imx-krogoth-orga"
 
 iMX8mortybattraStableReleaseTag="imx8-morty-battra_r1.1"
-iMXmortybattraStableReleaseTag="imx-morty-battra_r1.1"
-iMXkrogothbattraStableReleaseTag="imx-krogoth-battra_r1.1"
+iMXmortybattraStableReleaseTag="imx-morty-battra_r1.2"
+iMXkrogothbattraStableReleaseTag="imx-krogoth-battra_r1.2"
 
 iMX8mortybattraDeveloperRelease="imx8-morty-battra"
 iMXmortybattraDeveloperRelease="imx-morty-battra"
 iMXkrogothbattraDeveloperRelease="imx-krogoth-battra"
 
-iMXrockomothraStableReleaseTag="imx-rocko-mothra_r1.0"
+iMXrockomothraStableReleaseTag="imx-rocko-mothra_r1.1"
 iMXrockomothraDeveloperRelease="imx-rocko-mothra"
 
-iMXmortymothraStableReleaseTag="imx-morty-mothra_r1.0"
+iMXmortymothraStableReleaseTag="imx-morty-mothra_r1.1"
 iMXmortymothraDeveloperRelease="imx-morty-mothra"
 
-iMXkrogothmothraStableReleaseTag="imx-krogoth-mothra_r1.0"
+iMXkrogothmothraStableReleaseTag="imx-krogoth-mothra_r1.1"
 iMXkrogothmothraDeveloperRelease="imx-krogoth-mothra"
 
-iMXrockominimandaStableReleaseTag="imx-rocko-mini-manda_r2.0"
+iMXrockominimandaStableReleaseTag="imx-rocko-mini-manda_r2.1"
 iMXrockominimandaDeveloperRelease="imx-rocko-mini-manda"
 
-iMXrockomandaStableReleaseTag="imx-rocko-manda_r2.0"
+iMXrockomandaStableReleaseTag="imx-rocko-manda_r2.1"
 iMXrockomandaDeveloperRelease="imx-rocko-manda"
 
-iMXmortymandaStableReleaseTag="imx-morty-manda_r2.0"
+iMXmortymandaStableReleaseTag="imx-morty-manda_r2.1"
 iMXmortymandaDeveloperRelease="imx-morty-manda"
 
-iMXkrogothmandaStableReleaseTag="imx-krogoth-manda_r2.0"
+iMXkrogothmandaStableReleaseTag="imx-krogoth-manda_r2.1"
 iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
 
 iMXsumomandaStableReleaseTag="imx-sumo-manda_r1.0"
