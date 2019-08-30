@@ -623,8 +623,8 @@ done
 		echo "|     |      Release     | branch  | Supported     |     Release Tag         |"
 		echo "|-----|------------------|---------|---------------|-------------------------|"
 		echo "|  1  | 4.9.51 8MQ Beta  | morty   | 8             | imx8-morty-battra_r1.1  |"
-		echo "|  2  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-battra_r1.1   |"
-		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-battra_r1.1 |"
+		echo "|  2  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-battra_r1.2   |"
+		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-battra_r1.2 |"
 		echo "------------------------------------------------------------------------------"
 		break
 #FMAC_VERSION="2" for BATTRA - DEVELOPER
@@ -654,9 +654,9 @@ done
 		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\""   |"
 		echo "|     |      Release     | branch  | Supported     |     Release Tag         |"
 		echo "|-----|------------------|---------|---------------|-------------------------|"
-		echo "|  1  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-mothra_r1.0   |"
-		echo "|  2  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-mothra_r1.0   |"
-		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-mothra_r1.0 |"
+		echo "|  1  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-mothra_r1.1   |"
+		echo "|  2  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-mothra_r1.1   |"
+		echo "|  3  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-mothra_r1.1 |"
 		echo "------------------------------------------------------------------------------"
 		break
 #FMAC_VERSION="3" for MOTHRA - DEVELOPER
@@ -686,10 +686,11 @@ done
 		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\""     |"
 		echo "|     |      Release     | branch  | Supported     |     Release Tag           |"
 		echo "|-----|------------------|---------|---------------|---------------------------|"
-		echo "|  1  | 4.9.123_2.3.0 GA | rocko   | 6,7,8         | imx-rocko-mini-manda_r2.0 |"
-		echo "|  2  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-manda_r2.0      |"
-		echo "|  3  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-manda_r2.0      |"
-		echo "|  4  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-manda_r2.0    |"
+		echo "|  0  | 4.14.98_2.0.0 GA | sumo    | 6,7,8         | imx-sumo-manda_r1.0       |"
+		echo "|  1  | 4.9.123_2.3.0 GA | rocko   | 6,7,8         | imx-rocko-mini-manda_r2.1 |"
+		echo "|  2  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-manda_r2.1      |"
+		echo "|  3  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-manda_r2.1      |"
+		echo "|  4  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-manda_r2.1    |"
 		echo "--------------------------------------------------------------------------------"
 		break
 #FMAC_VERSION="4" for MANDA - DEVELOPER
@@ -737,32 +738,32 @@ iMXmortyorgaDeveloperRelease="imx-morty-orga"
 iMXkrogothorgaDeveloperRelease="imx-krogoth-orga"
 
 iMX8mortybattraStableReleaseTag="imx8-morty-battra_r1.1"
-iMXmortybattraStableReleaseTag="imx-morty-battra_r1.1"
-iMXkrogothbattraStableReleaseTag="imx-krogoth-battra_r1.1"
+iMXmortybattraStableReleaseTag="imx-morty-battra_r1.2"
+iMXkrogothbattraStableReleaseTag="imx-krogoth-battra_r1.2"
 
 iMX8mortybattraDeveloperRelease="imx8-morty-battra"
 iMXmortybattraDeveloperRelease="imx-morty-battra"
 iMXkrogothbattraDeveloperRelease="imx-krogoth-battra"
 
-iMXrockomothraStableReleaseTag="imx-rocko-mothra_r1.0"
+iMXrockomothraStableReleaseTag="imx-rocko-mothra_r1.1"
 iMXrockomothraDeveloperRelease="imx-rocko-mothra"
 
-iMXmortymothraStableReleaseTag="imx-morty-mothra_r1.0"
+iMXmortymothraStableReleaseTag="imx-morty-mothra_r1.1"
 iMXmortymothraDeveloperRelease="imx-morty-mothra"
 
-iMXkrogothmothraStableReleaseTag="imx-krogoth-mothra_r1.0"
+iMXkrogothmothraStableReleaseTag="imx-krogoth-mothra_r1.1"
 iMXkrogothmothraDeveloperRelease="imx-krogoth-mothra"
 
-iMXrockominimandaStableReleaseTag="imx-rocko-mini-manda_r2.0"
+iMXrockominimandaStableReleaseTag="imx-rocko-mini-manda_r2.1"
 iMXrockominimandaDeveloperRelease="imx-rocko-mini-manda"
 
-iMXrockomandaStableReleaseTag="imx-rocko-manda_r2.0"
+iMXrockomandaStableReleaseTag="imx-rocko-manda_r2.1"
 iMXrockomandaDeveloperRelease="imx-rocko-manda"
 
-iMXmortymandaStableReleaseTag="imx-morty-manda_r2.0"
+iMXmortymandaStableReleaseTag="imx-morty-manda_r2.1"
 iMXmortymandaDeveloperRelease="imx-morty-manda"
 
-iMXkrogothmandaStableReleaseTag="imx-krogoth-manda_r2.0"
+iMXkrogothmandaStableReleaseTag="imx-krogoth-manda_r2.1"
 iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
 
 iMXsumomandaStableReleaseTag="imx-sumo-manda_r1.0"
