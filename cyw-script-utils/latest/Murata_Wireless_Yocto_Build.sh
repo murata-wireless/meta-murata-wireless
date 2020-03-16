@@ -686,7 +686,7 @@ done
 		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\""     |"
 		echo "|     |      Release     | branch  | Supported     |     Release Tag           |"
 		echo "|-----|------------------|---------|---------------|---------------------------|"
-		echo "|  0  | 4.14.98_2.0.0 GA | sumo    | 6,7,8         | imx-sumo-manda_r1.0       |"
+		echo "|  0  | 4.14.98_2.0.0 GA | sumo    | 6,7,8         | imx-sumo-manda_r1.1       |"
 		echo "|  1  | 4.9.123_2.3.0 GA | rocko   | 6,7,8         | imx-rocko-mini-manda_r2.1 |"
 		echo "|  2  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-manda_r2.1      |"
 		echo "|  3  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-manda_r2.1      |"
@@ -766,7 +766,7 @@ iMXmortymandaDeveloperRelease="imx-morty-manda"
 iMXkrogothmandaStableReleaseTag="imx-krogoth-manda_r2.1"
 iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
 
-iMXsumomandaStableReleaseTag="imx-sumo-manda_r1.0"
+iMXsumomandaStableReleaseTag="imx-sumo-manda_r1.1"
 iMXsumomandaDeveloperRelease="imx-sumo-manda"
 
 imxsumoYocto="4.14.98_2.0.0 GA"
