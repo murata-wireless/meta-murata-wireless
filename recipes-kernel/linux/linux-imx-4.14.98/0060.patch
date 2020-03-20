@@ -1,0 +1,15 @@
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index f2ef6c5..f46152e 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -3865,8 +3865,8 @@ static bool nl80211_valid_auth_type(struct cfg80211_registered_device *rdev,
+ 		return true;
+ 	case NL80211_CMD_CONNECT:
+ 		/* SAE not supported yet */
+-		if (auth_type == NL80211_AUTHTYPE_SAE)
+-			return false;
++		if (!(rdev->wiphy.features & NL80211_FEATURE_SAE) &&
++		    auth_type == NL80211_AUTHTYPE_SAE)
+ 		/* FILS with SK PFS or PK not supported yet */
+ 		if (auth_type == NL80211_AUTHTYPE_FILS_SK_PFS ||
+ 		    auth_type == NL80211_AUTHTYPE_FILS_PK)

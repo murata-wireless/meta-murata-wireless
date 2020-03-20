@@ -1,0 +1,25 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+index 4dd2dfe..b8d36cf 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+@@ -4819,12 +4819,14 @@ brcmf_cfg80211_start_ap(struct wiphy *wiphy, struct net_device *ndev,
+ 			goto exit;
+ 		}
+ 
+-		if (settings->hidden_ssid) {
+-			err = brcmf_fil_iovar_int_set(ifp, "closednet", 1);
+-			if (err) {
+-				brcmf_err("closednet error (%d)\n", err);
+-				goto exit;
+-			}
++		err = brcmf_fil_iovar_int_set(ifp, "closednet",
++					      settings->hidden_ssid);
++		if (err) {
++			brcmf_err("%s closednet error (%d)\n",
++				  settings->hidden_ssid ?
++				  "enabled" : "disabled",
++				  err);
++			goto exit;
+ 		}
+ 
+ 		brcmf_dbg(TRACE, "AP mode configuration complete\n");

@@ -1,0 +1,69 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
+index d8ea215..a74d76b 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
+@@ -161,7 +161,7 @@ struct brcmf_usbdev_info {
+ 
+ 	struct usb_device *usbdev;
+ 	struct device *dev;
+-	struct mutex dev_init_lock;
++	struct completion fw_downloaded;
+ 
+ 	int ctl_in_pipe, ctl_out_pipe;
+ 	struct urb *ctl_urb; /* URB for control endpoint */
+@@ -1256,11 +1256,11 @@ static void brcmf_usb_probe_phase2(struct device *dev, int ret,
+ 	if (ret)
+ 		goto error;
+ 
+-	mutex_unlock(&devinfo->dev_init_lock);
++	complete(&devinfo->fw_downloaded);
+ 	return;
+ error:
+ 	brcmf_dbg(TRACE, "failed: dev=%s, err=%d\n", dev_name(dev), ret);
+-	mutex_unlock(&devinfo->dev_init_lock);
++	complete(&devinfo->fw_downloaded);
+ 	device_release_driver(dev);
+ }
+ 
+@@ -1307,7 +1307,7 @@ static int brcmf_usb_probe_cb(struct brcmf_usbdev_info *devinfo)
+ 		if (ret)
+ 			goto fail;
+ 		/* we are done */
+-		mutex_unlock(&devinfo->dev_init_lock);
++		complete(&devinfo->fw_downloaded);
+ 		return 0;
+ 	}
+ 	bus->chip = bus_pub->devid;
+@@ -1368,11 +1368,9 @@ brcmf_usb_probe(struct usb_interface *intf, const struct usb_device_id *id)
+ 
+ 	devinfo->usbdev = usb;
+ 	devinfo->dev = &usb->dev;
+-	/* Take an init lock, to protect for disconnect while still loading.
+-	 * Necessary because of the asynchronous firmware load construction
+-	 */
+-	mutex_init(&devinfo->dev_init_lock);
+-	mutex_lock(&devinfo->dev_init_lock);
++
++	/* Initialize fw downloaded completion and mark it as not complete */
++	init_completion(&devinfo->fw_downloaded);
+ 
+ 	usb_set_intfdata(intf, devinfo);
+ 	intf->needs_remote_wakeup = 1;
+@@ -1451,7 +1449,7 @@ brcmf_usb_probe(struct usb_interface *intf, const struct usb_device_id *id)
+ 	return 0;
+ 
+ fail:
+-	mutex_unlock(&devinfo->dev_init_lock);
++	complete(&devinfo->fw_downloaded);
+ 	kfree(devinfo);
+ 	usb_set_intfdata(intf, NULL);
+ 	return ret;
+@@ -1466,7 +1464,7 @@ brcmf_usb_disconnect(struct usb_interface *intf)
+ 	devinfo = (struct brcmf_usbdev_info *)usb_get_intfdata(intf);
+ 
+ 	if (devinfo) {
+-		mutex_lock(&devinfo->dev_init_lock);
++		wait_for_completion(&devinfo->fw_downloaded);
+ 		/* Make sure that devinfo still exists. Firmware probe routines
+ 		 * may have released the device and cleared the intfdata.
+ 		 */

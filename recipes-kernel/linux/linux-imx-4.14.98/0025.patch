@@ -1,0 +1,24 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.h
+index 1e11bca..f415f20 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.h
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.h
+@@ -60,7 +60,6 @@ struct brcmf_mp_device {
+ 	unsigned int	feature_disable;
+ 	int		fcmode;
+ 	bool		roamoff;
+-	int		sdio_dpc_prio;
+ 	bool		eap_restrict;
+ 	int		sdio_dpc_prio;
+ 	bool		sdio_wq_highpri;
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index 393a463..c5d93d3 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -4392,6 +4392,7 @@ struct brcmf_sdio *brcmf_sdio_probe(struct brcmf_sdio_dev *sdiodev)
+ 	int ret;
+ 	struct brcmf_sdio *bus;
+ 	struct workqueue_struct *wq;
++	unsigned int wq_flags;
+ 
+ 	brcmf_dbg(TRACE, "Enter\n");
+ 
