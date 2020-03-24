@@ -8,6 +8,7 @@ SRC_URI = " \
 	git://github.com/bchen-murata/cyw-fmac-nvram;protocol=http;branch=kong;destsuffix=cyw-fmac-nvram \
 	git://github.com/bchen-murata/cyw-bt-patch;protocol=http;branch=sumo-kong;destsuffix=cyw-bt-patch \
 	git://github.com/bchen-murata/cyw-fmac-utils-imx32;protocol=http;branch=kong;destsuffix=cyw-fmac-utils-imx32 \
+	git://github.com/bchen-murata/cyw-fmac-utils-imx64;protocol=http;branch=kong;destsuffix=cyw-fmac-utils-imx64 \
 	file://10-network.rules \
 "
 
@@ -15,6 +16,7 @@ SRCREV_cyw-fmac-fw="ee99e045865fc2040b5699b48e1aa372591bbc8e"
 SRCREV_cyw-fmac-nvram="b8bf5563ef1447ecef781843e5a1921cf67a1042"
 SRCREV_cyw-bt-patch="d415c7d54386568f87cad763cda564ac6b12824c"
 SRCREV_cyw-fmac-utils-imx32="b1cbd9170dd96ac73102aeee5d73b11575e1028a"
+SRCREV_cyw-fmac-utils-imx64="6848dc6c805a29ff2a297d99557b8c875342cd57"
 
 SRCREV_default = "${AUTOREV}"
 
@@ -40,6 +42,10 @@ do_compile () {
 PACKAGES_prepend = "murata-binaries-wlarm "
 FILES_murata-binaries-wlarm = "${bindir}/wlarm"
 
+DO_INSTALL_64BIT_BINARIES = "no"
+DO_INSTALL_64BIT_BINARIES_mx6 = "no"
+DO_INSTALL_64BIT_BINARIES_mx7 = "no"
+DO_INSTALL_64BIT_BINARIES_mx8 = "yes"
 
 do_install () {
 	echo "Installing: "
@@ -97,7 +103,11 @@ do_install () {
 	install -m 444 ${S}/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
 
 #       Copying wl tool binary to /usr/sbin
-	install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
+	if [ ${DO_INSTALL_64BIT_BINARIES} = "yes" ]; then
+		install -m 755 ${S}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl
+	else
+		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
+	fi
 }
 
 PACKAGES =+ "${PN}-mfgtest"
