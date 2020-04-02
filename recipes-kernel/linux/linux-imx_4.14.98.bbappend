@@ -116,7 +116,9 @@ SRC_URI_append = " file://0002-murata-dts-3.3v.patch \
 		   file://0151.patch \
 		   file://0152.patch \
 		   file://0153.patch \
-		   file://0154.patch "
+		   file://0154.patch \
+		   file://0155-fix_uart_clock_issue_for_imx8mnevk.patch "
+
 
 addtask copy_defconfig_after_patch after do_patch before do_configure
 do_copy_defconfig_after_patch () {
