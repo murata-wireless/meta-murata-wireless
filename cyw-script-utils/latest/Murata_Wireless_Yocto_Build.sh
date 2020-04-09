@@ -1131,6 +1131,7 @@ if [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] ; then
           	echo "|  12    |  imx8qmmek        | i.MX 8MQuad mini EVK  |"
           	echo "|  13    |  imx8qxpmek       | i.MX 8MQuadXPlus EVK  |"
           	echo "|  14    |  imx8mmevk        | i.MX 8M Mini EVK      |"
+          	echo "|  15    |  imx8mmddr4evk    | i.MX 8M Mini DDR4 EVK |"
           	echo "------------------------------------------------------"
           	echo -n "Select your entry: "
           	read TARGET_OPTION
@@ -1189,33 +1190,40 @@ if [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] ; then
             	TARGET_NAME=imx8mqevk
             	LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
             	LINUX_DEST=linux-imx_4.14.98.bbappend
-              break
-              ;;
+                break
+                ;;
 
-              12)
-              TARGET_NAME=imx8qmmek
-              LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
-              LINUX_DEST=linux-imx_4.14.98.bbappend
-              break
-              ;;
+                12)
+                TARGET_NAME=imx8qmmek
+                LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
+                LINUX_DEST=linux-imx_4.14.98.bbappend
+                break
+                ;;
 
-              13)
-              TARGET_NAME=imx8qxpmek
-              LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
-              LINUX_DEST=linux-imx_4.14.98.bbappend
-              break
-              ;;
+                13)
+                TARGET_NAME=imx8qxpmek
+                LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
+                LINUX_DEST=linux-imx_4.14.98.bbappend
+                break
+                ;;
 
-              14)
-              TARGET_NAME=imx8mmevk
-              LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
-              LINUX_DEST=linux-imx_4.14.98.bbappend
-              break
-              ;;
+                14)
+                TARGET_NAME=imx8mmevk
+                LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
+                LINUX_DEST=linux-imx_4.14.98.bbappend
+                break
+                ;;
 
-              *)
-              echo -e "${RED}13That is not a valid choice, try again.${NC}"
-              ;;
+                15)
+                TARGET_NAME=imx8mmddr4evk
+                LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
+                LINUX_DEST=linux-imx_4.14.98.bbappend
+                break
+                ;;
+
+                *)
+                echo -e "${RED}13That is not a valid choice, try again.${NC}"
+                ;;
             esac
         done
 
@@ -3085,7 +3093,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
           	#echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
         	fi
 
-        	if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qmmek" ] || [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8mmevk" ]; then
+        	if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qmmek" ] || [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ]; then
           	mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bb \
         		   $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bbx
         		mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.1.bb \
