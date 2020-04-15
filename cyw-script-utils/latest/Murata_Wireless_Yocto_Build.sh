@@ -716,34 +716,34 @@ done
 		echo "|  4  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-manda     |"
 		echo "----------------------------------------------------------------------------"
 		break
-    #FMAC_VERSION="5" for KONG - STABLE
-    	elif [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "y" ]; then
-    		echo -e "${GRN}Selected : $KONG_FMAC${NC}"
+#FMAC_VERSION="5" for KONG - STABLE
+  	elif [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "y" ]; then
+  		echo -e "${GRN}Selected : $KONG_FMAC${NC}"
     		echo " "
     		echo "6) Select i.MX Yocto Release"
     		echo "----------------------------"
     		echo " "
     		echo "--------------------------------------------------------------------------------"
-    		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\""     |"
+   		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\""     |"
     		echo "|     |      Release     | branch  | Supported     |     Release Tag           |"
     		echo "|-----|------------------|---------|---------------|---------------------------|"
     		echo "|  0  | 4.14.98_2.3.0 GA | sumo    | 6,7,8         | imx-sumo-kong_r1.1       |"
     		echo "--------------------------------------------------------------------------------"
     		break
-    #FMAC_VERSION="5" for KONG - DEVELOPER
-    	elif [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "n" ]; then
-    		echo -e "${GRN}Selected : $KONG_FMAC${NC}"
-    		echo " "
-    		echo "6) Select i.MX Yocto Release"
-    		echo "----------------------------"
-    		echo " "
-    		echo "----------------------------------------------------------------------------"
-    		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\"" |"
-    		echo "|     |      Release     | branch  | Supported     |     Developer Tag     |"
-    		echo "|-----|------------------|---------|---------------|-----------------------|"
-    		echo "|  0  | 4.14.98_2.3.0 GA | sumo    | 6,7,8         | imx-sumo-kong        |"
-    		echo "----------------------------------------------------------------------------"
-    		break
+#FMAC_VERSION="5" for KONG - DEVELOPER
+	elif [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "n" ]; then
+ 		echo -e "${GRN}Selected : $KONG_FMAC${NC}"
+ 		echo " "
+ 		echo "6) Select i.MX Yocto Release"
+ 		echo "----------------------------"
+ 		echo " "
+ 		echo "----------------------------------------------------------------------------"
+ 		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\"" |"
+ 		echo "|     |      Release     | branch  | Supported     |     Developer Tag     |"
+ 		echo "|-----|------------------|---------|---------------|-----------------------|"
+ 		echo "|  0  | 4.14.98_2.3.0 GA | sumo    | 6,7,8         | imx-sumo-kong        |"
+ 		echo "----------------------------------------------------------------------------"
+ 		break
 
 	else
 		echo -e "${RED}Error: That is not a valid choice, try again.${NC}"
@@ -1073,7 +1073,7 @@ elif [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
 
 #FOR KONG
 elif [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ]; then
-  # sumo-kong_r1.0
+  	# sumo-kong_r1.0
 	if [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "0" ]; then
 		echo "DEBUG:: sumo-kong_r1.0"
 		BRANCH_RELEASE_OPTION=1
@@ -1128,10 +1128,11 @@ if [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] ; then
           	echo "|  9     |  imx6ull9x9evk    | i.MX 6ULL EVK(9x9)    |"
           	echo "|  10    |  imx7ulpevk       | i.MX 7ULP EVK         |"
           	echo "|  11    |  imx8mqevk        | i.MX 8MQuad EVK       |"
-          	echo "|  12    |  imx8qmmek        | i.MX 8MQuad mini EVK  |"
+          	echo "|  12    |  imx8qmmek        | i.MX 8MQuad max  EVK  |"
           	echo "|  13    |  imx8qxpmek       | i.MX 8MQuadXPlus EVK  |"
           	echo "|  14    |  imx8mmevk        | i.MX 8M Mini EVK      |"
           	echo "|  15    |  imx8mmddr4evk    | i.MX 8M Mini DDR4 EVK |"
+            echo "|  16    |  imx8mnevk        | i.MX 8M Nano          |"
           	echo "------------------------------------------------------"
           	echo -n "Select your entry: "
           	read TARGET_OPTION
@@ -1221,6 +1222,13 @@ if [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] ; then
                 break
                 ;;
 
+                16)
+                TARGET_NAME=imx8mnevk
+                LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
+                LINUX_DEST=linux-imx_4.14.98.bbappend
+                break
+                ;;
+
                 *)
                 echo -e "${RED}13That is not a valid choice, try again.${NC}"
                 ;;
@@ -1234,27 +1242,27 @@ if [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] ; then
         #	Start - Prompt user to select VIO Signaling
         if [ "$TARGET_NAME" = "imx6ulevk" ] ||  [ "$TARGET_NAME" = "imx6ull14x14evk" ] ||  [ "$TARGET_NAME" = "imx6ull9x9evk" ]; then
           while true; do
-        	    echo " "
-        	    echo "7.1) Select VIO Signaling"
-        	    echo "-------------------------"
-        			echo " "
-        			echo    "------------------------------------------------------------------------------"
-        			echo    "| Entry  |  Options                                                          |"
-        			echo    "|--------|-------------------------------------------------------------------|"
-        			echo -e "|   1.   | 1.8V VIO signaling ${YLW}without${NC} UHS support ${YLW}(max SDIO clk = 50MHz)${NC}     |"
-        			echo -e "|   ${GRN}2.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC}                            |"
-        			echo    "------------------------------------------------------------------------------"
-        			echo -e "| Note 1: Using ${YLW}V1/V2 Samtec${NC} Adapter ${YLW}HW mods reguired${NC} for ${YLW}1.8V${NC} VIO signaling |"
-        			echo -e "| Note 2: Using ${GRN}uSd-M2${NC} Adapter ${GRN}disconnect J12${NC} for ${GRN}1.8V${NC} VIO signaling         |"
-        			echo -e "| Note 3: Using ${GRN}uSd-M2${NC} Adapter ${GRN}connect J12${NC} for ${GRN}3.3V${NC} VIO signaling            |"
-        			echo    "------------------------------------------------------------------------------"
-        			echo " "
-        			echo " Refer to Murata Quickstart Guide for more details:"
-        			echo " - Murata Wi-Fi BT Solution for i.MX Quick Start Guide (Linux) 5.x.pdf"
-        			echo " "
+        	echo " "
+        	echo "7.1) Select VIO Signaling"
+        	echo "-------------------------"
+		echo " "
+        	echo    "------------------------------------------------------------------------------"
+        	echo    "| Entry  |  Options                                                          |"
+        	echo    "|--------|-------------------------------------------------------------------|"
+        	echo -e "|   1.   | 1.8V VIO signaling ${YLW}without${NC} UHS support ${YLW}(max SDIO clk = 50MHz)${NC}     |"
+        	echo -e "|   ${GRN}2.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC}                            |"
+        	echo    "------------------------------------------------------------------------------"
+        	echo -e "| Note 1: Using ${YLW}V1/V2 Samtec${NC} Adapter ${YLW}HW mods reguired${NC} for ${YLW}1.8V${NC} VIO signaling |"
+        	echo -e "| Note 2: Using ${GRN}uSd-M2${NC} Adapter ${GRN}disconnect J12${NC} for ${GRN}1.8V${NC} VIO signaling         |"
+        	echo -e "| Note 3: Using ${GRN}uSd-M2${NC} Adapter ${GRN}connect J12${NC} for ${GRN}3.3V${NC} VIO signaling            |"
+        	echo    "------------------------------------------------------------------------------"
+        	echo " "
+        	echo " Refer to Murata Quickstart Guide for more details:"
+        	echo " - Murata Wi-Fi BT Solution for i.MX Quick Start Guide (Linux) 5.x.pdf"
+        	echo " "
 
-        			echo -n "Select your entry: "
-        			read VIO_SIGNALING_OPTION
+        	echo -n "Select your entry: "
+        		read VIO_SIGNALING_OPTION
         			case $VIO_SIGNALING_OPTION in
         				1)
         				LINUX_SRC=linux-imx_4.14.98.bbappend.6UL_6ULL@1.8V_No_UHS
@@ -1274,9 +1282,9 @@ if [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] ; then
         				echo -e "${RED}That is not a valid choice, try again.${NC}"
         						;;
         			esac
-        	done
+        		done
 
-     			echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
+     		    echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
         fi
 
         if [ "$TARGET_NAME" = "imx6sxsabresd" ]; then
