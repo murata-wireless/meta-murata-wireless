@@ -4,11 +4,11 @@ LICENSE = "BSD"
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
 SRC_URI = " \
-	git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=kong;destsuffix=cyw-fmac-fw \
-	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=kong;destsuffix=cyw-fmac-nvram \
-	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=sumo-kong;destsuffix=cyw-bt-patch \
-	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=kong;destsuffix=cyw-fmac-utils-imx32 \
-	git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=kong;destsuffix=cyw-fmac-utils-imx64 \
+	git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=kong;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
+	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=kong;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
+	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=sumo-kong;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
+	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=kong;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
+	git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=kong;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
 	file://10-network.rules \
 "
 
