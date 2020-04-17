@@ -48,8 +48,8 @@ echo "2) Verifying Script Version"
 echo "---------------------------"
 
 
-GITHUB_PATH="\""https://github.com/bchen-murata/meta-murata-wireless.git"\""
-META_MURATA_WIRELESS_GIT="https://github.com/bchen-murata/meta-murata-wireless.git"
+GITHUB_PATH="\""https://github.com/murata-wireless/meta-murata-wireless.git"\""
+META_MURATA_WIRELESS_GIT="https://github.com/murata-wireless/meta-murata-wireless.git"
 
 echo "Fetching latest script from Murata Github."
 echo "Cloning $GITHUB_PATH"
@@ -727,7 +727,7 @@ done
    		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\""     |"
     		echo "|     |      Release     | branch  | Supported     |     Release Tag           |"
     		echo "|-----|------------------|---------|---------------|---------------------------|"
-    		echo "|  0  | 4.14.98_2.3.0 GA | sumo    | 6,7,8         | imx-sumo-kong_r1.1       |"
+    		echo "|  0  | 4.14.98_2.3.0 GA | sumo    | 6,7,8         | imx-sumo-kong_r1.0       |"
     		echo "--------------------------------------------------------------------------------"
     		break
 #FMAC_VERSION="5" for KONG - DEVELOPER
@@ -802,8 +802,8 @@ iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
 iMXsumomandaStableReleaseTag="imx-sumo-manda_r1.1"
 iMXsumomandaDeveloperRelease="imx-sumo-manda"
 
-iMXsumokongStableReleaseTag="imx-sumo-kong_r1.1"
-iMXsumokongDeveloperRelease="imx-sumo-kong-nxp"
+iMXsumokongStableReleaseTag="imx-sumo-kong_r1.0"
+iMXsumokongDeveloperRelease="imx-sumo-kong"
 
 imxsumokongYocto="4.14.98_2.3.0 GA"
 imxsumoYocto="4.14.98_2.0.0 GA"
@@ -1132,7 +1132,7 @@ if [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] ; then
           	echo "|  13    |  imx8qxpmek       | i.MX 8MQuadXPlus EVK  |"
           	echo "|  14    |  imx8mmevk        | i.MX 8M Mini EVK      |"
           	echo "|  15    |  imx8mmddr4evk    | i.MX 8M Mini DDR4 EVK |"
-            echo "|  16    |  imx8mnevk        | i.MX 8M Nano          |"
+          	echo "|  16    |  imx8mnevk        | i.MX 8M Nano EVK      |"
           	echo "------------------------------------------------------"
           	echo -n "Select your entry: "
           	read TARGET_OPTION
