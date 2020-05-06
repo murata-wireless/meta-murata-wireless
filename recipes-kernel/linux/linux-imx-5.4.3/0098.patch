@@ -1,0 +1,12 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index 156a7d4..c4587cc 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -3603,6 +3603,7 @@ static bool brcmf_sdio_aos_no_decode(struct brcmf_sdio *bus)
+ 	if (bus->ci->chip == CY_CC_43012_CHIP_ID ||
+ 	    bus->ci->chip == CY_CC_4373_CHIP_ID ||
+ 	    bus->ci->chip == BRCM_CC_4339_CHIP_ID ||
++	    bus->ci->chip == BRCM_CC_4345_CHIP_ID ||
+ 	    bus->ci->chip == BRCM_CC_4354_CHIP_ID ||
+ 	    bus->ci->chip == BRCM_CC_4356_CHIP_ID)
+ 		return true;

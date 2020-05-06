@@ -1,0 +1,73 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+index cdbd5cc3..17590cb6 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+@@ -2777,7 +2777,7 @@ brcmf_cfg80211_set_power_mgmt(struct wiphy *wiphy, struct net_device *ndev,
+ 		goto done;
+ 	}
+ 
+-	pm = enabled ? PM_FAST : PM_OFF;
++	pm = enabled ? ifp->drvr->settings->default_pm : PM_OFF;
+ 	/* Do not enable the power save after assoc if it is a p2p interface */
+ 	if (ifp->vif->wdev.iftype == NL80211_IFTYPE_P2P_CLIENT) {
+ 		brcmf_dbg(INFO, "Do not enable power save for P2P clients\n");
+@@ -7031,7 +7031,7 @@ static s32 brcmf_config_dongle(struct brcmf_cfg80211_info *cfg)
+ 
+ 	brcmf_dongle_scantime(ifp);
+ 
+-	power_mode = cfg->pwr_save ? PM_FAST : PM_OFF;
++	power_mode = cfg->pwr_save ? ifp->drvr->settings->default_pm : PM_OFF;
+ 	err = brcmf_fil_cmd_int_set(ifp, BRCMF_C_SET_PM, power_mode);
+ 	if (err)
+ 		goto default_conf_out;
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+index 7f04674..8ffe2b0 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+@@ -21,6 +21,7 @@
+ #include "of.h"
+ #include "firmware.h"
+ #include "chip.h"
++#include "defs.h"
+ 
+ MODULE_AUTHOR("Broadcom Corporation");
+ MODULE_DESCRIPTION("Broadcom 802.11 wireless LAN fullmac driver.");
+@@ -76,6 +77,10 @@ static int brcmf_sdio_wq_highpri;
+ module_param_named(sdio_wq_highpri, brcmf_sdio_wq_highpri, int, 0);
+ MODULE_PARM_DESC(sdio_wq_highpri, "SDIO workqueue is set to high priority");
+ 
++static int brcmf_max_pm;
++module_param_named(max_pm, brcmf_max_pm, int, 0);
++MODULE_PARM_DESC(max_pm, "Use max power management mode by default");
++
+ #ifdef DEBUG
+ /* always succeed brcmf_bus_started() */
+ static int brcmf_ignore_probe_fail;
+@@ -438,6 +443,7 @@ struct brcmf_mp_device *brcmf_get_module_param(struct device *dev,
+ 	settings->iapp = !!brcmf_iapp_enable;
+ 	settings->eap_restrict = !!brcmf_eap_restrict;
+ 	settings->sdio_wq_highpri = !!brcmf_sdio_wq_highpri;
++	settings->default_pm = !!brcmf_max_pm ? PM_MAX : PM_FAST;
+ #ifdef DEBUG
+ 	settings->ignore_probe_fail = !!brcmf_ignore_probe_fail;
+ #endif
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.h
+index 6184ca0..955c4ce 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.h
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.h
+@@ -39,6 +39,7 @@ extern struct brcmf_mp_global_t brcmf_mp_global;
+  * @roamoff: Firmware roaming off?
+  * @eap_restrict: Not allow data tx/rx until 802.1X auth succeeds
+  * @sdio_wq_highpri: Tasks submitted to SDIO workqueue will run immediately.
++ * @default_pm: default power management (PM) mode.
+  * @ignore_probe_fail: Ignore probe failure.
+  * @country_codes: If available, pointer to struct for translating country codes
+  * @bus: Bus specific platform data. Only SDIO at the mmoment.
+@@ -52,6 +53,7 @@ struct brcmf_mp_device {
+ 	bool		eap_restrict;
+ 	int		sdio_dpc_prio;
+ 	bool		sdio_wq_highpri;
++	int		default_pm;
+ 	bool		ignore_probe_fail;
+ 	struct brcmfmac_pd_cc *country_codes;
+ 	const char	*board_type;

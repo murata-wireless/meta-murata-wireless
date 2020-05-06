@@ -1,0 +1,12 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+index 1eb4342..e4cf9b8 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+@@ -199,7 +199,6 @@ static void _brcmf_set_multicast_list(struct work_struct *work)
+ 	if (err < 0)
+ 		bphy_err(drvr, "Setting BRCMF_C_SET_PROMISC failed, %d\n",
+ 			 err);
+-	brcmf_configure_arp_nd_offload(ifp, !cmd_value);
+ }
+ 
+ #if IS_ENABLED(CONFIG_IPV6)

@@ -1,0 +1,13 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
+index ee728d6..f504fd2 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
+@@ -133,7 +133,7 @@
+ /* Link Down indication in WoWL mode: */
+ #define BRCMF_WOWL_LINKDOWN		(1 << 31)
+ 
+-#define BRCMF_WOWL_MAXPATTERNS		8
++#define BRCMF_WOWL_MAXPATTERNS		16
+ #define BRCMF_WOWL_MAXPATTERNSIZE	128
+ 
+ enum {

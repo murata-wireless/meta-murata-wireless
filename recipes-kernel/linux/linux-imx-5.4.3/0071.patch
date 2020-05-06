@@ -1,0 +1,65 @@
+diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
+index c615db3..a21ba52 100644
+--- a/include/net/cfg80211.h
++++ b/include/net/cfg80211.h
+@@ -6592,6 +6592,9 @@ cfg80211_connect_timeout(struct net_device *dev, const u8 *bssid,
+  * @resp_ie: association response IEs (may be %NULL)
+  * @resp_ie_len: assoc response IEs length
+  * @fils: FILS related roaming information.
++ * @authorized: true if the 802.1X authentication was done by the driver or is
++ *	not needed (e.g., when Fast Transition protocol was used), false
++ *	otherwise. Ignored for networks that don't use 802.1X authentication.
+  */
+ struct cfg80211_roam_info {
+ 	struct ieee80211_channel *channel;
+@@ -6602,6 +6605,7 @@ struct cfg80211_roam_info {
+ 	const u8 *resp_ie;
+ 	size_t resp_ie_len;
+ 	struct cfg80211_fils_resp_params fils;
++	bool authorized;
+ };
+ 
+ /**
+diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
+index beee59c..4e6178f 100644
+--- a/include/uapi/linux/nl80211.h
++++ b/include/uapi/linux/nl80211.h
+@@ -2299,7 +2299,10 @@ enum nl80211_commands {
+  *	in %NL80211_CMD_CONNECT to indicate that for 802.1X authentication it
+  *	wants to use the supported offload of the 4-way handshake.
+  * @NL80211_ATTR_PMKR0_NAME: PMK-R0 Name for offloaded FT.
+- * @NL80211_ATTR_PORT_AUTHORIZED: (reserved)
++ * @NL80211_ATTR_PORT_AUTHORIZED: flag attribute used in %NL80211_CMD_ROAMED
++ *	notification indicating that that 802.1X authentication was done by
++ *	the driver or is not needed (because roaming used the Fast Transition
++ *	protocol).
+  *
+  * @NL80211_ATTR_EXTERNAL_AUTH_ACTION: Identify the requested external
+  *     authentication operation (u32 attribute with an
+diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
+index 7b72286..b774287 100644
+--- a/net/wireless/nl80211.c
++++ b/net/wireless/nl80211.c
+@@ -15309,7 +15309,9 @@ void nl80211_send_roamed(struct cfg80211_registered_device *rdev,
+ 	    (info->fils.pmk &&
+ 	     nla_put(msg, NL80211_ATTR_PMK, info->fils.pmk_len, info->fils.pmk)) ||
+ 	    (info->fils.pmkid &&
+-	     nla_put(msg, NL80211_ATTR_PMKID, WLAN_PMKID_LEN, info->fils.pmkid)))
++	     nla_put(msg, NL80211_ATTR_PMKID, WLAN_PMKID_LEN, info->fils.pmkid)) ||
++	    (info->authorized &&
++	     nla_put_flag(msg, NL80211_ATTR_PORT_AUTHORIZED)))
+ 		goto nla_put_failure;
+ 
+ 	genlmsg_end(msg, hdr);
+diff --git a/net/wireless/sme.c b/net/wireless/sme.c
+index 7a6c38d..f3bf8e3 100644
+--- a/net/wireless/sme.c
++++ b/net/wireless/sme.c
+@@ -1020,6 +1020,7 @@ void cfg80211_roamed(struct net_device *dev, struct cfg80211_roam_info *info,
+ 	if (info->fils.update_erp_next_seq_num)
+ 		ev->rm.fils.erp_next_seq_num = info->fils.erp_next_seq_num;
+ 	ev->rm.bss = info->bss;
++	ev->rm.authorized = info->authorized;
+ 
+ 	spin_lock_irqsave(&wdev->event_lock, flags);
+ 	list_add_tail(&ev->list, &wdev->event_list);

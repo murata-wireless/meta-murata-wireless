@@ -1,0 +1,14 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index 27fafa8..bb50273 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -2348,7 +2348,9 @@ static uint brcmf_sdio_sendfromq(struct brcmf_sdio *bus, uint maxframes)
+ 					      &prec_out);
+ 			if (pkt == NULL)
+ 				break;
++#if (LINUX_VERSION_CODE < KERNEL_VERSION(4, 16, 0))
+ 			skb_orphan(pkt);
++#endif
+ 			__skb_queue_tail(&pktq, pkt);
+ 		}
+ 		spin_unlock_bh(&bus->txq_lock);
