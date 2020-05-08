@@ -1,8 +1,8 @@
 diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-index a2958fb..71f8f45 100644
+index b3dfefe..63dbb43 100644
 --- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
 +++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-@@ -34,6 +34,17 @@
+@@ -35,6 +35,17 @@
  			MX6UL_PAD_SNVS_TAMPER1__GPIO5_IO01 0x03029
  		>;
  	};
@@ -20,7 +20,7 @@ index a2958fb..71f8f45 100644
  };
  
  &reg_sd1_vmmc {
-@@ -41,17 +52,21 @@
+@@ -42,17 +53,21 @@
  };
  
  &uart2 {
@@ -43,4 +43,4 @@ index a2958fb..71f8f45 100644
 +	wifi-host;
  	mmc-pwrseq = <&usdhc1_pwrseq>;
  	cap-power-off-card;
- 
+ 	/delete-property/ wakeup-source;
