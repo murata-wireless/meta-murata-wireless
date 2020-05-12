@@ -1,8 +1,8 @@
 diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-index 71f8f45..23c2ac8 100644
+index 63dbb43..8b93024 100644
 --- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
 +++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-@@ -63,7 +63,8 @@
+@@ -64,7 +64,8 @@
  	pinctrl-0 = <&pinctrl_usdhc1>;
  	pinctrl-1 = <&pinctrl_usdhc1_100mhz &pinctrl_wifi>;
  	pinctrl-2 = <&pinctrl_usdhc1_200mhz &pinctrl_wifi>;
