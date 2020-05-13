@@ -4,15 +4,15 @@ LICENSE = "BSD"
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
 SRC_URI = " \
-	git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=kong;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
-	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=kong;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
-	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=sumo-kong;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
-	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=kong;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
-	git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=kong;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
+	git://github.com/bchen-murata/cyw-fmac-fw;protocol=http;branch=gamera;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
+	git://github.com/bchen-murata/cyw-fmac-nvram;protocol=http;branch=gamera;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
+	git://github.com/bchen-murata/cyw-bt-patch;protocol=http;branch=zeus-gamera;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
+	git://github.com/bchen-murata/cyw-fmac-utils-imx32;protocol=http;branch=gamera;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
+	git://github.com/bchen-murata/cyw-fmac-utils-imx64;protocol=http;branch=gamera;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
 	file://10-network.rules \
 "
 
-SRCREV_cyw-fmac-fw="21f7cb48bb3b2cacf80f9d0eb2a39a0600796bb3"
+SRCREV_cyw-fmac-fw="66dac97dff6dbc1dd23b339f76433ef293454a17"
 SRCREV_cyw-fmac-nvram="2b642dc80211819259191b44a02a0bf45e0518c7"
 SRCREV_cyw-bt-patch="558f98ac67bd944afa003c247643fd47cc2dd3ab"
 SRCREV_cyw-fmac-utils-imx32="b1cbd9170dd96ac73102aeee5d73b11575e1028a"
@@ -87,7 +87,7 @@ do_install () {
 	install -m 444 ${S}/cyw-fmac-fw/brcmfmac43012-sdio.1LV.clm_blob ${D}/lib/firmware/brcm/brcmfmac43012-sdio.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/brcmfmac43430-sdio.1DX.clm_blob ${D}/lib/firmware/brcm/brcmfmac43430-sdio.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/brcmfmac43455-sdio.1MW.clm_blob ${D}/lib/firmware/brcm/brcmfmac43455-sdio.clm_blob
-	
+
 #       Copying NVRAM files (*.txt) to lib/firmware/brcm and lib/firmware/brcm/murata-master
 	install -m 444 ${S}/cyw-fmac-nvram/*.txt ${D}/lib/firmware/brcm/murata-master
 	install -m 444 ${S}/cyw-fmac-nvram/brcmfmac4339-sdio.ZP.txt ${D}/lib/firmware/brcm/brcmfmac4339-sdio.txt
