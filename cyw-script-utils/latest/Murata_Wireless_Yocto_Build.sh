@@ -127,6 +127,8 @@ BATTRA_FMAC_INDEX="2"
 MOTHRA_FMAC_INDEX="3"
 MANDA_FMAC_INDEX="4"
 KONG_FMAC_INDEX="5"
+GAMERA_FMAC_INDEX="6"
+
 
 
 echo " "
@@ -557,6 +559,8 @@ BATTRA_FMAC=""\""battra"\"" (v4.14)"
 MOTHRA_FMAC=""\""mothra"\"" (v4.14)"
 MANDA_FMAC=""\""manda"\""  (v4.14)"
 KONG_FMAC=""\""kong"\""   (v4.14)"
+GAMERA_FMAC=""\""gamera"\"" (v5.4 )"
+
 
 
 echo     " "
@@ -567,7 +571,8 @@ echo     "|  1.   | $ORGA_FMAC - Previous release               |"
 echo     "|  2.   | $BATTRA_FMAC - Previous release               |"
 echo     "|  3.   | $MOTHRA_FMAC - Previous release               |"
 echo     "|  4.   | $MANDA_FMAC - Previous release               |"
-echo -e  "|  5.   | $KONG_FMAC - ${GRN}Latest and Highly recommended${NC}  |"
+echo     "|  5.   | $KONG_FMAC - Previous release               |"
+echo -e  "|  6.   | $GAMERA_FMAC - ${GRN}Latest and Highly recommended${NC}  |"
 echo     "-------------------------------------------------------------"
 
 while true; do
@@ -575,7 +580,7 @@ while true; do
 echo "FMAC DEBUG:: $FMAC_VERSION"
 	if [ "$FMAC_VERSION" = $ORGA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $BATTRA_FMAC_INDEX ]  || \
 		[ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]  || \
-		[ "$FMAC_VERSION" = $KONG_FMAC_INDEX ]; then
+		[ "$FMAC_VERSION" = $KONG_FMAC_INDEX ]  || [ "$FMAC_VERSION" = $GAMERA_FMAC_INDEX ]; then
 		#echo "DEBUG:: SELECTION OF FMAC :: $FMAC_VERSION"
 		break
 	else
@@ -744,7 +749,34 @@ done
  		echo "|  0  | 4.14.98_2.3.0 GA | sumo    | 6,7,8         | imx-sumo-kong        |"
  		echo "----------------------------------------------------------------------------"
  		break
-
+#FMAC_VERSION="6" for GAMERA - STABLE
+	elif [ "$FMAC_VERSION" = $GAMERA_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "y" ]; then
+  	echo -e "${GRN}Selected : $GAMERA_FMAC${NC}"
+		echo " "
+		echo "6) Select i.MX Yocto Release"
+		echo "----------------------------"
+		echo " "
+		echo "--------------------------------------------------------------------------------"
+		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\""     |"
+		echo "|     |      Release     | branch  | Supported     |     Release Tag           |"
+		echo "|-----|------------------|---------|---------------|---------------------------|"
+		echo "|  0  | 5.4.3_1.0.0      | zeus    | 6,7,8         | imx-zeus-gamera_r1.0      |"
+		echo "--------------------------------------------------------------------------------"
+		break
+#FMAC_VERSION="6" for GAMERA - DEVELOPER
+	elif [ "$FMAC_VERSION" = $GAMERA_FMAC_INDEX ] && [ "$BRANCH_TAG_OPTION" = "n" ]; then
+ 		echo -e "${GRN}Selected : $GAMERA_FMAC${NC}"
+ 		echo " "
+ 		echo "6) Select i.MX Yocto Release"
+ 		echo "----------------------------"
+ 		echo " "
+ 		echo "----------------------------------------------------------------------------"
+ 		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\"" |"
+ 		echo "|     |      Release     | branch  | Supported     |     Developer Tag     |"
+ 		echo "|-----|------------------|---------|---------------|-----------------------|"
+ 		echo "|  0  | 5.4.3_1.0.0      | zeus    | 6,7,8         | imx-zeus-gamera       |"
+ 		echo "----------------------------------------------------------------------------"
+ 		break
 	else
 		echo -e "${RED}Error: That is not a valid choice, try again.${NC}"
 		echo $'\n'
@@ -805,6 +837,10 @@ iMXsumomandaDeveloperRelease="imx-sumo-manda"
 iMXsumokongStableReleaseTag="imx-sumo-kong_r1.0"
 iMXsumokongDeveloperRelease="imx-sumo-kong"
 
+iMXzeusgameraStableReleaseTag="imx-zeus-gamera_r1.0"
+iMXzeusgameraDeveloperRelease="imx-zeus-gamera"
+
+imxzeusgameraYocto="5.4.3_1.0.0"
 imxsumokongYocto="4.14.98_2.3.0 GA"
 imxsumoYocto="4.14.98_2.0.0 GA"
 imxrockominiYocto="4.9.123_2.3.0 GA"
@@ -812,8 +848,6 @@ imxrockoYocto="4.9.88_2.0.0 GA"
 imx8mortyYocto="4.9.51 8MQ Beta"
 imxmortyYocto="4.9.11_1.0.0 GA"
 imxkrogothYocto="4.1.15_2.0.0 GA"
-
-
 
 #Based on FMAC_VERSION
 #FOR ORGA
@@ -1092,14 +1126,254 @@ elif [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ]; then
 		fmacversion="$KONG_FMAC"
 
 	fi
-fi
 
+#FOR GAMERA
+elif [ "$FMAC_VERSION" = $GAMERA_FMAC_INDEX ]; then
+
+  	# sumo-gamera_r1.0
+	if [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "0" ]; then
+		echo "DEBUG:: zeus-gamera_r1.0"
+		BRANCH_RELEASE_OPTION=1
+		BRANCH_RELEASE_NAME="$iMXzeusgameraStableReleaseTag"
+		iMXYoctoRelease="$imxzeusgameraYocto"
+		YoctoBranch="zeus"
+		fmacversion="$GAMERA_FMAC"
+
+	# sumo-gamera
+	elif [ "$BRANCH_TAG_OPTION" = "n" ] && [ "$ENTRY" = "0" ]; then
+		echo "DEBUG:: zeus-gamera"
+		BRANCH_RELEASE_OPTION=2
+		BRANCH_RELEASE_NAME="$iMXzeusgameraDeveloperRelease"
+		iMXYoctoRelease="$imxzeusgameraYocto"
+		YoctoBranch="zeus"
+		fmacversion="$GAMERA_FMAC"
+
+	fi
+fi
 
 # if FMAC selection is Orga or Battra, then proceed with 10 targets.
 # if FMAC selection [3] is Mothra, proceed with 11 targets.
 # if FMAC selection [4] is Manda && 4.9.88(rocko), proceed with 11 targets.
 # if FMAC selection [4] is Manda && 4.9.123(rocko-mini), proceed with 14 targets.
-if [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] ; then
+if [ "$FMAC_VERSION" = $GAMERA_FMAC_INDEX ] ; then
+  echo "DEBUG:: gamera"
+  while true; do
+
+    case $BRANCH_RELEASE_OPTION in
+
+      1|2)
+  	  # For Branch/Tag : ---------------------imx-zeus-gamera / r_1.0 (developer | stable)-------------------------------
+        echo -e "${GEN}Selected : $iMXYoctoRelease ${NC}"
+        echo $'\n'
+
+        #Prompting the user to select TARGET
+      	while true; do
+          	echo " "
+          	echo "7) Select Target"
+          	echo "----------------"
+          	echo " "
+          	echo "------------------------------------------------------"
+          	echo "| Entry  |    Target Name    | i.MX Platform         |"
+          	echo "|--------|-------------------|-----------------------|"
+          	echo "|  1     |  imx7dsabresd     | i.MX 7Dual SDB        |"
+          	echo "|  2     |  imx6qpsabresd    | i.MX 6QuadPlus SDB    |"
+          	echo "|  3     |  imx6qsabresd     | i.MX 6Quad SDB        |"
+          	echo "|  4     |  imx6dlsabresd    | i.MX 6DualLite SDB    |"
+          	echo "|  5     |  imx6sxsabresd    | i.MX 6SX  SDB         |"
+          	echo "|  6     |  imx6slevk        | i.MX 6SL  EVK         |"
+          	echo "|  7     |  imx6ulevk        | i.MX 6UL  EVK         |"
+          	echo "|  8     |  imx6ull14x14evk  | i.MX 6ULL EVK(14x14)  |"
+          	echo "|  9     |  imx6ull9x9evk    | i.MX 6ULL EVK(9x9)    |"
+          	echo "|  10    |  imx7ulpevk       | i.MX 7ULP EVK         |"
+          	echo "|  11    |  imx8mqevk        | i.MX 8MQuad EVK       |"
+          	echo "|  12    |  imx8qmmek        | i.MX 8MQuad max  EVK  |"
+          	echo "|  13    |  imx8qxpmek       | i.MX 8MQuadXPlus EVK  |"
+          	echo "|  14    |  imx8mmevk        | i.MX 8M Mini EVK      |"
+          	echo "|  15    |  imx8mmddr4evk    | i.MX 8M Mini DDR4 EVK |"
+          	echo "|  16    |  imx8mnevk        | i.MX 8M Nano EVK      |"
+          	echo "------------------------------------------------------"
+          	echo -n "Select your entry: "
+          	read TARGET_OPTION
+          	case $TARGET_OPTION in
+            	1)
+            	TARGET_NAME=imx7dsabresd
+            	break
+            	;;
+
+            	2)
+            	TARGET_NAME=imx6qpsabresd
+            	break
+            	;;
+
+            	3)
+            	TARGET_NAME=imx6qsabresd
+            	break
+            	;;
+
+            	4)
+            	TARGET_NAME=imx6dlsabresd
+            	break
+            	;;
+
+            	5)
+            	TARGET_NAME=imx6sxsabresd
+            	break
+            	;;
+
+            	6)
+            	TARGET_NAME=imx6slevk
+            	break
+            	;;
+
+            	7)
+            	TARGET_NAME=imx6ulevk
+            	break
+            	;;
+
+            	8)
+            	TARGET_NAME=imx6ull14x14evk
+            	break
+            	;;
+
+            	9)
+            	TARGET_NAME=imx6ull9x9evk
+            	break
+            	;;
+
+            	10)
+            	TARGET_NAME=imx7ulpevk
+            	break
+            	;;
+
+            	11)
+            	TARGET_NAME=imx8mqevk
+            	LINUX_SRC=linux-imx_5.4.bbappend.8MQ
+            	LINUX_DEST=linux-imx_5.4.bbappend
+                break
+                ;;
+
+                12)
+                TARGET_NAME=imx8qmmek
+                LINUX_SRC=linux-imx_5.4.bbappend.8MQ
+                LINUX_DEST=linux-imx_5.4.bbappend
+                break
+                ;;
+
+                13)
+                TARGET_NAME=imx8qxpmek
+                LINUX_SRC=linux-imx_5.4.bbappend.8MQ
+                LINUX_DEST=linux-imx_5.4.bbappend
+                break
+                ;;
+
+                14)
+                TARGET_NAME=imx8mmevk
+                LINUX_SRC=linux-imx_5.4.bbappend.8MQ
+                LINUX_DEST=linux-imx_5.4.bbappend
+                break
+                ;;
+
+                15)
+                TARGET_NAME=imx8mmddr4evk
+                LINUX_SRC=linux-imx_5.4.bbappend.8MQ
+                LINUX_DEST=linux-imx_5.4.bbappend
+                break
+                ;;
+
+                16)
+                TARGET_NAME=imx8mnevk
+                LINUX_SRC=linux-imx_5.4.bbappend.8MQ
+                LINUX_DEST=linux-imx_5.4.bbappend
+                break
+                ;;
+
+                *)
+                echo -e "${RED}13That is not a valid choice, try again.${NC}"
+                ;;
+            esac
+        done
+
+
+        echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
+        echo $'\n'
+
+        #	Start - Prompt user to select VIO Signaling
+        if [ "$TARGET_NAME" = "imx6ulevk" ] ||  [ "$TARGET_NAME" = "imx6ull14x14evk" ] ||  [ "$TARGET_NAME" = "imx6ull9x9evk" ]; then
+          while true; do
+        	echo " "
+        	echo "7.1) Select VIO Signaling"
+        	echo "-------------------------"
+		echo " "
+        	echo    "------------------------------------------------------------------------------"
+        	echo    "| Entry  |  Options                                                          |"
+        	echo    "|--------|-------------------------------------------------------------------|"
+        	echo -e "|   1.   | 1.8V VIO signaling ${YLW}without${NC} UHS support ${YLW}(max SDIO clk = 50MHz)${NC}     |"
+        	echo -e "|   ${GRN}2.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC}                            |"
+        	echo    "------------------------------------------------------------------------------"
+        	echo -e "| Note 1: Using ${YLW}V1/V2 Samtec${NC} Adapter ${YLW}HW mods reguired${NC} for ${YLW}1.8V${NC} VIO signaling |"
+        	echo -e "| Note 2: Using ${GRN}uSd-M2${NC} Adapter ${GRN}disconnect J12${NC} for ${GRN}1.8V${NC} VIO signaling         |"
+        	echo -e "| Note 3: Using ${GRN}uSd-M2${NC} Adapter ${GRN}connect J12${NC} for ${GRN}3.3V${NC} VIO signaling            |"
+        	echo    "------------------------------------------------------------------------------"
+        	echo " "
+        	echo " Refer to Murata Quickstart Guide for more details:"
+        	echo " - Murata Wi-Fi BT Solution for i.MX Quick Start Guide (Linux) 5.x.pdf"
+        	echo " "
+
+        	echo -n "Select your entry: "
+        		read VIO_SIGNALING_OPTION
+        			case $VIO_SIGNALING_OPTION in
+        				1)
+        				LINUX_SRC=linux-imx_5.4.bbappend.6UL_6ULL@1.8V_No_UHS
+        				LINUX_DEST=linux-imx_5.4.bbappend
+        				VIO_SIGNALING_STRING="1.8V VIO signaling ${YLW}without${NC} UHS support ${YLW}(max SDIO clk = 50MHz)${NC} - ${YLW}HW mods needed${NC}"
+        				break
+        				;;
+
+        				2)
+        				LINUX_SRC=linux-imx_5.4.bbappend
+        				LINUX_DEST=linux-imx_5.4.bbappend
+        				VIO_SIGNALING_STRING="3.3V VIO signaling (No HW mods needed)"
+        				break
+        				;;
+
+        				*)
+        				echo -e "${RED}That is not a valid choice, try again.${NC}"
+        						;;
+        			esac
+        		done
+
+     		    echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
+        fi
+
+        if [ "$TARGET_NAME" = "imx6sxsabresd" ]; then
+        	LINUX_SRC=linux-imx_5.4.bbappend
+        	LINUX_DEST=linux-imx_5.4.bbappend
+        	#echo " "
+        	echo -e "${YLW} If you are using uSD-M2 Adapter ${NC}"
+        	echo -e "${YLW}  - Please plug the adapter in SD2 slot${NC}"
+        	VIO_SIGNALING_STRING="3.3V VIO signaling"
+        	echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
+        	#echo " "
+        fi
+
+        if [ "$TARGET_NAME" = "imx7ulpevk" ]; then
+        	LINUX_SRC=linux-imx_5.4.bbappend
+        	LINUX_DEST=linux-imx_5.4.bbappend
+        	VIO_SIGNALING_STRING="3.3V VIO signaling"
+        	echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
+        fi
+
+        #	End - Prompt user to select VIO Signaling
+        break
+        ;;
+
+      *)
+	     echo -e "${RED}That is not a valid choice, try again.${NC}"
+    esac
+  done
+  #echo -e "${RED}DEBUG::TARGET_OPTION::$TARGET_OPTION${NC}"
+
+elif [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] ; then
   echo "DEBUG:: kong"
   while true; do
     case $BRANCH_RELEASE_OPTION in
@@ -2621,6 +2895,8 @@ IMAGE_NAME=core-image-base
 #  ERROR - Only Wayland distros are supported for i.MX 8 or i.MX 8M
 if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ] || [ "$iMXYoctoRelease" = "$imxsumoYocto" ]; then
 	DISTRO_NAME=fsl-imx-wayland
+elif [ "$iMXYoctoRelease" = "$imxzeusgameraYocto" ]; then
+  DISTRO_NAME=fsl-imx-fb
 fi
 
 echo " "
@@ -2902,7 +3178,10 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	done
 
 	# Invoke Repo Init based on Yocto Release
-  if [ "$iMXYoctoRelease" = "$imxsumokongYocto" ]; then
+  if [ "$iMXYoctoRelease" = "$imxzeusgameraYocto" ]; then
+    #echo "DEBUG:: IMXALL-ZEUS"
+    repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-zeus -m imx-5.4.3-1.0.0.xml
+  elif [ "$iMXYoctoRelease" = "$imxsumokongYocto" ]; then
     #echo "DEBUG:: IMXALL-SUMO"
     repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-sumo -m imx-4.14.98-2.3.0.xml
   elif [ "$iMXYoctoRelease" = "$imxsumoYocto" ]; then
@@ -2932,8 +3211,13 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 
 	#echo "DEBUG:: Performing Setup of DISTRO and MACHINE"
 	#echo "DEBUG:: pwd = $BSP_DIR"
-	DISTRO=$DISTRO_NAME MACHINE=$TARGET_NAME source ./fsl-setup-release.sh -b $BUILD_DIR_NAME
-	export BUILD_DIR=`pwd`
+  if [ "$iMXYoctoRelease" = "$imxzeusgameraYocto" ]; then
+    DISTRO=$DISTRO_NAME MACHINE=$TARGET_NAME source imx-setup-release.sh -b $BUILD_DIR_NAME
+  else
+    DISTRO=$DISTRO_NAME MACHINE=$TARGET_NAME source ./fsl-setup-release.sh -b $BUILD_DIR_NAME
+    exit
+  fi
+  export BUILD_DIR=`pwd`
 
 	cd $BSP_DIR/sources
 	git clone $META_MURATA_WIRELESS_GIT
@@ -3111,6 +3395,31 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
       	 fi
   fi
 
+  #for zeus-gamera
+  if [ "$FMAC_VERSION" = $GAMERA_FMAC_INDEX ]; then
+    mv $BSP_DIR/sources/meta-openembedded/meta-oe/recipes-connectivity/hostapd/hostapd_2.9.bb $BSP_DIR/sources/meta-openembedded/meta-oe/recipes-connectivity/hostapd/hostapd_2.9.bbx
+      mv $BSP_DIR/sources/meta-imx/meta-sdk/dynamic-layers/openembedded-layer/recipes-connectivity/hostapd/hostapd_%.bbappend $BSP_DIR/sources/meta-imx/meta-sdk/dynamic-layers/openembedded-layer/recipes-connectivity/hostapd/hostapd_%.bbappendx
+          mv $BSP_DIR/sources/poky/meta/recipes-connectivity/wpa-supplicant/wpa-supplicant_2.9.bb $BSP_DIR/sources/poky/meta/recipes-connectivity/wpa-supplicant/wpa-supplicant_2.9.bbx
+
+          if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+            #echo "DEBUG:: Before copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
+            cp $LINUX_SRC $LINUX_DEST
+            #echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
+          fi
+
+          if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qmmek" ] || [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ]; then
+            mv $BSP_DIR/sources/meta-freescale/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bb \
+               $BSP_DIR/sources/meta-freescale/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bbx
+            mv $BSP_DIR/sources/meta-imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_3.0.bb \
+               $BSP_DIR/sources/meta-imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_3.0.bbx
+            mv $BSP_DIR/sources/meta-freescale/recipes-kernel/kernel-modules/kernel-module-qca9377_2.1.bb \
+               $BSP_DIR/sources/meta-freescale/recipes-kernel/kernel-modules/kernel-module-qca9377_2.1.bbx
+            mv $BSP_DIR/sources/meta-imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_3.1.bb \
+               $BSP_DIR/sources/meta-imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_3.1.bbx
+            cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 \
+               $BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
+         fi
+  fi
 	cd $BUILD_DIR
 
 	echo " "
