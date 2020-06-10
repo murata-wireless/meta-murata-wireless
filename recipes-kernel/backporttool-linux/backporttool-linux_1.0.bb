@@ -4,11 +4,11 @@ DESCRIPTION = "Cypress FMAC backport"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
-SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-rocko-manda/imx-rocko-manda_r${PV}.tar.gz;name=archive1"
-SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-rocko-manda/LICENSE;name=archive99"
+SRC_URI =  "https://github.com/bchen-murata/cyw-fmac/raw/imx-rocko-kong/imx-rocko-kong_r${PV}.tar.gz;name=archive1"
+SRC_URI += "https://github.com/bchen-murata/meta-murata-wireless/raw/imx-rocko-mini-kong/LICENSE;name=archive99"
 
-SRC_URI[archive1.md5sum] = "8f8885d03484b6df625475a4c4b13937"
-SRC_URI[archive1.sha256sum] = "cf97ea1587cfeb363776e9f1e144c5cb94a623adc4aaa6520a25b1d2317f1218"
+SRC_URI[archive1.md5sum] = "7811a8861c1ee1079a1add1017358a8a"
+SRC_URI[archive1.sha256sum] = "3e4af7c163a105b6444ea0f757197d879c66e581edf07c52a1805780263b6617"
 
 #LICENSE
 SRC_URI[archive99.md5sum] = "b234ee4d69f5fce4486a80fdaf4a4263"
@@ -37,8 +37,8 @@ do_compile() {
 	# Linux kernel build system is expected to do the right thing
 	# unset CFLAGS
         echo "TEST_CROSS_COMPILE:: ${CROSS_COMPILE}"
-        echo "TEST_CROSSCOMPILE:: ${CROSSCOMPILE}"          
-        echo "TEST_TARGET_PREFIX:: ${TARGET_PREFIX}"      
+        echo "TEST_CROSSCOMPILE:: ${CROSSCOMPILE}"
+        echo "TEST_TARGET_PREFIX:: ${TARGET_PREFIX}"
         echo "TEST_ARCH:: ${ARCH}"
         echo "TEST_TARGET_ARCH:: ${TARGET_ARCH}"
         echo "STAGING_KERNEL_BUILDDIR: ${STAGING_KERNEL_BUILDDIR}"
@@ -69,13 +69,10 @@ do_install() {
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 FILES_${PN} += " \
-	/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko \	
+	/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko \
 	/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/broadcom/brcm80211/brcmutil/brcmutil.ko \
 	/lib/modules/${KERNEL_VERSION}/kernel/compat/compat.ko \
 	/lib/modules/${KERNEL_VERSION}/kernel/net/wireless/cfg80211.ko \
 "
 
 PACKAGES += "FILES-${PN}"
-
-
-
