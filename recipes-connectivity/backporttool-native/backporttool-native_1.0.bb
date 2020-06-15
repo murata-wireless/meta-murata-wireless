@@ -9,15 +9,15 @@ inherit native
 
 SYSTEMD_AUTO_ENABLE = "disable"
 
-SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-rocko-manda/imx-rocko-manda_r${PV}.tar.gz;name=archive1"
-SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-rocko-manda/LICENSE;name=archive99"
+SRC_URI =  "https://github.com/bchen-murata/cyw-fmac/raw/imx-rocko-kong/imx-rocko-manda_r${PV}.tar.gz;name=archive1"
+SRC_URI += "https://github.com/bchen-murata/meta-murata-wireless/raw/imx-rocko-mini-kong/LICENSE;name=archive99"
 #SRC_URI += "file://0001-murata-customization-version-update.patch;patchdir=${WORKDIR}/imx-rocko-manda_r${PV}"
 #SRC_URI += "file://0002-brcmfmac-fix-4339-CRC-error-under-SDIO-3.0-SDR104-mo-updated.patch;patchdir=${WORKDIR}/imx-rocko-manda_r${PV}"
 #SRC_URI += "file://0003-murata-rx-transmit-max-perf.patch;patchdir=${WORKDIR}/imx-rocko-manda_r${PV}"
 #SRC_URI += "file://0004-murata-1FD-initialization-fix.patch;patchdir=${WORKDIR}/imx-rocko-manda_r${PV}"
 
-SRC_URI[archive1.md5sum] = "8f8885d03484b6df625475a4c4b13937"
-SRC_URI[archive1.sha256sum] = "cf97ea1587cfeb363776e9f1e144c5cb94a623adc4aaa6520a25b1d2317f1218"
+SRC_URI[archive1.md5sum] = "7811a8861c1ee1079a1add1017358a8a"
+SRC_URI[archive1.sha256sum] = "3e4af7c163a105b6444ea0f757197d879c66e581edf07c52a1805780263b6617"
 
 #LICENSE
 SRC_URI[archive99.md5sum] = "b234ee4d69f5fce4486a80fdaf4a4263"
@@ -46,11 +46,11 @@ do_compile () {
         echo "KLIB_BUILD: ${KLIB_BUILD} "
         echo "KBUILD_OUTPUT: ${KBUILD_OUTPUT}"
 
-	rm -rf .git 
+	rm -rf .git
 	cp ${STAGING_KERNEL_BUILDDIR}/.config ${STAGING_KERNEL_DIR}/.config
 	cp ${STAGING_KERNEL_BUILDDIR}/kernel-abiversion ${STAGING_KERNEL_DIR}/kernel-abiversion
 
-        cp -a ${TMPDIR}/work/x86_64-linux/backporttool-native/${PV}-r0/imx-rocko-manda_r${PV}/. .
+        cp -a ${TMPDIR}/work/x86_64-linux/backporttool-native/${PV}-r0/imx-rocko-kong_r${PV}/. .
 
         oe_runmake KLIB="${STAGING_KERNEL_DIR}" KLIB_BUILD="${STAGING_KERNEL_DIR}" defconfig-brcmfmac
 }
@@ -66,5 +66,3 @@ do_install () {
 
 FILES_${PN} += "${sbindir}"
 PACKAGES += "FILES-${PN}"
-
-
