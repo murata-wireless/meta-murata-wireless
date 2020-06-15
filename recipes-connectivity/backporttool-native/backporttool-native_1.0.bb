@@ -9,12 +9,8 @@ inherit native
 
 SYSTEMD_AUTO_ENABLE = "disable"
 
-SRC_URI =  "https://github.com/bchen-murata/cyw-fmac/raw/imx-rocko-kong/imx-rocko-manda_r${PV}.tar.gz;name=archive1"
+SRC_URI =  "https://github.com/bchen-murata/cyw-fmac/raw/imx-rocko-kong/imx-rocko-kong_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/bchen-murata/meta-murata-wireless/raw/imx-rocko-mini-kong/LICENSE;name=archive99"
-#SRC_URI += "file://0001-murata-customization-version-update.patch;patchdir=${WORKDIR}/imx-rocko-manda_r${PV}"
-#SRC_URI += "file://0002-brcmfmac-fix-4339-CRC-error-under-SDIO-3.0-SDR104-mo-updated.patch;patchdir=${WORKDIR}/imx-rocko-manda_r${PV}"
-#SRC_URI += "file://0003-murata-rx-transmit-max-perf.patch;patchdir=${WORKDIR}/imx-rocko-manda_r${PV}"
-#SRC_URI += "file://0004-murata-1FD-initialization-fix.patch;patchdir=${WORKDIR}/imx-rocko-manda_r${PV}"
 
 SRC_URI[archive1.md5sum] = "7811a8861c1ee1079a1add1017358a8a"
 SRC_URI[archive1.sha256sum] = "3e4af7c163a105b6444ea0f757197d879c66e581edf07c52a1805780263b6617"
