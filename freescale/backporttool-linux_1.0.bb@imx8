@@ -4,11 +4,11 @@ DESCRIPTION = "Cypress FMAC backport"
 LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
-SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-rocko-manda/imx-rocko-manda_r${PV}.tar.gz;name=archive1"
-SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-rocko-manda/LICENSE;name=archive99"
+SRC_URI =  "https://github.com/bchen-murata/cyw-fmac/raw/imx-rocko-kong/imx-rocko-kong_r${PV}.tar.gz;name=archive1"
+SRC_URI += "https://github.com/bchen-murata/meta-murata-wireless/raw/imx-rocko-mini-kong/LICENSE;name=archive99"
 
-SRC_URI[archive1.md5sum] = "8f8885d03484b6df625475a4c4b13937"
-SRC_URI[archive1.sha256sum] = "cf97ea1587cfeb363776e9f1e144c5cb94a623adc4aaa6520a25b1d2317f1218"
+SRC_URI[archive1.md5sum] = "02d169bb686715b91f7533615dd8c7ed"
+SRC_URI[archive1.sha256sum] = "ecee915b0140e4f13353cef310bff2d59711f09c1a4d155da4a7fb17ba7da185"
 
 #LICENSE
 SRC_URI[archive99.md5sum] = "b234ee4d69f5fce4486a80fdaf4a4263"
