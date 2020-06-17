@@ -7,8 +7,8 @@ LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a42
 SRC_URI =  "https://github.com/bchen-murata/cyw-fmac/raw/imx-rocko-kong/imx-rocko-kong_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/bchen-murata/meta-murata-wireless/raw/imx-rocko-mini-kong/LICENSE;name=archive99"
 
-SRC_URI[archive1.md5sum] = "a9aad9b132159d9281205395345a72d6"
-SRC_URI[archive1.sha256sum] = "b341b7ac1442e7cce0894612b2d3cbf6e085747441833914126ce36979c5939e"
+SRC_URI[archive1.md5sum] = "02d169bb686715b91f7533615dd8c7ed"
+SRC_URI[archive1.sha256sum] = "ecee915b0140e4f13353cef310bff2d59711f09c1a4d155da4a7fb17ba7da185"
 
 #LICENSE
 SRC_URI[archive99.md5sum] = "b234ee4d69f5fce4486a80fdaf4a4263"
