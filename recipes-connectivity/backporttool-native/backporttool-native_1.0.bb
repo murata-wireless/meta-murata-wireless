@@ -12,8 +12,8 @@ SYSTEMD_AUTO_ENABLE = "disable"
 SRC_URI =  "https://github.com/bchen-murata/cyw-fmac/raw/imx-rocko-kong/imx-rocko-kong_r${PV}.tar.gz;name=archive1"
 SRC_URI += "https://github.com/bchen-murata/meta-murata-wireless/raw/imx-rocko-mini-kong/LICENSE;name=archive99"
 
-SRC_URI[archive1.md5sum] = "7811a8861c1ee1079a1add1017358a8a"
-SRC_URI[archive1.sha256sum] = "3e4af7c163a105b6444ea0f757197d879c66e581edf07c52a1805780263b6617"
+SRC_URI[archive1.md5sum] = "a9aad9b132159d9281205395345a72d6"
+SRC_URI[archive1.sha256sum] = "b341b7ac1442e7cce0894612b2d3cbf6e085747441833914126ce36979c5939e"
 
 #LICENSE
 SRC_URI[archive99.md5sum] = "b234ee4d69f5fce4486a80fdaf4a4263"
