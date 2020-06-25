@@ -9,11 +9,11 @@ inherit native
 
 SYSTEMD_AUTO_ENABLE = "disable"
 
-SRC_URI =  "https://github.com/bchen-murata/cyw-fmac/raw/imx-rocko-kong/imx-rocko-kong_r${PV}.tar.gz;name=archive1"
-SRC_URI += "https://github.com/bchen-murata/meta-murata-wireless/raw/imx-rocko-mini-kong/LICENSE;name=archive99"
+SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-rocko-kong/imx-rocko-kong_r${PV}.tar.gz;name=archive1"
+SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-rocko-mini-kong/LICENSE;name=archive99"
 
-SRC_URI[archive1.md5sum] = "39c4fb1c6c1c62ed6bb446eb3e5d5974"
-SRC_URI[archive1.sha256sum] = "c09fd895d3498e48b7ec698c1052f4b7efd97a876e45c3ae359f9f66d1100d5a"
+SRC_URI[archive1.md5sum] = "7d486f18fed48970054c95ce91ff4898"
+SRC_URI[archive1.sha256sum] = "5518dca37fc0f6748d785d7fb831af2269d7af995b9137daba0ce548485ac862"
 
 #LICENSE
 SRC_URI[archive99.md5sum] = "b234ee4d69f5fce4486a80fdaf4a4263"
