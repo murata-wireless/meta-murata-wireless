@@ -3215,7 +3215,6 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
     DISTRO=$DISTRO_NAME MACHINE=$TARGET_NAME source imx-setup-release.sh -b $BUILD_DIR_NAME
   else
     DISTRO=$DISTRO_NAME MACHINE=$TARGET_NAME source ./fsl-setup-release.sh -b $BUILD_DIR_NAME
-    exit
   fi
   export BUILD_DIR=`pwd`
 
