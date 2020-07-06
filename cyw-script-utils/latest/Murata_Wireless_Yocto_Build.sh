@@ -732,7 +732,8 @@ done
    		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\""     |"
     		echo "|     |      Release     | branch  | Supported     |     Release Tag           |"
     		echo "|-----|------------------|---------|---------------|---------------------------|"
-    		echo "|  0  | 4.14.98_2.3.0 GA | sumo    | 6,7,8         | imx-sumo-kong_r1.0       |"
+    		echo "|  0  | 4.14.98_2.3.0 GA | sumo    | 6,7,8         | imx-sumo-kong_r1.0        |"
+    		echo "|  1  | 4.9.123_2.3.0 GA | rocko   | 6,7,8         | imx-rocko-mini-kong_r1.0  |"
     		echo "--------------------------------------------------------------------------------"
     		break
 #FMAC_VERSION="5" for KONG - DEVELOPER
@@ -746,7 +747,8 @@ done
  		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\"" |"
  		echo "|     |      Release     | branch  | Supported     |     Developer Tag     |"
  		echo "|-----|------------------|---------|---------------|-----------------------|"
- 		echo "|  0  | 4.14.98_2.3.0 GA | sumo    | 6,7,8         | imx-sumo-kong        |"
+ 		echo "|  0  | 4.14.98_2.3.0 GA | sumo    | 6,7,8         | imx-sumo-kong         |"
+ 		echo "|  1  | 4.9.123_2.3.0 GA | rocko   | 6,7,8         | imx-rocko-mini-kong   |"
  		echo "----------------------------------------------------------------------------"
  		break
 #FMAC_VERSION="6" for GAMERA - STABLE
@@ -836,6 +838,9 @@ iMXsumomandaDeveloperRelease="imx-sumo-manda"
 
 iMXsumokongStableReleaseTag="imx-sumo-kong_r1.0"
 iMXsumokongDeveloperRelease="imx-sumo-kong"
+
+iMXrockominikongStableReleaseTag="imx-rocko-mini-kong_r1.0"
+iMXrockominikongDeveloperRelease="imx-rocko-mini-kong"
 
 iMXzeusgameraStableReleaseTag="imx-zeus-gamera_r1.0"
 iMXzeusgameraDeveloperRelease="imx-zeus-gamera"
@@ -1124,7 +1129,22 @@ elif [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ]; then
 		iMXYoctoRelease="$imxsumokongYocto"
 		YoctoBranch="sumo"
 		fmacversion="$KONG_FMAC"
-
+	# rocko-mini-kong_r1.0
+	elif [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "1" ]; then
+		#echo "DEBUG:: rocko-mini-kong_r2.0"
+		BRANCH_RELEASE_OPTION=3
+		BRANCH_RELEASE_NAME="$iMXrockominikongStableReleaseTag"
+		iMXYoctoRelease="$imxrockominiYocto"
+		YoctoBranch="rocko"
+		fmacversion="$KONG_FMAC"
+	# rocko-mini-kong
+	elif [ "$BRANCH_TAG_OPTION"    = "n" ] && [ "$ENTRY" = "1" ]; then
+		#echo "DEBUG:: rocko-mini-kong"
+		BRANCH_RELEASE_OPTION=4
+		BRANCH_RELEASE_NAME="$iMXrockominikongDeveloperRelease"
+		iMXYoctoRelease="$imxrockominiYocto"
+		YoctoBranch="rocko"
+		fmacversion="$KONG_FMAC"
 	fi
 
 #FOR GAMERA
@@ -1582,7 +1602,206 @@ elif [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] ; then
         #	End - Prompt user to select VIO Signaling
         break
         ;;
+      3|4)
+        # For Branch/Tag : ---------------------imx-rocko-mini-kong / r_1.0 (developer | stable)-------------------------------
+  			echo -e "${GRN}Selected: $iMXYoctoRelease ${NC}"
+  			echo $'\n'
 
+  		#       Prompting the user to select TARGET
+  			while true; do
+  			echo " "
+  			echo "7) Select Target"
+  			echo "----------------"
+  			echo " "
+  			echo "------------------------------------------------------"
+  			echo "| Entry  |    Target Name    | i.MX Platform         |"
+  			echo "|--------|-------------------|-----------------------|"
+  			echo "|  1     |  imx7dsabresd     | i.MX 7Dual SDB        |"
+  			echo "|  2     |  imx6qpsabresd    | i.MX 6QuadPlus SDB    |"
+  			echo "|  3     |  imx6qsabresd     | i.MX 6Quad SDB        |"
+  			echo "|  4     |  imx6dlsabresd    | i.MX 6DualLite SDB    |"
+  			echo "|  5     |  imx6sxsabresd    | i.MX 6SX  SDB         |"
+  			echo "|  6     |  imx6slevk        | i.MX 6SL  EVK         |"
+  			echo "|  7     |  imx6ulevk        | i.MX 6UL  EVK         |"
+  			echo "|  8     |  imx6ull14x14evk  | i.MX 6ULL EVK(14x14)  |"
+  			echo "|  9     |  imx6ull9x9evk    | i.MX 6ULL EVK(9x9)    |"
+  			echo "|  10    |  imx7ulpevk       | i.MX 7ULP EVK         |"
+  			echo "|  11    |  imx8mqevk        | i.MX 8MQuad EVK       |"
+  			echo "|  12    |  imx8qmmek        | i.MX 8MQuad mini EVK  |"
+  			echo "|  13    |  imx8qxpmek       | i.MX 8MQuadXPlus EVK  |"
+  			echo "|  14    |  imx8mmevk        | i.MX 8M Mini EVK      |"
+  			echo "------------------------------------------------------"
+  			echo -n "Select your entry: "
+  			read TARGET_OPTION
+
+  			case $TARGET_OPTION in
+  				1)
+  				TARGET_NAME=imx7dsabresd
+  				break
+  				;;
+
+  				2)
+  				TARGET_NAME=imx6qpsabresd
+  				break
+  				;;
+
+  				3)
+  				TARGET_NAME=imx6qsabresd
+  				break
+  				;;
+
+  				4)
+  				TARGET_NAME=imx6dlsabresd
+  				break
+  				;;
+
+  				5)
+  				TARGET_NAME=imx6sxsabresd
+  				break
+  				;;
+
+  				6)
+  				TARGET_NAME=imx6slevk
+  				break
+  				;;
+
+  				7)
+  				TARGET_NAME=imx6ulevk
+  				break
+  				;;
+
+  				8)
+  				TARGET_NAME=imx6ull14x14evk
+  				break
+  				;;
+
+  				9)
+  				TARGET_NAME=imx6ull9x9evk
+  				break
+  				;;
+
+  				10)
+  				TARGET_NAME=imx7ulpevk
+  				break
+  				;;
+
+  				11)
+  				#echo "DEBUG:: Copying 123 bbappend file for 8MQ"
+  				#LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
+  				#LINUX_DEST=linux-imx_4.9.123.bbappend
+
+  				#echo "DEBUG:: Before copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
+
+  				if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
+  				  LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
+  				  LINUX_DEST=linux-imx_4.9.123.bbappend
+  				elif [ "$iMXYoctoRelease" = "$imxrockoYocto" ]; then
+  				  LINUX_SRC=linux-imx_4.9.88.bbappend.8MQ
+  				  LINUX_DEST=linux-imx_4.9.88.bbappend
+  				fi
+
+  				TARGET_NAME=imx8mqevk
+  				break
+  				;;
+
+  				12)
+  				LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
+  				LINUX_DEST=linux-imx_4.9.123.bbappend
+  				TARGET_NAME=imx8qmmek
+  				break
+  				;;
+
+  				13)
+  				LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
+  				LINUX_DEST=linux-imx_4.9.123.bbappend
+  				TARGET_NAME=imx8qxpmek
+  				break
+  				;;
+
+  				14)
+  				LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
+  				LINUX_DEST=linux-imx_4.9.123.bbappend
+  				TARGET_NAME=imx8mmevk
+  				break
+  				;;
+
+  				*)
+  				echo -e "${RED}That is not a valid choice, try again.${NC}"
+  				;;
+  			esac
+  	done
+
+  	echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
+  	echo $'\n'
+
+  			#	Start - Prompt user to select VIO Signaling
+  				if [ "$TARGET_NAME" = "imx6ulevk" ] ||  [ "$TARGET_NAME" = "imx6ull14x14evk" ] ||  [ "$TARGET_NAME" = "imx6ull9x9evk" ]; then
+  					while true; do
+
+  					echo " "
+  					echo "7.1) Select VIO Signaling"
+  					echo "-------------------------"
+  					echo " "
+  					echo    "------------------------------------------------------------------------------"
+  					echo    "| Entry  |  Options                                                          |"
+  					echo    "|--------|-------------------------------------------------------------------|"
+  					echo -e "|   1.   | 1.8V VIO signaling ${YLW}without${NC} UHS support ${YLW}(max SDIO clk = 50MHz)${NC}     |"
+  					echo -e "|   ${GRN}2.${NC}   | ${GRN}3.3V VIO signaling (No HW mods needed)${NC}                            |"
+  					echo    "------------------------------------------------------------------------------"
+  					echo -e "| Note 1: Using ${YLW}V1/V2 Samtec${NC} Adapter ${YLW}HW mods reguired${NC} for ${YLW}1.8V${NC} VIO signaling |"
+  					echo -e "| Note 2: Using ${GRN}uSd-M2${NC} Adapter ${GRN}disconnect J12${NC} for ${GRN}1.8V${NC} VIO signaling         |"
+  					echo -e "| Note 3: Using ${GRN}uSd-M2${NC} Adapter ${GRN}connect J12${NC} for ${GRN}3.3V${NC} VIO signaling            |"
+  					echo    "------------------------------------------------------------------------------"
+  					echo " "
+  					echo " Refer to Murata Quickstart Guide for more details:"
+  					echo " - Murata Wi-Fi BT Solution for i.MX Quick Start Guide (Linux) 5.x.pdf"
+  					echo " "
+
+  					echo -n "Select your entry: "
+  					read VIO_SIGNALING_OPTION
+  					case $VIO_SIGNALING_OPTION in
+  						1)
+  						LINUX_SRC=linux-imx_4.9.123.bbappend.6UL_6ULL@1.8V_No_UHS
+  						LINUX_DEST=linux-imx_4.9.123.bbappend
+  						VIO_SIGNALING_STRING="1.8V VIO signaling ${YLW}without${NC} UHS support ${YLW}(max SDIO clk = 50MHz)${NC} - ${YLW}HW mods needed${NC}"
+  						break
+  						;;
+
+  						2)
+  						LINUX_SRC=linux-imx_4.9.123.bbappend
+  						LINUX_DEST=linux-imx_4.9.123.bbappend
+  						VIO_SIGNALING_STRING="3.3V VIO signaling (No HW mods needed)"
+  						break
+  						;;
+
+  						*)
+  						echo -e "${RED}That is not a valid choice, try again.${NC}"
+  						;;
+  					esac
+  					done
+  					echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
+  				fi
+
+  				if [ "$TARGET_NAME" = "imx6sxsabresd" ]; then
+  					LINUX_SRC=linux-imx_4.9.123.bbappend
+  					LINUX_DEST=linux-imx_4.9.123.bbappend
+  					#echo " "
+  					echo -e "${YLW} If you are using uSD-M2 Adapter ${NC}"
+  					echo -e "${YLW}  - Please plug the adapter in SD2 slot${NC}"
+  					VIO_SIGNALING_STRING="3.3V VIO signaling"
+  					echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
+  					#echo " "
+  				fi
+
+  				if [ "$TARGET_NAME" = "imx7ulpevk" ]; then
+  					LINUX_SRC=linux-imx_4.9.123.bbappend
+  					LINUX_DEST=linux-imx_4.9.123.bbappend
+  					VIO_SIGNALING_STRING="3.3V VIO signaling"
+  					echo -e "${GRN}Selected $VIO_SIGNALING_STRING. ${NC}"
+  				fi
+  			#	End - Prompt user to select VIO Signaling
+  				break
+  				;;
       *)
 	     echo -e "${RED}That is not a valid choice, try again.${NC}"
     esac
@@ -3320,28 +3539,31 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 		fi
 
 		#TARGET_NAME=imx8mqevk => rocko-mini-manda
-		if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
-			#echo "DEBUG:: MANDA-LOADING-FOR-ROCKO-MINI"
-			if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qmmek" ] || [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8mmevk" ]; then
-				#echo "DEBUG FOR IMX8-rocko-mini: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
-				#echo "DEBUG:: SRC::$LINUX_SRC DEST::$LINUX_SRC"
-				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
-					#echo "DEBUG:: Before copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
-					cp $LINUX_SRC $LINUX_DEST
-					#echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
-				fi
-        			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bb \
-					$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bbx
-        			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bb \
-					$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bbx
-				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 \
-					$BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
-				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 \
-					$BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
-			else
-				#echo "DEBUG FOR IMX6,7-rocko-mini: COPYING bb appends files"
-				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
-					cp $LINUX_SRC $LINUX_DEST
+		#if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
+		if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
+			if [ "$FMAC_VERSION" = "$MANDA_FMAC_INDEX" ] || [ "$FMAC_VERSION" = "$KONG_FMAC_INDEX" ]; then
+				#echo "DEBUG:: MANDA-LOADING-FOR-ROCKO-MINI"
+				if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qmmek" ] || [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8mmevk" ]; then
+					#echo "DEBUG FOR IMX8-rocko-mini: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
+					#echo "DEBUG:: SRC::$LINUX_SRC DEST::$LINUX_SRC"
+					if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+						#echo "DEBUG:: Before copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
+						cp $LINUX_SRC $LINUX_DEST
+						#echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
+					fi
+					mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bb \
+						$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bbx
+					mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bb \
+						$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bbx
+					cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 \
+						$BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
+					cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 \
+						$BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
+				else
+					#echo "DEBUG FOR IMX6,7-rocko-mini: COPYING bb appends files"
+					if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+						cp $LINUX_SRC $LINUX_DEST
+					fi
 				fi
 			fi
 		fi
@@ -3372,7 +3594,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
     fi
 
     #for sumo-kong
-	if [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ]; then
+	if [ "$FMAC_VERSION" = $KONG_FMAC_INDEX ] && [ "$iMXYoctoRelease" = "$imxsumoYocto" ]; then
 		mv $BSP_DIR/sources/meta-openembedded/meta-oe/recipes-connectivity/hostapd/hostapd_2.6.bb $BSP_DIR/sources/meta-openembedded/meta-oe/recipes-connectivity/hostapd/hostapd_2.6.bbx
   		mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-connectivity/hostapd/hostapd_%.bbappend $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-connectivity/hostapd/hostapd_%.bbappendx
       		mv $BSP_DIR/sources/poky/meta/recipes-connectivity/wpa-supplicant/wpa-supplicant_2.6.bb $BSP_DIR/sources/poky/meta/recipes-connectivity/wpa-supplicant/wpa-supplicant_2.6.bbx
