@@ -1,5 +1,5 @@
 diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-index c751fcc..b640a33 100644
+index f2a6835..b640a33 100644
 --- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
 +++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
 @@ -45,9 +45,12 @@
@@ -7,10 +7,9 @@ index c751fcc..b640a33 100644
  	#address-cells = <1>;
  	#size-cells = <0>;
 -	pinctrl-names = "default";
--	pinctrl-0 = <&pinctrl_usdhc1>;
--	no-1-8-v;
 +	pinctrl-names = "default", "state_100mhz", "state_200mhz"; /* Murata -- add 100 and 200 Mhz entries for UHS mode */
-+	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
+ 	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
+-	no-1-8-v;
 +	pinctrl-1 = <&pinctrl_usdhc1_100mhz &pinctrl_wifi>;
 +	pinctrl-2 = <&pinctrl_usdhc1_200mhz &pinctrl_wifi>;
 +//	no-1-8-v; /* Murata - comment out for UHS mode */
