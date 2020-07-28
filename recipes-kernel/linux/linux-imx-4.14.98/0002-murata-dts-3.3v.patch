@@ -520,7 +520,7 @@ index 00000000..951bce3
 +	interrupt-names = "host-wake";
 +};
 diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-index a2958fb..c751fcc 100644
+index a2958fb..f2a6835 100644
 --- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
 +++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
 @@ -21,8 +21,6 @@
@@ -541,7 +541,7 @@ index a2958fb..c751fcc 100644
  		>;
  	};
  };
-@@ -41,7 +39,7 @@
+@@ -41,14 +39,14 @@
  };
  
  &uart2 {
@@ -550,6 +550,14 @@ index a2958fb..c751fcc 100644
  };
  
  &usdhc1 {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+ 	pinctrl-names = "default";
+-	pinctrl-0 = <&pinctrl_usdhc1>;
++	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
+ 	no-1-8-v;
+ 	non-removable;
+ 	pm-ignore-notify;
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob.dts
 new file mode 100644
 index 00000000..618f222
