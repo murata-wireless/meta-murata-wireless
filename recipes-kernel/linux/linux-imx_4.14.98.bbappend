@@ -3,7 +3,8 @@
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-${PV}:"
 
-SRC_URI_append = " file://0002-murata-dts-3.3v.patch \
+SRC_URI_append = " file://0001-defconfig.patch \
+		   file://0002-murata-dts-3.3v.patch \
 		   file://0008-kernel_change_for_fmac_log_string.patch "
 
 addtask copy_defconfig_after_patch after do_patch before do_configure
