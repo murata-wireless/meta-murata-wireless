@@ -520,10 +520,10 @@ index 00000000..951bce3
 +	interrupt-names = "host-wake";
 +};
 diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-index a2958fb..f2a6835 100644
+index a2958fb..03ed7f7 100644
 --- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
 +++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-@@ -21,8 +21,6 @@
+@@ -21,17 +21,16 @@
  	};
  
  	usdhc1_pwrseq: usdhc1_pwrseq {
@@ -531,8 +531,10 @@ index a2958fb..f2a6835 100644
 -		pinctrl-0 = <&pinctrl_wifi>;
  		compatible = "mmc-pwrseq-simple";
  		reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
++		post-power-on-delay-ms = <120>;  /* Murata -- add delay before accessing SDIO bus */
  	};
-@@ -31,7 +29,7 @@
+ };
+ 
  &iomuxc {
  	pinctrl_wifi: wifigrp {
  		fsl,pins = <
@@ -541,7 +543,7 @@ index a2958fb..f2a6835 100644
  		>;
  	};
  };
-@@ -41,14 +39,14 @@
+@@ -41,14 +40,14 @@
  };
  
  &uart2 {
