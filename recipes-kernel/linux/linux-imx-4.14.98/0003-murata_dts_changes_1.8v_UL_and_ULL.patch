@@ -1,5 +1,5 @@
 diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 52418b5..f45d66b 100644
+index 52418b5..f54efaa 100644
 --- a/arch/arm/boot/dts/Makefile
 +++ b/arch/arm/boot/dts/Makefile
 @@ -547,8 +547,10 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
@@ -8,10 +8,10 @@ index 52418b5..f45d66b 100644
  	imx6ul-14x14-evk-btwifi-oob.dtb \
 -	imx6ul-14x14-evk-btwifi-m2.dtb \
 -	imx6ul-14x14-evk-btwifi-m2-oob.dtb \
-+	imx6ul-14x14-evk-btwifi-m2-1.8v.dtb \
-+	imx6ul-14x14-evk-btwifi-m2-oob-1.8v.dtb \
-+	imx6ul-14x14-evk-btwifi-m2-1.8v-50mhz.dtb \
-+	imx6ul-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dtb \
++	imx6ul-14x14-evk-btwifi-m2-1-8v.dtb \
++	imx6ul-14x14-evk-btwifi-m2-oob-1-8v.dtb \
++	imx6ul-14x14-evk-btwifi-m2-1-8v-50mhz.dtb \
++	imx6ul-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dtb \
  	imx6ul-14x14-evk-csi.dtb \
  	imx6ul-14x14-evk-emmc.dtb \
  	imx6ul-14x14-evk-ecspi.dtb \
@@ -21,46 +21,46 @@ index 52418b5..f45d66b 100644
  	imx6ull-14x14-evk-btwifi-oob.dtb \
 -	imx6ull-14x14-evk-btwifi-m2.dtb \
 -	imx6ull-14x14-evk-btwifi-m2-oob.dtb \
-+	imx6ull-14x14-evk-btwifi-m2-1.8v.dtb \
-+	imx6ull-14x14-evk-btwifi-m2-oob-1.8v.dtb \
-+	imx6ull-14x14-evk-btwifi-m2-1.8v-50mhz.dtb \
-+	imx6ull-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dtb \
++	imx6ull-14x14-evk-btwifi-m2-1-8v.dtb \
++	imx6ull-14x14-evk-btwifi-m2-oob-1-8v.dtb \
++	imx6ull-14x14-evk-btwifi-m2-1-8v-50mhz.dtb \
++	imx6ull-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dtb \
  	imx6ull-14x14-evk-emmc.dtb \
  	imx6ull-14x14-evk-gpmi-weim.dtb \
  	imx6ull-14x14-evk-usb-certi.dtb \
-diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v-50mhz.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v-50mhz.dts
+diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v-50mhz.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v-50mhz.dts
 new file mode 100644
 index 00000000..4ffed0a
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v-50mhz.dts
++++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v-50mhz.dts
 @@ -0,0 +1,4 @@
 +#include "imx6ul-14x14-evk-btwifi-m2.dts"
 +&usdhc1 {
 +	max-frequency = <50000000>;
 +};
-diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v.dts
+diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v.dts
 new file mode 100644
 index 00000000..115923d
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v.dts
++++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v.dts
 @@ -0,0 +1 @@
 +#include "imx6ul-14x14-evk-btwifi-m2.dts"
-diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dts
+diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dts
 new file mode 100644
 index 00000000..22e657c
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dts
++++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dts
 @@ -0,0 +1,5 @@
 +#include "imx6ul-14x14-evk-btwifi-m2.dts"
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
 +&usdhc1 {
 +	max-frequency = <50000000>;
 +};
-diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1.8v.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1.8v.dts
+diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1-8v.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1-8v.dts
 new file mode 100644
 index 00000000..5826e96
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1.8v.dts
++++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1-8v.dts
 @@ -0,0 +1,2 @@
 +#include "imx6ul-14x14-evk-btwifi-m2.dts"
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
@@ -83,39 +83,39 @@ index 03ed7f7..b7a67d3 100644
  	non-removable;
  	pm-ignore-notify;
  	mmc-pwrseq = <&usdhc1_pwrseq>;
-diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1.8v-50mhz.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1.8v-50mhz.dts
+diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1-8v-50mhz.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1-8v-50mhz.dts
 new file mode 100644
 index 00000000..c3538eb
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1.8v-50mhz.dts
++++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1-8v-50mhz.dts
 @@ -0,0 +1,4 @@
 +#include "imx6ull-14x14-evk-btwifi-m2.dts"
 +&usdhc1 {
 +	max-frequency = <50000000>;
 +};
-diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1.8v.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1.8v.dts
+diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1-8v.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1-8v.dts
 new file mode 100644
 index 00000000..ad0c048
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1.8v.dts
++++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1-8v.dts
 @@ -0,0 +1 @@
 +#include "imx6ull-14x14-evk-btwifi.dts"
-diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dts
+diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dts
 new file mode 100644
 index 00000000..33d0e9c
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dts
++++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dts
 @@ -0,0 +1,5 @@
 +#include "imx6ull-14x14-evk-btwifi-m2.dts"
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
 +&usdhc1 {
 +	max-frequency = <50000000>;
 +};
-diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1.8v.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1.8v.dts
+diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1-8v.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1-8v.dts
 new file mode 100644
 index 00000000..618f222
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1.8v.dts
++++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1-8v.dts
 @@ -0,0 +1,2 @@
 +#include "imx6ull-14x14-evk-btwifi-m2.dts"
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
