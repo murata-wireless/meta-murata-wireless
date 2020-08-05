@@ -4,8 +4,11 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-${PV}:"
 
 SRC_URI_append = " file://0001-defconfig.patch \
-		   file://0002-murata-dts-3.3v.patch \
+                   file://0002-murata-dts-3.3v.patch \
+                   file://0003-murata_dts_changes_1.8v_UL_and_ULL.patch \
+                   file://0004-kernel_change_for_1.8v_UL_and_ULL.patch \
 		   file://0008-kernel_change_for_fmac_log_string.patch \
+		   file://0009-enable_brcmf_sdio_wq_highpri.patch \
 		   file://0007.patch \
 		   file://0009.patch \
 		   file://0018.patch \
@@ -117,9 +120,7 @@ SRC_URI_append = " file://0001-defconfig.patch \
 		   file://0151.patch \
 		   file://0152.patch \
 		   file://0153.patch \
-		   file://0154.patch \
-		   file://0155-fix_uart_clock_issue_for_imx8mnevk.patch "
-
+		   file://0154.patch "
 
 addtask copy_defconfig_after_patch after do_patch before do_configure
 do_copy_defconfig_after_patch () {
