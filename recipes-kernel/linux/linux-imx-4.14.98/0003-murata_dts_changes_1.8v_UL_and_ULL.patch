@@ -28,44 +28,34 @@ index 52418b5..f45d66b 100644
  	imx6ull-14x14-evk-emmc.dtb \
  	imx6ull-14x14-evk-gpmi-weim.dtb \
  	imx6ull-14x14-evk-usb-certi.dtb \
-diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-1.8v-50mhz.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-1.8v-50mhz.dts
-new file mode 100644
-index 00000000..f5a9111
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-1.8v-50mhz.dts
-@@ -0,0 +1,10 @@
-+/*
-+ * Copyright (C) 2015 Freescale Semiconductor, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include "imx6ul-14x14-evk.dts"
-+#include "imx6ul-evk-btwifi-50MHz.dtsi"
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v-50mhz.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v-50mhz.dts
 new file mode 100644
-index 00000000..ce439fa
+index 00000000..4ffed0a
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v-50mhz.dts
-@@ -0,0 +1 @@
-+#include "imx6ul-14x14-evk-btwifi-50MHz.dts"
+@@ -0,0 +1,4 @@
++#include "imx6ul-14x14-evk-btwifi-m2.dts"
++&usdhc1 {
++	max-frequency = <50000000>;
++};
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v.dts
 new file mode 100644
-index 00000000..3747cb0
+index 00000000..115923d
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v.dts
 @@ -0,0 +1 @@
-+#include "imx6ul-14x14-evk-btwifi.dts"
++#include "imx6ul-14x14-evk-btwifi-m2.dts"
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dts
 new file mode 100644
-index 00000000..9d34d94
+index 00000000..22e657c
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dts
-@@ -0,0 +1,2 @@
-+#include "imx6ul-14x14-evk-btwifi-m2-50MHz.dts"
+@@ -0,0 +1,5 @@
++#include "imx6ul-14x14-evk-btwifi-m2.dts"
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
++&usdhc1 {
++	max-frequency = <50000000>;
++};
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1.8v.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1.8v.dts
 new file mode 100644
 index 00000000..5826e96
@@ -74,87 +64,11 @@ index 00000000..5826e96
 @@ -0,0 +1,2 @@
 +#include "imx6ul-14x14-evk-btwifi-m2.dts"
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
-diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi-1.8v-50mhz.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi-1.8v-50mhz.dtsi
-new file mode 100644
-index 00000000..de3a9b9
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-evk-btwifi-1.8v-50mhz.dtsi
-@@ -0,0 +1,70 @@
-+/*
-+ * Copyright (C) 2015 Freescale Semiconductor, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+/*
-+ * NOTE: This DTS file is written for plugging in Murata Wi-Fi/BT EVK into Slot
-+ * SD1 and using Murata i.MX InterConnect Ver 2.0 Adapter. Bluetooth UART &
-+ * control signals are connected via ribbon cable (J1701 connector).
-+ */
-+
-+/ {
-+	modem_reset: modem-reset {
-+		compatible = "gpio-reset";
-+		reset-gpios = <&gpio_spi 4 GPIO_ACTIVE_LOW>;
-+		reset-delay-us = <1000>;
-+		#reset-cells = <0>;
-+	};
-+
-+	usdhc1_pwrseq: usdhc1_pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
-+	};
-+};
-+
-+&iomuxc {
-+	pinctrl_wifi: wifigrp {
-+		fsl,pins = <
-+			MX6UL_PAD_SNVS_TAMPER1__GPIO5_IO01 0x03029  /* WL_REG_ON */
-+		>;
-+	};
-+};
-+
-+&reg_sd1_vmmc {
-+	regulator-always-on;
-+};
-+
-+&uart2 {
-+	resets = <&modem_reset>;  /* Murata - add so BT_REG_ON is driven high during kernel boot */
-+};
-+
-+&usdhc1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz"; /* Murata -- add 100 and 200 Mhz entries for UHS mode */
-+	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
-+	pinctrl-1 = <&pinctrl_usdhc1_100mhz &pinctrl_wifi>;
-+	pinctrl-2 = <&pinctrl_usdhc1_200mhz &pinctrl_wifi>;
-+//	no-1-8-v; /* Murata - comment out for UHS mode */
-+	max-frequency = <50000000>; /* Murata - Limit max-frequency to 50MHz for non UHS mode */
-+	non-removable;
-+	pm-ignore-notify;
-+	mmc-pwrseq = <&usdhc1_pwrseq>;
-+	cap-power-off-card;
-+
-+	brcmf: bcrmf@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+	};
-+};
-+
-+&gpio_spi {
-+	/* Murata: modify default setting so that BT_nPWD/BT_REG_ON
-+	 * is low (0V) during kernel boot.
-+	 */
-+	registers-default = /bits/ 8 <0x47>;
-+};
 diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-index f2a6835..b640a33 100644
+index 03ed7f7..b7a67d3 100644
 --- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
 +++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-@@ -45,9 +45,12 @@
+@@ -46,9 +46,12 @@
  &usdhc1 {
  	#address-cells = <1>;
  	#size-cells = <0>;
@@ -169,29 +83,16 @@ index f2a6835..b640a33 100644
  	non-removable;
  	pm-ignore-notify;
  	mmc-pwrseq = <&usdhc1_pwrseq>;
-diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-1.8v-50mhz.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-1.8v-50mhz.dts
-new file mode 100644
-index 00000000..3a56921
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-1.8v-50mhz.dts
-@@ -0,0 +1,10 @@
-+/*
-+ * Copyright (C) 2016 Freescale Semiconductor, Inc.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include "imx6ull-14x14-evk.dts"
-+#include "imx6ul-evk-btwifi-50MHz.dtsi"
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1.8v-50mhz.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1.8v-50mhz.dts
 new file mode 100644
-index 00000000..65c5950
+index 00000000..c3538eb
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1.8v-50mhz.dts
-@@ -0,0 +1 @@
-+#include "imx6ull-14x14-evk-btwifi-50MHz.dts"
+@@ -0,0 +1,4 @@
++#include "imx6ull-14x14-evk-btwifi-m2.dts"
++&usdhc1 {
++	max-frequency = <50000000>;
++};
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1.8v.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1.8v.dts
 new file mode 100644
 index 00000000..ad0c048
@@ -201,12 +102,15 @@ index 00000000..ad0c048
 +#include "imx6ull-14x14-evk-btwifi.dts"
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dts
 new file mode 100644
-index 00000000..ddb2330
+index 00000000..33d0e9c
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1.8v-50mhz.dts
-@@ -0,0 +1,2 @@
-+#include "imx6ull-14x14-evk-btwifi-m2-50MHz.dts"
+@@ -0,0 +1,5 @@
++#include "imx6ull-14x14-evk-btwifi-m2.dts"
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
++&usdhc1 {
++	max-frequency = <50000000>;
++};
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1.8v.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1.8v.dts
 new file mode 100644
 index 00000000..618f222
