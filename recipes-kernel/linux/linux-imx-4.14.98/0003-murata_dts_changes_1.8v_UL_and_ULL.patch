@@ -35,11 +35,11 @@ index 00000000..115923d
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v.dts
 @@ -0,0 +1 @@
 +#include "imx6ul-14x14-evk-btwifi-m2.dts"
-diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v-50mhz.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v-50mhz.dts
+diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v-50mhz.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v-50mhz.dts
 new file mode 100644
 index 00000000..4ffed0a
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1.8v-50mhz.dts
++++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v-50mhz.dts
 @@ -0,0 +1,4 @@
 +#include "imx6ul-14x14-evk-btwifi-m2.dts"
 +&usdhc1 {
