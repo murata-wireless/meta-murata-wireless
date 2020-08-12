@@ -13,7 +13,6 @@ cp ./sources/meta-murata-wireless/freescale/imx6dlsabresd.conf ./sources/meta-fs
 echo "INTERNAL_MIRROR = \"http://localhost\"" >> conf/local.conf
 echo "CORE_IMAGE_EXTRA_INSTALL += \" hostap-conf hostap-utils hostapd backporttool-linux murata-binaries iperf3 bluez5 bluez5-noinst-tools bluez5-obex openobex obexftp glibc-gconv-utf-16 glibc-utils\"" >> conf/local.conf
 echo "BBLAYERS += \" \${BSPDIR}/sources/meta-murata-wireless \"" >> conf/bblayers.conf
-
 echo ""
 echo "CORRECTION: Murata modified the following files"
 echo "  - bblayers.conf present in <BUILD_DIR>/conf"

@@ -1,5 +1,5 @@
 diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index a27f489..915976f 100644
+index a27f489..0f9a05a 100644
 --- a/arch/arm/boot/dts/Makefile
 +++ b/arch/arm/boot/dts/Makefile
 @@ -353,6 +353,8 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
@@ -55,16 +55,7 @@ index a27f489..915976f 100644
  	imx6ul-14x14-evk-csi.dtb \
  	imx6ul-14x14-evk-emmc.dtb \
  	imx6ul-14x14-evk-gpmi-weim.dtb \
-@@ -505,6 +516,8 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
- 	imx6ul-9x9-evk.dtb \
- 	imx6ul-9x9-evk-btwifi.dtb \
- 	imx6ul-9x9-evk-btwifi-oob.dtb \
-+	imx6ul-9x9-evk-btwifi-m2.dtb \
-+	imx6ul-9x9-evk-btwifi-m2-oob.dtb \
- 	imx6ul-9x9-evk-csi.dtb \
- 	imx6ul-9x9-evk-ldo.dtb
- dtb-$(CONFIG_SOC_IMX6ULL) += \
-@@ -527,12 +540,16 @@ dtb-$(CONFIG_SOC_IMX6ULL) += \
+@@ -527,6 +538,8 @@ dtb-$(CONFIG_SOC_IMX6ULL) += \
  	imx6ull-14x14-evk.dtb \
  	imx6ull-14x14-evk-btwifi.dtb \
  	imx6ull-14x14-evk-btwifi-oob.dtb \
@@ -73,17 +64,9 @@ index a27f489..915976f 100644
  	imx6ull-14x14-evk-emmc.dtb \
  	imx6ull-14x14-evk-gpmi-weim.dtb \
  	imx6ull-14x14-evk-usb-certi.dtb \
- 	imx6ull-9x9-evk.dtb \
- 	imx6ull-9x9-evk-btwifi.dtb \
- 	imx6ull-9x9-evk-btwifi-oob.dtb \
-+	imx6ull-9x9-evk-btwifi-m2.dtb \
-+	imx6ull-9x9-evk-btwifi-m2-oob.dtb \
- 	imx6ull-9x9-evk-ldo.dtb
- dtb-$(CONFIG_SOC_IMX6SLL) += \
- 	imx6sll-lpddr2-arm2.dtb \
 diff --git a/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2-oob.dts
 new file mode 100644
-index 0000000..602f401
+index 00000000..602f401
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2-oob.dts
 @@ -0,0 +1,2 @@
@@ -91,7 +74,7 @@ index 0000000..602f401
 +#include "imx6q-sabresd-btwifi-m2-oob.dtsi"
 diff --git a/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2.dts b/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2.dts
 new file mode 100644
-index 0000000..4742495
+index 00000000..4742495
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6dl-sabresd-btwifi-m2.dts
 @@ -0,0 +1,2 @@
@@ -178,7 +161,7 @@ index dc41db6..e096ca2 100644
  		pinctrl_uart4: uart4grp {
 diff --git a/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dts
 new file mode 100644
-index 0000000..2e8b621
+index 00000000..2e8b621
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dts
 @@ -0,0 +1,2 @@
@@ -186,7 +169,7 @@ index 0000000..2e8b621
 +#include "imx6q-sabresd-btwifi-m2-oob.dtsi"
 diff --git a/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dtsi b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dtsi
 new file mode 100644
-index 0000000..48845c8
+index 00000000..48845c8
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2-oob.dtsi
 @@ -0,0 +1,16 @@
@@ -208,7 +191,7 @@ index 0000000..48845c8
 +};
 diff --git a/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2.dts b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2.dts
 new file mode 100644
-index 0000000..7985b59
+index 00000000..7985b59
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6q-sabresd-btwifi-m2.dts
 @@ -0,0 +1,2 @@
@@ -216,7 +199,7 @@ index 0000000..7985b59
 +#include "imx6qdl-sabresd-btwifi-m2.dtsi"
 diff --git a/arch/arm/boot/dts/imx6qdl-sabresd-btwifi-m2.dtsi b/arch/arm/boot/dts/imx6qdl-sabresd-btwifi-m2.dtsi
 new file mode 100644
-index 0000000..08d9098
+index 00000000..08d9098
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6qdl-sabresd-btwifi-m2.dtsi
 @@ -0,0 +1,103 @@
@@ -400,7 +383,7 @@ index 7164a9e..93a79e5 100644
  };
 diff --git a/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2-oob.dts
 new file mode 100644
-index 0000000..b08baf8
+index 00000000..b08baf8
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2-oob.dts
 @@ -0,0 +1,2 @@
@@ -408,7 +391,7 @@ index 0000000..b08baf8
 +#include "imx6q-sabresd-btwifi-m2-oob.dtsi"
 diff --git a/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2.dts b/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2.dts
 new file mode 100644
-index 0000000..1c4a097
+index 00000000..1c4a097
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6qp-sabresd-btwifi-m2.dts
 @@ -0,0 +1,2 @@
@@ -416,7 +399,7 @@ index 0000000..1c4a097
 +#include "imx6qdl-sabresd-btwifi-m2.dtsi"
 diff --git a/arch/arm/boot/dts/imx6sl-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6sl-evk-btwifi-m2.dts
 new file mode 100644
-index 0000000..d3d1df2
+index 00000000..d3d1df2
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6sl-evk-btwifi-m2.dts
 @@ -0,0 +1,102 @@
@@ -665,7 +648,7 @@ index db30b1f..65312ae 100644
  };
 diff --git a/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2-oob.dts
 new file mode 100644
-index 0000000..0a19a8d
+index 00000000..0a19a8d
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2-oob.dts
 @@ -0,0 +1,2 @@
@@ -673,7 +656,7 @@ index 0000000..0a19a8d
 +#include "imx6sx-sdb-btwifi-m2-oob.dtsi"
 diff --git a/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2-oob.dtsi b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2-oob.dtsi
 new file mode 100644
-index 0000000..452bbef
+index 00000000..452bbef
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2-oob.dtsi
 @@ -0,0 +1,18 @@
@@ -697,7 +680,7 @@ index 0000000..452bbef
 +};
 diff --git a/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2.dts b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2.dts
 new file mode 100644
-index 0000000..3038da0
+index 00000000..3038da0
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2.dts
 @@ -0,0 +1,2 @@
@@ -705,7 +688,7 @@ index 0000000..3038da0
 +#include "imx6sx-sdb-btwifi-m2.dtsi"
 diff --git a/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2.dtsi b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2.dtsi
 new file mode 100644
-index 0000000..4c7d8d7
+index 00000000..4c7d8d7
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6sx-sdb-btwifi-m2.dtsi
 @@ -0,0 +1,76 @@
@@ -936,7 +919,7 @@ index 3658389..2bd3d79 100644
  &usdhc3 {
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob.dts
 new file mode 100644
-index 0000000..5826e96
+index 00000000..5826e96
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob.dts
 @@ -0,0 +1,2 @@
@@ -944,7 +927,7 @@ index 0000000..5826e96
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
 new file mode 100644
-index 0000000..3747cb0
+index 00000000..3747cb0
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
 @@ -0,0 +1 @@
@@ -992,21 +975,6 @@ index db8427f..cc1af56 100644
  		ethphy1: ethernet-phy@1 {
  			compatible = "ethernet-phy-ieee802.3-c22";
  			reg = <1>;
-diff --git a/arch/arm/boot/dts/imx6ul-9x9-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6ul-9x9-evk-btwifi-m2-oob.dts
-new file mode 100644
-index 0000000..43e64d2
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-9x9-evk-btwifi-m2-oob.dts
-@@ -0,0 +1,2 @@
-+#include "imx6ul-9x9-evk-btwifi-m2.dts"
-+#include "imx6ul-evk-btwifi-oob.dtsi"
-diff --git a/arch/arm/boot/dts/imx6ul-9x9-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ul-9x9-evk-btwifi-m2.dts
-new file mode 100644
-index 0000000..e2830c1
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-9x9-evk-btwifi-m2.dts
-@@ -0,0 +1 @@
-+#include "imx6ul-9x9-evk-btwifi.dts"
 diff --git a/arch/arm/boot/dts/imx6ul-9x9-evk.dts b/arch/arm/boot/dts/imx6ul-9x9-evk.dts
 index caa2ed5..bb772824 100644
 --- a/arch/arm/boot/dts/imx6ul-9x9-evk.dts
@@ -1052,7 +1020,7 @@ index caa2ed5..bb772824 100644
  			reg = <1>;
 diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi-m2-oob.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi-m2-oob.dtsi
 new file mode 100644
-index 0000000..66e55dd
+index 00000000..66e55dd
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ul-evk-btwifi-m2-oob.dtsi
 @@ -0,0 +1,30 @@
@@ -1127,7 +1095,7 @@ index cd7a5e6..d372412 100644
 +	};
  };
 diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-index d4810bd..ff8a432 100644
+index d4810bd..ca53fd4 100644
 --- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
 +++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
 @@ -10,6 +10,9 @@
@@ -1140,7 +1108,7 @@ index d4810bd..ff8a432 100644
   */
  
  / {
-@@ -20,28 +23,16 @@
+@@ -20,28 +23,17 @@
  		#reset-cells = <0>;
  	};
  
@@ -1161,7 +1129,8 @@ index d4810bd..ff8a432 100644
 -		wlreg_on-supply = <&wlreg_on>;
 +	usdhc1_pwrseq: usdhc1_pwrseq {
 +		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
++		reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>; /* WL REG ON */
++		post-power-on-delay-ms = <120>;  /* Murata - add delay before accessing SDIO bus */
  	};
  };
  
@@ -1173,7 +1142,7 @@ index d4810bd..ff8a432 100644
  		>;
  	};
  };
-@@ -55,18 +46,26 @@
+@@ -55,18 +47,26 @@
  };
  
  &usdhc1 {
@@ -1206,7 +1175,7 @@ index d4810bd..ff8a432 100644
  };
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob.dts
 new file mode 100644
-index 0000000..618f222
+index 00000000..618f222
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob.dts
 @@ -0,0 +1,2 @@
@@ -1214,7 +1183,7 @@ index 0000000..618f222
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts
 new file mode 100644
-index 0000000..ad0c048
+index 00000000..ad0c048
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts
 @@ -0,0 +1 @@
@@ -1251,64 +1220,6 @@ index 143250b..0a91d04 100644
  
  &fec2 {
 @@ -186,11 +200,6 @@
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		ethphy0: ethernet-phy@2 {
--			compatible = "ethernet-phy-ieee802.3-c22";
--			reg = <2>;
--		};
--
- 		ethphy1: ethernet-phy@1 {
- 			compatible = "ethernet-phy-ieee802.3-c22";
- 			reg = <1>;
-diff --git a/arch/arm/boot/dts/imx6ull-9x9-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6ull-9x9-evk-btwifi-m2-oob.dts
-new file mode 100644
-index 0000000..5f77946
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6ull-9x9-evk-btwifi-m2-oob.dts
-@@ -0,0 +1,2 @@
-+#include "imx6ull-9x9-evk-btwifi-m2.dts"
-+#include "imx6ul-evk-btwifi-m2-oob.dtsi"
-diff --git a/arch/arm/boot/dts/imx6ull-9x9-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ull-9x9-evk-btwifi-m2.dts
-new file mode 100644
-index 0000000..21fe495
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6ull-9x9-evk-btwifi-m2.dts
-@@ -0,0 +1 @@
-+#include "imx6ull-9x9-evk-btwifi.dts"
-diff --git a/arch/arm/boot/dts/imx6ull-9x9-evk.dts b/arch/arm/boot/dts/imx6ull-9x9-evk.dts
-index 9991169..25e9361 100644
---- a/arch/arm/boot/dts/imx6ull-9x9-evk.dts
-+++ b/arch/arm/boot/dts/imx6ull-9x9-evk.dts
-@@ -196,12 +196,26 @@
- 	};
- };
- 
-+/* Murata: need to redefine FEC1 and FEC2 constructs to keep MDIO declarations independent. 
-+ * Needed by OOB IRQ functionality - see imx6ul-evk-btwifi-oob.dtsi 
-+ */
-+
- &fec1 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_enet1>;
- 	phy-mode = "rmii";
- 	phy-handle = <&ethphy0>;
- 	status = "okay";
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		ethphy0: ethernet-phy@2 {
-+			compatible = "ethernet-phy-ieee802.3-c22";
-+			reg = <2>;
-+		};
-+	};
- };
- 
- &fec2 {
-@@ -215,11 +229,6 @@
  		#address-cells = <1>;
  		#size-cells = <0>;
  
