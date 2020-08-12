@@ -1,5 +1,5 @@
-cp ./sources/meta-murata-wireless/freescale/imx6ulevk.conf ./sources/meta-fsl-bsp-release/imx/meta-bsp/conf/machine/
-cp ./sources/meta-murata-wireless/freescale/imx6ull14x14evk.conf ./sources/meta-fsl-bsp-release/imx/meta-bsp/conf/machine/
+cp ./sources/meta-murata-wireless/freescale/imx6ulevk.conf.1.8v ./sources/meta-fsl-bsp-release/imx/meta-bsp/conf/machine/imx6ulevk.conf
+cp ./sources/meta-murata-wireless/freescale/imx6ull14x14evk.conf.1.8v ./sources/meta-fsl-bsp-release/imx/meta-bsp/conf/machine/imx6ull14x14evk.conf
 cp ./sources/meta-murata-wireless/freescale/imx6ull9x9evk.conf ./sources/meta-fsl-bsp-release/imx/meta-bsp/conf/machine/
 cp ./sources/meta-murata-wireless/freescale/imx6slevk.conf ./sources/meta-fsl-bsp-release/imx/meta-bsp/conf/machine/
 cp ./sources/meta-murata-wireless/freescale/imx6sxsabresd.conf ./sources/meta-fsl-bsp-release/imx/meta-bsp/conf/machine/
