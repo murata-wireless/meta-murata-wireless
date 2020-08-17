@@ -93,9 +93,9 @@ SRC_URI_append = " file://0002-murata-dts-3.3v.patch \
 
 
 
-addtask copy_defconfig_after_patch after do_patch before do_configure
-do_copy_defconfig_after_patch () {
+# addtask copy_defconfig_after_patch after do_patch before do_configure
+# do_copy_defconfig_after_patch () {
     # copy latest imx_v7_defconfig to use
     # cp ${S}/arch/arm/configs/imx_v7_defconfig ${B}/.config
     # cp ${S}/arch/arm/configs/imx_v7_defconfig ${B}/../defconfig
-}
+# }
