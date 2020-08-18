@@ -3,8 +3,10 @@
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-${PV}:"
 
-SRC_URI_append = " file://0001-defconfig-imx8.patch \
+SRC_URI_append = " file://0001-defconfig.patch \
+		   file://0002-murata-dts-3.3v.patch \
 		   file://0008-kernel_change_for_fmac_log_string.patch \
+		   file://0009-enable_brcmf_sdio_wq_highpri.patch \
 		   file://0007.patch \
 		   file://0009.patch \
 		   file://0018.patch \
@@ -116,11 +118,13 @@ SRC_URI_append = " file://0001-defconfig-imx8.patch \
 		   file://0151.patch \
 		   file://0152.patch \
 		   file://0153.patch \
-		   file://0154.patch "
+		   file://0154.patch \
+		   file://0155-fix_uart_clock_issue_for_imx8mnevk.patch "
+
 
 addtask copy_defconfig_after_patch after do_patch before do_configure
 do_copy_defconfig_after_patch () {
     # copy latest imx_v7_defconfig to use
-    cp ${S}/arch/arm64/configs/defconfig ${B}/.config
-    cp ${S}/arch/arm64/configs/defconfig ${B}/../defconfig
+    cp ${S}/arch/arm/configs/imx_v7_defconfig ${B}/.config
+    cp ${S}/arch/arm/configs/imx_v7_defconfig ${B}/../defconfig
 }

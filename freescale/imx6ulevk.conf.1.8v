@@ -13,7 +13,8 @@ MACHINE_FEATURES += " pci wifi bluetooth optee bcm4339 bcm43455"
 
 KERNEL_DEVICETREE = "imx6ul-14x14-evk.dtb imx6ul-14x14-evk-btwifi.dtb \
                      imx6ul-14x14-evk-btwifi-oob.dtb imx6ul-14x14-evk-csi.dtb \
-                     imx6ul-14x14-evk-btwifi-m2.dtb imx6ul-14x14-evk-btwifi-m2-oob.dtb \
+                     imx6ul-14x14-evk-btwifi-m2-1-8v.dtb imx6ul-14x14-evk-btwifi-m2-oob-1-8v.dtb \
+                     imx6ul-14x14-evk-btwifi-m2-1-8v-50mhz.dtb imx6ul-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dtb \
 "
 
 UBOOT_SUFFIX = "img"
