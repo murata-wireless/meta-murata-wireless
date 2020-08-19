@@ -37,8 +37,8 @@ do_compile() {
 	# Linux kernel build system is expected to do the right thing
 	# unset CFLAGS
         echo "TEST_CROSS_COMPILE:: ${CROSS_COMPILE}"
-        echo "TEST_CROSSCOMPILE:: ${CROSSCOMPILE}"          
-        echo "TEST_TARGET_PREFIX:: ${TARGET_PREFIX}"      
+        echo "TEST_CROSSCOMPILE:: ${CROSSCOMPILE}"
+        echo "TEST_TARGET_PREFIX:: ${TARGET_PREFIX}"
         echo "TEST_ARCH:: ${ARCH}"
         echo "TEST_TARGET_ARCH:: ${TARGET_ARCH}"
         echo "STAGING_KERNEL_BUILDDIR: ${STAGING_KERNEL_BUILDDIR}"
@@ -69,7 +69,7 @@ do_install() {
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 FILES_${PN} += " \
-	/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko \	
+	/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/broadcom/brcm80211/brcmfmac/brcmfmac.ko \
 	/lib/modules/${KERNEL_VERSION}/kernel/drivers/net/wireless/broadcom/brcm80211/brcmutil/brcmutil.ko \
 	/lib/modules/${KERNEL_VERSION}/kernel/compat/compat.ko \
 	/lib/modules/${KERNEL_VERSION}/kernel/net/wireless/cfg80211.ko \
