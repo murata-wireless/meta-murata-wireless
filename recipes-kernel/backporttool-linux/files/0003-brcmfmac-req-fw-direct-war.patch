@@ -1,0 +1,13 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
+index 3aed4c4b887a..58c38477c144 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
+@@ -613,7 +613,7 @@ static int brcmf_fw_request_firmware(const struct firmware **fw,
+ 		strlcat(alt_path, fwctx->req->board_type, BRCMF_FW_NAME_LEN);
+ 		strlcat(alt_path, ".txt", BRCMF_FW_NAME_LEN);
+ 
+-		ret = request_firmware(fw, alt_path, fwctx->dev);
++		ret = request_firmware_direct(fw, alt_path, fwctx->dev);
+ 		if (ret == 0)
+ 			return ret;
+ 	}
