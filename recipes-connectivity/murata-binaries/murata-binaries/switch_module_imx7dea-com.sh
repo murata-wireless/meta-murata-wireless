@@ -123,7 +123,7 @@ function switch_to_nxp_sdio() {
   echo "Setting up for 1ZM (NXP - SDIO)"
   fw_setenv fdt_file imx7dea-com-kit_v2.dtb
   # Limiting SDIO frequency to 100MHz
-  fw_setenv cmd_custom fdt set mmc0 max-frequency <100000000>
+  fw_setenv cmd_custom fdt set mmc0 max-frequency 100000000
   prepare_for_nxp_sdio
   echo ""
 }
@@ -133,7 +133,7 @@ function switch_to_nxp_ym_sdio() {
   echo "Setting up for 1YM (NXP - SDIO)"
   fw_setenv fdt_file imx7dea-com-kit_v2.dtb
   # Limiting SDIO frequency to 100MHz
-  fw_setenv cmd_custom fdt set mmc0 max-frequency <100000000>
+  fw_setenv cmd_custom fdt set mmc0 max-frequency 100000000
   prepare_for_nxp_ym_sdio_and_pcie
   echo ""
 }
