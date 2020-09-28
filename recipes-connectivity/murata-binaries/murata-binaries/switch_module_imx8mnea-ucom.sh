@@ -8,7 +8,6 @@ VERSION="1.0"
 function current() {
   echo ""
   echo "Current setup:"
-  fw_printenv image
   fw_printenv fdt_file
   if [ "/usr/sbin/wpa_supplicant" -ef "/usr/sbin/wpa_supplicant.cyw" ]; then
     echo "Link is to Cypress binary"
@@ -22,7 +21,29 @@ function current() {
   if [ -e /etc/modprobe.d/nxp_modules.conf ]; then
     echo "Found modprobe helper file for NXP"
   fi
+  echo "  wpa_supplicant@mlan0 is `systemctl is-enabled wpa_supplicant@mlan0`"
+  echo "  wpa_supplicant@wlan0 is `systemctl is-enabled wpa_supplicant@wlan0`"
   echo ""
+}
+
+function handle_services() {
+  enable_mlan0=$1
+  enable_wlan0=$2
+
+  if ($enable_mlan0); then
+    echo "Enabling mlan0"
+    systemctl enable wpa_supplicant@mlan0
+  else
+    echo "Disabling mlan0"
+    systemctl disable wpa_supplicant@mlan0
+  fi
+  if ($enable_wlan0); then
+    echo "Enabling wlan0"
+    systemctl enable wpa_supplicant@wlan0
+  else
+    echo "Disabling wlan0"
+    systemctl disable wpa_supplicant@wlan0
+  fi
 }
 
 function prepare_for_nxp_sdio() {
@@ -50,6 +71,9 @@ options moal mod_para=nxp/wifi_mod_para_sd8987.conf
 EOT
 
   depmod -a
+
+  # Disable Cypress service and enable NXP service
+  handle_services true false
 }
 
 function prepare_for_nxp_ym_sdio_and_pcie() {
@@ -81,6 +105,9 @@ blacklist cfg80211
 EOT
 
   depmod -a
+
+  # Disable Cypress service and enable NXP service
+  handle_services true false
 }
 
 
@@ -98,6 +125,14 @@ function prepare_for_cypress() {
   fi
 
   depmod -a
+
+  # Disable NXP service and enable Cypress service
+  handle_services false true
+}
+
+function off() {
+  # Disable both NXP and Cypress services
+  handle_services false false
 }
 
 function switch_to_brcm_sdio() {
@@ -150,7 +185,7 @@ function usage() {
   echo "  $0  <module>"
   echo ""
   echo "Where:"
-  echo "  <module> is one of CYW-SDIO, CYW-PCIe, 1ZM, 1YM-SDIO, 1YM-PCIe, or current"
+  echo "  <module> is one of CYW-SDIO, CYW-PCIe, 1ZM, 1YM-SDIO, 1YM-PCIe, current or off"
   echo ""
 }
 
@@ -178,6 +213,9 @@ case $1 in
     ;;
   current|CURRENT)
     current
+    ;;
+  off|OFF)
+    off
     ;;
   *)
     current
