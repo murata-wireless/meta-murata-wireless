@@ -11,7 +11,6 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 SRC_URI =  " \
     git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=imx-zeus-zigra \
     file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
-    file://0002-enable_brcmf_sdio_wq_highpri.patch;apply=yes \
     file://0003-brcmfmac-req-fw-direct-war.patch;apply=yes \
     file://0004-makefile-yacc-flex-update.patch;apply=yes \
 "
