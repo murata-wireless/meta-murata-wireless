@@ -1,0 +1,63 @@
+diff -urN aSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/mbtc_src/Makefile bSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/mbtc_src/Makefile
+--- aSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/mbtc_src/Makefile	2020-01-17 01:05:39.000000000 -0500
++++ bSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/mbtc_src/Makefile	2020-09-10 14:44:18.377683760 -0400
+@@ -2,8 +2,14 @@
+ # Copyright 2014-2020 NXP
+ #
+ 
+-CC=		$(CROSS_COMPILE)gcc
++COMPATDIR=/lib/modules/$(KERNELVERSION_X86)/build/compat-wireless-3.2-rc1-1/include
++ifeq ($(CC),)
++CC=		$(CROSS_COMPILE)gcc -I$(COMPATDIR)
++endif
++ifeq ($(LD),)
+ LD=		$(CROSS_COMPILE)ld
++endif
++
+ 
+ BACKUP=		/root/backup
+ YMD=		`date +%Y%m%d%H%M`
+diff -urN aSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/mbt_src/Makefile bSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/mbt_src/Makefile
+--- aSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/mbt_src/Makefile	2020-01-17 01:05:27.000000000 -0500
++++ bSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/mbt_src/Makefile	2020-09-10 14:44:52.860865827 -0400
+@@ -2,8 +2,14 @@
+ # Copyright 2014-2020 NXP
+ #
+ 
+-CC=		$(CROSS_COMPILE)gcc
++COMPATDIR=/lib/modules/$(KERNELVERSION_X86)/build/compat-wireless-3.2-rc1-1/include
++ifeq ($(CC),)
++CC=		$(CROSS_COMPILE)gcc -I$(COMPATDIR)
++endif
++ifeq ($(LD),)
+ LD=		$(CROSS_COMPILE)ld
++endif
++
+ 
+ BACKUP=		/root/backup
+ YMD=		`date +%Y%m%d%H%M`
+diff -urN aSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/wlan_src/Makefile bSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/wlan_src/Makefile
+--- aSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/wlan_src/Makefile	2020-01-17 01:03:11.000000000 -0500
++++ bSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/wlan_src/Makefile	2020-09-10 14:45:44.451626456 -0400
+@@ -17,8 +17,13 @@
+ #
+ 
+ COMPATDIR=/lib/modules/$(KERNELVERSION_X86)/build/compat-wireless-3.2-rc1-1/include
++ifeq ($(CC),)
+ CC=		$(CROSS_COMPILE)gcc -I$(COMPATDIR)
++endif
++ifeq ($(LD),)
+ LD=		$(CROSS_COMPILE)ld
++endif
++
+ BACKUP=		/root/backup
+ YMD=		`date +%Y%m%d%H%M`
+ 
+diff -urN aSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/wlan_src/README bSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/wlan_src/README
+--- aSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/wlan_src/README	2020-01-17 01:03:12.000000000 -0500
++++ bSD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/wlan_src/README	2020-09-10 00:13:24.445107038 -0400
+@@ -1,3 +1,4 @@
++#TESTING FROM VKJB
+ ===============================================================================
+ 			U S E R  M A N U A L
+ 

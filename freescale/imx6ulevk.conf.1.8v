@@ -1,0 +1,31 @@
+#@TYPE: Machine
+#@NAME: NXP i.MX6UL Evaluation Kit
+#@SOC: i.MX6UL
+#@DESCRIPTION: Machine configuration for NXP i.MX6UL EVK
+#@MAINTAINER: Alexandru Palalau <ioan-alexandru.palalau@nxp.com>
+
+MACHINEOVERRIDES =. "mx6:mx6ul:"
+
+include conf/machine/include/imx-base.inc
+include conf/machine/include/tune-cortexa7.inc
+
+MACHINE_FEATURES += " pci wifi bluetooth nxp8987 mrvl8997"
+
+KERNEL_DEVICETREE = "imx6ul-14x14-evk.dtb imx6ul-14x14-evk-btwifi.dtb \
+                     imx6ul-14x14-evk-btwifi-oob.dtb imx6ul-14x14-evk-csi.dtb \
+                     imx6ul-14x14-evk-btwifi-m2-1-8v.dtb imx6ul-14x14-evk-btwifi-m2-oob-1-8v.dtb \
+                     imx6ul-14x14-evk-btwifi-m2-1-8v-50mhz.dtb imx6ul-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dtb \
+"
+KERNEL_DEVICETREE_use-mainline-bsp = "imx6ul-14x14-evk-btwifi-m2-oob-1-8v.dtb"
+
+# Use fslc u-boot by default. See also imx-base.inc.
+UBOOT_MAKE_TARGET = ""
+UBOOT_SUFFIX = "img"
+SPL_BINARY = "SPL"
+WKS_FILE = "imx-uboot-spl-bootpart.wks.in"
+
+UBOOT_CONFIG ??= "sd"
+UBOOT_CONFIG[sd] = "mx6ul_14x14_evk_config,sdcard"
+UBOOT_CONFIG[emmc] = "mx6ul_14x14_evk_emmc_config,sdcard"
+UBOOT_CONFIG[qspi1] = "mx6ul_14x14_evk_qspi1_config"
+UBOOT_CONFIG[mfgtool] = "mx6ul_14x14_evk_config"

@@ -1,0 +1,47 @@
+git diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
+index 9533dba..cf193eb 100644
+--- a/drivers/mmc/core/core.c
++++ b/drivers/mmc/core/core.c
+@@ -1171,7 +1171,13 @@ int mmc_set_signal_voltage(struct mmc_host *host, int signal_voltage)
+ void mmc_set_initial_signal_voltage(struct mmc_host *host)
+ {
+ 	/* Try to set signal voltage to 3.3V but fall back to 1.8v or 1.2v */
+-	if (!mmc_set_signal_voltage(host, MMC_SIGNAL_VOLTAGE_330))
++	/* Murata mod for SD3 on SoloX or SD1 on UL(L) */
++	if (host->index == 0)  /* index = 0 for UL(L) or 2 for SoloX */
++		{
++			mmc_set_signal_voltage(host, MMC_SIGNAL_VOLTAGE_180);
++			pr_err("Murata: mmc_power_up: Setting 1.8V for Index: %d\n",host->index);
++		}
++	else if (!mmc_set_signal_voltage(host, MMC_SIGNAL_VOLTAGE_330))
+ 		dev_dbg(mmc_dev(host), "Initial signal voltage of 3.3v\n");
+ 	else if (!mmc_set_signal_voltage(host, MMC_SIGNAL_VOLTAGE_180))
+ 		dev_dbg(mmc_dev(host), "Initial signal voltage of 1.8v\n");
+diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
+index ebb387a..d047140 100644
+--- a/drivers/mmc/core/sdio.c
++++ b/drivers/mmc/core/sdio.c
+@@ -644,7 +644,16 @@ static int mmc_sdio_init_card(struct mmc_host *host, u32 ocr,
+ 	 * to make sure which speed mode should work.
+ 	 */
+ 	if (rocr & ocr & R4_18V_PRESENT) {
+-		err = mmc_set_uhs_voltage(host, ocr_card);
++		/* Murata fix for 1.8V fixed signaling on SoloX - SD3 slot  or UL(L) - SD1 slot */
++		if (host->index == 0)  /* SoloX == 2; UL(L) == 0 */
++		{
++			pr_err("Murata: mmc_sdio_init_card: Skipping 1.8V setting for Index: %d\n",host->index);
++			err = 0;
++		}
++		else
++		{
++			err = err = mmc_set_uhs_voltage(host, ocr_card);
++		}
+ 		if (err == -EAGAIN) {
+ 			mmc_sdio_resend_if_cond(host, card);
+ 			retries--;
+@@ -1233,4 +1242,3 @@ int mmc_attach_sdio(struct mmc_host *host)
+ 
+ 	return err;
+ }
+-
+

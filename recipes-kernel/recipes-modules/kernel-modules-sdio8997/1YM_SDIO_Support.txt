@@ -1,0 +1,1 @@
+No 1YM(8997) SDIO support

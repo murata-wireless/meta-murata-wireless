@@ -1,0 +1,45 @@
+diff --git a/Makefile b/Makefile
+index ee7df4b..ba9c1c4 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,7 +3,6 @@
+ #
+ 
+ ifeq ($(KERNELRELEASE),)
+-
+ MAKEFLAGS += --no-print-directory
+ SHELL := /bin/bash
+ BACKPORT_DIR := $(shell pwd)
+diff --git a/Makefile.real b/Makefile.real
+index 6550802..cd90a40 100644
+--- a/Makefile.real
++++ b/Makefile.real
+@@ -20,10 +20,10 @@ menuconfig:
+ 	silentoldconfig olddefconfig oldnoconfig \
+ 	allnoconfig allyesconfig allmodconfig \
+ 	alldefconfig randconfig
+-listnewconfig oldaskconfig oldconfig \
+-silentoldconfig olddefconfig oldnoconfig \
+-allnoconfig allyesconfig allmodconfig \
+-alldefconfig randconfig:
++	listnewconfig oldaskconfig oldconfig \
++	silentoldconfig olddefconfig oldnoconfig \
++	allnoconfig allyesconfig allmodconfig \
++	alldefconfig randconfig:
+ 	@$(MAKE) -C kconf conf
+ 	@./kconf/conf --$@ Kconfig
+ 
+diff --git a/kconf/Makefile b/kconf/Makefile
+index 2004c44..8f2c01d 100644
+--- a/kconf/Makefile
++++ b/kconf/Makefile
+@@ -17,7 +17,7 @@ clean:
+ zconf.tab.c: zconf.lex.c
+ 
+ %.tab.c: %.y
+-	$(YACC) -o$@ -t -l $<
++	yacc -o$@ -t -l $<
+ 
+ %.lex.c: %.l
+-	$(LEX) -o$@ -L $<
++	flex -o$@ -L $<

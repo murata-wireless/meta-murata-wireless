@@ -1,0 +1,121 @@
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 29a7876..f565db3 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -618,8 +618,10 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+ 	imx6ul-14x14-evk-emmc.dtb \
+ 	imx6ul-14x14-evk-btwifi.dtb \
+ 	imx6ul-14x14-evk-btwifi-oob.dtb \
+-	imx6ul-14x14-evk-btwifi-m2.dtb \
+-	imx6ul-14x14-evk-btwifi-m2-oob.dtb \
++	imx6ul-14x14-evk-btwifi-m2-1-8v.dtb \
++	imx6ul-14x14-evk-btwifi-m2-oob-1-8v.dtb \
++	imx6ul-14x14-evk-btwifi-m2-1-8v-50mhz.dtb \
++	imx6ul-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dtb \
+ 	imx6ul-14x14-evk-ecspi-slave.dtb \
+ 	imx6ul-14x14-evk-ecspi.dtb \
+ 	imx6ul-14x14-evk-gpmi-weim.dtb \
+@@ -646,8 +648,10 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+ 	imx6ull-14x14-evk-emmc.dtb \
+ 	imx6ull-14x14-evk-btwifi.dtb \
+ 	imx6ull-14x14-evk-btwifi-oob.dtb \
+-	imx6ull-14x14-evk-btwifi-m2.dtb \
+-	imx6ull-14x14-evk-btwifi-m2-oob.dtb \
++	imx6ull-14x14-evk-btwifi-m2-1-8v.dtb \
++	imx6ull-14x14-evk-btwifi-m2-oob-1-8v.dtb \
++	imx6ull-14x14-evk-btwifi-m2-1-8v-50mhz.dtb \
++	imx6ull-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dtb \
+ 	imx6ull-14x14-evk-gpmi-weim.dtb \
+ 	imx6ull-9x9-evk.dtb \
+ 	imx6ull-9x9-evk-ldo.dtb \
+diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v-50mhz.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v-50mhz.dts
+new file mode 100644
+index 00000000..4ffed0a
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v-50mhz.dts
+@@ -0,0 +1,4 @@
++#include "imx6ul-14x14-evk-btwifi-m2.dts"
++&usdhc1 {
++	max-frequency = <50000000>;
++};
+diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v.dts
+new file mode 100644
+index 00000000..115923d
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-1-8v.dts
+@@ -0,0 +1 @@
++#include "imx6ul-14x14-evk-btwifi-m2.dts"
+diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dts
+new file mode 100644
+index 00000000..22e657c
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dts
+@@ -0,0 +1,5 @@
++#include "imx6ul-14x14-evk-btwifi-m2.dts"
++#include "imx6ul-evk-btwifi-m2-oob.dtsi"
++&usdhc1 {
++	max-frequency = <50000000>;
++};
+diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1-8v.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1-8v.dts
+new file mode 100644
+index 00000000..5826e96
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-1-8v.dts
+@@ -0,0 +1,2 @@
++#include "imx6ul-14x14-evk-btwifi-m2.dts"
++#include "imx6ul-evk-btwifi-m2-oob.dtsi"
+diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
+index a9ccd29..98b748d 100644
+--- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
++++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
+@@ -47,9 +47,12 @@
+ &usdhc1 {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+-	pinctrl-names = "default";
++	pinctrl-names = "default", "state_100mhz", "state_200mhz"; /* Murata -- add 100 and 200 Mhz entries for UHS mode */
+ 	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
+-	no-1-8-v;
++	pinctrl-1 = <&pinctrl_usdhc1_100mhz &pinctrl_wifi>;
++	pinctrl-2 = <&pinctrl_usdhc1_200mhz &pinctrl_wifi>;
++//	no-1-8-v; /* Murata - comment out for UHS mode */
++	max-frequency = <132000000>; /* Murata - 6ULL MAX with Adapter; 6UL = 100 MHz MAX */
+ 	non-removable;
+ 	pm-ignore-notify;
+ 	mmc-pwrseq = <&usdhc1_pwrseq>;
+diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1-8v-50mhz.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1-8v-50mhz.dts
+new file mode 100644
+index 00000000..c3538eb
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1-8v-50mhz.dts
+@@ -0,0 +1,4 @@
++#include "imx6ull-14x14-evk-btwifi-m2.dts"
++&usdhc1 {
++	max-frequency = <50000000>;
++};
+diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1-8v.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1-8v.dts
+new file mode 100644
+index 00000000..ad0c048
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-1-8v.dts
+@@ -0,0 +1 @@
++#include "imx6ull-14x14-evk-btwifi.dts"
+diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dts
+new file mode 100644
+index 00000000..33d0e9c
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1-8v-50mhz.dts
+@@ -0,0 +1,5 @@
++#include "imx6ull-14x14-evk-btwifi-m2.dts"
++#include "imx6ul-evk-btwifi-m2-oob.dtsi"
++&usdhc1 {
++	max-frequency = <50000000>;
++};
+diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1-8v.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1-8v.dts
+new file mode 100644
+index 00000000..618f222
+--- /dev/null
++++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-1-8v.dts
+@@ -0,0 +1,2 @@
++#include "imx6ull-14x14-evk-btwifi-m2.dts"
++#include "imx6ul-evk-btwifi-m2-oob.dtsi"

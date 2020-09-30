@@ -1,0 +1,14 @@
+diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
+index 7ca52b2..9047720 100644
+--- a/arch/arm64/configs/imx_v8_defconfig
++++ b/arch/arm64/configs/imx_v8_defconfig
+@@ -161,7 +161,8 @@ CONFIG_BT_HCIUART_3WIRE=y
+ CONFIG_BT_HCIUART_BCM=y
+ CONFIG_BT_HCIUART_QCA=y
+ CONFIG_BT_HCIVHCI=y
+-CONFIG_CFG80211=y
++CONFIG_CFG80211=m
++CONFIG_BCMDHD=n
+ CONFIG_NL80211_TESTMODE=y
+ CONFIG_CFG80211_WEXT=y
+ CONFIG_MAC80211=y
