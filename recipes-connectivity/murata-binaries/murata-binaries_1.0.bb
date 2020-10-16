@@ -12,15 +12,6 @@ SRC_URI = " \
 	git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=zigra;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
 	git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git;protocol=http;branch=master \
 	file://WlanCalData_ext_DB_W8997_1YM_ES2_Rev_C.conf \
-	file://fw_unlock_mmc.sh \
-	file://switch_module_imx6ull14x14evk.sh \
-	file://switch_module_imx6ulevk.sh \
-	file://switch_module_imx6sxsabresd.sh \
-	file://switch_module_imx6qsabresd.sh \
-	file://switch_module_imx6dlsabresd.sh \
-	file://switch_module_imx8mmevk.sh \
-	file://switch_module_imx8mnevk.sh \
-	file://switch_module_imx8mqevk.sh \
 	file://switch_module.sh \
 "
 SRC_URI += " \
@@ -133,9 +124,6 @@ do_install () {
 		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
 	fi
 
-	# Added Script file for switching between CYW and NXP
-#	install -m 755 ${S}/switch_module_v1.2.sh ${D}/usr/sbin/switch_module_v1.2.sh
-
 	ln -sf /usr/sbin/wpa_supplicant.cyw ${D}${sbindir}/wpa_supplicant
 
 #	Installing 8997 Firmware files
@@ -145,39 +133,9 @@ do_install () {
 	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/helper_uart_3000000.bin ${D}/lib/firmware/nxp
 	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/uart8997_bt_v4.bin ${D}/lib/firmware/nxp
 
-	install -Dm 0644 ${S}/fw_unlock_mmc.sh  ${D}${sysconfdir}/profile.d/fw_unlock_mmc.sh
-
 #	Based on MACHINE type
 	echo "DEBUG:: MACHINE TYPE :: ${MACHINE}"
-	case ${MACHINE} in
-	  imx6ull14x14evk)
-		install -m 755 ${S}/switch_module_imx6ull14x14evk.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx6ulevk)
-		install -m 755 ${S}/switch_module_imx6ulevk.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx6sxsabresd)
-		install -m 755 ${S}/switch_module_imx6sxsabresd.sh ${D}/usr/sbin/switch_module.sh
-		;;
- 	  imx6qsabresd)
-		install -m 755 ${S}/switch_module_imx6qsabresd.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx6dlsabresd)
-		install -m 755 ${S}/switch_module_imx6dlsabresd.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx8mmevk)
-		install -m 755 ${S}/switch_module_imx8mmevk.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx8mnevk)
-		install -m 755 ${S}/switch_module_imx8mnevk.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx8mqevk)
-		install -m 755 ${S}/switch_module_imx8mqevk.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx7dsabresd|imx7ulpevk|imx6qpsabresd|imx6slevk|imx8mmddr4evk)
-		install -m 755 ${S}/switch_module.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	esac
+	install -m 755 ${S}/switch_module.sh ${D}/usr/sbin/switch_module.sh
 }
 
 PACKAGES =+ "${PN}-mfgtest"

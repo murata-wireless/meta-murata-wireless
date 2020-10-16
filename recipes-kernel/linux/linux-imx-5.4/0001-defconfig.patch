@@ -1,5 +1,5 @@
 diff --git a/arch/arm/configs/imx_v7_defconfig b/arch/arm/configs/imx_v7_defconfig
-index 30792d2..516a06f 100644
+index 2d1c0fb..30cfa1c 100644
 --- a/arch/arm/configs/imx_v7_defconfig
 +++ b/arch/arm/configs/imx_v7_defconfig
 @@ -91,9 +91,10 @@ CONFIG_BT_HCIUART_LL=y
