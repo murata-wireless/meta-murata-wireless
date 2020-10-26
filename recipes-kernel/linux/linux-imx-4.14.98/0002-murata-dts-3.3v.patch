@@ -582,10 +582,10 @@ index 00000000..8b4112c
 +};
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts
 new file mode 100644
-index 00000000..c822a37
+index 00000000..be4a4cc
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts
-@@ -0,0 +1,27 @@
+@@ -0,0 +1,19 @@
 +#include "imx6ull-14x14-evk-btwifi.dts"
 +
 +&usdhc1_pwrseq {
@@ -593,14 +593,6 @@ index 00000000..c822a37
 +	/delete-property/ pinctrl-0;
 +	post-power-on-delay-ms = <120>;  /* Murata -- add delay before accessing SDIO bus */
 +};
-+
-+//&pinctrl_usdhc1 {
-+//        fsl,pins = <
-+//            	MX6UL_PAD_GPIO1_IO05__GPIO1_IO05	0x17059 /* SD1 VSELECT */
-+//        >;
-+//};
-+
-+
 +
 +&pinctrl_hog_1 {
 +        fsl,pins = <
@@ -661,17 +653,25 @@ index 99d0046..0d9faf1e 100644
  			compatible = "ethernet-phy-ieee802.3-c22";
  			reg = <1>;
 diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index da7ede2..b035b91 100644
+index e35eb32..c1e1964 100644
 --- a/arch/arm64/boot/dts/freescale/Makefile
 +++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -117,6 +117,7 @@ dtb-$(CONFIG_ARCH_FSL_IMX8MQ) += fsl-imx8mq-ddr3l-arm2.dtb \
+@@ -118,6 +118,7 @@ dtb-$(CONFIG_ARCH_FSL_IMX8MQ) += fsl-imx8mq-ddr3l-arm2.dtb \
  				 fsl-imx8mq-evk-dp.dtb \
  				 fsl-imx8mq-evk-edp.dtb
  dtb-$(CONFIG_ARCH_FSL_IMX8MM) += fsl-imx8mm-evk.dtb \
 +				 imx8mm-evk-usd-m2.dtb \
+ 				 fsl-imx8mm-evk-drm.dtb \
  				 fsl-imx8mm-evk-ak4497.dtb \
  				 fsl-imx8mm-evk-m4.dtb \
- 				 fsl-imx8mm-evk-ak5558.dtb \
+@@ -135,6 +136,7 @@ dtb-$(CONFIG_ARCH_FSL_IMX8MM) += fsl-imx8mm-evk.dtb \
+ 				 fsl-imx8mm-ddr4-qca9377-evk.dtb
+ dtb-$(CONFIG_ARCH_FSL_IMX8MN) += fsl-imx8mn-ddr4-evk.dtb \
+ 				 fsl-imx8mn-evk.dtb \
++				 imx8mn-evk-usd-m2.dtb \
+ 				 fsl-imx8mn-evk-rpmsg.dtb \
+ 				 fsl-imx8mn-ddr4-evk-rpmsg.dtb \
+ 				 fsl-imx8mn-ddr4-evk-rm67191.dtb \
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts
 new file mode 100644
 index 00000000..9fd8226
@@ -776,6 +776,123 @@ index 00000000..9fd8226
 +	non-removable;
 +	cap-power-off-card;
 +	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	  	interrupt-parent = <&gpio5>;
++    		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
++    		interrupt-names = "host-wake";
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts
+new file mode 100644
+index 00000000..84b6afb
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts
+@@ -0,0 +1,111 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ */
++
++/dts-v1/;
++
++#include "fsl-imx8mn-evk.dts"
++
++/ {
++  	usdhc2_pwrseq: usdhc2_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		pinctrl-names = "default";
++		reset-gpios = <&gpio5 11 GPIO_ACTIVE_LOW>;  /* WL REG ON */
++	};
++
++
++	modem_reset_usd_m2: modem-reset {
++		compatible = "gpio-reset";
++		reset-gpios = <&gpio5 12 GPIO_ACTIVE_LOW>;  /* BT REG ON */
++		reset-delay-us = <1000>;
++		#reset-cells = <0>;
++	};
++
++};
++
++&reg_usdhc2_vmmc {
++  	regulator-always-on;
++};
++
++&uart1 {
++	/* Onboard 1MW BT */
++	status = "disabled";
++};
++
++&uart3 {
++  	resets = <&modem_reset_usd_m2>;
++};
++
++&ecspi2 {
++	status = "disabled";
++};
++
++&usdhc1 {
++	/* Disable 1MW */
++	status = "disabled";
++};
++
++
++&pinctrl_usdhc2_gpio {
++	fsl,pins = <
++    		MX8MN_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
++        	MX8MN_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
++    		MX8MN_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x19  /* BT_REG_ON */
++    		MX8MN_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* Murata -- should be pull-up on this */
++    		MX8MN_IOMUXC_ECSPI2_SCLK_GPIO5_IO10 	0x1d0 /* Murata WL_HOST_WAKE -- pull-up */
++	>;
++};
++
++&pinctrl_usdhc2 {
++	fsl,pins = <
++		MX8MN_IOMUXC_SD2_CLK_USDHC2_CLK		0x190
++		MX8MN_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d0
++		MX8MN_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d0
++		MX8MN_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d0
++		MX8MN_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d0
++		MX8MN_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d0
++	>;
++};
++
++&pinctrl_usdhc2_100mhz {
++	fsl,pins = <
++		MX8MN_IOMUXC_SD2_CLK_USDHC2_CLK		0x194
++		MX8MN_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d4
++		MX8MN_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d4
++		MX8MN_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d4
++		MX8MN_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d4
++		MX8MN_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d4
++	>;
++};
++
++&pinctrl_usdhc2_200mhz {
++	fsl,pins = <
++		MX8MN_IOMUXC_SD2_CLK_USDHC2_CLK		0x196
++		MX8MN_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d6
++		MX8MN_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d6
++		MX8MN_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d6
++		MX8MN_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d6
++		MX8MN_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d6
++	>;
++};
++
++
++&usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-assert-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
++	/delete-property/ cd-gpios;
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++	pm-ignore-notify;
++	keep-power-in-suspend;
++	non-removable;
++	cap-power-off-card;
++	brcmf2: bcrmf@1 {
 +		reg = <1>;
 +		compatible = "brcm,bcm4329-fmac";
 +	  	interrupt-parent = <&gpio5>;
