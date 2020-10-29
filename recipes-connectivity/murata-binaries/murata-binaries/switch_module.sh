@@ -188,7 +188,7 @@ function off() {
 
 function switch_to_cypress_sdio() {
   echo ""
-  echo "Setting up for 1DX, 1LV, 1MW, 1WZ (Cypress - SDIO)"
+  echo "Setting up for 1DX, 1LV, 1MW (Cypress - SDIO)"
   prepare_for_cypress
   echo ""
 }
@@ -232,7 +232,7 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1ZM 1YM-SDIO, 1YM-PCIe or CURRENT"
+  echo "     CYW-SDIO, CYW-PCIe, 1ZM, 1YM-SDIO, 1YM-PCIe or CURRENT"
   echo ""
 }
 
