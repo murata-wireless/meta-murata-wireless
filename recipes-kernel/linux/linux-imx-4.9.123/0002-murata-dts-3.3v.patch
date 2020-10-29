@@ -974,12 +974,11 @@ index 00000000..4d16874
 +};
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
 new file mode 100644
-index 00000000..d64f4c5
+index 00000000..089f4fe
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
-@@ -0,0 +1,52 @@
+@@ -0,0 +1,43 @@
 +#include "imx6ul-14x14-evk-btwifi.dts"
-+
 +
 +/ {
 +	usdhc1_pwrseq: usdhc1_pwrseq {
@@ -990,13 +989,11 @@ index 00000000..d64f4c5
 +};
 +
 +&wlreg_on {
-+	/delete-property/ compatible;
-+	/delete-property/ regulator-min-microvolt;
-+	/delete-property/ regulator-max-microvolt;
-+	/delete-property/ regulator-name;
-+	/delete-property/ gpio;
-+	/delete-property/ startup-delay-us;
-+	/delete-property/ enable-active-high;
++	status = "disabled";
++};
++
++&bcmdhd_wlan_0 {
++	status = "disabled";
 +};
 +
 +&pinctrl_usdhc1 {
@@ -1005,26 +1002,20 @@ index 00000000..d64f4c5
 +        >;
 +};
 +
-+&bcmdhd_wlan_0 {
-+	/delete-property/ compatible;
-+	/delete-property/ wlreg_on-supply;
-+};
-+
-+
 +&usdhc1 {
 +	#address-cells = <1>;
 +	#size-cells = <0>;
 +	pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
 +	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
 +	fsl,tuning-start-tap = <20>; /* Murata: i.MX default tuning-start-tap */
-+	fsl,tuning-step= <2>; /* Murata: change default step value from 2 to 4 for 1BB */
++	fsl,tuning-step= <2>;
 +	non-removable;
 +	/delete-property/ cd-post;
 +	cap-power-off-card;
 +	pm-ignore-notify; 
-+	wifi-host;
-+
++	/delete-property/ wifi-host;
 +	mmc-pwrseq = <&usdhc1_pwrseq>;
++
 +	brcmf: bcrmf@1 {
 +		reg = <1>;
 +		compatible = "brcm,bcm4329-fmac";
@@ -1162,10 +1153,10 @@ index 00000000..8b4112c
 +};
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts
 new file mode 100644
-index 00000000..ae5d511
+index 00000000..b34b3ba
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts
-@@ -0,0 +1,51 @@
+@@ -0,0 +1,43 @@
 +#include "imx6ull-14x14-evk-btwifi.dts"
 +
 +/ {
@@ -1177,13 +1168,11 @@ index 00000000..ae5d511
 +};
 +
 +&wlreg_on {
-+	/delete-property/ compatible;
-+	/delete-property/ regulator-min-microvolt;
-+	/delete-property/ regulator-max-microvolt;
-+	/delete-property/ regulator-name;
-+	/delete-property/ gpio;
-+	/delete-property/ startup-delay-us;
-+	/delete-property/ enable-active-high;
++	status = "disabled";
++};
++
++&bcmdhd_wlan_0 {
++	status = "disabled";
 +};
 +
 +&pinctrl_hog_1 {
@@ -1192,26 +1181,20 @@ index 00000000..ae5d511
 +        >;
 +};
 +
-+&bcmdhd_wlan_0 {
-+	/delete-property/ compatible;
-+	/delete-property/ wlreg_on-supply;
-+};
-+
-+
 +&usdhc1 {
 +	#address-cells = <1>;
 +	#size-cells = <0>;
 +	pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
 +	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
 +	fsl,tuning-start-tap = <20>; /* Murata: i.MX default tuning-start-tap */
-+	fsl,tuning-step= <2>; /* Murata: change default step value from 2 to 4 for 1BB */
++	fsl,tuning-step= <2>;
 +	non-removable;
 +	/delete-property/ cd-post;
 +	cap-power-off-card;
 +	pm-ignore-notify; 
-+	wifi-host;
-+
++	/delete-property/ wifi-host;
 +	mmc-pwrseq = <&usdhc1_pwrseq>;
++
 +	brcmf: bcrmf@1 {
 +		reg = <1>;
 +		compatible = "brcm,bcm4329-fmac";
