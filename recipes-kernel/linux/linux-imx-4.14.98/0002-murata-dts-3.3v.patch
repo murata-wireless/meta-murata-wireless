@@ -429,10 +429,10 @@ index 00000000..4d16874
 +};
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
 new file mode 100644
-index 00000000..089c841
+index 00000000..ec58eb2e
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
-@@ -0,0 +1,20 @@
+@@ -0,0 +1,18 @@
 +#include "imx6ul-14x14-evk-btwifi.dts"
 +
 +&usdhc1_pwrseq {
@@ -450,8 +450,6 @@ index 00000000..089c841
 +&usdhc1 {
 +	pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
 +	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
-+	fsl,tuning-start-tap = <20>; /* Murata: i.MX default tuning-start-tap */
-+	fsl,tuning-step= <2>; /* Murata: change default step value from 2 to 4 for 1BB */
 +};
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk.dts b/arch/arm/boot/dts/imx6ul-14x14-evk.dts
 index d61ce36..24c9efd 100644
