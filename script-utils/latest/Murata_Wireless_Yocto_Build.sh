@@ -407,9 +407,11 @@ echo -e "${GRN}Selected : $linuxVersion${NC}"
 echo " "
 echo "6) Select "\""fmac"\"" version"
 echo "------------------------"
-MANDA_FMAC=""\""manda"\"""
-KONG_FMAC=""\""kong"\"""
-ZIGRA_FMAC=""\""zigra"\"""
+
+MANDA_FMAC="manda"
+KONG_FMAC="kong"
+ZIGRA_FMAC="zigra"
+
 
 while true; do
 	case $LINUX_KERNEL in
@@ -418,7 +420,7 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo     "|  0.   | $MANDA_FMAC - Latest release                          |"
+			echo     "|  0.   | $MANDA_FMAC - Latest release                            |"
 			echo     "-------------------------------------------------------------"
 			read -p "Select which entry? " ENTRY
 			case $ENTRY in
@@ -454,8 +456,8 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo     "|  0.   | $MANDA_FMAC - Previous release                        |"
-			echo     "|  1.   | $KONG_FMAC - Latest release                           |"
+			echo     "|  0.   | $MANDA_FMAC - Previous release                          |"
+			echo     "|  1.   | $KONG_FMAC - Latest release                             |"
 			echo     "-------------------------------------------------------------"
 			read -p "Select which entry? " ENTRY
 			case $ENTRY in
@@ -513,8 +515,8 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo     "|  0.   | $MANDA_FMAC - Previous release                        |"
-			echo     "|  1.   | $KONG_FMAC - Latest release                           |"
+			echo     "|  0.   | $MANDA_FMAC - Previous release                          |"
+			echo     "|  1.   | $KONG_FMAC - Latest release                             |"
 			echo     "-------------------------------------------------------------"
 			read -p "Select which entry? " FMAC_VERSION
 			case $FMAC_VERSION in
@@ -571,7 +573,7 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo -e  "|  0.   | $ZIGRA_FMAC - ${GRN}Latest release${NC}                          |"
+			echo -e  "|  0.   | $ZIGRA_FMAC - ${GRN}Latest release${NC}                            |"
 			echo     "-------------------------------------------------------------"
 			read -p "Select which entry? " FMAC_VERSION
 			case $FMAC_VERSION in
@@ -792,8 +794,7 @@ while true; do
 			echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 			echo "|  10    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 			echo "|  11    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-			echo "|  12    |  imx8mmddr4evk    | 8MMINILPDDR4-EVK         |"
-			echo "|  13    |  imx8mnevk        | 8MNANOD4-EVK             |"
+			echo "|  12    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
 			echo "---------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
@@ -864,15 +865,7 @@ while true; do
 				break
 				;;
 			12)
-				TARGET_NAME=imx8mmddr4evk
-				PART_NUMBER=8MMINILPDDR4-EVK
-				LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
-				LINUX_DEST=linux-imx_4.14.98.bbappend
-				DISTRO_NAME=fsl-imx-wayland
-				break
-				;;
-			13)
-				TARGET_NAME=imx8mnevk
+				TARGET_NAME=imx8mnddr4evk
 				PART_NUMBER=8MNANOD4-EVK
 				LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
 				LINUX_DEST=linux-imx_4.14.98.bbappend
@@ -906,10 +899,8 @@ while true; do
 			echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
 			echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 			echo "|  10    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-			echo "|  11    |  imx8mmddr4evk    | 8MMINILPDDR4-EVK         |"
-			echo "|  12    |  imx8mnevk        | 8MNANOD4-EVK             |"
-			echo "|  13    |  imx8mnddr4evk    | 8MNANODDR4-EVK           |"
-			echo "|  14    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
+			echo "|  11    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
+			echo "|  12    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 			echo "---------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
@@ -971,30 +962,14 @@ while true; do
 				break
 				;;
 			11)
-				TARGET_NAME=imx8mmddr4evk
-				PART_NUMBER=8MMINILPDDR4-EVK
-				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.4.bbappend
-				DISTRO_NAME=fsl-imx-wayland
-				break
-				;;
-			12)
-				TARGET_NAME=imx8mnevk
+				TARGET_NAME=imx8mnddr4evk
 				PART_NUMBER=8MNANOD4-EVK
 				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
 				LINUX_DEST=linux-imx_5.4.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
-			13)
-				TARGET_NAME=imx8mnddr4evk
-				PART_NUMBER=8MNANODDR4-EVK
-				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.4.bbappend
-				DISTRO_NAME=fsl-imx-wayland
-				break
-				;;
-			14)
+			12)
 				TARGET_NAME=imx8qxpmek
 				PART_NUMBER=MCIMX8QXP-CPU
 				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
@@ -1272,7 +1247,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 			#echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
 		fi
 
-		if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ] || [ "$TARGET_NAME" = "imx8mnevk" ]; then
+		if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ]; then
 			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bb \
 			$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bbx
 			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.1.bb \
