@@ -407,9 +407,11 @@ echo -e "${GRN}Selected : $linuxVersion${NC}"
 echo " "
 echo "6) Select "\""fmac"\"" version"
 echo "------------------------"
-MANDA_FMAC=""\""manda"\"""
-KONG_FMAC=""\""kong"\"""
-ZIGRA_FMAC=""\""zigra"\"""
+
+MANDA_FMAC="manda"
+KONG_FMAC="kong"
+ZIGRA_FMAC="zigra"
+
 
 while true; do
 	case $LINUX_KERNEL in
@@ -418,7 +420,7 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo     "|  0.   | $MANDA_FMAC - Latest release                          |"
+			echo     "|  0.   | $MANDA_FMAC - Latest release                            |"
 			echo     "-------------------------------------------------------------"
 			read -p "Select which entry? " ENTRY
 			case $ENTRY in
@@ -454,8 +456,8 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo     "|  0.   | $MANDA_FMAC - Previous release                        |"
-			echo     "|  1.   | $KONG_FMAC - Latest release                           |"
+			echo     "|  0.   | $MANDA_FMAC - Previous release                          |"
+			echo     "|  1.   | $KONG_FMAC - Latest release                             |"
 			echo     "-------------------------------------------------------------"
 			read -p "Select which entry? " ENTRY
 			case $ENTRY in
@@ -513,8 +515,8 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo     "|  0.   | $MANDA_FMAC - Previous release                        |"
-			echo     "|  1.   | $KONG_FMAC - Latest release                           |"
+			echo     "|  0.   | $MANDA_FMAC - Previous release                          |"
+			echo     "|  1.   | $KONG_FMAC - Latest release                             |"
 			echo     "-------------------------------------------------------------"
 			read -p "Select which entry? " FMAC_VERSION
 			case $FMAC_VERSION in
@@ -571,7 +573,7 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo -e  "|  0.   | $ZIGRA_FMAC - ${GRN}Latest release${NC}                          |"
+			echo -e  "|  0.   | $ZIGRA_FMAC - ${GRN}Latest release${NC}                            |"
 			echo     "-------------------------------------------------------------"
 			read -p "Select which entry? " FMAC_VERSION
 			case $FMAC_VERSION in
