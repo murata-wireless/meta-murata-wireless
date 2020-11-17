@@ -61,13 +61,13 @@ echo "Creating "\""meta-murata-wireless"\"" subfolder."
 # else clone meta-murata-wireless
 TEST_DIR_NAME=meta-murata-wireless
 if [ -d "$TEST_DIR_NAME" ]; then
-	cd $TEST_DIR_NAME/cyw-script-utils/latest
+	cd $TEST_DIR_NAME/script-utils/latest
 	git fetch --all 		--quiet
 	git reset --hard origin/master 	--quiet
 	git pull origin master 		--quiet
 else
 	git clone $META_MURATA_WIRELESS_GIT --quiet
-	cd $TEST_DIR_NAME/cyw-script-utils/latest
+	cd $TEST_DIR_NAME/script-utils/latest
 fi
 
 export SCRIPT_DIR=`pwd`
@@ -105,7 +105,7 @@ else
 	if [ "$PROCEED_UPDATE_OPTION" = "y" ] || [ "$PROCEED_UPDATE_OPTION" = "Y" ] || [ "$PROCEED_UPDATE_OPTION" = "" ]; then
 		echo "Update to latest version using following copy command:"
 		echo " "
-		echo ""\$ "cp ./meta-murata-wireless/cyw-script-utils/latest/Murata_Wireless_Yocto_Build.sh ."
+		echo ""\$ "cp ./meta-murata-wireless/script-utils/latest/Murata_Wireless_Yocto_Build.sh ."
 		echo " "
 		echo -e "${YLW}Exiting script.....${NC}"
        		exit
