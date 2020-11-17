@@ -792,8 +792,7 @@ while true; do
 			echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 			echo "|  10    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 			echo "|  11    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-			echo "|  12    |  imx8mmddr4evk    | 8MMINILPDDR4-EVK         |"
-			echo "|  13    |  imx8mnevk        | 8MNANOD4-EVK             |"
+			echo "|  12    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
 			echo "---------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
@@ -864,15 +863,7 @@ while true; do
 				break
 				;;
 			12)
-				TARGET_NAME=imx8mmddr4evk
-				PART_NUMBER=8MMINILPDDR4-EVK
-				LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
-				LINUX_DEST=linux-imx_4.14.98.bbappend
-				DISTRO_NAME=fsl-imx-wayland
-				break
-				;;
-			13)
-				TARGET_NAME=imx8mnevk
+				TARGET_NAME=imx8mnddr4evk
 				PART_NUMBER=8MNANOD4-EVK
 				LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
 				LINUX_DEST=linux-imx_4.14.98.bbappend
@@ -906,10 +897,8 @@ while true; do
 			echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
 			echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 			echo "|  10    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-			echo "|  11    |  imx8mmddr4evk    | 8MMINILPDDR4-EVK         |"
-			echo "|  12    |  imx8mnevk        | 8MNANOD4-EVK             |"
-			echo "|  13    |  imx8mnddr4evk    | 8MNANODDR4-EVK           |"
-			echo "|  14    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
+			echo "|  11    |  imx8mnddr4evk    | 8MNANODDR4-EVK           |"
+			echo "|  12    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 			echo "---------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
@@ -971,30 +960,14 @@ while true; do
 				break
 				;;
 			11)
-				TARGET_NAME=imx8mmddr4evk
-				PART_NUMBER=8MMINILPDDR4-EVK
-				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.4.bbappend
-				DISTRO_NAME=fsl-imx-wayland
-				break
-				;;
-			12)
-				TARGET_NAME=imx8mnevk
+				TARGET_NAME=imx8mnddr4evk
 				PART_NUMBER=8MNANOD4-EVK
 				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
 				LINUX_DEST=linux-imx_5.4.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
-			13)
-				TARGET_NAME=imx8mnddr4evk
-				PART_NUMBER=8MNANODDR4-EVK
-				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.4.bbappend
-				DISTRO_NAME=fsl-imx-wayland
-				break
-				;;
-			14)
+			12)
 				TARGET_NAME=imx8qxpmek
 				PART_NUMBER=MCIMX8QXP-CPU
 				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
