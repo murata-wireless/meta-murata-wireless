@@ -899,7 +899,7 @@ while true; do
 			echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
 			echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 			echo "|  10    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-			echo "|  11    |  imx8mnddr4evk    | 8MNANODDR4-EVK           |"
+			echo "|  11    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
 			echo "|  12    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 			echo "---------------------------------------------------------"
 			echo -n "Select your entry: "
