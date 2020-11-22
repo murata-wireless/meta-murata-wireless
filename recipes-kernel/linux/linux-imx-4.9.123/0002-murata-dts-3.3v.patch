@@ -1008,7 +1008,7 @@ index 00000000..73d8111
 +	pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
 +	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
 +	fsl,tuning-start-tap = <20>;
-+	fsl,tuning-step = <2>
++	fsl,tuning-step = <2>;
 +	non-removable;
 +	/delete-property/ cd-post;
 +	cap-power-off-card;
