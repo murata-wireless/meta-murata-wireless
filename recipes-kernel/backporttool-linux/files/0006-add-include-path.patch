@@ -1,0 +1,418 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcdc.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcdc.c
+index 705130c..330bff0 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcdc.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcdc.c
+@@ -11,8 +11,8 @@
+ #include <linux/types.h>
+ #include <linux/netdevice.h>
+ 
+-#include <brcmu_utils.h>
+-#include <brcmu_wifi.h>
++#include "../include/brcmu_utils.h"
++#include "../include/brcmu_wifi.h"
+ 
+ #include "core.h"
+ #include "bus.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
+index 8fb65ba..a990831 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
+@@ -24,12 +24,12 @@
+ #include <linux/acpi.h>
+ #include <net/cfg80211.h>
+ 
+-#include <defs.h>
+-#include <brcm_hw_ids.h>
+-#include <brcmu_utils.h>
+-#include <brcmu_wifi.h>
+-#include <chipcommon.h>
+-#include <soc.h>
++#include "../include/defs.h"
++#include "../include/brcm_hw_ids.h"
++#include "../include/brcmu_utils.h"
++#include "../include/brcmu_wifi.h"
++#include "../include/chipcommon.h"
++#include "../include/soc.h"
+ #include "chip.h"
+ #include "bus.h"
+ #include "debug.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/btcoex.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/btcoex.c
+index ec2bec0..1a1daa3 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/btcoex.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/btcoex.c
+@@ -6,9 +6,9 @@
+ #include <linux/netdevice.h>
+ #include <net/cfg80211.h>
+ 
+-#include <brcmu_wifi.h>
+-#include <brcmu_utils.h>
+-#include <defs.h>
++#include "../include/brcmu_wifi.h"
++#include "../include/brcmu_utils.h"
++#include "../include/defs.h"
+ #include "core.h"
+ #include "debug.h"
+ #include "fwil.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+index 1f13ad3..63a4128 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+@@ -12,9 +12,9 @@
+ #include <net/cfg80211.h>
+ #include <net/netlink.h>
+ 
+-#include <brcmu_utils.h>
+-#include <defs.h>
+-#include <brcmu_wifi.h>
++#include "../include/brcmu_utils.h"
++#include "../include/defs.h"
++#include "../include/brcmu_wifi.h"
+ #include "core.h"
+ #include "debug.h"
+ #include "tracepoint.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.h
+index 96a5ec9..a93809e 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.h
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.h
+@@ -7,7 +7,7 @@
+ #define BRCMFMAC_CFG80211_H
+ 
+ /* for brcmu_d11inf */
+-#include <brcmu_d11.h>
++#include "../include/brcmu_d11.h"
+ 
+ #include "core.h"
+ #include "fwil_types.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
+index 8285045..e1dd555 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
+@@ -9,11 +9,11 @@
+ #include <linux/bcma/bcma.h>
+ #include <linux/bcma/bcma_regs.h>
+ 
+-#include <defs.h>
+-#include <soc.h>
+-#include <brcm_hw_ids.h>
+-#include <brcmu_utils.h>
+-#include <chipcommon.h>
++#include "../include/defs.h"
++#include "../include/soc.h"
++#include "../include/brcm_hw_ids.h"
++#include "../include/brcmu_utils.h"
++#include "../include/chipcommon.h"
+ #include "debug.h"
+ #include "chip.h"
+ 
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+index 252acf8..ae83794 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+@@ -8,8 +8,8 @@
+ #include <linux/netdevice.h>
+ #include <linux/module.h>
+ #include <linux/firmware.h>
+-#include <brcmu_wifi.h>
+-#include <brcmu_utils.h>
++#include "../include/brcmu_wifi.h"
++#include "../include/brcmu_utils.h"
+ #include "core.h"
+ #include "bus.h"
+ #include "debug.h"
+@@ -20,9 +20,9 @@
+ #include "of.h"
+ #include "firmware.h"
+ #include "chip.h"
+-#include "defs.h"
++#include "../include/defs.h"
+ #include "fweh.h"
+-#include <brcm_hw_ids.h>
++#include "../include/brcm_hw_ids.h"
+ 
+ MODULE_AUTHOR("Broadcom Corporation");
+ MODULE_DESCRIPTION("Broadcom 802.11 wireless LAN fullmac driver.");
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/commonring.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/commonring.c
+index 49db54d..58d1f32 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/commonring.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/commonring.c
+@@ -6,8 +6,8 @@
+ #include <linux/types.h>
+ #include <linux/netdevice.h>
+ 
+-#include <brcmu_utils.h>
+-#include <brcmu_wifi.h>
++#include "../include/brcmu_utils.h"
++#include "../include/brcmu_wifi.h"
+ 
+ #include "core.h"
+ #include "commonring.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+index 78754a2..18baab1 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
+@@ -13,8 +13,8 @@
+ #include <net/addrconf.h>
+ #include <net/ieee80211_radiotap.h>
+ #include <net/ipv6.h>
+-#include <brcmu_utils.h>
+-#include <brcmu_wifi.h>
++#include "../include/brcmu_utils.h"
++#include "../include/brcmu_wifi.h"
+ 
+ #include "core.h"
+ #include "bus.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
+index c1340c5..061a660 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/dmi.c
+@@ -7,7 +7,7 @@
+ #include <linux/mod_devicetable.h>
+ #include "core.h"
+ #include "common.h"
+-#include "brcm_hw_ids.h"
++#include "../include/brcm_hw_ids.h"
+ 
+ /* The DMI data never changes so we can use a static buf for this */
+ static char dmi_board_type[128];
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.c
+index b9ae778..bb86f24 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.c
+@@ -6,8 +6,8 @@
+ #include <linux/netdevice.h>
+ #include <linux/module.h>
+ 
+-#include <brcm_hw_ids.h>
+-#include <brcmu_wifi.h>
++#include "../include/brcm_hw_ids.h"
++#include "../include/brcmu_wifi.h"
+ #include "core.h"
+ #include "bus.h"
+ #include "debug.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/flowring.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/flowring.c
+index e1127d7..ddde729 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/flowring.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/flowring.c
+@@ -7,7 +7,7 @@
+ #include <linux/types.h>
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
+-#include <brcmu_utils.h>
++#include "../include/brcmu_utils.h"
+ 
+ #include "core.h"
+ #include "debug.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c
+index 79c8a85..5e37387 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c
+@@ -4,8 +4,8 @@
+  */
+ #include <linux/netdevice.h>
+ 
+-#include "brcmu_wifi.h"
+-#include "brcmu_utils.h"
++#include "../include/brcmu_wifi.h"
++#include "../include/brcmu_utils.h"
+ 
+ #include "cfg80211.h"
+ #include "core.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.c
+index 9ed8542..3b8ffaf 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.c
+@@ -9,8 +9,8 @@
+ 
+ #include <linux/kernel.h>
+ #include <linux/netdevice.h>
+-#include <brcmu_utils.h>
+-#include <brcmu_wifi.h>
++#include "../include/brcmu_utils.h"
++#include "../include/brcmu_wifi.h"
+ #include "core.h"
+ #include "bus.h"
+ #include "debug.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c
+index 8b2a929..fbb7fc9 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c
+@@ -13,8 +13,8 @@
+ #include <linux/jiffies.h>
+ #include <net/cfg80211.h>
+ 
+-#include <brcmu_utils.h>
+-#include <brcmu_wifi.h>
++#include "../include/brcmu_utils.h"
++#include "../include/brcmu_wifi.h"
+ #include "core.h"
+ #include "debug.h"
+ #include "bus.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
+index 33fd145..650571e 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
+@@ -13,8 +13,8 @@
+ #include <linux/etherdevice.h>
+ #include <linux/net_tstamp.h>
+ 
+-#include <brcmu_utils.h>
+-#include <brcmu_wifi.h>
++#include "../include/brcmu_utils.h"
++#include "../include/brcmu_wifi.h"
+ 
+ #include "core.h"
+ #include "debug.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
+index e4f3493..a81f41a 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
+@@ -6,7 +6,7 @@
+ #include <linux/of.h>
+ #include <linux/of_irq.h>
+ 
+-#include <defs.h>
++#include "../include/defs.h"
+ #include "debug.h"
+ #include "core.h"
+ #include "common.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
+index 896d383..600b8ab 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
+@@ -8,9 +8,9 @@
+ #include <linux/rtnetlink.h>
+ #include <net/cfg80211.h>
+ 
+-#include <brcmu_wifi.h>
+-#include <brcmu_utils.h>
+-#include <defs.h>
++#include "../include/brcmu_wifi.h"
++#include "../include/brcmu_utils.h"
++#include "../include/defs.h"
+ #include "core.h"
+ #include "debug.h"
+ #include "fwil.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+index 99e0618..307e77d 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+@@ -14,11 +14,11 @@
+ #include <linux/sched.h>
+ #include <asm/unaligned.h>
+ 
+-#include <soc.h>
+-#include <chipcommon.h>
+-#include <brcmu_utils.h>
+-#include <brcmu_wifi.h>
+-#include <brcm_hw_ids.h>
++#include "../include/soc.h"
++#include "../include/chipcommon.h"
++#include "../include/brcmu_utils.h"
++#include "../include/brcmu_wifi.h"
++#include "../include/brcm_hw_ids.h"
+ 
+ /* Custom brcmf_err() that takes bus arg and passes it further */
+ #define brcmf_err(bus, fmt, ...)					\
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/proto.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/proto.c
+index 2e911d4..0cd5b43 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/proto.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/proto.c
+@@ -8,7 +8,7 @@
+ #include <linux/slab.h>
+ #include <linux/netdevice.h>
+ 
+-#include <brcmu_wifi.h>
++#include "../include/brcmu_wifi.h"
+ #include "core.h"
+ #include "bus.h"
+ #include "debug.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+index 94edc41..2ae6548 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
+@@ -25,11 +25,11 @@
+ #include <linux/vmalloc.h>
+ #include <linux/net_tstamp.h>
+ #include <asm/unaligned.h>
+-#include <defs.h>
+-#include <brcmu_wifi.h>
+-#include <brcmu_utils.h>
+-#include <brcm_hw_ids.h>
+-#include <soc.h>
++#include "../include/defs.h"
++#include "../include/brcmu_wifi.h"
++#include "../include/brcmu_utils.h"
++#include "../include/brcm_hw_ids.h"
++#include "../include/soc.h"
+ #include "sdio.h"
+ #include "chip.h"
+ #include "firmware.h"
+@@ -108,7 +108,7 @@ struct rte_console {
+ };
+ 
+ #endif				/* DEBUG */
+-#include <chipcommon.h>
++#include "../include/chipcommon.h"
+ 
+ #include "bus.h"
+ #include "debug.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
+index bd717da..b3b84e0 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
+@@ -9,9 +9,9 @@
+ #include <linux/usb.h>
+ #include <linux/vmalloc.h>
+ 
+-#include <brcmu_utils.h>
+-#include <brcm_hw_ids.h>
+-#include <brcmu_wifi.h>
++#include "../include/brcmu_utils.h"
++#include "../include/brcm_hw_ids.h"
++#include "../include/brcmu_wifi.h"
+ #include "bus.h"
+ #include "debug.h"
+ #include "firmware.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor.c
+index 0bad78d..0724846 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor.c
+@@ -7,7 +7,7 @@
+ #include <net/cfg80211.h>
+ #include <net/netlink.h>
+ 
+-#include <brcmu_wifi.h>
++#include "../include/brcmu_wifi.h"
+ #include "fwil_types.h"
+ #include "core.h"
+ #include "p2p.h"
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmutil/d11.c b/drivers/net/wireless/broadcom/brcm80211/brcmutil/d11.c
+index 1e2b1e4..2ca15b8 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmutil/d11.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmutil/d11.c
+@@ -6,9 +6,9 @@
+ 
+ #include <linux/module.h>
+ 
+-#include <brcmu_utils.h>
+-#include <brcmu_wifi.h>
+-#include <brcmu_d11.h>
++#include "../include/brcmu_utils.h"
++#include "../include/brcmu_wifi.h"
++#include "../include/brcmu_d11.h"
+ 
+ static u16 d11n_sb(enum brcmu_chan_sb sb)
+ {
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmutil/utils.c b/drivers/net/wireless/broadcom/brcm80211/brcmutil/utils.c
+index 4c84c30..2d5010f 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmutil/utils.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmutil/utils.c
+@@ -8,7 +8,7 @@
+ #include <linux/netdevice.h>
+ #include <linux/module.h>
+ 
+-#include <brcmu_utils.h>
++#include "../include/brcmu_utils.h"
+ 
+ MODULE_AUTHOR("Broadcom Corporation");
+ MODULE_DESCRIPTION("Broadcom 802.11n wireless LAN driver utilities.");
