@@ -9,23 +9,25 @@ LICENSE = "GPLv2"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 SRC_URI =  " \
-    git://github.com/jkareem-murata/cyw-fmac;protocol=http;branch=imx-rocko-mini-zigra \
+    git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=imx-zeus-zigra \
+    file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
+    file://0003-brcmfmac-req-fw-direct-war.patch;apply=yes \
+    file://0004-makefile-yacc-flex-update.patch;apply=yes \
+    file://0005-1XA-fix.patch;apply=yes \
+    file://0006-add-include-path.patch;apply=yes \
 "
-SRCREV = "964fd62d81043d906a45521c8d471514a9d9eaa4"
+SRCREV = "f734f2d1bdf1ff401e561093201c3b78ebad10c9"
 S = "${WORKDIR}/git"
+
 
 EXTRA_OEMAKE = "KLIB_BUILD=${STAGING_KERNEL_DIR} KLIB=${D} DESTDIR=${D}"
 
-DEPENDS += "virtual/kernel bison-native flex-native coreutils-native"
+DEPENDS += "virtual/kernel bison-native flex-native coreutils-native "
 inherit module-base
 
 
 do_configure_prepend() {
 	unset LDFLAGS
-	ln -sf /usr/bin/seq ${HOSTTOOLS_DIR}/seq
-	echo "ENVIRONMENT - BEGINNING"
-#	env
-	echo "ENVIRONMENT - END"
 	chmod -R 777 ./
 	cp ${STAGING_KERNEL_BUILDDIR}/.config ${STAGING_KERNEL_DIR}/.config
 	CC=${BUILD_CC} oe_runmake defconfig-brcmfmac
