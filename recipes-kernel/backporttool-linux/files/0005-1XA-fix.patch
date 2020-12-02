@@ -1,0 +1,13 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+index 9ac339a..71bb020 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+@@ -535,7 +535,7 @@ static int __init brcmf_common_pd_probe(struct platform_device *pdev)
+ 
+ 	brcmfmac_pdata = dev_get_platdata(&pdev->dev);
+ 
+-	if (brcmfmac_pdata->power_on)
++	if (brcmfmac_pdata && brcmfmac_pdata->power_on)
+ 		brcmfmac_pdata->power_on();
+ 
+ 	return 0;
