@@ -5,6 +5,9 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${WORKDIR}/LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
 SRC_URI =  "https://github.com/murata-wireless/cyw-fmac/raw/imx-rocko-manda/imx-rocko-manda_r${PV}.tar.gz;name=archive1"
+SRC_URI += "file://0001-murata-customization-version-update.patch;patchdir=${WORKDIR}/imx-rocko-manda_r${PV}"
+# Added FMAC Optimization patch file
+SRC_URI += "file://0005-enable_brcmf_sdio_wq_highpri.patch;patchdir=${WORKDIR}/imx-rocko-manda_r${PV}"
 SRC_URI += "https://github.com/murata-wireless/meta-murata-wireless/raw/imx-rocko-manda/LICENSE;name=archive99"
 
 SRC_URI[archive1.md5sum] = "8f8885d03484b6df625475a4c4b13937"

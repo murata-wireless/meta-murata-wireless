@@ -1,0 +1,41 @@
+From b85ff5537f5ff89353fd799d4900115878fb27d2 Mon Sep 17 00:00:00 2001
+From: Jouni Malinen <j@w1.fi>
+Date: Sun, 8 Apr 2018 19:11:07 +0300
+Subject: [PATCH 29/35] Add more debug prints for wpa_sm_set_pmk() calls
+
+commit 66dbc8d9c32200b4365959da7d4d4b29882ccb8f master.
+
+Couple of these were not preceded by wpa_hexdump_key(PSK) which made it
+more difficult to interpret the debug log.
+
+Signed-off-by: Jouni Malinen <j@w1.fi>
+---
+ wpa_supplicant/wpa_supplicant.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/wpa_supplicant/wpa_supplicant.c b/wpa_supplicant/wpa_supplicant.c
+index ed992957ec09..dc71dd87dfec 100644
+--- a/wpa_supplicant/wpa_supplicant.c
++++ b/wpa_supplicant/wpa_supplicant.c
+@@ -1324,6 +1324,8 @@ int wpa_supplicant_set_suites(struct wpa_supplicant *wpa_s,
+ 		int psk_set = 0;
+ 
+ 		if (ssid->psk_set) {
++			wpa_hexdump_key(MSG_MSGDUMP, "PSK (set in config)",
++					ssid->psk, PMK_LEN);
+ 			wpa_sm_set_pmk(wpa_s->wpa, ssid->psk, PMK_LEN, NULL,
+ 				       NULL);
+ 			psk_set = 1;
+@@ -1392,6 +1394,9 @@ int wpa_supplicant_set_suites(struct wpa_supplicant *wpa_s,
+ 					ext_password_free(pw);
+ 					return -1;
+ 				}
++				wpa_hexdump_key(MSG_MSGDUMP,
++						"PSK (from external PSK)",
++						psk, PMK_LEN);
+ 				wpa_sm_set_pmk(wpa_s->wpa, psk, PMK_LEN, NULL,
+ 					       NULL);
+ 				psk_set = 1;
+-- 
+2.1.0
+

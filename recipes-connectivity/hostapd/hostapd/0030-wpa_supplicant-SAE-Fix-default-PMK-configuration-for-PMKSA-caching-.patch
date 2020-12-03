@@ -1,0 +1,89 @@
+From bc50f0c0c888d19cca1f94f97de5bc0d70264ed2 Mon Sep 17 00:00:00 2001
+From: Jouni Malinen <j@w1.fi>
+Date: Sun, 8 Apr 2018 19:55:52 +0300
+Subject: [PATCH 30/35] SAE: Fix default PMK configuration for PMKSA caching
+ case
+
+commit 06b1a1043427778b82374fc63e540a264e12d82d master.
+
+The RSN supplicant state machine PMK was set based on WPA PSK even for
+the cases where SAE would be used. If the AP allows PMKSA caching to be
+used with SAE, but does not indicate the selected PMKID explicitly in
+EAPOL-Key msg 1/4, this could result in trying to use the PSK instead of
+SAE PMK. Fix this by not setting the WPA-PSK as default PMK for SAE
+network profiles and instead, configuring the PMK explicitly from the
+found PMKSA cache entry.
+
+Signed-off-by: Jouni Malinen <j@w1.fi>
+---
+ wpa_supplicant/sme.c            |  1 +
+ wpa_supplicant/wpa_supplicant.c | 15 +++++++++++----
+ 2 files changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/wpa_supplicant/sme.c b/wpa_supplicant/sme.c
+index ba9dca96d01e..95ac5f9be641 100644
+--- a/wpa_supplicant/sme.c
++++ b/wpa_supplicant/sme.c
+@@ -532,6 +532,7 @@ static void sme_send_authentication(struct wpa_supplicant *wpa_s,
+ 	{
+ 		wpa_dbg(wpa_s, MSG_DEBUG,
+ 			"PMKSA cache entry found - try to use PMKSA caching instead of new SAE authentication");
++		wpa_sm_set_pmk_from_pmksa(wpa_s->wpa);
+ 		params.auth_alg = WPA_AUTH_ALG_OPEN;
+ 		wpa_s->sme.sae_pmksa_caching = 1;
+ 	}
+diff --git a/wpa_supplicant/wpa_supplicant.c b/wpa_supplicant/wpa_supplicant.c
+index dc71dd87dfec..20098e0804f2 100644
+--- a/wpa_supplicant/wpa_supplicant.c
++++ b/wpa_supplicant/wpa_supplicant.c
+@@ -1322,8 +1322,13 @@ int wpa_supplicant_set_suites(struct wpa_supplicant *wpa_s,
+ 
+ 	if (wpa_key_mgmt_wpa_psk(ssid->key_mgmt)) {
+ 		int psk_set = 0;
++		int sae_only;
+ 
+-		if (ssid->psk_set) {
++		sae_only = (ssid->key_mgmt & (WPA_KEY_MGMT_PSK |
++					      WPA_KEY_MGMT_FT_PSK |
++					      WPA_KEY_MGMT_PSK_SHA256)) == 0;
++
++		if (ssid->psk_set && !sae_only) {
+ 			wpa_hexdump_key(MSG_MSGDUMP, "PSK (set in config)",
+ 					ssid->psk, PMK_LEN);
+ 			wpa_sm_set_pmk(wpa_s->wpa, ssid->psk, PMK_LEN, NULL,
+@@ -1331,12 +1336,13 @@ int wpa_supplicant_set_suites(struct wpa_supplicant *wpa_s,
+ 			psk_set = 1;
+ 		}
+ 
+-		if (wpa_key_mgmt_sae(ssid->key_mgmt) && ssid->sae_password)
++		if (wpa_key_mgmt_sae(ssid->key_mgmt) &&
++		    (ssid->sae_password || ssid->passphrase))
+ 			psk_set = 1;
+ 
+ #ifndef CONFIG_NO_PBKDF2
+ 		if (bss && ssid->bssid_set && ssid->ssid_len == 0 &&
+-		    ssid->passphrase) {
++		    ssid->passphrase && !sae_only) {
+ 			u8 psk[PMK_LEN];
+ 		        pbkdf2_sha1(ssid->passphrase, bss->ssid, bss->ssid_len,
+ 				    4096, psk, PMK_LEN);
+@@ -1348,7 +1354,7 @@ int wpa_supplicant_set_suites(struct wpa_supplicant *wpa_s,
+ 		}
+ #endif /* CONFIG_NO_PBKDF2 */
+ #ifdef CONFIG_EXT_PASSWORD
+-		if (ssid->ext_psk) {
++		if (ssid->ext_psk && !sae_only) {
+ 			struct wpabuf *pw = ext_password_get(wpa_s->ext_pw,
+ 							     ssid->ext_psk);
+ 			char pw_str[64 + 1];
+@@ -1417,6 +1423,7 @@ int wpa_supplicant_set_suites(struct wpa_supplicant *wpa_s,
+ 		if (!psk_set) {
+ 			wpa_msg(wpa_s, MSG_INFO,
+ 				"No PSK available for association");
++			wpas_auth_failed(wpa_s, "NO_PSK_AVAILABLE");
+ 			return -1;
+ 		}
+ 	} else
+-- 
+2.1.0
+
