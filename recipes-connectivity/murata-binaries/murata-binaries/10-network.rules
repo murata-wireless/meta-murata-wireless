@@ -1,0 +1,3 @@
+SUBSYSTEM=="net", DEVPATH=="/devices/platform/*.pcie/pci*/*/*/net/*", NAME="wlan0”
+SUBSYSTEM=="net", DEVPATH=="/devices/*/*/*.pcie/pci*/*/*/net/*", NAME="wlan0"
+SUBSYSTEM=="net", DEVPATH=="/devices/*/*/*.pcie/pci*/*/*/net/*", NAME="wlan0"
