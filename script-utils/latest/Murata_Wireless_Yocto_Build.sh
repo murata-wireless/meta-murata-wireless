@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=12012020
+VERSION=12092020
 
 
 ###################################################################################################
@@ -8,9 +8,10 @@ VERSION=12012020
 #  Revision |  Date        |  Initials    |       Change Description
 #-----------|--------------|--------------|-------------------------------------------------------
 #  1.0      | 12/01/2020   |    JK        |    Added support for sumo-zigra and rocko-mini-zigra
+#  1.1      | 12/09/2020   |    JK        |    Added support for krogoth-zigra, krogoth-kong and
+#           |              |              |    krogoth-manda
 #
-#
-###################################################################################################
+####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
 RED='\033[1;31m' # Red font to flag errors
@@ -66,26 +67,36 @@ YoctoBranch=""
 fmacversion=""
 linuxVersion=""
 
+# Zeus
 iMXzeuszigraStableReleaseTag="imx-zeus-zigra_r1.0"
 iMXzeuszigraDeveloperRelease="imx-zeus-zigra"
 
-iMXsumomandaStableReleaseTag="imx-sumo-manda_r1.2"
-iMXsumomandaDeveloperRelease="imx-sumo-manda"
+# Sumo
+iMXsumozigraStableReleaseTag="imx-sumo-zigra_r1.0"
+iMXsumozigraDeveloperRelease="imx-sumo-zigra"
 
 iMXsumokongStableReleaseTag="imx-sumo-kong_r1.1"
 iMXsumokongDeveloperRelease="imx-sumo-kong"
 
-iMXsumozigraStableReleaseTag="imx-sumo-zigra_r1.0"
-iMXsumozigraDeveloperRelease="imx-sumo-zigra"
+iMXsumomandaStableReleaseTag="imx-sumo-manda_r1.2"
+iMXsumomandaDeveloperRelease="imx-sumo-manda"
 
-iMXrockominimandaStableReleaseTag="imx-rocko-mini-manda_r2.2"
-iMXrockominimandaDeveloperRelease="imx-rocko-mini-manda"
+# Rocko-Mini
+iMXrockominizigraStableReleaseTag="imx-rocko-mini-zigra_r1.0"
+iMXrockominizigraDeveloperRelease="imx-rocko-mini-zigra"
 
 iMXrockominikongStableReleaseTag="imx-rocko-mini-kong_r1.0"
 iMXrockominikongDeveloperRelease="imx-rocko-mini-kong"
 
-iMXrockominizigraStableReleaseTag="imx-rocko-mini-zigra_r1.0"
-iMXrockominizigraDeveloperRelease="imx-rocko-mini-zigra"
+iMXrockominimandaStableReleaseTag="imx-rocko-mini-manda_r2.2"
+iMXrockominimandaDeveloperRelease="imx-rocko-mini-manda"
+
+# Krogoth
+iMXkrogothzigraStableReleaseTag="imx-krogoth-zigra_r1.0"
+iMXkrogothzigraDeveloperRelease="imx-krogoth-zigra"
+
+iMXkrogothkongStableReleaseTag="imx-krogoth-kong_r1.0"
+iMXkrogothkongDeveloperRelease="imx-krogoth-kong"
 
 iMXkrogothmandaStableReleaseTag="imx-krogoth-manda_r2.1"
 iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
@@ -403,9 +414,9 @@ while true; do
 	echo "|Entry|   Linux Kernel   | Yocto   | NXP Supported   | FMAC Supported     |"
 	echo "|-----|------------------|---------|--------------------------------------|"
 	echo "|  0  |     ${LINUX_KERNEL_5_4_47_STR}       | zeus    | Yes             | Zigra              |"
-	echo "|  1  |     ${LINUX_KERNEL_4_14_98_STR}      | sumo    | No              | Zigra,Manda,Kong   |"
-	echo "|  2  |     ${LINUX_KERNEL_4_9_123_STR}      | rocko   | No              | Zigra,Manda,Kong   |"
-	echo "|  3  |     ${LINUX_KERNEL_4_1_15_STR}       | krogoth | No              | Zigra,Manda,Mothra |"
+	echo "|  1  |     ${LINUX_KERNEL_4_14_98_STR}      | sumo    | No              | Zigra,Kong,Manda   |"
+	echo "|  2  |     ${LINUX_KERNEL_4_9_123_STR}      | rocko   | No              | Zigra,Kong,Manda   |"
+	echo "|  3  |     ${LINUX_KERNEL_4_1_15_STR}       | krogoth | No              | Zigra,Kong,Manda   |"
 	echo "---------------------------------------------------------------------------"
 	read -p "Select which entry? " LINUX_KERNEL
 
@@ -531,7 +542,9 @@ else
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo     "|  0.   | $MANDA_FMAC_STR - Latest release                            |"
+				echo     "|  0.   | $MANDA_FMAC_STR - Old release                               |"
+				echo     "|  1.   | $KONG_FMAC_STR - Previous release                           |"
+				echo     "|  2.   | $ZIGRA_FMAC_STR - Latest release                            |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " ENTRY
 				case $ENTRY in
@@ -552,6 +565,43 @@ else
 					fi
 					break
 					;;
+				1) # for KONG
+					FMAC_VERSION=${KONG_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION" = "y" ]; then
+						#echo "DEBUG:: krogoth-kong_r1.0"
+						BRANCH_RELEASE_NAME="$iMXkrogothkongStableReleaseTag"
+						iMXYoctoRelease="$imxkrogothYocto"
+						YoctoBranch="krogoth"
+						fmacversion="$KONG_FMAC_STR"
+						# krogoth-kong
+					else
+						#echo "DEBUG:: krogoth-kong"
+						BRANCH_RELEASE_NAME="$iMXkrogothkongDeveloperRelease"
+						iMXYoctoRelease="$imxkrogothYocto"
+						YoctoBranch="krogoth"
+						fmacversion="$KONG_FMAC_STR"
+					fi
+					break
+					;;
+				2) # for ZIGRA
+					FMAC_VERSION=${ZIGRA_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION" = "y" ]; then
+						#echo "DEBUGG:: krogoth-zigra_r1.0"
+						BRANCH_RELEASE_NAME="$iMXkrogothzigraStableReleaseTag"
+						iMXYoctoRelease="$imxkrogothYocto"
+						YoctoBranch="krogoth"
+						fmacversion="$ZIGRA_FMAC_STR"
+						# krogoth-zigra
+					else
+						#echo "DEBUG:: krogoth-zigra"
+						BRANCH_RELEASE_NAME="$iMXkrogothzigraDeveloperRelease"
+						iMXYoctoRelease="$imxkrogothYocto"
+						YoctoBranch="krogoth"
+						fmacversion="$ZIGRA_FMAC_STR"
+					fi
+					break
+					;;
+
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					echo $'\n'
@@ -611,7 +661,7 @@ else
 				2) # for ZIGRA
 					FMAC_VERSION=${ZIGRA_FMAC_INDEX}
 					if [ "$BRANCH_TAG_OPTION" = "y" ]; then
-						echo "DEBUGG:: rocko-mini-zigra_r1.0"
+						#echo "DEBUGG:: rocko-mini-zigra_r1.0"
 						BRANCH_RELEASE_NAME="$iMXrockominizigraStableReleaseTag"
 						iMXYoctoRelease="$imxrockominiYocto"
 						YoctoBranch="rocko"
@@ -626,7 +676,6 @@ else
 					fi
 					break
 					;;
-
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					echo $'\n'
