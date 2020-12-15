@@ -12,6 +12,7 @@ SRC_URI = " \
 	git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=zigra;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
 	file://cyfmac54591-pcie.txt \
 	file://BCM4359D0.004.001.016.0200.hcd \
+	file://interfaces \
 "
 
 SRCREV_cyw-fmac-fw="52174a18134c7ef4a674ecd9fb68fc6e2bced969"
@@ -58,6 +59,7 @@ do_install () {
 	install -d ${D}/etc/firmware/murata-master
 	install -d ${D}/usr/sbin
 	install -d ${D}/etc/udev/rules.d
+	install -d ${D}/etc/network
 
 #       Copying *.HCD files to etc/firmware and etc/firmware/murata-master
         install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd ${D}${sysconfdir}/firmware/BCM4335C0.ZP.hcd
@@ -120,6 +122,7 @@ do_install () {
 		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
 	fi
 
+	install -m 755 ${S}/interfaces ${D}/etc/network/interfaces
 }
 
 PACKAGES =+ "${PN}-mfgtest"
@@ -130,6 +133,7 @@ FILES_${PN} += "${bindir}"
 FILES_${PN} += "${sbindir}"
 FILES_${PN} += "{sysconfdir}/firmware"
 FILES_${PN} += "/lib"
+FILES_${PN} += "/etc/network"
 
 
 FILES_${PN}-mfgtest = " \
