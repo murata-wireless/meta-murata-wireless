@@ -32,20 +32,4 @@ NOTE: the final "bitbake" command will take hours to complete.
 Open a terminal in desired i.MX Yocto build folder, and run the command: 
 $./Murata_Wireless_Yocto_Build.sh
 
-------------------------------------------------------------------------------------
-| Kernel release | Yocto code name  |  FMAC code name |  Release information       |
-|----------------|------------------|-----------------|----------------------------|
-| 5.4.47_2.2.0   | Zeus             |  Zigra          |  imx-zeus-zigra_r1.0       |
------------------|------------------|-----------------|----------------------------|
-| 4.14.98_2.3.0  | Sumo             |  Zigra          |  imx-sumo-zigra_r1.0       |
-|                |                  |  Kong           |  imx-sumo-kong_r1.1        |
-|		 |                  |  Manda          |  imx-sumo-manda_r1.2       |
------------------|------------------|-----------------|----------------------------|
-| 4.9.123_2.3.0  | Rocko Mini       |  Zigra          |  imx-rocko-mini-zigra_r1.0 |
-|                |                  |  Kong           |  imx-rocko-mini-kong_r1.0  |                                       
-|                |                  |  Manda          |  imx-rocko-mini-manda_r2.2 |
------------------|------------------|-----------------|----------------------------|
-| 4.1.15_2.0.0   | Krogoth          |  Zigra          |  imx-krogoth-zigra_r1.0    |
-|                |                  |  Manda          |  imx-krogoth-manda_r2.2    |                                           
-|                |                  |  Mothra         |  imx-krogoth-mothra_r1.1   |                                           
-------------------------------------------------------------------------------------
+
