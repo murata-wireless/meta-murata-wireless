@@ -186,16 +186,9 @@ function off() {
   handle_services false false
 }
 
-function switch_to_cypress_sdio() {
+function switch_to_cypress() {
   echo ""
-  echo "Setting up for 1DX, 1LV, 1MW (Cypress - SDIO)"
-  prepare_for_cypress
-  echo ""
-}
-
-function switch_to_cypress_pcie() {
-  echo ""
-  echo "Setting up for 1CX, 1VA, 1XA (Cypress - PCIe)"
+  echo "Setting up for Cypress"
   prepare_for_cypress
   echo ""
 }
@@ -231,8 +224,8 @@ function usage() {
   echo "  $0  <module>"
   echo ""
   echo "Where:"
-  echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1ZM, 1YM-SDIO, 1YM-PCIe or CURRENT"
+  echo "  <module> is one of :"
+  echo "     cyw, 1zm, 1ym-sdio, 1ym-pcie"
   echo ""
 }
 
@@ -243,11 +236,8 @@ if [[ $# -eq 0 ]]; then
 fi
 
 case ${1^^} in
-  CYW-PCIE|CX|1CX|XA|1XA)
-    switch_to_cypress_pcie
-    ;;
-  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|WZ|1WZ)
-    switch_to_cypress_sdio
+  CYW)
+    switch_to_cypress
     ;;
   ZM|1ZM)
     switch_to_nxp_sdio
@@ -257,9 +247,6 @@ case ${1^^} in
     ;;
   YM-PCIE|1YM-PCIE)
     switch_to_nxp_ym_pcie
-    ;;
-  CURRENT)
-    current
     ;;
   *)
     current
