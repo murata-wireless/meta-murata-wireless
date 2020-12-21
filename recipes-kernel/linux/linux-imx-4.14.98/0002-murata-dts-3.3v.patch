@@ -429,7 +429,7 @@ index 00000000..4d16874
 +};
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
 new file mode 100644
-index 00000000..9dcee0e
+index 00000000..cb62cfd
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
 @@ -0,0 +1,20 @@
@@ -653,31 +653,74 @@ index 99d0046..0d9faf1e 100644
  			compatible = "ethernet-phy-ieee802.3-c22";
  			reg = <1>;
 diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index e35eb32..c1e1964 100644
+index e35eb32..8623c1b 100644
 --- a/arch/arm64/boot/dts/freescale/Makefile
 +++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -118,6 +118,7 @@ dtb-$(CONFIG_ARCH_FSL_IMX8MQ) += fsl-imx8mq-ddr3l-arm2.dtb \
+@@ -118,6 +118,8 @@ dtb-$(CONFIG_ARCH_FSL_IMX8MQ) += fsl-imx8mq-ddr3l-arm2.dtb \
  				 fsl-imx8mq-evk-dp.dtb \
  				 fsl-imx8mq-evk-edp.dtb
  dtb-$(CONFIG_ARCH_FSL_IMX8MM) += fsl-imx8mm-evk.dtb \
 +				 imx8mm-evk-usd-m2.dtb \
++				 imx8mm-evk-usd-m2-oob.dtb \
  				 fsl-imx8mm-evk-drm.dtb \
  				 fsl-imx8mm-evk-ak4497.dtb \
  				 fsl-imx8mm-evk-m4.dtb \
-@@ -135,6 +136,7 @@ dtb-$(CONFIG_ARCH_FSL_IMX8MM) += fsl-imx8mm-evk.dtb \
+@@ -135,6 +137,8 @@ dtb-$(CONFIG_ARCH_FSL_IMX8MM) += fsl-imx8mm-evk.dtb \
  				 fsl-imx8mm-ddr4-qca9377-evk.dtb
  dtb-$(CONFIG_ARCH_FSL_IMX8MN) += fsl-imx8mn-ddr4-evk.dtb \
  				 fsl-imx8mn-evk.dtb \
 +				 imx8mn-evk-usd-m2.dtb \
++				 imx8mn-evk-usd-m2-oob.dtb \
  				 fsl-imx8mn-evk-rpmsg.dtb \
  				 fsl-imx8mn-ddr4-evk-rpmsg.dtb \
  				 fsl-imx8mn-ddr4-evk-rm67191.dtb \
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts
+new file mode 100644
+index 00000000..90be070
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts
+@@ -0,0 +1,35 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ */
++
++#include "imx8mm-evk-usd-m2.dts"
++
++&pinctrl_usdhc2_gpio {
++	fsl,pins = <
++    		MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
++		MX8MM_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
++    		MX8MM_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x19  /* BT_REG_ON */
++    		MX8MM_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* Murata -- should be pull-up on this */
++    		MX8MM_IOMUXC_ECSPI2_SCLK_GPIO5_IO10 	0x1d0 /* Murata WL_HOST_WAKE -- pull-up */
++	>;
++};
++
++&usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-assert-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
++	/delete-property/ cd-gpios;
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++	pm-ignore-notify;
++	keep-power-in-suspend;
++	non-removable;
++	cap-power-off-card;
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	  	interrupt-parent = <&gpio5>;
++    		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
++    		interrupt-names = "host-wake";
++	};
++};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts
 new file mode 100644
-index 00000000..9fd8226
+index 00000000..fa3cbee
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts
-@@ -0,0 +1,105 @@
+@@ -0,0 +1,101 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2019 NXP
@@ -727,7 +770,6 @@ index 00000000..9fd8226
 +		MX8MM_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
 +    		MX8MM_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x19  /* BT_REG_ON */
 +    		MX8MM_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* Murata -- should be pull-up on this */
-+    		MX8MM_IOMUXC_ECSPI2_SCLK_GPIO5_IO10 	0x1d0 /* Murata WL_HOST_WAKE -- pull-up */
 +	>;
 +};
 +
@@ -778,6 +820,44 @@ index 00000000..9fd8226
 +	brcmf: bcrmf@1 {
 +		reg = <1>;
 +		compatible = "brcm,bcm4329-fmac";
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts
+new file mode 100644
+index 00000000..21ce345
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts
+@@ -0,0 +1,35 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ */
++
++#include "imx8mn-evk-usd-m2.dts"
++
++&pinctrl_usdhc2_gpio {
++	fsl,pins = <
++    		MX8MN_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
++        	MX8MN_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
++    		MX8MN_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x19  /* BT_REG_ON */
++    		MX8MN_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* Murata -- should be pull-up on this */
++    		MX8MN_IOMUXC_ECSPI2_SCLK_GPIO5_IO10 	0x1d0 /* Murata WL_HOST_WAKE -- pull-up */
++	>;
++};
++
++&usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-assert-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
++	/delete-property/ cd-gpios;
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++	pm-ignore-notify;
++	keep-power-in-suspend;
++	non-removable;
++	cap-power-off-card;
++	brcmf2: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
 +	  	interrupt-parent = <&gpio5>;
 +    		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
 +    		interrupt-names = "host-wake";
@@ -785,10 +865,10 @@ index 00000000..9fd8226
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts
 new file mode 100644
-index 00000000..84b6afb
+index 00000000..805c51e
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts
-@@ -0,0 +1,111 @@
+@@ -0,0 +1,107 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2019 NXP
@@ -844,7 +924,6 @@ index 00000000..84b6afb
 +        	MX8MN_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
 +    		MX8MN_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x19  /* BT_REG_ON */
 +    		MX8MN_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* Murata -- should be pull-up on this */
-+    		MX8MN_IOMUXC_ECSPI2_SCLK_GPIO5_IO10 	0x1d0 /* Murata WL_HOST_WAKE -- pull-up */
 +	>;
 +};
 +
@@ -895,8 +974,5 @@ index 00000000..84b6afb
 +	brcmf2: bcrmf@1 {
 +		reg = <1>;
 +		compatible = "brcm,bcm4329-fmac";
-+	  	interrupt-parent = <&gpio5>;
-+    		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
-+    		interrupt-names = "host-wake";
 +	};
 +};
