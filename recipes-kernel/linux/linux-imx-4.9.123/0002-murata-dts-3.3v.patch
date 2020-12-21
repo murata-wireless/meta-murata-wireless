@@ -974,7 +974,7 @@ index 00000000..4d16874
 +};
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
 new file mode 100644
-index 00000000..73d8111
+index 00000000..884e1bd
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
 @@ -0,0 +1,43 @@
@@ -1392,17 +1392,127 @@ index ad2fce8..c8cd9b3 100644
  		compatible = "fsl,imx7d-epdc";
  		interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH>;
 diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index add632d..ce74436 100644
+index add632d..4eae0f9 100644
 --- a/arch/arm64/boot/dts/freescale/Makefile
 +++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -90,6 +90,7 @@ dtb-$(CONFIG_ARCH_FSL_IMX8MQ) += fsl-imx8mq-ddr3l-arm2.dtb \
+@@ -90,6 +90,8 @@ dtb-$(CONFIG_ARCH_FSL_IMX8MQ) += fsl-imx8mq-ddr3l-arm2.dtb \
  				 fsl-imx8mq-evk-dp.dtb \
  				 fsl-imx8mq-evk-edp.dtb
  dtb-$(CONFIG_ARCH_FSL_IMX8MM) += fsl-imx8mm-evk.dtb \
 +				 imx8mm-evk-usd-m2.dtb \
++				 imx8mm-evk-usd-m2-oob.dtb \
  				 fsl-imx8mm-evk-ak4497.dtb \
  				 fsl-imx8mm-evk-m4.dtb \
  				 fsl-imx8mm-evk-ak5558.dtb \
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts
+new file mode 100644
+index 00000000..c10b4ac
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts
+@@ -0,0 +1,103 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ */
++
++#include "fsl-imx8mm-evk.dts"
++
++/ {
++  	usdhc2_pwrseq: usdhc2_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		pinctrl-names = "default";
++		reset-gpios = <&gpio5 11 GPIO_ACTIVE_LOW>;  /* WL REG ON */
++	};
++
++	modem_reset_usd_m2: modem-reset {
++		compatible = "gpio-reset";
++		reset-gpios = <&gpio5 12 GPIO_ACTIVE_LOW>;  /* BT REG ON */
++		reset-delay-us = <1000>;
++		#reset-cells = <0>;
++	};
++};
++
++&reg_usdhc2_vmmc {
++  	regulator-always-on;
++};
++
++&uart1 {
++	/* Onboard 1PJ BT */
++	status = "disabled";
++};
++
++&uart3 {
++  	resets = <&modem_reset_usd_m2>;
++};
++
++&usdhc1 {
++	/* Disable 1PJ */
++	status = "disabled";
++};
++
++
++&pinctrl_usdhc2_gpio {
++	fsl,pins = <
++    		MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
++		MX8MM_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
++    		MX8MM_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x19  /* BT_REG_ON */
++    		MX8MM_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* Murata -- should be pull-up on this */
++    		MX8MM_IOMUXC_ECSPI2_SCLK_GPIO5_IO10 	0x1d0 /* Murata WL_HOST_WAKE -- pull-up */
++	>;
++};
++
++&pinctrl_usdhc2 {
++	fsl,pins = <
++		MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x190
++		MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d0
++		MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d0
++		MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d0
++		MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d0
++		MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d0
++	>;
++};
++
++&pinctrl_usdhc2_100mhz {
++	fsl,pins = <
++		MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x194
++		MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d4
++		MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d4
++		MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d4
++		MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d4
++		MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d4
++	>;
++};
++
++&pinctrl_usdhc2_200mhz {
++	fsl,pins = <
++		MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x196
++		MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d6
++		MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d6
++		MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d6
++		MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d6
++		MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d6
++	>;
++};
++
++
++&usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-assert-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
++	/delete-property/ cd-gpios;
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++	pm-ignore-notify;
++	keep-power-in-suspend;
++	non-removable;
++	cap-power-off-card;
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	  	interrupt-parent = <&gpio5>;
++    		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
++    		interrupt-names = "host-wake";
++	};
++};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts
 new file mode 100644
 index 00000000..c10b4ac
