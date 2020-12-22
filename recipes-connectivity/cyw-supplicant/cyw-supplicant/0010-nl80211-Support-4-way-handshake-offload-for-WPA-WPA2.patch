@@ -1,7 +1,7 @@
 From 1ea301a06353817680bc85abde6f2b684d37c16e Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Tue, 10 Dec 2019 14:02:39 -0600
-Subject: [PATCH 10/16] nl80211: Support 4-way handshake offload for
+Subject: [PATCH 10/17] nl80211: Support 4-way handshake offload for
  WPA/WPA2-PSK in AP mode
 
 If driver advertises support for WPA/WPA2-PSK 4-way handshake offload in
