@@ -1,7 +1,7 @@
 From 8fabb3a2f5c8c1efb7c92a03079e760e88aa04aa Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Fri, 8 Nov 2019 13:23:05 -0600
-Subject: [PATCH 08/16] OpenSSL: Fix build with OpenSSL 1.0.1
+Subject: [PATCH 08/17] OpenSSL: Fix build with OpenSSL 1.0.1
 
 The openssl_debug_dump_certificate_chains() implementation used
 SSL_CERT_SET_FIRST and SSL_CERT_SET_NEXT, which were added in OpenSSL

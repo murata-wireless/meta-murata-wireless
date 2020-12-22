@@ -1,7 +1,7 @@
 From 69ffae75ad735b5236ac9425f36e6ede7b6fdb92 Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Tue, 29 Oct 2019 15:22:57 +0800
-Subject: [PATCH 02/16] wpa_supplicant: Notify Neighbor Report for
+Subject: [PATCH 02/17] wpa_supplicant: Notify Neighbor Report for
  driver-triggered request
 
 Sending a Neighbor Report request can be triggered by either supplicant

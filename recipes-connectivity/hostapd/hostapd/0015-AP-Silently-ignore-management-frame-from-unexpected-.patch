@@ -1,7 +1,7 @@
 From a66cb7d9dede4dfccf0d1c2c70ee6837d5571aac Mon Sep 17 00:00:00 2001
 From: Jouni Malinen <j@w1.fi>
 Date: Thu, 29 Aug 2019 11:52:04 +0300
-Subject: [PATCH 15/16] AP: Silently ignore management frame from unexpected
+Subject: [PATCH 15/17] AP: Silently ignore management frame from unexpected
  source address
 
 commit d86d66dc073bc21d3b12faf4112062ae00c1773f master.
