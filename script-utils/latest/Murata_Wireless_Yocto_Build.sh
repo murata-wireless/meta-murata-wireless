@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=12092020
+VERSION=12212020
 
 
 ###################################################################################################
@@ -10,6 +10,8 @@ VERSION=12092020
 #  1.0      | 12/01/2020   |    JK        |    Added support for sumo-zigra and rocko-mini-zigra
 #  1.1      | 12/09/2020   |    JK        |    Added support for krogoth-zigra, krogoth-kong and
 #           |              |              |    krogoth-manda
+#  1.2      | 12/19/2020   |    JK        |    Fix Zigra FMAC String display for 5.4.47
+#  1.3      | 12/21/2020   |    RC        |    Added support for imx8mmddr4evk machine type
 #
 ####################################################################################################
 
@@ -377,7 +379,7 @@ function select_build_image_name {
 
 # For i.MX8 series, make the default image type to fsl-image-validation-imx
 function select_default_image {
-	if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ]; then
+	if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ]; then
 		IMAGE_NAME=fsl-image-validation-imx
 	fi
 }
@@ -762,7 +764,7 @@ else
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo -e  "|  0.   | $ZIGRA_FMAC - ${GRN}Latest release${NC}                            |"
+				echo -e  "|  0.   | ${ZIGRA_FMAC_STR} - ${GRN}Latest release${NC}                            |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -778,7 +780,7 @@ else
 					fi
 					iMXYoctoRelease="$imxzeusYocto"
 					YoctoBranch="zeus"
-					fmacversion=$ZIGRA_FMAC_STR
+					fmacversion=${ZIGRA_FMAC_STR}
 					break
 					;;
 				*)
@@ -884,6 +886,7 @@ while true; do
 			echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 			echo "|  10    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 			echo "|  11    |  imx8mmevk        | 8MMINILPD4-EVK           |"
+			echo "|  12    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
 			echo "---------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
@@ -953,6 +956,14 @@ while true; do
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
+			12)
+				LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
+				LINUX_DEST=linux-imx_4.9.123.bbappend
+				TARGET_NAME=imx8mmddr4evk
+				PART_NUMBER=8MMINID4-EVK
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
 			*)
 				echo -e "${RED}That is not a valid choice, try again.${NC}"
 				;;
@@ -982,7 +993,8 @@ while true; do
 			echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 			echo "|  10    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 			echo "|  11    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-			echo "|  12    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
+			echo "|  12    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
+			echo "|  13    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
 			echo "---------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
@@ -1053,6 +1065,14 @@ while true; do
 				break
 				;;
 			12)
+				TARGET_NAME=imx8mmddr4evk
+				PART_NUMBER=8MMINID4-EVK
+				LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
+				LINUX_DEST=linux-imx_4.14.98.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			13)
 				TARGET_NAME=imx8mnddr4evk
 				PART_NUMBER=8MNANOD4-EVK
 				LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
@@ -1087,8 +1107,9 @@ while true; do
 			echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
 			echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 			echo "|  10    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-			echo "|  11    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
-			echo "|  12    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
+			echo "|  11    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
+			echo "|  12    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
+			echo "|  13    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 			echo "---------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
@@ -1150,6 +1171,14 @@ while true; do
 				break
 				;;
 			11)
+				TARGET_NAME=imx8mmddr4evk
+				PART_NUMBER=8MMINID4-EVK
+				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
+				LINUX_DEST=linux-imx_5.4.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			12)
 				TARGET_NAME=imx8mnddr4evk
 				PART_NUMBER=8MNANOD4-EVK
 				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
@@ -1157,7 +1186,7 @@ while true; do
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
-			12)
+			13)
 				TARGET_NAME=imx8qxpmek
 				PART_NUMBER=MCIMX8QXP-CPU
 				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
@@ -1383,8 +1412,13 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	git checkout $BRANCH_RELEASE_NAME
 	cd $BSP_DIR
 	echo "Build Image"
-	chmod 777 sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh
-	sh ./sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh $BUILD_DIR_NAME
+	if [ "$iMXYoctoRelease" = "$imxkrogothYocto" ] && [ "$TARGET_NAME" = "imx6ull14x14evk" ] ; then
+		chmod 777 sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless-6ull.sh
+		sh ./sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless-6ull.sh $BUILD_DIR_NAME
+	else
+		chmod 777 sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh
+		sh ./sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh $BUILD_DIR_NAME
+	fi
 	cd $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/linux
 
 	#TARGET_NAME=imx8mqevk => rocko-mini-manda
@@ -1392,7 +1426,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
 		if [ "$FMAC_VERSION" = "$MANDA_FMAC_INDEX" ] || [ "$FMAC_VERSION" = "$KONG_FMAC_INDEX" ]; then
 			#echo "DEBUG:: MANDA-LOADING-FOR-ROCKO-MINI"
-			if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ]; then
+			if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ]; then
 				#echo "DEBUG FOR IMX8-rocko-mini: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
 				#echo "DEBUG:: SRC::$LINUX_SRC DEST::$LINUX_SRC"
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
@@ -1416,7 +1450,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
 		if [ "$FMAC_VERSION" = "$ZIGRA_FMAC_INDEX" ]; then
 			#echo "DEBUG:: ZIGRA-LOADING-FOR-ROCKO-MINI"
-			if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ]; then
+			if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ]; then
 				#echo "DEBUG FOR IMX8-rocko-mini: COPYING IMX8 BACKPORTS, and bbx files"
 				#echo "DEBUG:: SRC::$LINUX_SRC DEST::$LINUX_SRC"
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
@@ -1470,7 +1504,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 			#echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
 		fi
 
-		if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ]; then
+		if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ]; then
 			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bb \
 			$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bbx
 			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.1.bb \
@@ -1493,7 +1527,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 			#echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
 		fi
 
-		if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ]; then
+		if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ]; then
 			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bb \
 			$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bbx
 			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.1.bb \
