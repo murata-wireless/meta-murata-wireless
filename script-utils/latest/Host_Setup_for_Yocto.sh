@@ -1,14 +1,5 @@
 #!/bin/bash
-VERSION=12142020
-
-###################################################################################################
-#                             RELEASE HISTORY
-#-------------------------------------------------------------------------------------------------
-#  Revision |  Date        |  Initials    |       Change Description
-#-----------|--------------|--------------|-------------------------------------------------------
-#  1.0      | 12/14/2020   |    JK        |    Incremented Version and removed references to
-#           |              |              |    cyw-scripts folder.
-###################################################################################################
+VERSION=06182018
 
 # Murata Script File used to do necessary host setup on Ubuntu 18.04, 16.04, 14.04 or 12.04 for Linux i.MX Yocto image build. 
 #
@@ -71,13 +62,13 @@ echo "Creating "\""meta-murata-wireless"\"" subfolder."
 # check to see if there is already a folder with name, "meta-murata-wireless"
 TEST_DIR_NAME=meta-murata-wireless
 if [ -d "$TEST_DIR_NAME" ]; then
-	cd $TEST_DIR_NAME/script-utils/latest
+	cd $TEST_DIR_NAME/cyw-script-utils/latest
 	git fetch --all 		--quiet
 	git reset --hard origin/master 	--quiet
 	git pull origin master 		--quiet
 else
 	git clone https://github.com/murata-wireless/meta-murata-wireless.git --quiet
-	cd $TEST_DIR_NAME/script-utils/latest
+	cd $TEST_DIR_NAME/cyw-script-utils/latest
 fi
 
 export SCRIPT_DIR=`pwd`
@@ -116,7 +107,7 @@ else
 	if [ "$PROCEED_UPDATE_OPTION" = "y" ] || [ "$PROCEED_UPDATE_OPTION" = "Y" ] || [ "$PROCEED_UPDATE_OPTION" = "" ]; then
 		echo "Update to latest version using following copy command:"
 		echo " "
-		echo ""\$ "cp ./meta-murata-wireless/script-utils/latest/Host_Setup_for_Yocto.sh ."
+		echo ""\$ "cp ./meta-murata-wireless/cyw-script-utils/latest/Host_Setup_for_Yocto.sh ."
 		echo " "
 		echo -e "${YLW}Exiting script.....${NC}"
        		exit
