@@ -1,7 +1,16 @@
 #!/bin/bash
-VERSION=08022018
+VERSION=12142020
 
-# Murata Script File used to do necessary host setup on Ubuntu 16.04, 14.04 or 12.04 for Linux i.MX Yocto image build. 
+###################################################################################################
+#                             RELEASE HISTORY
+#-------------------------------------------------------------------------------------------------
+#  Revision |  Date        |  Initials    |       Change Description
+#-----------|--------------|--------------|-------------------------------------------------------
+#  1.0      | 12/14/2020   |    JK        |    Incremented Version and removed references to
+#           |              |              |    cyw-scripts folder.
+###################################################################################################
+
+# Murata Script File used to do necessary host setup on Ubuntu 18.04, 16.04, 14.04 or 12.04 for Linux i.MX Yocto image build. 
 #
 # User running this script needs root priviledges - i.e. included in "sudoers" file. 
 # Script assumes that "root" is not executing it. 
@@ -32,12 +41,12 @@ else
                 exit
 fi
 
-# Get Ubuntu release version; make sure it is either 16.04, 14.04 or 12.04. 
+# Get Ubuntu release version; make sure it is either 18.04, 16.04, 14.04 or 12.04. 
 Ubuntu_Release=$(lsb_release -r -s)
-if [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
+if [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
                 echo -e "Murata: Verified Ubuntu Release:${NC}     " ${GRN}$Ubuntu_Release${NC}
 else
-                echo -e "${RED}Murata: Only Ubuntu versions 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
+                echo -e "${RED}Murata: Only Ubuntu versions 18.04, 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
 		echo -e "Exiting script.....${NC}"
                 exit
 fi 
@@ -62,13 +71,13 @@ echo "Creating "\""meta-murata-wireless"\"" subfolder."
 # check to see if there is already a folder with name, "meta-murata-wireless"
 TEST_DIR_NAME=meta-murata-wireless
 if [ -d "$TEST_DIR_NAME" ]; then
-	cd $TEST_DIR_NAME/cyw-script-utils/latest
+	cd $TEST_DIR_NAME/script-utils/latest
 	git fetch --all 		--quiet
 	git reset --hard origin/master 	--quiet
 	git pull origin master 		--quiet
 else
 	git clone https://github.com/murata-wireless/meta-murata-wireless.git --quiet
-	cd $TEST_DIR_NAME/cyw-script-utils/latest
+	cd $TEST_DIR_NAME/script-utils/latest
 fi
 
 export SCRIPT_DIR=`pwd`
@@ -107,7 +116,7 @@ else
 	if [ "$PROCEED_UPDATE_OPTION" = "y" ] || [ "$PROCEED_UPDATE_OPTION" = "Y" ] || [ "$PROCEED_UPDATE_OPTION" = "" ]; then
 		echo "Update to latest version using following copy command:"
 		echo " "
-		echo ""\$ "cp ./meta-murata-wireless/cyw-script-utils/latest/Host_Setup_for_Yocto.sh ."
+		echo ""\$ "cp ./meta-murata-wireless/script-utils/latest/Host_Setup_for_Yocto.sh ."
 		echo " "
 		echo -e "${YLW}Exiting script.....${NC}"
        		exit
@@ -128,18 +137,18 @@ echo    "Murata: Installing Essential Yocto Project host packages."
 echo -e "        ${YLW}sudoers-priviledged user will be prompted for password...${NC}"
 
 sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev
-# i.MX layers host packages for a Ubuntu 12.04 or 14.04 or 16.04 host setup are:
+# i.MX layers host packages for a Ubuntu 12.04 or 14.04 or 16.04 or 18.04 host setup are:
 echo -e "${GRN}Murata: Installing i.MX layers host packages...${NC}"
-sudo apt-get install libsdl1.2-dev xterm sed cvs subversion coreutils texi2html docbook-utils python-pysqlite2 help2man make gcc g++ desktop-file-utils libgl1-mesa-dev libglu1-mesa-dev mercurial autoconf automake groff curl lzop asciidoc repo
+sudo apt-get install git libsdl1.2-dev xterm sed cvs subversion coreutils texi2html docbook-utils python-pysqlite2 help2man make gcc g++ desktop-file-utils libgl1-mesa-dev libglu1-mesa-dev mercurial autoconf automake groff curl lzop asciidoc repo
 
 # Check Ubuntu version and install additional packages accordingly
 if [ $Ubuntu_Release == "12.04" ]; then
 	# i.MX layers host packages for a Ubuntu 12.04 host setup only are:
         echo -e "${GRN}Murata: Installing i.MX layers host packages for a Ubuntu 12.04 host setup only...${NC}"
 	sudo apt-get install uboot-mkimage 
-elif [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ]; then
-	# i.MX layers host packages for a Ubuntu 14.04 or 16.04 host setup only are:
-	echo -e "${GRN}Murata: Installing i.MX layers host packages for a Ubuntu 16.04 or 14.04 host setup only...${NC}"
+elif [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ]; then
+	# i.MX layers host packages for a Ubuntu 14.04 or 16.04 or 18.04 host setup only are:
+	echo -e "${GRN}Murata: Installing i.MX layers host packages for a Ubuntu 18.04 or 16.04 or 14.04 host setup only...${NC}"
 	sudo apt-get install u-boot-tools
 else
 	echo -e "${RED}Murata: Ubuntu Release version not supported:${NC}" $Ubuntu_Release
@@ -242,20 +251,6 @@ echo " "
 #while true; do
 iPlatform="i.MX"
 echo " "
-echo "5) Install toolchain for TI Sitara"
-echo "=================================="
-
-echo -n "Do you want to install toolchain for TI Sitara? y/n: "
-read PROCEED_OPTION
-if [ "$PROCEED_OPTION" = "y" ]; then
-	iPlatform="TI Sitara"
-	echo -e -n "${GRN}Murata: Downloading linaro tool chan version: 6.2.1-2016.11-x86_64_arm-linux-gnuebaihf...${NC}"
-	wget https://releases.linaro.org/components/toolchain/binaries/6.2-2016.11/arm-linux-gnueabihf/gcc-linaro-6.2.1-2016.11-x86_64_arm-linux-gnueabihf.tar.xz
-	echo -e -n "${GRN}Murata: Installing linaro tool chan version: 6.2.1-2016.11-x86_64_arm-linux-gnuebaihf....${NC}"
-	tar -Jxvf gcc-linaro-6.2.1-2016.11-x86_64_arm-linux-gnueabihf.tar.xz -C $HOME
-	echo -e "${GRN}Murata: Installation complete.${NC}"
-fi
-
 
 # Host packages installed. Script finished.  
 echo -e "${GRN}Murata: ready to build \"meta-murata-wireless\" customized ${iPlatform} Linux image!${NC}"
