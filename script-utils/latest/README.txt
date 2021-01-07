@@ -46,6 +46,6 @@ $./Murata_Wireless_Yocto_Build.sh
 |                |                  |  Manda          |  imx-rocko-mini-manda_r2.2 |
 -----------------|------------------|-----------------|----------------------------|
 | 4.1.15_2.0.0   | Krogoth          |  Zigra          |  imx-krogoth-zigra_r1.0    |
-|                |                  |  Manda          |  imx-krogoth-manda_r2.2    |                                           
-|                |                  |  Mothra         |  imx-krogoth-mothra_r1.1   |                                           
+|                |                  |  Kong           |  imx-krogoth-kong_r1.0    |                                           
+|                |                  |  Manda          |  imx-krogoth-manda_r2.2    |          
 ------------------------------------------------------------------------------------
