@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=12212020
+VERSION=01062020
 
 
 ###################################################################################################
@@ -12,7 +12,8 @@ VERSION=12212020
 #           |              |              |    krogoth-manda
 #  1.2      | 12/19/2020   |    JK        |    Fix Zigra FMAC String display for 5.4.47
 #  1.3      | 12/21/2020   |    RC        |    Added support for imx8mmddr4evk machine type
-#
+#  1.4      | 01/06/2021   |    JK        |    Supports NXP Wireless (1ZM, 1YM-SDIO and 1YM-PCIe).
+#           |              |              |    Supports 1.8V VIO Signaling with NXP i.MX6UL(L) EVK.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -1412,13 +1413,8 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	git checkout $BRANCH_RELEASE_NAME
 	cd $BSP_DIR
 	echo "Build Image"
-	if [ "$iMXYoctoRelease" = "$imxkrogothYocto" ] && [ "$TARGET_NAME" = "imx6ull14x14evk" ] ; then
-		chmod 777 sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless-6ull.sh
-		sh ./sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless-6ull.sh $BUILD_DIR_NAME
-	else
-		chmod 777 sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh
-		sh ./sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh $BUILD_DIR_NAME
-	fi
+	chmod 777 sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh
+	sh ./sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh $BUILD_DIR_NAME
 	cd $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/linux
 
 	#TARGET_NAME=imx8mqevk => rocko-mini-manda
