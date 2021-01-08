@@ -1,7 +1,7 @@
 From 17d64099a48c32e480c72f553215f7dbba30b753 Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Sun, 22 Dec 2019 20:21:54 -0600
-Subject: [PATCH 14/16] P2P: Fix P2P authentication failure due to AP-mode
+Subject: [PATCH 14/17] P2P: Fix P2P authentication failure due to AP-mode
  4-way handshake offload
 
 Commit 6df8c5e8669d ("AP: Support 4-way handshake offload for
