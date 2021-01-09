@@ -1,7 +1,7 @@
 From ae98c14eb1e78ffaf2321e050a593f18ca67dae2 Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Tue, 10 Dec 2019 14:00:51 -0600
-Subject: [PATCH 09/16] non-upstream: Sync nl80211.h for PSK 4-way HS offload
+Subject: [PATCH 09/17] non-upstream: Sync nl80211.h for PSK 4-way HS offload
  support in AP mode
 
 This brings in nl80211 definition for WPA/WPA2-PSK 4-way handshake

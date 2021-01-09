@@ -27,6 +27,7 @@ SRC_URI = " \
     file://0013-SAE-Support-SAE-authentication-offload-in-AP-mode.patch;apply=yes \
     file://0014-P2P-Fix-P2P-authentication-failure-due-to-AP-mode-4-.patch;apply=yes \
     file://0015-AP-Silently-ignore-management-frame-from-unexpected-.patch;apply=yes \
+    file://0017-hostapd-Fix-PMF-connection-issue.patch;apply=yes \
     file://udhcpd.conf \
 "
 
