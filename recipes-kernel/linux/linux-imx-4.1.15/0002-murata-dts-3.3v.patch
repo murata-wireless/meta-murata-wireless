@@ -988,81 +988,19 @@ index 00000000..6b77b80
 +
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-uhs.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-uhs.dts
 new file mode 100644
-index 00000000..bcbb83f
+index 00000000..e6372f6b
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-uhs.dts
-@@ -0,0 +1,73 @@
-+#include "imx6ul-14x14-evk-btwifi.dts"
-+
-+
-+/ {
-+
-+	modem_reset: modem-reset {
-+		compatible = "gpio-reset";
-+		reset-gpios = <&gpio_spi 4 GPIO_ACTIVE_LOW>;
-+		reset-delay-us = <1000>;
-+		#reset-cells = <0>;
-+	};
-+
-+	usdhc1_pwrseq: usdhc1_pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>; /* WL REG ON */
-+		post-power-on-delay-ms = <120>;  /* Murata - add delay before accessing SDIO bus */
-+	};
-+};
-+
-+&wlreg_on {
-+	/delete-property/ compatible;
-+	/delete-property/ regulator-min-microvolt;
-+	/delete-property/ regulator-max-microvolt;
-+	/delete-property/ regulator-name;
-+	/delete-property/ gpio;
-+	/delete-property/ startup-delay-us;
-+	/delete-property/ enable-active-high;
-+};
-+
-+&pinctrl_usdhc1 {
-+        fsl,pins = <
-+            	MX6UL_PAD_GPIO1_IO05__GPIO1_IO05	0x17059 /* SD1 VSELECT */
-+        >;
-+};
-+
-+&bcmdhd_wlan_0 {
-+	/delete-property/ compatible;
-+	/delete-property/ wlreg_on-supply;
-+};
-+
-+&uart2 {
-+	//pinctrl-0 = <&pinctrl_uart2_1_8v>;  /* re-declare UART2 for 1.8V VIO signaling */
-+	pinctrl-0 = <&pinctrl_uart2>;
-+	resets = <&modem_reset>;
-+};
+@@ -0,0 +1,11 @@
++#include "imx6ull-14x14-evk-btwifi-m2.dts"
 +
 +&usdhc1 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
++	pinctrl-names = "default", "state_100mhz", "state_200mhz"; /* Murata -- add 100 and 200 Mhz entries for UHS mode */
 +	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
-+	fsl,tuning-start-tap = <20>; /* Murata: i.MX default tuning-start-tap */
-+	fsl,tuning-step= <2>; /* Murata: change default step value from 2 to 4 for 1BB */
-+	non-removable;
-+	/delete-property/ cd-post;
-+	cap-power-off-card;
-+	pm-ignore-notify; 
-+	wifi-host;
-+
-+	mmc-pwrseq = <&usdhc1_pwrseq>;
-+	brcmf: bcrmf@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+	};
-+};
-+
-+&gpio_spi {
-+	/* Murata: modify default setting so that BT_nPWD/BT_REG_ON
-+	 * is low (0V) during kernel boot.
-+	 */
-+	registers-default = /bits/ 8 <0x47>;	/* BT_REG_ON */
++	pinctrl-1 = <&pinctrl_usdhc1_100mhz &pinctrl_wifi>;
++	pinctrl-2 = <&pinctrl_usdhc1_200mhz &pinctrl_wifi>;
++	max-frequency = <132000000>; /* Murata - 6ULL MAX with Adapter; 6UL = 100 MHz MAX */
++	/delete-property/ no-1-8-v;
 +};
 +
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts
@@ -1071,7 +1009,7 @@ index 00000000..f1d355e
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts
 @@ -0,0 +1,63 @@
-+#include "imx6ul-14x14-evk-btwifi.dts"
++#include "imx6ull-14x14-evk-btwifi.dts"
 +
 +
 +/ {

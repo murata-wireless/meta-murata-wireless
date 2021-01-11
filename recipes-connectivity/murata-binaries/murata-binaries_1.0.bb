@@ -6,10 +6,11 @@ LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741
 SRC_URI = " \
 	git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=kong;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
 	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=kong;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
-	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=krogoth-kong;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
+	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=sumo-kong;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
 	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=kong;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
 	git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=kong;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
 	file://10-network.rules \
+	file://interfaces \
 "
 
 SRCREV_cyw-fmac-fw="f837656c958a1fff8e4ef84ff78c29c359e6cdb7"
@@ -50,6 +51,7 @@ do_install () {
 	install -d ${D}/etc/firmware/murata-master
 	install -d ${D}/usr/sbin
 	install -d ${D}/etc/udev/rules.d
+	install -d ${D}/etc/network
 
 #       Copying *.HCD files to etc/firmware and etc/firmware/murata-master
         install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd ${D}${sysconfdir}/firmware/BCM4335C0.ZP.hcd
@@ -100,6 +102,7 @@ do_install () {
 
 
 	install -m 444 ${S}/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
+	install -m 444 ${S}/interfaces                  ${D}${sysconfdir}/network/interfaces
 
 #       Copying wl tool binary to /usr/sbin
 	install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
