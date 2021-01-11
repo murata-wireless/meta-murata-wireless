@@ -9,6 +9,7 @@ SRC_URI = " \
 	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=krogoth-manda;destsuffix=cyw-bt-patch \
 	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=manda;destsuffix=cyw-fmac-utils-imx32 \
 	file://10-network.rules \
+	file://interfaces \
 "
 
 SRCREV_cyw-fmac-fw="f905ffd131ad6ed2194a246a82d506a239af66d3"
@@ -48,6 +49,7 @@ do_install () {
 	install -d ${D}/etc/firmware/murata-master
 	install -d ${D}/usr/sbin
 	install -d ${D}/etc/udev/rules.d
+	install -d ${D}/etc/network
 
 #       Copying *.HCD files to etc/firmware and etc/firmware/murata-master
         install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd    ${D}${sysconfdir}/firmware/BCM4335C0.ZP.hcd
@@ -98,6 +100,7 @@ do_install () {
 
 
 	install -m 444 ${S}/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
+	install -m 444 ${S}/interfaces                  ${D}${sysconfdir}/network/interfaces
 
 #       Copying wl tool binary to /usr/sbin
 	install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl

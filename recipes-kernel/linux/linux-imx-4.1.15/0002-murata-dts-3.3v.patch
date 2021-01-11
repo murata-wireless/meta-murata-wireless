@@ -992,7 +992,7 @@ index 00000000..bcbb83f
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-uhs.dts
 @@ -0,0 +1,73 @@
-+#include "imx6ul-14x14-evk-btwifi.dts"
++#include "imx6ull-14x14-evk-btwifi-m2.dts"
 +
 +
 +/ {
@@ -1071,7 +1071,7 @@ index 00000000..f1d355e
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts
 @@ -0,0 +1,63 @@
-+#include "imx6ul-14x14-evk-btwifi.dts"
++#include "imx6ull-14x14-evk-btwifi.dts"
 +
 +
 +/ {
