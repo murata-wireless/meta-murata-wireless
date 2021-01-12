@@ -5,19 +5,19 @@ LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741
 IMX_FIRMWARE_SRC ?= "git://github.com/NXP/imx-firmware.git;protocol=https"
 
 SRC_URI = " \
-	git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=zigra;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
-	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=zigra;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
-	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=krogoth-zigra;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
-	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=zigra;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
-	git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=zigra;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
+	git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=spiga;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
+	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=spiga;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
+	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=krogoth-spiga;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
+	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=spiga;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
+	git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=spiga;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
 	file://interfaces \
 "
 
-SRCREV_cyw-fmac-fw="482be3bdd1d91fbfc32c2849baf7865333b3c523"
-SRCREV_cyw-fmac-nvram="02b8beff506c321687c13dd6f7b885c676e1fec5"
+SRCREV_cyw-fmac-fw="ba140e42c3320262fc52e185c3af93eeb10117df"
+SRCREV_cyw-fmac-nvram="8710e74e79470f666912c3ccadf1e354d6fb209c"
 SRCREV_cyw-bt-patch="580abcb5b5f06c9ccfb1438b1f52d8bccdff57e6"
-SRCREV_cyw-fmac-utils-imx32="864ccb4529dc02d28d15fa2ace594fa7023e78d7"
-SRCREV_cyw-fmac-utils-imx64="ae90650692a93c87b4c38e09780987be101359a8"
+SRCREV_cyw-fmac-utils-imx32="b3b70f0a18bb5aeb9051972ce7267696200c3306"
+SRCREV_cyw-fmac-utils-imx64="c933a91b06dce9fd755a18414d635d3a185d6f5d"
 
 SRCREV_default = "${AUTOREV}"
 
