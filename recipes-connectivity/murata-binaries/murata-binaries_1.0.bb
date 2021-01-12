@@ -19,11 +19,11 @@ SRC_URI += " \
 "
 SRCREV_imx-firmware = "685ace656284167376241c804827f046b984ce25"
 
-SRCREV_cyw-fmac-fw="b73c3e737ed6a640ac650a58f4114785225c6472"
-SRCREV_cyw-fmac-nvram="a6886ad7d0d85e13d7b4e2407d032ea624185923"
-SRCREV_cyw-bt-patch="5b95f7451a5e02bd2d2473253b7cf50bae3cdbfb"
-SRCREV_cyw-fmac-utils-imx32="864ccb4529dc02d28d15fa2ace594fa7023e78d7"
-SRCREV_cyw-fmac-utils-imx64="ae90650692a93c87b4c38e09780987be101359a8"
+SRCREV_cyw-fmac-fw="ba140e42c3320262fc52e185c3af93eeb10117df"
+SRCREV_cyw-fmac-nvram="8710e74e79470f666912c3ccadf1e354d6fb209c"
+SRCREV_cyw-bt-patch="580abcb5b5f06c9ccfb1438b1f52d8bccdff57e6"
+SRCREV_cyw-fmac-utils-imx32="b3b70f0a18bb5aeb9051972ce7267696200c3306"
+SRCREV_cyw-fmac-utils-imx64="c933a91b06dce9fd755a18414d635d3a185d6f5d"
 
 SRCREV_default = "${AUTOREV}"
 
