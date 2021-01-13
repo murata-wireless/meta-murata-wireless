@@ -9,16 +9,7 @@ LICENSE = "GPLv2"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=d7810fab7487fb0aad327b76f1be7cd7"
 
-#SRC_URI =  " \
-#    git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=imx-zeus-zigra \
-#    file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
-#    file://0003-brcmfmac-req-fw-direct-war.patch;apply=yes \
-#    file://0004-makefile-yacc-flex-update.patch;apply=yes \
-#    file://0005-1XA-fix.patch;apply=yes \
-#    file://0006-add-include-path.patch;apply=yes \
-#"
-#SRCREV = "f734f2d1bdf1ff401e561093201c3b78ebad10c9"
-
+# Points to Kong FMAC source code
 SRC_URI =  " \
     git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=imx-rocko-kong \
     file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
