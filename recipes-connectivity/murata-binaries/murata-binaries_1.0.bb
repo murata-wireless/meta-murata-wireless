@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741
 IMX_FIRMWARE_SRC ?= "git://github.com/NXP/imx-firmware.git;protocol=https"
 
 SRC_URI = " \
-	git://github.com/jkareem-murata/cyw-fmac-fw;protocol=http;branch=spiga;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
+	git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=spiga;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
 	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=spiga;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
 	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=zeus-spiga;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
 	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=spiga;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
