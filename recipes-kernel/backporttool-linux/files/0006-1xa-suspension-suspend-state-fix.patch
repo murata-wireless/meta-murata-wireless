@@ -1,0 +1,444 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/Makefile b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/Makefile
+index 49f5a53..06a90ce 100755
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/Makefile
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/Makefile
+@@ -7,7 +7,8 @@
+ 
+ ccflags-y += \
+ 	-I $(src) \
+-	-I $(src)/../include
++	-I $(src)/../include \
++	-DPCIE_VERSION_6_7
+ 
+ obj-$(CPTCFG_BRCMFMAC) += brcmfmac.o
+ brcmfmac-objs += \
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
+index 33fd145..6ca54a2 100755
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
+@@ -24,6 +24,9 @@
+ #include "flowring.h"
+ #include "bus.h"
+ #include "tracepoint.h"
++#ifdef PCIE_VERSION_6_7
++#include "pcie.h"
++#endif
+ 
+ 
+ #define MSGBUF_IOCTL_RESP_TIMEOUT		msecs_to_jiffies(2000)
+@@ -48,6 +51,12 @@
+ #define MSGBUF_TYPE_RX_CMPLT			0x12
+ #define MSGBUF_TYPE_LPBK_DMAXFER		0x13
+ #define MSGBUF_TYPE_LPBK_DMAXFER_CMPLT		0x14
++#ifdef PCIE_VERSION_6_7
++#define MSGBUF_TYPE_H2D_MAILBOX_DATA            0x23
++#define MSGBUF_TYPE_D2H_MAILBOX_DATA            0x24
++#endif
++
++
+ 
+ #define NR_TX_PKTIDS				2048
+ #define NR_RX_PKTIDS				1024
+@@ -105,6 +114,14 @@ struct msgbuf_tx_msghdr {
+ 	__le32				rsvd0;
+ };
+ 
++#ifdef PCIE_VERSION_6_7
++struct msgbuf_h2d_mbdata {
++        struct msgbuf_common_hdr        msg;
++        __le32                          mbdata;
++        __le16                          rsvd0[7];
++};
++#endif
++
+ struct msgbuf_rx_bufpost {
+ 	struct msgbuf_common_hdr	msg;
+ 	__le16				metadata_buf_len;
+@@ -219,6 +236,15 @@ struct msgbuf_flowring_flush_resp {
+ 	__le32				rsvd0[3];
+ };
+ 
++#ifdef PCIE_VERSION_6_7
++struct msgbuf_d2h_mailbox_data {
++        struct msgbuf_common_hdr        msg;
++        struct msgbuf_completion_hdr    compl_hdr;
++        __le32                          mbdata;
++        __le32                          rsvd0[2];
++} d2h_mailbox_data_t;
++#endif
++
+ struct brcmf_msgbuf_work_item {
+ 	struct list_head queue;
+ 	u32 flowid;
+@@ -291,6 +317,10 @@ struct brcmf_msgbuf_pktids {
+ };
+ 
+ static void brcmf_msgbuf_rxbuf_ioctlresp_post(struct brcmf_msgbuf *msgbuf);
++#ifdef PCIE_VERSION_6_7
++static void brcmf_msgbuf_process_d2h_mbdata(struct brcmf_msgbuf *msgbuf,void *buf);
++#endif
++
+ 
+ 
+ static struct brcmf_msgbuf_pktids *
+@@ -425,6 +455,36 @@ static void brcmf_msgbuf_release_pktids(struct brcmf_msgbuf *msgbuf)
+ 					   msgbuf->tx_pktids);
+ }
+ 
++#ifdef PCIE_VERSION_6_7
++int brcmf_msgbuf_tx_mbdata(struct brcmf_pub *drvr, u32 mbdata)
++{
++        struct brcmf_msgbuf *msgbuf = (struct brcmf_msgbuf *)drvr->proto->pd;
++        struct brcmf_commonring *commonring;
++        struct msgbuf_h2d_mbdata *h2d_mbdata;
++        void *ret_ptr;
++        int err;
++
++        commonring = msgbuf->commonrings[BRCMF_H2D_MSGRING_CONTROL_SUBMIT];
++        brcmf_commonring_lock(commonring);
++        ret_ptr = brcmf_commonring_reserve_for_write(commonring);
++        if (!ret_ptr) {
++                brcmf_err("Failed to reserve space in commonring\n");
++                brcmf_commonring_unlock(commonring);
++                return -ENOMEM;
++        }
++        h2d_mbdata = (struct msgbuf_h2d_mbdata *)ret_ptr;
++        memset(h2d_mbdata, 0, sizeof(*h2d_mbdata));
++
++        h2d_mbdata->msg.msgtype = MSGBUF_TYPE_H2D_MAILBOX_DATA;
++        h2d_mbdata->mbdata = cpu_to_le32(mbdata);
++
++        err = brcmf_commonring_write_complete(commonring);
++        brcmf_commonring_unlock(commonring);
++
++        return err;
++}
++#endif
++
+ 
+ static int brcmf_msgbuf_tx_ioctl(struct brcmf_pub *drvr, int ifidx,
+ 				 uint cmd, void *buf, uint len)
+@@ -1312,6 +1372,23 @@ brcmf_msgbuf_process_flow_ring_delete_response(struct brcmf_msgbuf *msgbuf,
+ 	brcmf_msgbuf_remove_flowring(msgbuf, flowid);
+ }
+ 
++#ifdef PCIE_VERSION_6_7
++static void
++brcmf_msgbuf_process_d2h_mbdata(struct brcmf_msgbuf *msgbuf,
++                                void *buf)
++{
++        struct msgbuf_d2h_mailbox_data *d2h_mbdata;
++
++        d2h_mbdata = (struct msgbuf_d2h_mailbox_data *)buf;
++
++        if (!d2h_mbdata) {
++                brcmf_err("d2h_mbdata is null\n");
++                return;
++        }
++
++        brcmf_pcie_handle_mb_data(msgbuf->drvr->bus_if, d2h_mbdata->mbdata);
++}
++#endif
+ 
+ static void brcmf_msgbuf_process_msgtype(struct brcmf_msgbuf *msgbuf, void *buf)
+ {
+@@ -1355,6 +1432,12 @@ static void brcmf_msgbuf_process_msgtype(struct brcmf_msgbuf *msgbuf, void *buf)
+ 		brcmf_dbg(MSGBUF, "MSGBUF_TYPE_RX_CMPLT\n");
+ 		brcmf_msgbuf_process_rx_complete(msgbuf, buf);
+ 		break;
++#ifdef PCIE_VERSION_6_7
++        case MSGBUF_TYPE_D2H_MAILBOX_DATA:
++                brcmf_dbg(MSGBUF, "MSGBUF_TYPE_D2H_MAILBOX_DATA\n");
++                brcmf_msgbuf_process_d2h_mbdata(msgbuf, buf);
++                break;
++#endif
+ 	default:
+ 		bphy_err(drvr, "Unsupported msgtype %d\n", msg->msgtype);
+ 		break;
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.h
+index cea37f7..4d6e8ec 100755
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.h
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.h
+@@ -39,5 +39,8 @@ static inline int brcmf_proto_msgbuf_attach(struct brcmf_pub *drvr)
+ }
+ static inline void brcmf_proto_msgbuf_detach(struct brcmf_pub *drvr) {}
+ #endif
++#ifdef PCIE_VERSION_6_7
++int brcmf_msgbuf_tx_mbdata(struct brcmf_pub *drvr, u32 mbdata);
++#endif
+ 
+ #endif /* BRCMFMAC_MSGBUF_H */
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+index 1827da3..81a22bf 100755
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
+@@ -139,7 +139,7 @@ static const struct brcmf_firmware_mapping brcmf_pcie_fwnames[] = {
+ 						 BRCMF_PCIE_MB_INT_D2H2_DB1 | \
+ 						 BRCMF_PCIE_MB_INT_D2H3_DB0 | \
+ 						 BRCMF_PCIE_MB_INT_D2H3_DB1)
+-
++#define BRCMF_PCIE_SHARED_VERSION_6             6
+ #define BRCMF_PCIE_SHARED_VERSION_7		7
+ #define BRCMF_PCIE_MIN_SHARED_VERSION		5
+ #define BRCMF_PCIE_MAX_SHARED_VERSION		BRCMF_PCIE_SHARED_VERSION_7
+@@ -147,6 +147,9 @@ static const struct brcmf_firmware_mapping brcmf_pcie_fwnames[] = {
+ #define BRCMF_PCIE_SHARED_DMA_INDEX		0x10000
+ #define BRCMF_PCIE_SHARED_DMA_2B_IDX		0x100000
+ #define BRCMF_PCIE_SHARED_HOSTRDY_DB1		0x10000000
++#ifdef PCIE_VERSION_6_7
++#define BRCMF_PCIE_SHARED_USE_MAILBOX           0x2000000
++#endif
+ 
+ #define BRCMF_PCIE_FLAGS_HTOD_SPLIT		0x4000
+ #define BRCMF_PCIE_FLAGS_DTOH_SPLIT		0x8000
+@@ -162,6 +165,9 @@ static const struct brcmf_firmware_mapping brcmf_pcie_fwnames[] = {
+ #define BRCMF_SHARED_DMA_SCRATCH_ADDR_OFFSET	56
+ #define BRCMF_SHARED_DMA_RINGUPD_LEN_OFFSET	64
+ #define BRCMF_SHARED_DMA_RINGUPD_ADDR_OFFSET	68
++#ifdef PCIE_VERSION_6_7
++#define BRCMF_SHARED_HOST_CAP_OFFSET   		84
++#endif
+ 
+ #define BRCMF_RING_H2D_RING_COUNT_OFFSET	0
+ #define BRCMF_RING_D2H_RING_COUNT_OFFSET	1
+@@ -176,6 +182,10 @@ static const struct brcmf_firmware_mapping brcmf_pcie_fwnames[] = {
+ 
+ #define BRCMF_DEF_MAX_RXBUFPOST			255
+ 
++#ifdef PCIE_VERSION_6_7
++#define BRCMF_H2D_ENABLE_HOSTRDY               0x400
++#endif
++
+ #define BRCMF_CONSOLE_BUFADDR_OFFSET		8
+ #define BRCMF_CONSOLE_BUFSIZE_OFFSET		12
+ #define BRCMF_CONSOLE_WRITEIDX_OFFSET		16
+@@ -262,6 +272,11 @@ struct brcmf_pciedev_info {
+ 	struct brcmf_chip *ci;
+ 	u32 coreid;
+ 	struct brcmf_pcie_shared_info shared;
++#ifdef PCIE_VERSION_6_7
++        u8 hostready;
++        bool use_mailbox;
++        bool use_d0_inform;
++#endif
+ 	wait_queue_head_t mbdata_resp_wait;
+ 	bool mbdata_completed;
+ 	bool irq_allocated;
+@@ -895,12 +910,29 @@ static int
+ brcmf_pcie_send_mb_data(struct brcmf_pciedev_info *devinfo, u32 htod_mb_data)
+ {
+ 	struct brcmf_pcie_shared_info *shared;
++#ifdef PCIE_VERSION_6_7
++        struct brcmf_bus *bus;
++        int err;
++#endif
+ 	struct brcmf_core *core;
+ 	u32 addr;
+ 	u32 cur_htod_mb_data;
+ 	u32 i;
+ 
+ 	shared = &devinfo->shared;
++#ifdef PCIE_VERSION_6_7
++        bus = dev_get_drvdata(&devinfo->pdev->dev);
++        if (shared->version >= BRCMF_PCIE_SHARED_VERSION_6 &&
++            !devinfo->use_mailbox) {
++                err = brcmf_msgbuf_tx_mbdata(bus->drvr, htod_mb_data);
++                if (err) {
++                        brcmf_err(bus,"sendimg mbdata failed err=%d\n", err);
++                        return err;
++                }
++        } else
++#endif
++       {
++
+ 	addr = shared->htod_mb_data_addr;
+ 	cur_htod_mb_data = brcmf_pcie_read_tcm32(devinfo, addr);
+ 
+@@ -925,10 +957,49 @@ brcmf_pcie_send_mb_data(struct brcmf_pciedev_info *devinfo, u32 htod_mb_data)
+ 	if (core->rev <= 13)
+ 		pci_write_config_dword(devinfo->pdev, BRCMF_PCIE_REG_SBMBX, 1);
+ 
++	}
+ 	return 0;
+ }
+ 
+ 
++#ifdef PCIE_VERSION_6_7
++static u32 brcmf_pcie_read_mb_data(struct brcmf_pciedev_info *devinfo)
++{
++        struct brcmf_pcie_shared_info *shared;
++        u32 addr;
++        u32 dtoh_mb_data;
++
++        shared = &devinfo->shared;
++        addr = shared->dtoh_mb_data_addr;
++        dtoh_mb_data = brcmf_pcie_read_tcm32(devinfo, addr);
++        brcmf_pcie_write_tcm32(devinfo, addr, 0);
++        return dtoh_mb_data;
++}
++
++void brcmf_pcie_handle_mb_data(struct brcmf_bus *bus_if, u32 d2h_mb_data)
++{
++        struct brcmf_pciedev *buspub = bus_if->bus_priv.pcie;
++        struct brcmf_pciedev_info *devinfo = buspub->devinfo;
++
++        brcmf_dbg(INFO,"D2H_MB_DATA: 0x%04x\n",d2h_mb_data);
++        if (d2h_mb_data & BRCMF_D2H_DEV_DS_ENTER_REQ) {
++              brcmf_dbg(INFO,"D2H_MB_DATA: DEEP SLEEP REQ \n");
++              brcmf_pcie_send_mb_data(devinfo, BRCMF_H2D_HOST_DS_ACK);
++              brcmf_dbg(INFO,"D2H_MB_DATA: sent DEEP SLEEP ACK \n");
++        }
++        if (d2h_mb_data & BRCMF_D2H_DEV_DS_EXIT_NOTE)
++               brcmf_dbg(INFO,"D2H_MB_DATA: DEEP SLEEP EXIT\n");
++        if (d2h_mb_data & BRCMF_D2H_DEV_D3_ACK) {
++               brcmf_dbg(INFO, "D2H_MB_DATA: D3 ACK\n");
++               devinfo->mbdata_completed = true;
++               wake_up(&devinfo->mbdata_resp_wait);
++        }
++       if (d2h_mb_data & BRCMF_D2H_DEV_FWHALT) {
++               brcmf_dbg(INFO, "D2H_MB_DATA: FW HALT\n");
++               brcmf_fw_crashed(&devinfo->pdev->dev);
++        }
++}
++#else
+ static void brcmf_pcie_handle_mb_data(struct brcmf_pciedev_info *devinfo)
+ {
+ 	struct brcmf_pcie_shared_info *shared;
+@@ -962,7 +1033,7 @@ static void brcmf_pcie_handle_mb_data(struct brcmf_pciedev_info *devinfo)
+ 		brcmf_fw_crashed(&devinfo->pdev->dev);
+ 	}
+ }
+-
++#endif
+ 
+ static void brcmf_pcie_bus_console_init(struct brcmf_pciedev_info *devinfo)
+ {
+@@ -1072,6 +1143,11 @@ static irqreturn_t brcmf_pcie_isr_thread(int irq, void *arg)
+ {
+ 	struct brcmf_pciedev_info *devinfo = (struct brcmf_pciedev_info *)arg;
+ 	u32 status;
++#ifdef PCIE_VERSION_6_7
++	u32 d2h_mbdata;
++	struct pci_dev *pdev = devinfo->pdev;
++	struct brcmf_bus *bus = dev_get_drvdata(&pdev->dev);
++#endif
+ 
+ 	devinfo->in_irq = true;
+ 	status = brcmf_pcie_read_reg32(devinfo, BRCMF_PCIE_PCIE2REG_MAILBOXINT);
+@@ -1080,8 +1156,15 @@ static irqreturn_t brcmf_pcie_isr_thread(int irq, void *arg)
+ 		brcmf_pcie_write_reg32(devinfo, BRCMF_PCIE_PCIE2REG_MAILBOXINT,
+ 				       status);
+ 		if (status & (BRCMF_PCIE_MB_INT_FN0_0 |
+-			      BRCMF_PCIE_MB_INT_FN0_1))
+-			brcmf_pcie_handle_mb_data(devinfo);
++			      BRCMF_PCIE_MB_INT_FN0_1))	{
++#ifdef PCIE_VERSION_6_7
++                        d2h_mbdata = brcmf_pcie_read_mb_data(devinfo);
++                        brcmf_pcie_handle_mb_data(bus, d2h_mbdata);
++#else
++                        brcmf_pcie_handle_mb_data(devinfo);
++#endif
++
++		}
+ 		if (status & BRCMF_PCIE_MB_INT_D2H_DB) {
+ 			if (devinfo->state == BRCMFMAC_PCIE_STATE_UP)
+ 				brcmf_proto_msgbuf_rx_trigger(
+@@ -1686,7 +1769,10 @@ static int brcmf_pcie_reset(struct device *dev)
+ 	brcmf_pcie_bus_console_read(devinfo, true);
+ 
+ 	brcmf_detach(dev);
+-
++#ifdef BCMPCIE_OOB_HOST_WAKE
++        brcmf_pcie_oob_intr_set(bus_if, false);
++        brcmf_pcie_oob_intr_unregister(bus_if);
++#endif
+ 	brcmf_pcie_release_irq(devinfo);
+ 	brcmf_pcie_release_scratchbuffers(devinfo);
+ 	brcmf_pcie_release_ringbuffers(devinfo);
+@@ -1750,6 +1836,9 @@ brcmf_pcie_init_share_ram_info(struct brcmf_pciedev_info *devinfo,
+ 	struct brcmf_bus *bus = dev_get_drvdata(&devinfo->pdev->dev);
+ 	struct brcmf_pcie_shared_info *shared;
+ 	u32 addr;
++#ifdef PCIE_VERSION_6_7
++        u32 host_cap;
++#endif
+ 
+ 	shared = &devinfo->shared;
+ 	shared->tcm_base_address = sharedram_addr;
+@@ -1789,6 +1878,28 @@ brcmf_pcie_init_share_ram_info(struct brcmf_pciedev_info *devinfo,
+ 	addr = sharedram_addr + BRCMF_SHARED_RING_INFO_ADDR_OFFSET;
+ 	shared->ring_info_addr = brcmf_pcie_read_tcm32(devinfo, addr);
+ 
++#ifdef PCIE_VERSION_6_7
++       if (shared->version >= BRCMF_PCIE_SHARED_VERSION_6) {
++               host_cap = shared->version;
++
++               devinfo->hostready =
++                       ((shared->flags & BRCMF_PCIE_SHARED_HOSTRDY_DB1)
++                        == BRCMF_PCIE_SHARED_HOSTRDY_DB1);
++               if (devinfo->hostready) {
++                       brcmf_dbg(PCIE, "HostReady supported by dongle.\n");
++                       host_cap = host_cap | BRCMF_H2D_ENABLE_HOSTRDY;
++               }
++               devinfo->use_mailbox =
++                       ((shared->flags & BRCMF_PCIE_SHARED_USE_MAILBOX)
++                        == BRCMF_PCIE_SHARED_USE_MAILBOX);
++               devinfo->use_d0_inform = false;
++               addr = sharedram_addr + BRCMF_SHARED_HOST_CAP_OFFSET;
++               brcmf_pcie_write_tcm32(devinfo, addr, host_cap);
++       }else{
++                devinfo->use_d0_inform = true;
++       }
++#endif
++
+ 	brcmf_dbg(PCIE, "max rx buf post %d, rx dataoffset %d\n",
+ 		  shared->max_rxbufpost, shared->rx_dataoffset);
+ 
+@@ -2436,14 +2547,32 @@ static int brcmf_pcie_pm_leave_D3(struct device *dev)
+ 	/* Check if device is still up and running, if so we are ready */
+ 	if (brcmf_pcie_read_reg32(devinfo, BRCMF_PCIE_PCIE2REG_INTMASK) != 0) {
+ 		brcmf_dbg(PCIE, "Try to wakeup device....\n");
++#ifdef PCIE_VERSION_6_7
++		if (devinfo->use_d0_inform) {
++			if (brcmf_pcie_send_mb_data(devinfo,
++						BRCMF_H2D_HOST_D0_INFORM))
++				goto cleanup;
++		} else {
++			brcmf_pcie_hostready(devinfo);
++		}
++#else
+ 		if (brcmf_pcie_send_mb_data(devinfo, BRCMF_H2D_HOST_D0_INFORM))
+ 			goto cleanup;
++#endif
+ 		brcmf_dbg(PCIE, "Hot resume, continue....\n");
+ 		devinfo->state = BRCMFMAC_PCIE_STATE_UP;
+ 		brcmf_pcie_select_core(devinfo, BCMA_CORE_PCIE2);
+ 		brcmf_bus_change_state(bus, BRCMF_BUS_UP);
+ 		brcmf_pcie_intr_enable(devinfo);
+-		brcmf_pcie_hostready(devinfo);
++#ifdef PCIE_VERSION_6_7
++               if (devinfo->use_d0_inform)
++               {
++                       brcmf_dbg(TRACE, "sending brcmf_pcie_hostready since use_d0_inform=%d\n",devinfo->use_d0_inform);
++                        brcmf_pcie_hostready(devinfo);
++               }
++#else
++               brcmf_pcie_hostready(devinfo);
++#endif /* PCIE_VERSION_6_7 */
+ 		brcmf_pcie_fwcon_timer(devinfo, true);
+ 		return 0;
+ 	}
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h
+index d026401..d912ba3 100755
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h
+@@ -14,6 +14,7 @@ struct brcmf_pciedev {
+ 
+ void brcmf_pcie_exit(void);
+ void brcmf_pcie_register(void);
+-
+-
++#ifdef PCIE_VERSION_6_7
++void brcmf_pcie_handle_mb_data(struct brcmf_bus *bus_if, u32 d2h_mb_data);
++#endif
+ #endif /* BRCMFMAC_PCIE_H */

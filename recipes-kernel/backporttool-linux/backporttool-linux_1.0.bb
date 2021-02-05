@@ -14,6 +14,7 @@ SRC_URI =  " \
     file://0003-brcmfmac-req-fw-direct-war.patch;apply=yes \
     file://0004-makefile-yacc-flex-update.patch;apply=yes \
     file://0005-1XA-fix.patch;apply=yes \
+    file://0006-1xa-suspension-suspend-state-fix.patch;apply=yes \
 "
 SRCREV = "db8c3d8ccc3c5833f6909efa78ca71802df6f88d"
 S = "${WORKDIR}/git"
