@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=02022021
+VERSION=02112021
 
 
 ###################################################################################################
@@ -18,6 +18,7 @@ VERSION=02022021
 #  1.6      | 01/27/2021   |    RC        |    Remove unsupported machine types for NXP Wireless
 #  1.7      | 02/02/2021   |    RC        |    Added back Manda
 #  1.8      | 02/11/2021   |    JK        |    Add Spiga Revision 1.1
+#           |              |              |    Add Disclaimer
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -227,6 +228,7 @@ else
 	read PROCEED_UPDATE_OPTION
 
 	if [ "$PROCEED_UPDATE_OPTION" = "y" ] || [ "$PROCEED_UPDATE_OPTION" = "Y" ] || [ "$PROCEED_UPDATE_OPTION" = "" ]; then
+		echo "NOTE: Latest build script is not tested fully. Please take a backup of the previous script before replacing."
 		echo "Update to latest version using following copy command:"
 		echo " "
 		echo ""\$ "cp ./meta-murata-wireless/script-utils/latest/Murata_Wireless_Yocto_Build.sh ."
