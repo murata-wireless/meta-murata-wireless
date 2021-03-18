@@ -5,6 +5,7 @@ LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741
 IMX_FIRMWARE_SRC ?= "git://github.com/NXP/imx-firmware.git;protocol=https"
 
 SRC_URI = " \
+	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
 	git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=zigra;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
 	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=zigra;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
 	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=zeus-zigra;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
@@ -19,6 +20,7 @@ SRC_URI += " \
 "
 SRCREV_imx-firmware = "685ace656284167376241c804827f046b984ce25"
 
+SRCREV_nxp-linux-calibration="6167ece880230ef0dbe26ac796e00360b9a40fa8"
 SRCREV_cyw-fmac-fw="2fa683ffbd0b0d7b62aae8abc8841af6e22cd495"
 SRCREV_cyw-fmac-nvram="d8fb441eafcfbab7a85abaf3ed8eff02eb32ff73"
 SRCREV_cyw-bt-patch="5b95f7451a5e02bd2d2473253b7cf50bae3cdbfb"
@@ -141,6 +143,36 @@ do_install () {
 #	Based on MACHINE type
 	echo "DEBUG:: MACHINE TYPE :: ${MACHINE}"
 	install -m 755 ${S}/switch_module.sh ${D}/usr/sbin/switch_module.sh
+
+#	Install nxp linux calibration files
+	install -d ${D}/lib/firmware/nxp/1ZM
+	install -d ${D}/lib/firmware/nxp/1YM
+
+	install -m 444 ${S}/nxp-linux-calibration/1ZM/bt_power_config_1.sh ${D}/lib/firmware/nxp/1ZM/bt_power_config_1.sh.1zm
+	install -m 444 ${S}/nxp-linux-calibration/1ZM/db.txt               ${D}/lib/firmware/nxp/1ZM/db.txt.1zm
+	install -m 444 ${S}/nxp-linux-calibration/1ZM/ed_mac.bin           ${D}/lib/firmware/nxp/1ZM/ed_mac.bin.1zm
+	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_CA.bin       ${D}/lib/firmware/nxp/1ZM/txpower_CA.bin.1zm
+	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_EU.bin       ${D}/lib/firmware/nxp/1ZM/txpower_EU.bin.1zm     
+	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_JP.bin       ${D}/lib/firmware/nxp/1ZM/txpower_JP.bin.1zm  
+	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_US.bin       ${D}/lib/firmware/nxp/1ZM/txpower_US.bin.1zm
+
+	install -m 444 ${S}/nxp-linux-calibration/1YM/bt_power_config_1.sh ${D}/lib/firmware/nxp/1YM/bt_power_config_1.sh.1ym
+	install -m 444 ${S}/nxp-linux-calibration/1YM/db.txt               ${D}/lib/firmware/nxp/1YM/db.txt.1ym
+	install -m 444 ${S}/nxp-linux-calibration/1YM/ed_mac.bin           ${D}/lib/firmware/nxp/1YM/ed_mac.bin.1ym
+	install -m 444 ${S}/nxp-linux-calibration/1YM/txpower_CA.bin       ${D}/lib/firmware/nxp/1YM/txpower_CA.bin.1ym
+	install -m 444 ${S}/nxp-linux-calibration/1YM/txpower_EU.bin       ${D}/lib/firmware/nxp/1YM/txpower_EU.bin.1ym     
+	install -m 444 ${S}/nxp-linux-calibration/1YM/txpower_JP.bin       ${D}/lib/firmware/nxp/1YM/txpower_JP.bin.1ym  
+	install -m 444 ${S}/nxp-linux-calibration/1YM/txpower_US.bin       ${D}/lib/firmware/nxp/1YM/txpower_US.bin.1ym
+
+# 	Default regulatory files points to 1ZM
+	ln -sf /lib/firmware/nxp/1ZM/bt_power_config_1.sh.1zm 	${D}/lib/firmware/nxp/bt_power_config_1.sh
+	ln -sf /lib/firmware/nxp/1ZM/db.txt.1zm                	${D}/lib/firmware/nxp/db.txt
+	ln -sf /lib/firmware/nxp/1ZM/ed_mac.bin.1zm 		${D}/lib/firmware/nxp/ed_mac.bin
+	ln -sf /lib/firmware/nxp/1ZM/txpower_CA.bin.1zm 	${D}/lib/firmware/nxp/txpower_CA.bin
+	ln -sf /lib/firmware/nxp/1ZM/txpower_EU.bin.1zm 	${D}/lib/firmware/nxp/txpower_EU.bin
+	ln -sf /lib/firmware/nxp/1ZM/txpower_JP.bin.1zm 	${D}/lib/firmware/nxp/txpower_JP.bin
+	ln -sf /lib/firmware/nxp/1ZM/txpower_US.bin.1zm 	${D}/lib/firmware/nxp/txpower_US.bin
+
 }
 
 PACKAGES =+ "${PN}-mfgtest"
