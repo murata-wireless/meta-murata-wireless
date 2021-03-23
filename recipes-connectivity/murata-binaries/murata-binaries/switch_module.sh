@@ -105,13 +105,13 @@ function prepare_for_nxp_sdio() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
 
-  ln -s /lib/firmware/nxp/1ZM/db.txt.1zm 		/lib/firmware/nxp/db.txt
-  ln -s /lib/firmware/nxp/1ZM/ed_mac.bin.1zm 		/lib/firmware/nxp/ed_mac.bin
-  ln -s /lib/firmware/nxp/1ZM/bt_power_config_1.sh.1zm  /lib/firmware/nxp/bt_power_config_1.sh
-  ln -s /lib/firmware/nxp/1ZM/txpower_CA.bin.1zm	/lib/firmware/nxp/txpower_CA.bin
-  ln -s /lib/firmware/nxp/1ZM/txpower_EU.bin.1zm 	/lib/firmware/nxp/txpower_EU.bin
-  ln -s /lib/firmware/nxp/1ZM/txpower_JP.bin.1zm 	/lib/firmware/nxp/txpower_JP.bin
-  ln -s /lib/firmware/nxp/1ZM/txpower_US.bin.1zm 	/lib/firmware/nxp/txpower_US.bin
+  cp /lib/firmware/nxp/1ZM/db.txt.1zm 		/lib/firmware/nxp/db.txt
+  cp /lib/firmware/nxp/1ZM/ed_mac.bin.1zm 	/lib/firmware/nxp/ed_mac.bin
+  cp /lib/firmware/nxp/1ZM/bt_power_config_1.sh.1zm  /lib/firmware/nxp/bt_power_config_1.sh
+  cp /lib/firmware/nxp/1ZM/txpower_CA.bin.1zm	/lib/firmware/nxp/txpower_CA.bin
+  cp /lib/firmware/nxp/1ZM/txpower_EU.bin.1zm 	/lib/firmware/nxp/txpower_EU.bin
+  cp /lib/firmware/nxp/1ZM/txpower_JP.bin.1zm 	/lib/firmware/nxp/txpower_JP.bin
+  cp /lib/firmware/nxp/1ZM/txpower_US.bin.1zm 	/lib/firmware/nxp/txpower_US.bin
 
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
@@ -144,13 +144,13 @@ function prepare_for_nxp_ym_sdio() {
   ln -s /usr/share/nxp_wireless/bin_sd8997/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
   ln -s /usr/share/nxp_wireless/bin_sd8997/sd8997.ko /lib/modules/$(uname -r)/extra/sd8997.ko
 
-  ln -s /lib/firmware/nxp/1YM/db.txt.1ym 		/lib/firmware/nxp/db.txt
-  ln -s /lib/firmware/nxp/1YM/ed_mac.bin.1ym 		/lib/firmware/nxp/ed_mac.bin
-  ln -s /lib/firmware/nxp/1YM/bt_power_config_1.sh.1ym  /lib/firmware/nxp/bt_power_config_1.sh
-  ln -s /lib/firmware/nxp/1YM/txpower_CA.bin.1ym	/lib/firmware/nxp/txpower_CA.bin
-  ln -s /lib/firmware/nxp/1YM/txpower_EU.bin.1ym 	/lib/firmware/nxp/txpower_EU.bin
-  ln -s /lib/firmware/nxp/1YM/txpower_JP.bin.1ym 	/lib/firmware/nxp/txpower_JP.bin
-  ln -s /lib/firmware/nxp/1YM/txpower_US.bin.1ym 	/lib/firmware/nxp/txpower_US.bin
+  cp /lib/firmware/nxp/1YM/db.txt.1ym 		/lib/firmware/nxp/db.txt
+  cp /lib/firmware/nxp/1YM/ed_mac.bin.1ym 	/lib/firmware/nxp/ed_mac.bin
+  cp /lib/firmware/nxp/1YM/bt_power_config_1.sh.1ym  /lib/firmware/nxp/bt_power_config_1.sh
+  cp /lib/firmware/nxp/1YM/txpower_CA.bin.1ym	/lib/firmware/nxp/txpower_CA.bin
+  cp /lib/firmware/nxp/1YM/txpower_EU.bin.1ym 	/lib/firmware/nxp/txpower_EU.bin
+  cp /lib/firmware/nxp/1YM/txpower_JP.bin.1ym 	/lib/firmware/nxp/txpower_JP.bin
+  cp /lib/firmware/nxp/1YM/txpower_US.bin.1ym 	/lib/firmware/nxp/txpower_US.bin
 
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
@@ -189,13 +189,13 @@ function prepare_for_nxp_ym_pcie() {
   ln -s /usr/share/nxp_wireless/bin_pcie8997/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
   ln -s /usr/share/nxp_wireless/bin_pcie8997/pcie8997.ko /lib/modules/$(uname -r)/extra/pcie8997.ko
 
-  ln -s /lib/firmware/nxp/1YM/db.txt.1ym 		/lib/firmware/nxp/db.txt
-  ln -s /lib/firmware/nxp/1YM/ed_mac.bin.1ym 		/lib/firmware/nxp/ed_mac.bin
-  ln -s /lib/firmware/nxp/1YM/bt_power_config_1.sh.1ym  /lib/firmware/nxp/bt_power_config_1.sh
-  ln -s /lib/firmware/nxp/1YM/txpower_CA.bin.1ym	/lib/firmware/nxp/txpower_CA.bin
-  ln -s /lib/firmware/nxp/1YM/txpower_EU.bin.1ym 	/lib/firmware/nxp/txpower_EU.bin
-  ln -s /lib/firmware/nxp/1YM/txpower_JP.bin.1ym 	/lib/firmware/nxp/txpower_JP.bin
-  ln -s /lib/firmware/nxp/1YM/txpower_US.bin.1ym 	/lib/firmware/nxp/txpower_US.bin
+  cp /lib/firmware/nxp/1YM/db.txt.1ym 		/lib/firmware/nxp/db.txt
+  cp /lib/firmware/nxp/1YM/ed_mac.bin.1ym 	/lib/firmware/nxp/ed_mac.bin
+  cp /lib/firmware/nxp/1YM/bt_power_config_1.sh.1ym  /lib/firmware/nxp/bt_power_config_1.sh
+  cp /lib/firmware/nxp/1YM/txpower_CA.bin.1ym	/lib/firmware/nxp/txpower_CA.bin
+  cp /lib/firmware/nxp/1YM/txpower_EU.bin.1ym 	/lib/firmware/nxp/txpower_EU.bin
+  cp /lib/firmware/nxp/1YM/txpower_JP.bin.1ym 	/lib/firmware/nxp/txpower_JP.bin
+  cp /lib/firmware/nxp/1YM/txpower_US.bin.1ym 	/lib/firmware/nxp/txpower_US.bin
 
 
 
