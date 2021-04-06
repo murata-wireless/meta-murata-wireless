@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=02112021
+VERSION=04052021
 
 
 ###################################################################################################
@@ -19,6 +19,9 @@ VERSION=02112021
 #  1.7      | 02/02/2021   |    RC        |    Added back Manda
 #  1.8      | 02/11/2021   |    JK        |    Add Spiga Revision 1.1
 #           |              |              |    Add Disclaimer
+#  1.9      | 04/05/2021   |    JK        |    Add installation of repo tool from google sources
+#           |              |              |    into a temporary folder, "repo-murata".
+#           |              |              |    Overrides the default Ubuntu repo tool.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -164,6 +167,26 @@ else
 	exit
 fi
 
+# Install "repo" tool within BSP folder
+echo " "
+echo -e "${YLW}NOTE:${NC} Installing repo tool in a temporary folder, named, "\""repo-murata"\"" in $BSP_DIR"
+echo "Temporary folder, "\""repo-murata"\"" will be deleted after the image gets built."
+echo " "
+echo -n -e "Do you want to continue? ${GRN}Y${NC}/${YLW}n${NC}: "
+read PROCEED_UPDATE_OPTION
+
+if [ "$PROCEED_UPDATE_OPTION" = "y" ] || [ "$PROCEED_UPDATE_OPTION" = "Y" ] || [ "$PROCEED_UPDATE_OPTION" = "" ]; then
+	rm -rf repo-murata
+	mkdir repo-murata
+	cd repo-murata
+	curl https://storage.googleapis.com/git-repo-downloads/repo > ${BSP_DIR}/repo-murata/repo
+	chmod a+x ${BSP_DIR}/repo-murata/repo
+	export REPO_PATH=${BSP_DIR}/repo-murata/
+else
+	echo " "
+	echo -e "${RED}Murata: Skipping repo tool installation"
+	echo -e "Exiting script.....${NC}"
+fi
 
 # Ubuntu Distro and Version verified. Now add necessary commands.
 
@@ -1552,20 +1575,20 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	# Invoke Repo Init based on Yocto Release
 	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ]; then
 		#echo "DEBUG:: IMXALL-ZEUS"
-		repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-zeus -m imx-5.4.47-2.2.0.xml
+		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-zeus -m imx-5.4.47-2.2.0.xml
 	elif [ "$iMXYoctoRelease" = "$imxsumoYocto" ]; then
 		#echo "DEBUG:: IMXALL-SUMO"
-		repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-sumo -m imx-4.14.98-2.3.0.xml
+		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-sumo -m imx-4.14.98-2.3.0.xml
 	elif [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
 		#echo "DEBUG:: IMXALL-ROCKO-MINI"
-		repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-rocko -m imx-4.9.123-2.3.0-8mm_ga.xml
+		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-rocko -m imx-4.9.123-2.3.0-8mm_ga.xml
 	elif [ "$iMXYoctoRelease" = "$imxkrogothYocto"  ]; then
 		#echo "DEBUG:: KROGOTH"
-		repo init -u https://source.codeaurora.org/external/imx/fsl-arm-yocto-bsp.git -b imx-4.1-krogoth -m imx-4.1.15-2.1.1.xml
+		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/fsl-arm-yocto-bsp.git -b imx-4.1-krogoth -m imx-4.1.15-2.1.1.xml
 	fi
 
 	#echo "DEBUG:: Performing repo sync......."
-	repo sync
+	$REPO_PATH/repo sync
 	cd $BSP_DIR
 
 
@@ -1729,6 +1752,8 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 
 	if [ "$PROCEED_BUILD" = "y" ] || [ "$PROCEED_BUILD" = "Y" ] || [ "$PROCEED_BUILD" = "" ] ; then
 		bitbake $IMAGE_NAME
+		cd $BSP_DIR
+		rm -rf repo-murata
 		exit
 	else
 		echo -e "${RED}Exiting script.....${NC}"
