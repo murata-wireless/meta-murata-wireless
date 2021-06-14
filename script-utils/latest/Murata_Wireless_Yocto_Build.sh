@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=04052021
+VERSION=05312021
 
 
 ###################################################################################################
@@ -22,6 +22,9 @@ VERSION=04052021
 #  1.9      | 04/05/2021   |    JK        |    Add installation of repo tool from google sources
 #           |              |              |    into a temporary folder, "repo-murata".
 #           |              |              |    Overrides the default Ubuntu repo tool.
+#  1.10     | 05/27/2021   |    RC        |    Add check for previous meta-murata-wireless folder.
+#  1.11     | 05/31/2021   |    RC        |    Add check for .repo folders
+#  1.12     | 06/14/2021   |    JK        |    Add Exiting the script after dash check
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -137,6 +140,22 @@ imxkrogothYocto="4.1.15_2.0.0 GA"
 
 clear
 #echo "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+
+if [ -h /bin/sh ] && `which readlink > /dev/null 2>&1` && [ -n "`readlink /bin/sh | grep '\<dash$'`" ]; then
+	printf '%b' "${RED}===============================================================\n"
+	printf '%b'  "Error: DASH shell not supported as system shell\n"
+	printf '%b'  "===============================================================\n${NC}"
+	printf '%b'  "The script has detected that your system uses the dash shell\n"
+	printf '%b'  "as /bin/sh.  This shell is not supported by the script.\n"
+	printf '%b'  "You can work around this problem by changing /bin/sh to be a\n"
+	printf '%b'  "symbolic link to a supported shell such as bash.\n"
+	printf '%b'  "For example, on Ubuntu systems, execute this shell command:\n\n"
+	printf '%b'  "${YLW}   $ sudo dpkg-reconfigure dash\n\n"
+	printf '%b'  "   Then select option 'No'\n\n${NC}"
+	printf '%b'  "${RED}===============================================================\n"
+	printf '%b'  "Exiting script.....\n${NC}"
+	exit 1
+fi
 
 echo " "
 echo "MURATA Custom i.MX Linux build using Yocto"
@@ -427,6 +446,23 @@ function select_default_image {
 		IMAGE_NAME=fsl-image-validation-imx
 	fi
 }
+
+# Check for .repo folders
+check_path=`pwd`
+check_path=${check_path%/*}
+while [[ "$check_path" != "" ]]; do
+	#echo "Checking $check_path"
+	if [[ -e "$check_path/.repo" ]]; then
+		echo -e "${RED}Found a .repo folder in $check_path. Please ensure no parent folder contains a .repo folder when running the script. Exiting...${NC}"
+		exit
+	else
+		if [[ "$check_path" == "$HOME" ]]; then
+			break
+		else
+			check_path=${check_path%/*}
+		fi
+	fi
+done
 
 echo " "
 echo "${STEP_COUNT}) Select Release Type"
@@ -1602,7 +1638,27 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	export BUILD_DIR=`pwd`
 
 	cd $BSP_DIR/sources
-	git clone $META_MURATA_WIRELESS_GIT
+	# check to see if there is already a folder with name, "meta-murata-wireless"
+	# if it is, then exit
+	TEST_DIR_NAME=meta-murata-wireless
+	if [ -d "$TEST_DIR_NAME" ]; then
+		echo " "
+		echo -e "${YLW}NOTE:${NC} $TEST_DIR_NAME already present in sources folder. This happens if this is not a clean build."
+		echo " "
+		echo -n -e "Do you want to delete this folder and fetch the latest version? (Selecting 'n' will use the existing copy) ${GRN}Y${NC}/${YLW}n${NC}: "
+		read PROCEED_UPDATE_OPTION
+
+		if [ "$PROCEED_UPDATE_OPTION" = "y" ] || [ "$PROCEED_UPDATE_OPTION" = "Y" ] || [ "$PROCEED_UPDATE_OPTION" = "" ]; then
+			rm -rf $TEST_DIR_NAME
+			git clone $META_MURATA_WIRELESS_GIT
+		else
+			echo " "
+			echo -e "${RED}Murata: Skipping $TEST_DIR_NAME download...${NC}"
+		fi
+	else
+		git clone $META_MURATA_WIRELESS_GIT
+	fi
+
 	cd meta-murata-wireless
 
 	git checkout $BRANCH_RELEASE_NAME
