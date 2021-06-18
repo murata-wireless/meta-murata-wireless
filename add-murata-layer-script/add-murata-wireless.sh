@@ -25,7 +25,7 @@ echo "BBLAYERS += \" ${TISDK_DIR}/sources/meta-murata-wireless \"" >> ${TI_BUILD
 
 # Updating kernel recipe file
 echo "SRC_URI += \" file://0001-murata-fmac-defconfig.cfg\"" >> ${TISDK_DIR}/sources/meta-processor-sdk/recipes-kernel/linux/linux-ti-staging_4.9.bbappend
-echo "KERNEL_CONFIG_FRAGMENTS_append_am335x-evm = \" \${WORKDIR}/0001-murata-fmac-defconfig.cfg\"" >> ${TISDK_DIR}/sources/meta-processor-sdk/recipes-kernel/linux/linux-ti-staging_5.4.bbappend
+echo "KERNEL_CONFIG_FRAGMENTS_append_am335x-evm = \" \${WORKDIR}/0001-murata-fmac-defconfig.cfg\"" >> ${TISDK_DIR}/sources/meta-ti/recipes-kernel/linux/linux-ti-staging_5.4.bbappend
 
 echo "ARAGO_BASE += \" \\"       >> ${TISDK_DIR}/sources/meta-arago/meta-arago-distro/recipes-core/packagegroups/packagegroup-arago-base.bb
 echo "    backporttool-linux \\" >> ${TISDK_DIR}/sources/meta-arago/meta-arago-distro/recipes-core/packagegroups/packagegroup-arago-base.bb
