@@ -29,7 +29,7 @@ fi
 
 # Get Ubuntu release version; make sure it is either 16.04, 14.04 or 12.04. 
 Ubuntu_Release=$(lsb_release -r -s)
-if [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
+if [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
                 echo -e "Murata: Verified Ubuntu Release:${NC}     " ${GRN}$Ubuntu_Release${NC}
 else
                 echo -e "${RED}Murata: Only Ubuntu versions 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
@@ -424,7 +424,8 @@ case $BRANCH_RELEASE_OPTION in
 esac
 done
 
-IMAGE_NAME=tisdk-rootfs-image
+#IMAGE_NAME=tisdk-rootfs-image
+IMAGE_NAME=tisdk-base-image
 
 echo " "
 echo "8) Select Image"
@@ -491,7 +492,8 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 		git clone git://arago-project.org/git/projects/oe-layersetup.git tisdk
 		cd tisdk
 		export TISDK_DIR=`pwd`
-		./oe-layertool-setup.sh -f configs/processor-sdk/processor-sdk-04.03.00.05-config.txt
+#		./oe-layertool-setup.sh -f configs/processor-sdk/processor-sdk-04.03.00.05-config.txt
+                ./oe-layertool-setup.sh -f configs/coresdk/coresdk-07.03.00.005-config.txt
 		cd build
 		export TI_BUILD_DIR=`pwd`
 
@@ -511,7 +513,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 
 		cd $TI_BUILD_DIR
 		. $TI_BUILD_DIR/conf/setenv
-		export PATH=$HOME/gcc-linaro-6.2.1-2016.11-x86_64_arm-linux-gnueabihf/bin:$PATH
+		export PATH=$HOME/gcc-arm-9.2-2019.12-x86_64-arm-none-linux-gnueabihf/bin:$PATH
 
 #	elif [ "$TiSitaraYoctoRelease" = "$TiSitaramortyYoctoam572x" ]; then
 #		#echo "DEBUG:: MORTY"
