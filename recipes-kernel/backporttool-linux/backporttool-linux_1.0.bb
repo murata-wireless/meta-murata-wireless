@@ -28,7 +28,7 @@ B = "${WORKDIR}/backporttool-linux-1.0/"
 #You should set variable CROSS_COMPILE, not a CROSS-COMPILE
 export CROSS_COMPILE = "${TARGET_PREFIX}"
 
-KERNEL_VERSION = "${@base_read_file('${STAGING_KERNEL_BUILDDIR}/kernel-abiversion')}"
+#KERNEL_VERSION = "${@base_read_file('${STAGING_KERNEL_BUILDDIR}/kernel-abiversion')}"
 
 do_compile() {
 	# Linux kernel build system is expected to do the right thing
