@@ -1,0 +1,15 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+index 9ac339a..2539812 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+@@ -74,8 +74,8 @@ static int brcmf_eap_restrict;
+ module_param_named(eap_restrict, brcmf_eap_restrict, int, 0400);
+ MODULE_PARM_DESC(eap_restrict, "Block non-802.1X frames until auth finished");
+ 
+-static int brcmf_sdio_wq_highpri;
+-module_param_named(sdio_wq_highpri, brcmf_sdio_wq_highpri, int, 0);
++static int brcmf_sdio_wq_highpri =1; //Murata: set this parameter to 1 to boost RX throughput for Wi-Fi modules.
++module_param_named(sdio_wq_highpri, brcmf_sdio_wq_highpri, int, 0400); //Murata: add brcmf_sdio_wq_highpri to /sys/module/brcmfmac/parameters
+ MODULE_PARM_DESC(sdio_wq_highpri, "SDIO workqueue is set to high priority");
+ 
+ static int brcmf_max_pm;
