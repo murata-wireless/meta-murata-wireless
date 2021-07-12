@@ -1,7 +1,7 @@
 From e03270a1aec0a480c3803b7b560bb199443172df Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Tue, 10 Dec 2019 14:06:20 -0600
-Subject: [PATCH 13/17] SAE: Support SAE authentication offload in AP mode
+Subject: [PATCH 13/20] SAE: Support SAE authentication offload in AP mode
 
 Add support for SAE authentication offload in AP mode. In this case, the
 SAE authentication process is handled by driver instead of user space.
@@ -15,7 +15,7 @@ Signed-off-by: Chung-Hsien Hsu <stanley.hsu@cypress.com>
  4 files changed, 21 insertions(+), 1 deletion(-)
 
 diff --git a/src/ap/beacon.c b/src/ap/beacon.c
-index 73b231a..ff179f5 100644
+index 73b231ab1..ff179f559 100644
 --- a/src/ap/beacon.c
 +++ b/src/ap/beacon.c
 @@ -1386,6 +1386,17 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
@@ -37,7 +37,7 @@ index 73b231a..ff179f5 100644
  }
  
 diff --git a/src/ap/wpa_auth.h b/src/ap/wpa_auth.h
-index 82cb3f7..64eec27 100644
+index 82cb3f7ae..64eec2762 100644
 --- a/src/ap/wpa_auth.h
 +++ b/src/ap/wpa_auth.h
 @@ -233,6 +233,9 @@ struct wpa_auth_config {
@@ -51,7 +51,7 @@ index 82cb3f7..64eec27 100644
  
  typedef enum {
 diff --git a/src/ap/wpa_auth_glue.c b/src/ap/wpa_auth_glue.c
-index 8d81fd7..d3eb7b4 100644
+index 8d81fd785..d3eb7b49a 100644
 --- a/src/ap/wpa_auth_glue.c
 +++ b/src/ap/wpa_auth_glue.c
 @@ -1307,6 +1307,10 @@ int hostapd_setup_wpa(struct hostapd_data *hapd)
@@ -66,7 +66,7 @@ index 8d81fd7..d3eb7b4 100644
  	if (hapd->wpa_auth == NULL) {
  		wpa_printf(MSG_ERROR, "WPA initialization failed.");
 diff --git a/src/ap/wpa_auth_ie.c b/src/ap/wpa_auth_ie.c
-index 2e5c916..527fbba 100644
+index 2e5c9160d..527fbba72 100644
 --- a/src/ap/wpa_auth_ie.c
 +++ b/src/ap/wpa_auth_ie.c
 @@ -916,7 +916,9 @@ int wpa_validate_wpa_ie(struct wpa_authenticator *wpa_auth,
@@ -81,5 +81,5 @@ index 2e5c916..527fbba 100644
  		wpa_auth_vlogger(wpa_auth, sm->addr, LOGGER_DEBUG,
  				 "No PMKSA cache entry found for SAE");
 -- 
-1.9.1
+2.17.1
 
