@@ -6,11 +6,11 @@ IMX_FIRMWARE_SRC ?= "git://github.com/NXP/imx-firmware.git;protocol=https"
 
 SRC_URI = " \
 	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
-	git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=spiga;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
-	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=spiga;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
-	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=zeus-spiga;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
-	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=spiga;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
-	git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=spiga;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
+	git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=baragon;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
+	git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=baragon;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
+	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=zeus-baragon;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
+	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=baragon;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
+	git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=baragon;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
 	git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git;protocol=http;branch=master \
 	file://WlanCalData_ext_DB_W8997_1YM_ES2_Rev_C.conf \
 	file://switch_module.sh \
@@ -21,11 +21,11 @@ SRC_URI += " \
 SRCREV_imx-firmware = "685ace656284167376241c804827f046b984ce25"
 
 SRCREV_nxp-linux-calibration="6167ece880230ef0dbe26ac796e00360b9a40fa8"
-SRCREV_cyw-fmac-fw="ba140e42c3320262fc52e185c3af93eeb10117df"
+SRCREV_cyw-fmac-fw="749e60c523bc7618bd5ecfa30182431a978d756b"
 SRCREV_cyw-fmac-nvram="8710e74e79470f666912c3ccadf1e354d6fb209c"
-SRCREV_cyw-bt-patch="580abcb5b5f06c9ccfb1438b1f52d8bccdff57e6"
-SRCREV_cyw-fmac-utils-imx32="b3b70f0a18bb5aeb9051972ce7267696200c3306"
-SRCREV_cyw-fmac-utils-imx64="c933a91b06dce9fd755a18414d635d3a185d6f5d"
+SRCREV_cyw-bt-patch="4d7aef0c959e8a5c8ad88cd13b4b14b858041d31"
+SRCREV_cyw-fmac-utils-imx32="e248804b6ba386fedcd462ddd9394f42f73a17af"
+SRCREV_cyw-fmac-utils-imx64="1bc78d68f9609290b2f6578516011c57691f7815"
 
 SRCREV_default = "${AUTOREV}"
 
