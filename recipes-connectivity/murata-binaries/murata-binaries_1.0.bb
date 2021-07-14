@@ -78,7 +78,7 @@ do_install () {
 
 #	install -m 444 ${D}${sysconfdir}/firmware/*.hcd       ${D}${sysconfdir}/firmware/murata-master
         install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd    ${D}${sysconfdir}/firmware/murata-master/_BCM4335C0.ZP.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0144.0266.1MW.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4345C0_003.001.025.0144.0266.1MW.hcd
+        install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0172.0344.1MW.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4345C0_003.001.025.0172.0344.1MW.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0102.0141.1LV.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43012C0_003.001.015.0102.0141.1LV.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW43341B0.1BW.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43341B0.1BW.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4343A1_001.002.009.0093.0395.1DX.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM4343A1_001.002.009.0093.0395.1DX.hcd
