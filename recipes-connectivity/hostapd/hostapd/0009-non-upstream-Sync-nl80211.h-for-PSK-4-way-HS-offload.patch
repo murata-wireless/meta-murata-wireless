@@ -1,7 +1,7 @@
 From ae98c14eb1e78ffaf2321e050a593f18ca67dae2 Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Tue, 10 Dec 2019 14:00:51 -0600
-Subject: [PATCH 09/17] non-upstream: Sync nl80211.h for PSK 4-way HS offload
+Subject: [PATCH 09/20] non-upstream: Sync nl80211.h for PSK 4-way HS offload
  support in AP mode
 
 This brings in nl80211 definition for WPA/WPA2-PSK 4-way handshake
@@ -9,11 +9,11 @@ offload support in AP mode.
 
 Signed-off-by: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 ---
- src/drivers/nl80211_copy.h | 51 ++++++++++++++++++++++++++++++----------------
+ src/drivers/nl80211_copy.h | 51 +++++++++++++++++++++++++-------------
  1 file changed, 34 insertions(+), 17 deletions(-)
 
 diff --git a/src/drivers/nl80211_copy.h b/src/drivers/nl80211_copy.h
-index beee59c..1224f81 100644
+index beee59c83..1224f81c3 100644
 --- a/src/drivers/nl80211_copy.h
 +++ b/src/drivers/nl80211_copy.h
 @@ -183,18 +183,27 @@
@@ -106,5 +106,5 @@ index beee59c..1224f81 100644
  	/* add new features before the definition below */
  	NUM_NL80211_EXT_FEATURES,
 -- 
-1.9.1
+2.17.1
 

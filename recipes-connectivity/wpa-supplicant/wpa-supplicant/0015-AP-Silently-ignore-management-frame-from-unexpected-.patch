@@ -1,7 +1,7 @@
 From a66cb7d9dede4dfccf0d1c2c70ee6837d5571aac Mon Sep 17 00:00:00 2001
 From: Jouni Malinen <j@w1.fi>
 Date: Thu, 29 Aug 2019 11:52:04 +0300
-Subject: [PATCH 15/17] AP: Silently ignore management frame from unexpected
+Subject: [PATCH 15/20] AP: Silently ignore management frame from unexpected
  source address
 
 commit d86d66dc073bc21d3b12faf4112062ae00c1773f master.
@@ -24,7 +24,7 @@ Signed-off-by: Jouni Malinen <j@w1.fi>
  2 files changed, 25 insertions(+)
 
 diff --git a/src/ap/drv_callbacks.c b/src/ap/drv_callbacks.c
-index 3158768..34ca379 100644
+index 31587685f..34ca379ed 100644
 --- a/src/ap/drv_callbacks.c
 +++ b/src/ap/drv_callbacks.c
 @@ -131,6 +131,19 @@ int hostapd_notif_assoc(struct hostapd_data *hapd, const u8 *addr,
@@ -48,7 +48,7 @@ index 3158768..34ca379 100644
  
  	hostapd_logger(hapd, addr, HOSTAPD_MODULE_IEEE80211,
 diff --git a/src/ap/ieee802_11.c b/src/ap/ieee802_11.c
-index c85a28d..e706537 100644
+index c85a28db4..e7065372e 100644
 --- a/src/ap/ieee802_11.c
 +++ b/src/ap/ieee802_11.c
 @@ -4626,6 +4626,18 @@ int ieee802_11_mgmt(struct hostapd_data *hapd, const u8 *buf, size_t len,
@@ -71,5 +71,5 @@ index c85a28d..e706537 100644
  		handle_beacon(hapd, mgmt, len, fi);
  		return 1;
 -- 
-1.9.1
+2.17.1
 

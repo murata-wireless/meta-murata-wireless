@@ -1,7 +1,7 @@
 From 0a05505eff7c36f81e946eeaa79e8f50900365aa Mon Sep 17 00:00:00 2001
 From: Jouni Malinen <j@w1.fi>
 Date: Tue, 10 Sep 2019 13:42:14 +0300
-Subject: [PATCH 05/17] Sync with mac80211-next.git
+Subject: [PATCH 05/20] Sync with mac80211-next.git
  include/uapi/linux/nl80211.h
 
 commit 262b71eead4752b4f3f3285f2ee2041c5b115202 master.
@@ -10,11 +10,11 @@ This brings in nl80211 definitions as of 2019-08-30.
 
 Signed-off-by: Jouni Malinen <j@w1.fi>
 ---
- src/drivers/nl80211_copy.h | 91 ++++++++++++++++++++++++++++++++++++++++++++--
+ src/drivers/nl80211_copy.h | 91 ++++++++++++++++++++++++++++++++++++--
  1 file changed, 88 insertions(+), 3 deletions(-)
 
 diff --git a/src/drivers/nl80211_copy.h b/src/drivers/nl80211_copy.h
-index 6f09d15..beee59c 100644
+index 6f09d1500..beee59c83 100644
 --- a/src/drivers/nl80211_copy.h
 +++ b/src/drivers/nl80211_copy.h
 @@ -52,6 +52,11 @@
@@ -29,10 +29,11 @@ index 6f09d15..beee59c 100644
  /**
   * DOC: Station handling
   *
-@@ -235,6 +240,15 @@
+@@ -234,6 +239,15 @@
+  * use in a FILS shared key connection with PMKSA caching.
   */
  
- /**
++/**
 + * DOC: SAE authentication offload
 + *
 + * By setting @NL80211_EXT_FEATURE_SAE_OFFLOAD flag drivers can indicate they
@@ -41,10 +42,9 @@ index 6f09d15..beee59c 100644
 + * %NL80211_ATTR_SAE_PASSWORD.
 + */
 +
-+/**
+ /**
   * enum nl80211_commands - supported nl80211 commands
   *
-  * @NL80211_CMD_UNSPEC: unspecified command to catch errors
 @@ -648,7 +662,9 @@
   *	is used during CSA period.
   * @NL80211_CMD_FRAME_WAIT_CANCEL: When an off-channel TX was requested, this
@@ -240,5 +240,5 @@ index 6f09d15..beee59c 100644
 +
  #endif /* __LINUX_NL80211_H */
 -- 
-1.9.1
+2.17.1
 
