@@ -1,7 +1,7 @@
 From 17d64099a48c32e480c72f553215f7dbba30b753 Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Sun, 22 Dec 2019 20:21:54 -0600
-Subject: [PATCH 14/16] P2P: Fix P2P authentication failure due to AP-mode
+Subject: [PATCH 14/20] P2P: Fix P2P authentication failure due to AP-mode
  4-way handshake offload
 
 Commit 6df8c5e8669d ("AP: Support 4-way handshake offload for
@@ -15,7 +15,7 @@ Signed-off-by: Chung-Hsien Hsu <stanley.hsu@cypress.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/src/ap/wpa_auth_glue.c b/src/ap/wpa_auth_glue.c
-index d3eb7b4..ec883bd 100644
+index d3eb7b49a..ec883bdf2 100644
 --- a/src/ap/wpa_auth_glue.c
 +++ b/src/ap/wpa_auth_glue.c
 @@ -1305,7 +1305,8 @@ int hostapd_setup_wpa(struct hostapd_data *hapd)
@@ -29,5 +29,5 @@ index d3eb7b4..ec883bd 100644
  #ifdef CONFIG_SAE
  	if (hapd->iface->drv_flags & WPA_DRIVER_FLAGS_SAE_OFFLOAD)
 -- 
-1.9.1
+2.17.1
 

@@ -27,6 +27,10 @@ SRC_URI = " \
     file://0013-SAE-Support-SAE-authentication-offload-in-AP-mode.patch;apply=yes \
     file://0014-P2P-Fix-P2P-authentication-failure-due-to-AP-mode-4-.patch;apply=yes \
     file://0015-AP-Silently-ignore-management-frame-from-unexpected-.patch;apply=yes \
+    file://0017-hostapd-Fix-PMF-connection-issue.patch;apply=yes \
+    file://0018-AP-Set-Authenticator-state-properly-for-PSK-4-way-ha.patch;apply=yes \
+    file://0019-hostapd-defconfig-Set-to-Cypress-default-configuration.patch;apply=yes \
+    file://0020-defconfig-enable-CONFIG_TLS_ADD_DL-for-DPP.patch;apply=yes \
     file://udhcpd.conf \
 "
 
