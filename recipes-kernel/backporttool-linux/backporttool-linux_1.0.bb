@@ -13,6 +13,7 @@ SRC_URI =  " \
     file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
     file://0003-brcmfmac-req-fw-direct-war.patch;apply=yes \
     file://0004-makefile-yacc-flex-update.patch;apply=yes \
+    file://0006-add-include-path.patch;apply=yes \
 "
 SRCREV = "68e07dd9a8ed8ec2181bd1206d396c0c41bbb095"
 S = "${WORKDIR}/git"
