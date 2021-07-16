@@ -40,6 +40,9 @@ SRC_URI = "http://w1.fi/releases/wpa_supplicant-${PV}.tar.gz  \
 	   file://0014-P2P-Fix-P2P-authentication-failure-due-to-AP-mode-4-.patch;apply=yes \
 	   file://0015-AP-Silently-ignore-management-frame-from-unexpected-.patch;apply=yes \
 	   file://0016-DPP-Do-more-condition-test-for-AKM-type-DPP-offload.patch;apply=yes \
+	   file://0017-hostapd-Fix-PMF-connection-issue.patch;apply=yes \
+	   file://0018-AP-Set-Authenticator-state-properly-for-PSK-4-way-ha.patch;apply=yes \
+	   file://0019-wpa-supplicant-defconfig-Set-to-Cypress-default-configuration.patch;apply=yes \
 "
 
 SRC_URI[md5sum] = "2d2958c782576dc9901092fbfecb4190"

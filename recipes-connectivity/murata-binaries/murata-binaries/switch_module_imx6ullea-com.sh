@@ -215,7 +215,8 @@ function off() {
 function switch_to_cypress_sdio() {
   echo ""
   echo "Setting up for 1DX, 1LV, 1MW, 1WZ (Cypress - SDIO)"
-  fw_setenv fdt_file imx6dlea-com-kit_v2.dtb
+  fw_setenv fdt_file imx6ullea-com-kit_v2.dtb
+  fw_setenv cmd_custom
   fw_setenv bt_hint cypress
   prepare_for_cypress
   echo ""
@@ -224,7 +225,8 @@ function switch_to_cypress_sdio() {
 function switch_to_cypress_pcie() {
   echo ""
   echo "Setting up for 1CX, 1VA, 1XA (Cypress - PCIe)"
-  fw_setenv fdt_file imx6dlea-com-kit_v2-pcie.dtb
+  fw_setenv fdt_file imx6ullea-com-kit_v2-pcie.dtb
+  fw_setenv cmd_custom
   fw_setenv bt_hint cypress
   prepare_for_cypress
   echo ""
@@ -233,7 +235,9 @@ function switch_to_cypress_pcie() {
 function switch_to_nxp_sdio() {
   echo ""
   echo "Setting up for 1ZM (NXP - SDIO)"
-  fw_setenv fdt_file imx6dlea-com-kit_v2.dtb
+  fw_setenv fdt_file imx6ullea-com-kit_v2.dtb
+  # Limiting SDIO frequency to 50MHz
+  fw_setenv cmd_custom "fdt set mmc0 max-frequency <50000000>"
   fw_setenv bt_hint nxp
   prepare_for_nxp_sdio
   echo ""
@@ -242,7 +246,9 @@ function switch_to_nxp_sdio() {
 function switch_to_nxp_ym_sdio() {
   echo ""
   echo "Setting up for 1YM (NXP - SDIO)"
-  fw_setenv fdt_file imx6dlea-com-kit_v2.dtb
+  fw_setenv fdt_file imx6ullea-com-kit_v2.dtb
+  # Limiting SDIO frequency to 50MHz
+  fw_setenv cmd_custom "fdt set mmc0 max-frequency <50000000>"
   fw_setenv bt_hint nxp_1ym_sdio
   prepare_for_nxp_ym_sdio
   echo ""
@@ -252,7 +258,8 @@ function switch_to_nxp_ym_sdio() {
 function switch_to_nxp_ym_pcie() {
   echo ""
   echo "Setting up for 1YM (NXP - PCIe)"
-  fw_setenv fdt_file imx6dlea-com-kit_v2-pcie.dtb
+  fw_setenv fdt_file imx6ullea-com-kit_v2-pcie.dtb
+  fw_setenv cmd_custom
   fw_setenv bt_hint nxp_1ym_pcie
   prepare_for_nxp_ym_pcie
   echo ""
