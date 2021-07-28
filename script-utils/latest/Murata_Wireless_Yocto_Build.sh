@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=06142021
+VERSION=06292021
 
 
 ###################################################################################################
@@ -25,6 +25,7 @@ VERSION=06142021
 #  1.10     | 05/27/2021   |    RC        |    Add check for previous meta-murata-wireless folder.
 #  1.11     | 05/31/2021   |    RC        |    Add check for .repo folders
 #  1.12     | 06/14/2021   |    JK        |    Add Exiting the script after dash check
+#  1.13     | 06/29/2021   |    RC        |    Add Baragon
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -48,11 +49,13 @@ MANDA_FMAC_INDEX="1"
 KONG_FMAC_INDEX="2"
 ZIGRA_FMAC_INDEX="3"
 SPIGA_FMAC_INDEX="4"
+BARAGON_FMAC_INDEX="5"
 
 MANDA_FMAC_STR="manda"
 KONG_FMAC_STR="kong"
 ZIGRA_FMAC_STR="zigra"
 SPIGA_FMAC_STR="spiga"
+BARAGON_FMAC_STR="baragon"
 
 LINUX_KERNEL_5_4_47=0
 LINUX_KERNEL_4_14_98=1
@@ -84,6 +87,9 @@ fmacversion=""
 linuxVersion=""
 
 # Zeus
+iMXzeusbaragonStableReleaseTag="imx-zeus-baragon_r1.0"
+iMXzeusbaragonDeveloperRelease="imx-zeus-baragon"
+
 iMXzeusspigaStableReleaseTag="imx-zeus-spiga_r1.0"
 iMXzeusspigaDeveloperRelease="imx-zeus-spiga"
 
@@ -91,6 +97,9 @@ iMXzeuszigraStableReleaseTag="imx-zeus-zigra_r1.0"
 iMXzeuszigraDeveloperRelease="imx-zeus-zigra"
 
 # Sumo
+iMXsumobaragonStableReleaseTag="imx-sumo-baragon_r1.0"
+iMXsumobaragonDeveloperRelease="imx-sumo-baragon"
+
 iMXsumospigaStableReleaseTag="imx-sumo-spiga_r1.1"
 iMXsumospigaDeveloperRelease="imx-sumo-spiga"
 
@@ -104,6 +113,9 @@ iMXsumomandaStableReleaseTag="imx-sumo-manda_r1.2"
 iMXsumomandaDeveloperRelease="imx-sumo-manda"
 
 # Rocko-Mini
+iMXrockominibaragonStableReleaseTag="imx-rocko-mini-baragon_r1.0"
+iMXrockominibaragonDeveloperRelease="imx-rocko-mini-baragon"
+
 iMXrockominispigaStableReleaseTag="imx-rocko-mini-spiga_r1.0"
 iMXrockominispigaDeveloperRelease="imx-rocko-mini-spiga"
 
@@ -117,6 +129,9 @@ iMXrockominimandaStableReleaseTag="imx-rocko-mini-manda_r2.2"
 iMXrockominimandaDeveloperRelease="imx-rocko-mini-manda"
 
 # Krogoth
+iMXkrogothbaragonStableReleaseTag="imx-krogoth-baragon_r1.0"
+iMXkrogothbaragonDeveloperRelease="imx-krogoth-baragon"
+
 iMXkrogothspigaStableReleaseTag="imx-krogoth-spiga_r1.0"
 iMXkrogothspigaDeveloperRelease="imx-krogoth-spiga"
 
@@ -492,14 +507,14 @@ while true; do
 	echo "${STEP_COUNT}) Select "\""Linux Kernel"\"" "
 	echo "------------------------"
 	echo -e "${YLW}NOTE:${NC} NXP Supported - 1ZM, 1YM-SDIO and 1YM-PCIe"
-	echo "---------------------------------------------------------------------------------"
-	echo "|Entry|   Linux Kernel   | Yocto   | NXP Supported   | FMAC Supported           |"
-	echo "|-----|------------------|---------|--------------------------------------------|"
-	echo "|  0  |     ${LINUX_KERNEL_5_4_47_STR}       | zeus    | Yes             | Spiga,Zigra              |"
-	echo "|  1  |     ${LINUX_KERNEL_4_14_98_STR}      | sumo    | No              | Spiga,Zigra,Kong,Manda   |"
-	echo "|  2  |     ${LINUX_KERNEL_4_9_123_STR}      | rocko   | No              | Spiga,Zigra,Kong,Manda   |"
-	echo "|  3  |     ${LINUX_KERNEL_4_1_15_STR}       | krogoth | No              | Spiga,Zigra,Kong,Manda   |"
-	echo "---------------------------------------------------------------------------------"
+	echo "-----------------------------------------------------------------------------------------"
+	echo "|Entry|   Linux Kernel   | Yocto   | NXP Supported   | FMAC Supported                   |"
+	echo "|-----|------------------|---------|----------------------------------------------------|"
+	echo "|  0  |     ${LINUX_KERNEL_5_4_47_STR}       | zeus    | Yes             | Baragon,Spiga,Zigra              |"
+	echo "|  1  |     ${LINUX_KERNEL_4_14_98_STR}      | sumo    | No              | Baragon,Spiga,Zigra,Kong,Manda   |"
+	echo "|  2  |     ${LINUX_KERNEL_4_9_123_STR}      | rocko   | No              | Baragon,Spiga,Zigra,Kong,Manda   |"
+	echo "|  3  |     ${LINUX_KERNEL_4_1_15_STR}       | krogoth | No              | Baragon,Spiga,Zigra,Kong,Manda   |"
+	echo "-----------------------------------------------------------------------------------------"
 	read -p "Select which entry? " LINUX_KERNEL
 
 	case $LINUX_KERNEL in
@@ -595,7 +610,7 @@ fi
 if [ "$WIRELESS_SOLUTION" = "$WIRELESS_SOLUTION_NXP" ] ; then
 	case $LINUX_KERNEL in
 	$LINUX_KERNEL_5_4_47) # For NXP, using spiga fmac
-		FMAC_VERSION=${ZIGRA_FMAC_INDEX}
+		FMAC_VERSION=${SPIGA_FMAC_INDEX}
 		if [ "$BRANCH_TAG_OPTION" = "y" ] ; then
 			#echo "DEBUG:: zeus-spiga"
 			BRANCH_RELEASE_NAME="$iMXzeusspigaStableReleaseTag"
@@ -626,8 +641,9 @@ else
 				echo     "|-------|---------------------------------------------------|"
 				echo     "|  0.   | $MANDA_FMAC_STR - Old release                               |"
 				echo     "|  1.   | $KONG_FMAC_STR - Old release                                |"
-				echo     "|  2.   | $ZIGRA_FMAC_STR - Previous release                          |"
-				echo     "|  3.   | $SPIGA_FMAC_STR - Latest release                            |"
+				echo     "|  2.   | $ZIGRA_FMAC_STR - Old release                               |"
+				echo     "|  3.   | $SPIGA_FMAC_STR - Previous release                          |"
+				echo -e  "|  4.   | $BARAGON_FMAC_STR - ${GRN}Latest release${NC}                          |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " ENTRY
 				case $ENTRY in
@@ -702,7 +718,24 @@ else
 					fi
 					break
 					;;
-
+				4) # for BARAGON
+					FMAC_VERSION=${BARAGON_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION" = "y" ]; then
+						#echo "DEBUGG:: krogoth-baragon_r1.0"
+						BRANCH_RELEASE_NAME="$iMXkrogothbaragonStableReleaseTag"
+						iMXYoctoRelease="$imxkrogothYocto"
+						YoctoBranch="krogoth"
+						fmacversion="$BARAGON_FMAC_STR"
+						# krogoth-baragon
+					else
+						#echo "DEBUG:: krogoth-baragon"
+						BRANCH_RELEASE_NAME="$iMXkrogothbaragonDeveloperRelease"
+						iMXYoctoRelease="$imxkrogothYocto"
+						YoctoBranch="krogoth"
+						fmacversion="$BARAGON_FMAC_STR"
+					fi
+					break
+					;;
 
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
@@ -719,8 +752,9 @@ else
 				echo     "|-------|---------------------------------------------------|"
 				echo     "|  0.   | $MANDA_FMAC_STR - Old release                               |"
 				echo     "|  1.   | $KONG_FMAC_STR - Old release                                |"
-				echo     "|  2.   | $ZIGRA_FMAC_STR - Previous release                          |"
-				echo     "|  3.   | $SPIGA_FMAC_STR - Latest release                            |"
+				echo     "|  2.   | $ZIGRA_FMAC_STR - Old release                               |"
+				echo     "|  3.   | $SPIGA_FMAC_STR - Previous release                          |"
+				echo -e  "|  4.   | $BARAGON_FMAC_STR - ${GRN}Latest release${NC}                          |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " ENTRY
 				case $ENTRY in
@@ -797,7 +831,24 @@ else
 					fi
 					break
 					;;
-
+				4) # for BARAGON
+					FMAC_VERSION=${BARAGON_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION" = "y" ]; then
+						#echo "DEBUGG:: rocko-mini-baragon_r1.0"
+						BRANCH_RELEASE_NAME="$iMXrockominibaragonStableReleaseTag"
+						iMXYoctoRelease="$imxrockominiYocto"
+						YoctoBranch="rocko"
+						fmacversion="$BARAGON_FMAC_STR"
+						# rocko-mini-baragon
+					else
+						#echo "DEBUG:: rocko-mini-BARAGON"
+						BRANCH_RELEASE_NAME="$iMXrockominibaragonDeveloperRelease"
+						iMXYoctoRelease="$imxrockominiYocto"
+						YoctoBranch="rocko"
+						fmacversion="$BARAGON_FMAC_STR"
+					fi
+					break
+					;;
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					echo $'\n'
@@ -813,8 +864,9 @@ else
 				echo     "|-------|---------------------------------------------------|"
 				echo     "|  0.   | $MANDA_FMAC_STR - Old release                               |"
 				echo     "|  1.   | $KONG_FMAC_STR - Old release                                |"
-				echo     "|  2.   | $ZIGRA_FMAC_STR - Previous release                          |"
-				echo     "|  3.   | $SPIGA_FMAC_STR - Latest release                            |"
+				echo     "|  2.   | $ZIGRA_FMAC_STR - Old release                               |"
+				echo     "|  3.   | $SPIGA_FMAC_STR - Previous release                          |"
+				echo -e  "|  4.   | $BARAGON_FMAC_STR - ${GRN}Latest release${NC}                          |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " ENTRY
 				case $ENTRY in
@@ -890,7 +942,24 @@ else
 					fi
 					break
 					;;
-
+				4) #for BARAGON
+					FMAC_VERSION=${BARAGON_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: sumo-baragon_r1.0"
+						BRANCH_RELEASE_NAME="$iMXsumobaragonStableReleaseTag"
+						iMXYoctoRelease="$imxsumoYocto"
+						YoctoBranch="sumo"
+						fmacversion="$BARAGON_FMAC_STR"
+					# sumo-baragon
+					else
+						#echo "DEBUG:: sumo-baragon"
+						BRANCH_RELEASE_NAME="$iMXsumobaragonDeveloperRelease"
+						iMXYoctoRelease="$imxsumoYocto"
+						YoctoBranch="sumo"
+						fmacversion="$BARAGON_FMAC_STR"
+					fi
+					break
+					;;
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					echo $'\n'
@@ -904,8 +973,9 @@ else
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo     "|  0.   | $ZIGRA_FMAC_STR - Previous release                          |"
-				echo -e  "|  1.   | ${SPIGA_FMAC_STR} - ${GRN}Latest release${NC}                            |"
+				echo     "|  0.   | $ZIGRA_FMAC_STR - Old release                               |"
+				echo     "|  1.   | $SPIGA_FMAC_STR - Previous release                          |"
+				echo -e  "|  2.   | ${BARAGON_FMAC_STR} - ${GRN}Latest release${NC}                          |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -939,7 +1009,21 @@ else
 					fmacversion=${SPIGA_FMAC_STR}
 					break
 					;;
-
+				2)
+					# for BARAGON
+					FMAC_VERSION=${BARAGON_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: zeus-baragon"
+						BRANCH_RELEASE_NAME="$iMXzeusbaragonStableReleaseTag"
+					else
+						#echo "DEBUG:: zeus-baragon"
+						BRANCH_RELEASE_NAME="$iMXzeusbaragonDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxzeusYocto"
+					YoctoBranch="zeus"
+					fmacversion=${BARAGON_FMAC_STR}
+					break
+					;;
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					echo $'\n'
@@ -1037,7 +1121,7 @@ while true; do
 			echo "|  3     |  imx6sxsabresd    | MCIMX6SX-SDB             |"
 			echo "|  4     |  imx6qsabresd     | MCIMX6Q-SDB              |"
 			echo "|  5     |  imx6qpsabresd    | MCIMX6QP-SDB             |"
-			echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB    	      |"
+			echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
 			echo "|  7     |  imx7dsabresd     | MCIMX7SABRE              |"
 			echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
 			echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
@@ -1692,10 +1776,10 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 		fi
 	fi
 
-	#for rocko-mini-zigra or spiga
+	#for rocko-mini-zigra, spiga or baragon
 	if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
-		if [ "$FMAC_VERSION" = "$ZIGRA_FMAC_INDEX" ] || [ "$FMAC_VERSION" = "$SPIGA_FMAC_INDEX" ]; then
-			#echo "DEBUG:: ZIGRA/SPIGA-LOADING-FOR-ROCKO-MINI"
+		if [ "$FMAC_VERSION" = "$ZIGRA_FMAC_INDEX" ] || [ "$FMAC_VERSION" = "$SPIGA_FMAC_INDEX" ] || [ "$FMAC_VERSION" = "$BARAGON_FMAC_INDEX" ]; then
+			#echo "DEBUG:: ZIGRA/SPIGA/BARAGON-LOADING-FOR-ROCKO-MINI"
 			if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ]; then
 				#echo "DEBUG FOR IMX8-rocko-mini: COPYING IMX8 BACKPORTS, and bbx files"
 				#echo "DEBUG:: SRC::$LINUX_SRC DEST::$LINUX_SRC"
@@ -1761,9 +1845,9 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	fi
 
 
-	#for sumo-zigra or sumo-spiga
+	#for sumo-zigra, sumo-spiga or sumo-baragon
 	if [ "$iMXYoctoRelease" = "$imxsumoYocto" ]; then
-		if [ "$FMAC_VERSION" = $SPIGA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $ZIGRA_FMAC_INDEX ]; then
+		if [ "$FMAC_VERSION" = $SPIGA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $ZIGRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $BARAGON_FMAC_INDEX ]; then
 			mv $BSP_DIR/sources/meta-openembedded/meta-oe/recipes-connectivity/hostapd/hostapd_2.6.bb $BSP_DIR/sources/meta-openembedded/meta-oe/recipes-connectivity/hostapd/hostapd_2.6.bbx
 			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-connectivity/hostapd/hostapd_%.bbappend $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-connectivity/hostapd/hostapd_%.bbappendx
 			mv $BSP_DIR/sources/poky/meta/recipes-connectivity/wpa-supplicant/wpa-supplicant_2.6.bb $BSP_DIR/sources/poky/meta/recipes-connectivity/wpa-supplicant/wpa-supplicant_2.6.bbx
