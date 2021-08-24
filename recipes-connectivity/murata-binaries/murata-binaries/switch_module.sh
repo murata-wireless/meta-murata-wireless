@@ -173,7 +173,7 @@ blacklist cfg80211
 alias sdio:c*v02DFd9141* sd8997
 
 # Specify arguments to pass when loading the sd8997 module
-options sd8997 fw_name=nxp/sdsd8997_combo_v4.bin cal_data_cfg=nxp/WlanCalData_ext_DB_W8997_1YM_ES2_Rev_C.conf cfg80211_wext=0xf
+options sd8997 fw_name=nxp/sdsd8997_combo_v4.bin cal_data_cfg=none cfg80211_wext=0xf
 EOT
 
   depmod -a
@@ -219,7 +219,7 @@ blacklist cfg80211
 alias pci:v00001B4Bd00002B42sv*sd*bc02sc00i* pcie8997
 
 # Specify arguments to pass when loading the pcie8997 module
-options pcie8997 drv_mode=3 ps_mode=2 auto_ds=2 cfg80211_wext=0xf fw_name=nxp/pcieuart8997_combo_v4.bin cal_data_cfg=nxp/WlanCalData_ext_DB_W8997_1YM_ES2_Rev_C.conf
+options pcie8997 drv_mode=3 ps_mode=2 auto_ds=2 cfg80211_wext=0xf fw_name=nxp/pcieuart8997_combo_v4.bin cal_data_cfg=none
 EOT
 
   depmod -a

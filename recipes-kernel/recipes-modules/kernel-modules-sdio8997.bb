@@ -18,11 +18,11 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 SDIO_FILE_EXISTS="no"
 SDIO_SOURCE_DIR="none"
-SDIO_FILE_SIZE="4477181"
-SDIO_FILE_MD5_SUM="d0bc6b101214d0a4a232ef41e6efd3e2"
-SDIO_FOLDER_NAME="SD-WLAN-SD-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL"
+SDIO_FILE_SIZE="2326786"
+SDIO_FILE_MD5_SUM="d1a26c76d9ab071b792b54ef73827f8e"
+SDIO_FOLDER_NAME="EAR_SDIO_WLAN_UART_BT_IW416_16.92.10.p151_16.92.10.p151-FP92-BT-FP92-LINUX-MM5X17241-MGPL"
 SDIO_FILE_NAME="${SDIO_FOLDER_NAME}.zip"
-SDIO_FOLDER_NAME_EXTRACT="SD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL"
+SDIO_FOLDER_NAME_EXTRACT="SDIO_WLAN_UART_BT_IW416_16.92.10.p151_16.92.10.p151-FP92-BT-FP92-LINUX-MM5X17241-MGPL"
 
 SRC_URI = " \
 	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=zeus-gamera;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
@@ -65,18 +65,29 @@ do_patch() {
 
 #	STEP 2: Copy the zip file to work dir and unzip it.
 	if [ "$SDIO_FILE_EXISTS" = "yes" ]; then
+		echo "Copying the zip file"
         	cp $SDIO_SOURCE_DIR/${SDIO_FILE_NAME} ${S}
 		cd ${S}
-		# Remove existing extracted folder
-		rm -rf ${SDIO_FOLDER_NAME}
-		unzip ${SDIO_FILE_NAME}
+		pwd
+#		# Remove existing extracted folder
+#		rm -rf ${SDIO_FOLDER_NAME}
+#		unzip ${SDIO_FILE_NAME}
+
+#		cd ${S}/${SDIO_FOLDER_NAME_EXTRACT}
+#		rm COPYING
 	fi	
 
 #	STEP 3: Untar and Apply the makefile patch
 	if [ "$SDIO_FILE_EXISTS" = "yes" ]; then
-		tar -xvf ${S}/SD-WLAN-SD-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL.tar
-		for i in `ls *.tgz`; do tar -xvf $i; done
-		cd ${S}/${SDIO_FOLDER_NAME_EXTRACT}
+		ls -al ${S}/
+		cd ${S}/SDIO_WLAN_UART_BT_IW416_16.92.10.p151_16.92.10.p151-FP92-BT-FP92-LINUX-MM5X17241-MGPL
+		tar -xvf ${S}/SDIO_WLAN_UART_BT_IW416_16.92.10.p151_16.92.10.p151-FP92-BT-FP92-LINUX-MM5X17241-MGPL/wlan_src.tar
+		pwd
+		cd ${S}/SDIO_WLAN_UART_BT_IW416_16.92.10.p151_16.92.10.p151-FP92-BT-FP92-LINUX-MM5X17241-MGPL/wlan_src
+		for i in `ls *.tar`; do tar -xvf $i; done
+
+
+		cd ${S}/SDIO_WLAN_UART_BT_IW416_16.92.10.p151_16.92.10.p151-FP92-BT-FP92-LINUX-MM5X17241-MGPL
         	patch -p1 < ${S}/makefile.patch
 	fi
 
@@ -119,17 +130,19 @@ do_compile() {
 		# Change build folder to 8997 folder (wlan_src)
     		cd ${S}/${SDIO_FOLDER_NAME_EXTRACT}/wlan_src
 		pwd
+
+		oe_runmake clean
 		oe_runmake build
 
 		# Change build folder to 8997 folder (mbtc_src)
-    		cd ${S}/${SDIO_FOLDER_NAME_EXTRACT}/mbtc_src
-		pwd
-		oe_runmake build
+#    		cd ${S}/${SDIO_FOLDER_NAME_EXTRACT}/mapp/mlanutl
+#		pwd
+#		oe_runmake build
 
 		# Change build folder to 8997 folder (mbt_src)
-    		cd ${S}/${SDIO_FOLDER_NAME_EXTRACT}/mbt_src
-		pwd
-		oe_runmake build
+#    		cd ${S}/${SDIO_FOLDER_NAME_EXTRACT}/mbt_src
+#		pwd
+#		oe_runmake build
 	fi
 }
 
@@ -162,15 +175,11 @@ do_install () {
    		# install ko and configs to rootfs
    		install -d ${D}${datadir}/nxp_wireless
 
-   		cp -rf ${S}/SD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/bin_sd8997 ${D}${datadir}/nxp_wireless
-   		cp -rf ${S}/SD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/bin_sd8997_bt ${D}${datadir}/nxp_wireless
-   		cp -rf ${S}/SD-UAPSTA-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL/bin_sd8997_btchar ${D}${datadir}/nxp_wireless
+   		cp -rf ${S}/${SDIO_FOLDER_NAME_EXTRACT}/bin_wlan ${D}${datadir}/nxp_wireless
 
 	    	# Install NXP 8997-SDIO(1YM) firmware
     		install -d ${D}${nonarch_base_libdir}/firmware/nxp
-    		install -m 0644 ${S}/FwImage/sd8997_bt_v4.bin ${D}${nonarch_base_libdir}/firmware/nxp
-    		install -m 0644 ${S}/FwImage/sd8997_wlan_v4.bin ${D}${nonarch_base_libdir}/firmware/nxp
-    		install -m 0644 ${S}/FwImage/sdsd8997_combo_v4.bin ${D}${nonarch_base_libdir}/firmware/nxp
+    		install -m 0644 ${S}/${SDIO_FOLDER_NAME_EXTRACT}/Firmware/sdiouart8978_combo_v0.bin ${D}${nonarch_base_libdir}/firmware/nxp
 	else
 		# install file mentioning no SDIO driver support
 		install -d ${D}${nonarch_base_libdir}/firmware/nxp
