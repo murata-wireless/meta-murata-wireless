@@ -70,10 +70,10 @@ do_patch() {
 		cd ${S}
 		pwd
 #		# Remove existing extracted folder
-#		rm -rf ${SDIO_FOLDER_NAME}
-#		unzip ${SDIO_FILE_NAME}
+		rm -rf ${SDIO_FOLDER_NAME}
+		unzip ${SDIO_FILE_NAME}
 
-#		cd ${S}/${SDIO_FOLDER_NAME_EXTRACT}
+		cd ${S}/${SDIO_FOLDER_NAME_EXTRACT}
 #		rm COPYING
 	fi	
 
