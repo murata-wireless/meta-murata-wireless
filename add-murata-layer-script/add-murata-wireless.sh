@@ -10,6 +10,8 @@ cp ./sources/meta-murata-wireless/freescale/imx8_all.conf ./sources/meta-imx/met
 cp ./sources/meta-murata-wireless/freescale/imx8mnddr4evk.conf ./sources/meta-imx/meta-bsp/conf/machine/
 cp ./sources/meta-murata-wireless/freescale/imx8mnlpddr4evk.conf ./sources/meta-imx/meta-bsp/conf/machine/
 cp ./sources/meta-murata-wireless/freescale/layer.conf ./sources/meta-imx/meta-bsp/conf/
+cp ./sources/meta-murata-wireless/freescale/imx8mm-lpddr4-evk.conf ./meta-freescale/conf/machine/
+cp ./sources/meta-murata-wireless/freescale/imx8mn-lpddr4-evk.conf ./meta-freescale/conf/machine/
 
 
 #EULA=$EULA DISTRO=$DISTRO MACHINE=$MACHINE . ./sources/meta-fsl-bsp-release/imx/tools/fsl-setup-release.sh -b $@
@@ -34,9 +36,12 @@ echo "  - imx8mnevk.conf ./sources/meta-imx/meta-bsp/conf/machine"
 echo "  - imx8_all.conf ./sources/meta-imx/meta-bsp/conf/machine"
 echo "  - imx8mnddr4evk.conf ./sources/meta-imx/meta-bsp/conf/machine"
 echo "  - imx8mnlpddr4evk.conf ./sources/meta-imx/meta-bsp/conf/machine"
+echo "  - imx8mm-lpddr4-evk.conf ./sources/meta-freescale/conf/machine"
+echo "  - imx8mn-lpddr4-evk.conf ./sources/meta-freescale/conf/machine"
 echo "  - layer.conf ./sources/meta-imx/meta-bsp/conf"
 
 echo ""
 echo "Murata-Wireless setup complete. Create an image with:"
 echo "    $ bitbake fsl-image-validation-imx"
 echo ""
+
