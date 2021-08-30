@@ -7,8 +7,9 @@ RRECOMMENDS_${PN} = "wireless-tools"
 
 RDEPENDS_${PN} += "bash"
 
-DEPENDS = "virtual/kernel"
+DEPENDS = "virtual/kernel p7zip-native"
 do_configure[depends] += "make-mod-scripts:do_compile"
+do_unpack[depends] += "p7zip-native:do_populate_sysroot"
 
 EXTRA_OEMAKE += " \
     KERNELDIR=${STAGING_KERNEL_BUILDDIR} \
@@ -18,11 +19,11 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 
 SDIO_FILE_EXISTS="no"
 SDIO_SOURCE_DIR="none"
-SDIO_FILE_SIZE="2326786"
-SDIO_FILE_MD5_SUM="d1a26c76d9ab071b792b54ef73827f8e"
-SDIO_FOLDER_NAME="EAR_SDIO_WLAN_UART_BT_IW416_16.92.10.p151_16.92.10.p151-FP92-BT-FP92-LINUX-MM5X17241-MGPL"
+SDIO_FILE_SIZE="1140683"
+SDIO_FILE_MD5_SUM="3025f46e807e34425709eab2514538e5"
+SDIO_FOLDER_NAME="Pre_QA_SDIO_WLAN_UART_BT_IW416_16.92.10.p170_16.92.10.p170-WIFI-FP92-BT-FP92-LINUX-MM5X17258-MGPL"
 SDIO_FILE_NAME="${SDIO_FOLDER_NAME}.zip"
-SDIO_FOLDER_NAME_EXTRACT="SDIO_WLAN_UART_BT_IW416_16.92.10.p151_16.92.10.p151-FP92-BT-FP92-LINUX-MM5X17241-MGPL"
+SDIO_FOLDER_NAME_EXTRACT="SDIO_WLAN_UART_BT_IW416_16.92.10.p170_16.92.10.p170-WIFI-FP92-BT-FP92-LINUX-MM5X17258-MGPL"
 
 SRC_URI = " \
 	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=zeus-gamera;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
@@ -69,25 +70,26 @@ do_patch() {
         	cp $SDIO_SOURCE_DIR/${SDIO_FILE_NAME} ${S}
 		cd ${S}
 		pwd
-#		# Remove existing extracted folder
-		rm -rf ${SDIO_FOLDER_NAME}
+		ls -al
+		# Remove existing extracted folder
+		rm -rf ${SDIO_FOLDER_NAME_EXTRACT}
 		unzip ${SDIO_FILE_NAME}
 
 		cd ${S}/${SDIO_FOLDER_NAME_EXTRACT}
-#		rm COPYING
+		rm COPYING
 	fi	
 
 #	STEP 3: Untar and Apply the makefile patch
 	if [ "$SDIO_FILE_EXISTS" = "yes" ]; then
 		ls -al ${S}/
-		cd ${S}/SDIO_WLAN_UART_BT_IW416_16.92.10.p151_16.92.10.p151-FP92-BT-FP92-LINUX-MM5X17241-MGPL
-		tar -xvf ${S}/SDIO_WLAN_UART_BT_IW416_16.92.10.p151_16.92.10.p151-FP92-BT-FP92-LINUX-MM5X17241-MGPL/wlan_src.tar
+		cd ${S}/SDIO_WLAN_UART_BT_IW416_16.92.10.p170_16.92.10.p170-WIFI-FP92-BT-FP92-LINUX-MM5X17258-MGPL
+		7za x ${S}/SDIO_WLAN_UART_BT_IW416_16.92.10.p170_16.92.10.p170-WIFI-FP92-BT-FP92-LINUX-MM5X17258-MGPL/wlan_src.7z
 		pwd
-		cd ${S}/SDIO_WLAN_UART_BT_IW416_16.92.10.p151_16.92.10.p151-FP92-BT-FP92-LINUX-MM5X17241-MGPL/wlan_src
-		for i in `ls *.tar`; do tar -xvf $i; done
+		cd ${S}/SDIO_WLAN_UART_BT_IW416_16.92.10.p170_16.92.10.p170-WIFI-FP92-BT-FP92-LINUX-MM5X17258-MGPL/wlan_src
+#		for i in `ls *.tar`; do tar -xvf $i; done
 
 
-		cd ${S}/SDIO_WLAN_UART_BT_IW416_16.92.10.p151_16.92.10.p151-FP92-BT-FP92-LINUX-MM5X17241-MGPL
+		cd ${S}/${SDIO_FOLDER_NAME_EXTRACT}
         	patch -p1 < ${S}/makefile.patch
 	fi
 
@@ -174,8 +176,10 @@ do_install () {
 	if [ "$SDIO_FILE_EXISTS" = "yes" ]; then
    		# install ko and configs to rootfs
    		install -d ${D}${datadir}/nxp_wireless
+		install -d ${D}${datadir}/nxp_wireless/bin_sdio_1xk
 
-   		cp -rf ${S}/${SDIO_FOLDER_NAME_EXTRACT}/bin_wlan ${D}${datadir}/nxp_wireless
+#		rm ${S}/${SDIO_FOLDER_NAME_EXTRACT}/bin_wlan/usbconfig
+   		cp -rf ${S}/${SDIO_FOLDER_NAME_EXTRACT}/bin_wlan/* ${D}${datadir}/nxp_wireless/bin_sdio_1xk
 
 	    	# Install NXP 8997-SDIO(1YM) firmware
     		install -d ${D}${nonarch_base_libdir}/firmware/nxp
