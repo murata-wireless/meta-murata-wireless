@@ -118,15 +118,6 @@ function prepare_for_nxp_sdio() {
 
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
 
-  cp /lib/firmware/nxp/1ZM/db.txt.1zm 		/lib/firmware/nxp/db.txt
-  cp /lib/firmware/nxp/1ZM/ed_mac.bin.1zm 	/lib/firmware/nxp/ed_mac.bin
-  cp /lib/firmware/nxp/1ZM/bt_power_config_1.sh.1zm  /lib/firmware/nxp/bt_power_config_1.sh
-  cp /lib/firmware/nxp/1ZM/txpower_CA.bin.1zm	/lib/firmware/nxp/txpower_CA.bin
-  cp /lib/firmware/nxp/1ZM/txpower_EU.bin.1zm 	/lib/firmware/nxp/txpower_EU.bin
-  cp /lib/firmware/nxp/1ZM/txpower_JP.bin.1zm 	/lib/firmware/nxp/txpower_JP.bin
-  cp /lib/firmware/nxp/1ZM/txpower_US.bin.1zm 	/lib/firmware/nxp/txpower_US.bin
-
-
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -191,14 +182,6 @@ function prepare_for_nxp_ym_sdio() {
 
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
 
-  cp /lib/firmware/nxp/1YM/db.txt.1ym 		/lib/firmware/nxp/db.txt
-  cp /lib/firmware/nxp/1YM/ed_mac.bin.1ym 	/lib/firmware/nxp/ed_mac.bin
-  cp /lib/firmware/nxp/1YM/bt_power_config_1.sh.1ym  /lib/firmware/nxp/bt_power_config_1.sh
-  cp /lib/firmware/nxp/1YM/txpower_CA.bin.1ym	/lib/firmware/nxp/txpower_CA.bin
-  cp /lib/firmware/nxp/1YM/txpower_EU.bin.1ym 	/lib/firmware/nxp/txpower_EU.bin
-  cp /lib/firmware/nxp/1YM/txpower_JP.bin.1ym 	/lib/firmware/nxp/txpower_JP.bin
-  cp /lib/firmware/nxp/1YM/txpower_US.bin.1ym 	/lib/firmware/nxp/txpower_US.bin
-
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -233,14 +216,6 @@ function prepare_for_nxp_ym_pcie() {
   cp /usr/share/nxp_wireless/default/moal.ko /lib/modules/$(uname -r)/extra/moal.ko
 
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-
-  cp /lib/firmware/nxp/1YM/db.txt.1ym 		/lib/firmware/nxp/db.txt
-  cp /lib/firmware/nxp/1YM/ed_mac.bin.1ym 	/lib/firmware/nxp/ed_mac.bin
-  cp /lib/firmware/nxp/1YM/bt_power_config_1.sh.1ym  /lib/firmware/nxp/bt_power_config_1.sh
-  cp /lib/firmware/nxp/1YM/txpower_CA.bin.1ym	/lib/firmware/nxp/txpower_CA.bin
-  cp /lib/firmware/nxp/1YM/txpower_EU.bin.1ym 	/lib/firmware/nxp/txpower_EU.bin
-  cp /lib/firmware/nxp/1YM/txpower_JP.bin.1ym 	/lib/firmware/nxp/txpower_JP.bin
-  cp /lib/firmware/nxp/1YM/txpower_US.bin.1ym 	/lib/firmware/nxp/txpower_US.bin
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -295,15 +270,18 @@ function switch_to_nxp_sdio() {
   echo "Please wait for 30 sec..."
   prepare_for_nxp_sdio
   echo ""
-  echo "Setup complete"
+  echo "Setup complete."
+  echo "Please reboot."
 }
 
 function switch_to_nxp_ym_sdio() {
   echo ""
   echo "Setting up for 1YM (NXP - SDIO)"
+  echo "Please wait for 30 sec..."
   prepare_for_nxp_ym_sdio
   echo ""
-  echo "Setup complete"
+  echo "Setup complete."
+  echo "Please reboot."
 }
 
 function switch_to_nxp_1xk_sdio() {
@@ -312,7 +290,8 @@ function switch_to_nxp_1xk_sdio() {
   echo "Please wait for 30 sec..."
   prepare_for_nxp_1xk_sdio
   echo ""
-  echo "Setup complete"
+  echo "Setup complete."
+  echo "Please reboot."
 }
 
 
@@ -322,7 +301,8 @@ function switch_to_nxp_ym_pcie() {
   echo "Please wait for 30 sec..."
   prepare_for_nxp_ym_pcie
   echo ""
-  echo "Setup complete"
+  echo "Setup complete."
+  echo "Please reboot."
 }
 
 
