@@ -335,7 +335,7 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of :"
-  echo "     cyw, 1zm, 1ym, 1xk"
+  echo "     cyw, 1zm, 1ym-sdio, 1ym-pcie, 1xk"
   echo ""
 }
 
