@@ -137,7 +137,9 @@ do_install () {
 		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
 	fi
 
+#	Points default to CYW
 	ln -sf /usr/sbin/wpa_supplicant.cyw ${D}${sbindir}/wpa_supplicant
+	ln -sf /usr/sbin/hostapd.cyw ${D}${sbindir}/hostapd
 
 #	Installing 8997 Firmware files
 	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/pcie8997_wlan_v4.bin ${D}/lib/firmware/nxp
