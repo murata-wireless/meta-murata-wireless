@@ -737,20 +737,6 @@ index 000000000000..ad8232fb8da5
 +		compatible = "brcm,bcm4329-fmac";
 +	};
 +};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
-index 468f65bcefc2..a71e40bc9a97 100755
---- a/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-evk.dtsi
-@@ -205,7 +205,8 @@
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_ecspi2 &pinctrl_ecspi2_cs>;
- 	cs-gpios = <&gpio5 13 GPIO_ACTIVE_LOW>;
--	status = "okay";
-+	/* Murata: disabled ecspi2 */
-+	status = "disabled";
- 
- 	spidev0: spi@0 {
- 		reg = <0>;
 diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts
 new file mode 100644
 index 000000000000..21ce345478a2

@@ -45,6 +45,16 @@ function handle_services() {
 }
 
 function clean_up() {
+
+  # Take a backup of mlan.ko and moal.ko
+  if [ -e /lib/modules/$(uname -r)/extra/mlan.ko ]; then
+     rm /lib/modules/$(uname -r)/extra/mlan.ko
+  fi
+  
+  if [ -e /lib/modules/$(uname -r)/extra/moal.ko ]; then
+     rm /lib/modules/$(uname -r)/extra/moal.ko
+  fi
+
   if [ -e /usr/sbin/wpa_supplicant ]; then
     rm /usr/sbin/wpa_supplicant
   fi
@@ -57,16 +67,13 @@ function clean_up() {
     rm /etc/modprobe.d/nxp_modules.conf
   fi
 
+
   if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
     rm /lib/modules/$(uname -r)/extra/mlan.ko
   fi
   
-  if [ -L /lib/modules/$(uname -r)/extra/sd8997.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/sd8997.ko
-  fi
-  
-  if [ -L /lib/modules/$(uname -r)/extra/pcie8997.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/pcie8997.ko
+  if [ -L /lib/modules/$(uname -r)/extra/moal.ko ]; then
+    rm /lib/modules/$(uname -r)/extra/moal.ko
   fi
 
 # clean up nxp regulatory files
@@ -102,7 +109,13 @@ function clean_up() {
 
 
 function prepare_for_nxp_sdio() {
+
   clean_up
+
+  # revert from backup to default
+  cp /usr/share/nxp_wireless/default/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
+  cp /usr/share/nxp_wireless/default/moal.ko /lib/modules/$(uname -r)/extra/moal.ko
+
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
 
   cp /lib/firmware/nxp/1ZM/db.txt.1zm 		/lib/firmware/nxp/db.txt
@@ -129,7 +142,7 @@ blacklist cfg80211
 alias sdio:c*v02DFd9149 moal
 
 # Specify arguments to pass when loading the moal module
-options moal mod_para=nxp/wifi_mod_para_sd8987.conf
+options moal mod_para=nxp/wifi_mod_para.conf
 EOT
 
   depmod -a
@@ -138,11 +151,45 @@ EOT
 #  handle_services true false
 }
 
+function prepare_for_nxp_1xk_sdio() {
+  clean_up
+
+  # copy from bin_sdio_1xk to original
+  cp /usr/share/nxp_wireless/bin_sdio_1xk/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
+  cp /usr/share/nxp_wireless/bin_sdio_1xk/moal.ko /lib/modules/$(uname -r)/extra/moal.ko
+
+  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+
+  cat <<EOT > /etc/depmod.d/nxp_depmod.conf
+# Force modprobe to search kernel/net/wireless (where the NXP
+# version of cfg80211.ko is placed) before looking in updates/net/wireless/
+# (where the Cypress version is)
+override cfg80211 * kernel/net/wireless
+EOT
+
+  cat <<EOT > /etc/modprobe.d/nxp_modules.conf
+# Prevent the Cypress version of cfg80211.ko from being loaded.
+blacklist cfg80211
+
+# Alias for the NXP module(1ZM)
+alias sdio:c*v02DFd9149 moal
+
+# Specify arguments to pass when loading the moal module
+options moal fw_name=nxp/sdiouart8978_combo_v0.bin cfg80211_wext=0xf drv_mode=7 cal_data_cfg=none 
+EOT
+
+  depmod -a
+}
+
+
 function prepare_for_nxp_ym_sdio() {
   clean_up
+
+  # revert from backup to default
+  cp /usr/share/nxp_wireless/default/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
+  cp /usr/share/nxp_wireless/default/moal.ko /lib/modules/$(uname -r)/extra/moal.ko
+
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-  ln -s /usr/share/nxp_wireless/bin_sd8997/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
-  ln -s /usr/share/nxp_wireless/bin_sd8997/sd8997.ko /lib/modules/$(uname -r)/extra/sd8997.ko
 
   cp /lib/firmware/nxp/1YM/db.txt.1ym 		/lib/firmware/nxp/db.txt
   cp /lib/firmware/nxp/1YM/ed_mac.bin.1ym 	/lib/firmware/nxp/ed_mac.bin
@@ -152,17 +199,12 @@ function prepare_for_nxp_ym_sdio() {
   cp /lib/firmware/nxp/1YM/txpower_JP.bin.1ym 	/lib/firmware/nxp/txpower_JP.bin
   cp /lib/firmware/nxp/1YM/txpower_US.bin.1ym 	/lib/firmware/nxp/txpower_US.bin
 
-
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
 # (where the Cypress version is)
 override cfg80211 * kernel/net/wireless
 
-# Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for SD8997 is placed) before looking in mxmwiflex
-# (where the 1ZM-SD8987 version is)
-override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -170,10 +212,10 @@ EOT
 blacklist cfg80211
 
 # Alias for the NXP modules(1YM-SDIO)
-alias sdio:c*v02DFd9141* sd8997
+alias sdio:c*v02DFd9141* moal
 
 # Specify arguments to pass when loading the sd8997 module
-options sd8997 fw_name=nxp/sdsd8997_combo_v4.bin cal_data_cfg=none cfg80211_wext=0xf
+options moal mod_para=nxp/wifi_mod_para.conf
 EOT
 
   depmod -a
@@ -185,9 +227,12 @@ EOT
 
 function prepare_for_nxp_ym_pcie() {
   clean_up
+
+  # revert from backup to default
+  cp /usr/share/nxp_wireless/default/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
+  cp /usr/share/nxp_wireless/default/moal.ko /lib/modules/$(uname -r)/extra/moal.ko
+
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-  ln -s /usr/share/nxp_wireless/bin_pcie8997/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
-  ln -s /usr/share/nxp_wireless/bin_pcie8997/pcie8997.ko /lib/modules/$(uname -r)/extra/pcie8997.ko
 
   cp /lib/firmware/nxp/1YM/db.txt.1ym 		/lib/firmware/nxp/db.txt
   cp /lib/firmware/nxp/1YM/ed_mac.bin.1ym 	/lib/firmware/nxp/ed_mac.bin
@@ -197,29 +242,22 @@ function prepare_for_nxp_ym_pcie() {
   cp /lib/firmware/nxp/1YM/txpower_JP.bin.1ym 	/lib/firmware/nxp/txpower_JP.bin
   cp /lib/firmware/nxp/1YM/txpower_US.bin.1ym 	/lib/firmware/nxp/txpower_US.bin
 
-
-
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
 # (where the Cypress version is)
 override cfg80211 * kernel/net/wireless
 
-# Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for PCIe-8997 is placed) before looking in mxmwiflex
-# (where the 1ZM-SD8987 version is)
-override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
 # Prevent the Cypress version of cfg80211.ko from being loaded.
 blacklist cfg80211
-
 # Alias for the 1YM-PCIe M.2 module
 alias pci:v00001B4Bd00002B42sv*sd*bc02sc00i* pcie8997
 
 # Specify arguments to pass when loading the pcie8997 module
-options pcie8997 drv_mode=3 ps_mode=2 auto_ds=2 cfg80211_wext=0xf fw_name=nxp/pcieuart8997_combo_v4.bin cal_data_cfg=none
+options moal mod_para=nxp/wifi_mod_para.conf
 EOT
 
   depmod -a
@@ -246,15 +284,18 @@ function off() {
 function switch_to_cypress() {
   echo ""
   echo "Setting up for Cypress"
+  echo "Please wait for 30 sec..."
   prepare_for_cypress
-  echo ""
+  echo "Setup complete"
 }
 
 function switch_to_nxp_sdio() {
   echo ""
   echo "Setting up for 1ZM (NXP - SDIO)"
+  echo "Please wait for 30 sec..."
   prepare_for_nxp_sdio
   echo ""
+  echo "Setup complete"
 }
 
 function switch_to_nxp_ym_sdio() {
@@ -262,14 +303,26 @@ function switch_to_nxp_ym_sdio() {
   echo "Setting up for 1YM (NXP - SDIO)"
   prepare_for_nxp_ym_sdio
   echo ""
+  echo "Setup complete"
+}
+
+function switch_to_nxp_1xk_sdio() {
+  echo ""
+  echo "Setting up for 1XK"
+  echo "Please wait for 30 sec..."
+  prepare_for_nxp_1xk_sdio
+  echo ""
+  echo "Setup complete"
 }
 
 
 function switch_to_nxp_ym_pcie() {
   echo ""
   echo "Setting up for 1YM (NXP - PCIe)"
+  echo "Please wait for 30 sec..."
   prepare_for_nxp_ym_pcie
   echo ""
+  echo "Setup complete"
 }
 
 
@@ -282,9 +335,24 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of :"
-  echo "     cyw, 1zm, 1ym-sdio, 1ym-pcie"
+  echo "     cyw, 1zm, 1ym, 1xk"
   echo ""
 }
+
+# ONE-TIME Only
+#check for the presence of default driver
+#if not , create and store default (mlan.ko and moal.ko)
+# check for the existence of folder, "default"
+if [ ! -d "/usr/share/nxp_wireless/default" ]
+then
+#	echo "Directory /usr/share/nxp_wireless/default does not exist."
+#	echo "Creating default in /usr/share/nxp_wireless/"
+	mkdir /usr/share/nxp_wireless/default
+	# Copy mlan.ko and moal.ko
+	cp /lib/modules/$(uname -r)/extra/mlan.ko /usr/share/nxp_wireless/default
+	cp /lib/modules/$(uname -r)/extra/moal.ko /usr/share/nxp_wireless/default
+fi
+
 
 if [[ $# -eq 0 ]]; then
   current
@@ -299,8 +367,11 @@ case ${1^^} in
   ZM|1ZM)
     switch_to_nxp_sdio
     ;;
-  YM-SDIO|1YM-SDIO)
+  1YM|YM-SDIO|1YM-SDIO)
     switch_to_nxp_ym_sdio
+    ;;
+  1XK)
+    switch_to_nxp_1xk_sdio
     ;;
   YM-PCIE|1YM-PCIE)
     switch_to_nxp_ym_pcie
