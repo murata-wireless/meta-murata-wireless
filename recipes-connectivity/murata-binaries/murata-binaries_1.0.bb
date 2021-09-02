@@ -64,6 +64,15 @@ do_install () {
 	install -d ${D}/usr/sbin
 	install -d ${D}/etc/udev/rules.d
 
+        # Install /lib/firmware/nxp folder
+        install -d ${D}/lib/firmware/nxp
+        install -d ${D}/lib/firmware/nxp/murata
+        install -d ${D}/lib/firmware/nxp/murata/1XK
+        install -d ${D}/lib/firmware/nxp/murata/1ZM
+        install -d ${D}/lib/firmware/nxp/murata/1YM
+        install -d ${D}/lib/firmware/nxp/murata/2DS
+
+
 #       Copying *.HCD files to etc/firmware and etc/firmware/murata-master
         install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd ${D}${sysconfdir}/firmware/BCM4335C0.ZP.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0144.0266.1MW.hcd ${D}${sysconfdir}/firmware/BCM4345C0_003.001.025.0144.0266.1MW.hcd
@@ -119,9 +128,6 @@ do_install () {
 
 	# Added Calibration configuration file for 1YM(NXP)
 #	install -m 444 ${S}/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
-	# Install /lib/firmware/nxp folder
-	install -d ${D}/lib/firmware/nxp
-
 
 #       Copying wl tool binary based on 32-bit/64-bit arch to /usr/sbin
 	if [ ${TARGET_ARCH} = "aarch64" ]; then
@@ -144,19 +150,11 @@ do_install () {
 	install -m 755 ${S}/switch_module.sh ${D}/usr/sbin/switch_module.sh
 
 #	Install nxp linux calibration files
-	install -d ${D}/lib/firmware/nxp
-
-
-	install -m 444 ${S}/nxp-linux-calibration/* ${D}/lib/firmware/nxp
-
-# 	Default regulatory files points to 1ZM
-#	install -m 444 ${S}/nxp-linux-calibration/1ZM/bt_power_config_1.sh ${D}/lib/firmware/nxp/bt_power_config_1.sh
-#	install -m 444 ${S}/nxp-linux-calibration/1ZM/db.txt               ${D}/lib/firmware/nxp/db.txt
-#	install -m 444 ${S}/nxp-linux-calibration/1ZM/ed_mac.bin           ${D}/lib/firmware/nxp/ed_mac.bin
-#	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_CA.bin       ${D}/lib/firmware/nxp/txpower_CA.bin
-#	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_EU.bin       ${D}/lib/firmware/nxp/txpower_EU.bin
-#	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_JP.bin       ${D}/lib/firmware/nxp/txpower_JP.bin
-#	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_US.bin       ${D}/lib/firmware/nxp/txpower_US.bin
+	install -m 444 ${S}/nxp-linux-calibration/murata/1XK/* ${D}/lib/firmware/nxp/murata/1XK
+        install -m 444 ${S}/nxp-linux-calibration/murata/1ZM/* ${D}/lib/firmware/nxp/murata/1ZM
+        install -m 444 ${S}/nxp-linux-calibration/murata/1YM/* ${D}/lib/firmware/nxp/murata/1YM
+        install -m 444 ${S}/nxp-linux-calibration/murata/2DS/* ${D}/lib/firmware/nxp/murata/2DS
+        install -m 444 ${S}/nxp-linux-calibration/README.txt   ${D}/lib/firmware/nxp/murata/README.txt
 }
 
 PACKAGES =+ "${PN}-mfgtest"
@@ -168,6 +166,8 @@ FILES_${PN} += "${sbindir}"
 FILES_${PN} += "{sysconfdir}/firmware"
 FILES_${PN} += "/lib"
 FILES_${PN} += "{sysconfdir}/firmware/nxp"
+FILES_${PN} += "{sysconfdir}/firmware/nxp/murata"
+FILES_${PN} += "{sysconfdir}/firmware/nxp/murata/1XK"
 #FILES_${PN} += "/usr/sbin/wpa_supplicant"
 
 FILES_${PN}-mfgtest = " \
