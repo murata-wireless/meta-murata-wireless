@@ -59,6 +59,10 @@ function clean_up() {
     rm /usr/sbin/wpa_supplicant
   fi
 
+  if [ -e /usr/sbin/hostapd ]; then
+    rm /usr/sbin/hostapd
+  fi
+
   if [ -e /etc/depmod.d/nxp_depmod.conf ]; then
     rm /etc/depmod.d/nxp_depmod.conf
   fi
@@ -117,6 +121,7 @@ function prepare_for_nxp_sdio() {
   cp /usr/share/nxp_wireless/default/moal.ko /lib/modules/$(uname -r)/extra/moal.ko
 
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -150,6 +155,7 @@ function prepare_for_nxp_1xk_sdio() {
   cp /usr/share/nxp_wireless/bin_sdio_1xk/moal.ko /lib/modules/$(uname -r)/extra/moal.ko
 
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -181,6 +187,7 @@ function prepare_for_nxp_ym_sdio() {
   cp /usr/share/nxp_wireless/default/moal.ko /lib/modules/$(uname -r)/extra/moal.ko
 
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -216,6 +223,7 @@ function prepare_for_nxp_ym_pcie() {
   cp /usr/share/nxp_wireless/default/moal.ko /lib/modules/$(uname -r)/extra/moal.ko
 
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -244,6 +252,7 @@ EOT
 function prepare_for_cypress() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.cyw /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/hostapd.cyw /usr/sbin/hostapd
 
   depmod -a
 
