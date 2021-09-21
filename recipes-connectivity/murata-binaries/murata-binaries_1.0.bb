@@ -79,6 +79,15 @@ do_install () {
 	install -d ${D}/usr/sbin
 	install -d ${D}/etc/udev/rules.d
 
+        # Install /lib/firmware/nxp folder
+        install -d ${D}/lib/firmware/nxp
+        install -d ${D}/lib/firmware/nxp/murata
+        install -d ${D}/lib/firmware/nxp/murata/1XK
+        install -d ${D}/lib/firmware/nxp/murata/1ZM
+        install -d ${D}/lib/firmware/nxp/murata/1YM
+        install -d ${D}/lib/firmware/nxp/murata/2DS
+
+
 #       Copying *.HCD files to etc/firmware and etc/firmware/murata-master
         install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd ${D}${sysconfdir}/firmware/BCM4335C0.ZP.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0172.0344.1MW.hcd ${D}${sysconfdir}/firmware/BCM4345C0_003.001.025.0172.0344.1MW.hcd
@@ -164,35 +173,6 @@ do_install () {
 	install -m 0644 ${S}/git/mrvl/pcieusb8997_combo_v4.bin ${D}/lib/firmware/nxp
 	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/helper_uart_3000000.bin ${D}/lib/firmware/nxp
 	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/uart8997_bt_v4.bin ${D}/lib/firmware/nxp
-
-#	Install nxp linux calibration files
-	install -d ${D}/lib/firmware/nxp/1ZM
-	install -d ${D}/lib/firmware/nxp/1YM
-
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/bt_power_config_1.sh ${D}/lib/firmware/nxp/1ZM/bt_power_config_1.sh.1zm
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/db.txt               ${D}/lib/firmware/nxp/1ZM/db.txt.1zm
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/ed_mac.bin           ${D}/lib/firmware/nxp/1ZM/ed_mac.bin.1zm
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_CA.bin       ${D}/lib/firmware/nxp/1ZM/txpower_CA.bin.1zm
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_EU.bin       ${D}/lib/firmware/nxp/1ZM/txpower_EU.bin.1zm     
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_JP.bin       ${D}/lib/firmware/nxp/1ZM/txpower_JP.bin.1zm  
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_US.bin       ${D}/lib/firmware/nxp/1ZM/txpower_US.bin.1zm
-
-	install -m 444 ${S}/nxp-linux-calibration/1YM/bt_power_config_1.sh ${D}/lib/firmware/nxp/1YM/bt_power_config_1.sh.1ym
-	install -m 444 ${S}/nxp-linux-calibration/1YM/db.txt               ${D}/lib/firmware/nxp/1YM/db.txt.1ym
-	install -m 444 ${S}/nxp-linux-calibration/1YM/ed_mac.bin           ${D}/lib/firmware/nxp/1YM/ed_mac.bin.1ym
-	install -m 444 ${S}/nxp-linux-calibration/1YM/txpower_CA.bin       ${D}/lib/firmware/nxp/1YM/txpower_CA.bin.1ym
-	install -m 444 ${S}/nxp-linux-calibration/1YM/txpower_EU.bin       ${D}/lib/firmware/nxp/1YM/txpower_EU.bin.1ym     
-	install -m 444 ${S}/nxp-linux-calibration/1YM/txpower_JP.bin       ${D}/lib/firmware/nxp/1YM/txpower_JP.bin.1ym  
-	install -m 444 ${S}/nxp-linux-calibration/1YM/txpower_US.bin       ${D}/lib/firmware/nxp/1YM/txpower_US.bin.1ym
-
-# 	Default regulatory files points to 1ZM
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/bt_power_config_1.sh ${D}/lib/firmware/nxp/bt_power_config_1.sh
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/db.txt               ${D}/lib/firmware/nxp/db.txt
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/ed_mac.bin           ${D}/lib/firmware/nxp/ed_mac.bin
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_CA.bin       ${D}/lib/firmware/nxp/txpower_CA.bin
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_EU.bin       ${D}/lib/firmware/nxp/txpower_EU.bin
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_JP.bin       ${D}/lib/firmware/nxp/txpower_JP.bin
-	install -m 444 ${S}/nxp-linux-calibration/1ZM/txpower_US.bin       ${D}/lib/firmware/nxp/txpower_US.bin
 
 #	Based on MACHINE type
 	echo "DEBUG:: MACHINE TYPE :: ${MACHINE}"
