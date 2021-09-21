@@ -28,6 +28,9 @@ SRC_URI = " \
 	file://cyfmac43439-sdio.txt \
 	file://cyfmac4373-sdio.clm_blob \
 	file://cyfmac4373-sdio.txt \
+	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
+	file://sdiouartiw416_combo_v0.bin \
+	file://wifi_mod_para.conf \
 "
 SRC_URI += " \
            ${IMX_FIRMWARE_SRC};branch=master;destsuffix=imx-firmware;name=imx-firmware \
