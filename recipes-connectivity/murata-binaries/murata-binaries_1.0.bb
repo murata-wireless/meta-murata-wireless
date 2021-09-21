@@ -34,7 +34,7 @@ SRC_URI += " \
 "
 SRCREV_imx-firmware = "685ace656284167376241c804827f046b984ce25"
 
-SRCREV_nxp-linux-calibration="6167ece880230ef0dbe26ac796e00360b9a40fa8"
+SRCREV_nxp-linux-calibration="c4a024850ba019739adb91bde8574fd8d7ebb56e"
 SRCREV_cyw-fmac-fw="749e60c523bc7618bd5ecfa30182431a978d756b"
 SRCREV_cyw-fmac-nvram="8710e74e79470f666912c3ccadf1e354d6fb209c"
 SRCREV_cyw-bt-patch="4d7aef0c959e8a5c8ad88cd13b4b14b858041d31"
@@ -229,6 +229,16 @@ do_install () {
 		;;
 	esac
 
+#	Install nxp linux calibration files
+	install -m 444 ${S}/nxp-linux-calibration/murata/1XK/* ${D}/lib/firmware/nxp/murata/1XK
+        install -m 444 ${S}/nxp-linux-calibration/murata/1ZM/* ${D}/lib/firmware/nxp/murata/1ZM
+        install -m 444 ${S}/nxp-linux-calibration/murata/1YM/* ${D}/lib/firmware/nxp/murata/1YM
+        install -m 444 ${S}/nxp-linux-calibration/murata/2DS/* ${D}/lib/firmware/nxp/murata/2DS
+        install -m 444 ${S}/nxp-linux-calibration/README.txt   ${D}/lib/firmware/nxp/murata/README.txt
+#	Copy 1XK Dedicated Bluetooth Antenna configuration file
+	install -m 755 ${S}/WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf ${D}/lib/firmware/nxp/murata/1XK
+	install -m 755 ${S}/sdiouartiw416_combo_v0.bin ${D}/lib/firmware/nxp
+	install -m 755 ${S}/wifi_mod_para.conf ${D}/lib/firmware/nxp
 }
 
 PACKAGES =+ "${PN}-mfgtest"
