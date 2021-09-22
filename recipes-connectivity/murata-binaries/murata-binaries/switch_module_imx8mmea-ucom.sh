@@ -197,6 +197,43 @@ EOT
   handle_services true false
 }
 
+function prepare_for_nxp_1xl_pcie() {
+  clean_up
+  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/share/nxp_wireless/bin_pcie8997/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
+  ln -s /usr/share/nxp_wireless/bin_pcie8997/pcie8997.ko /lib/modules/$(uname -r)/extra/pcie8997.ko
+
+  cat <<EOT > /etc/depmod.d/nxp_depmod.conf
+# Force modprobe to search kernel/net/wireless (where the NXP
+# version of cfg80211.ko is placed) before looking in updates/net/wireless/
+# (where the Cypress version is)
+override cfg80211 * kernel/net/wireless
+
+# Force modprobe to search "extra" (where the NXP
+# version of mlan.ko for PCIe-8997 is placed) before looking in mxmwiflex
+# (where the 1ZM-SD8987 version is)
+override mlan * extra
+EOT
+
+  cat <<EOT > /etc/modprobe.d/nxp_modules.conf
+# Prevent the Cypress version of cfg80211.ko from being loaded.
+blacklist cfg80211
+
+# Alias for the 1YM-PCIe M.2 module
+alias pci:v00001B4Bd00002B42sv*sd*bc02sc00i* pcie8997
+
+# Specify arguments to pass when loading the pcie8997 module
+options pcie8997 drv_mode=3 ps_mode=2 auto_ds=2 cfg80211_wext=0xf fw_name=nxp/pcieuart8997_combo_v4.bin cal_data_cfg=none
+EOT
+
+  depmod -a
+
+  # Disable Cypress service and enable NXP service
+  handle_services true false
+}
+
+
+
 function prepare_for_cypress() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.cyw /usr/sbin/wpa_supplicant
@@ -259,6 +296,16 @@ function switch_to_nxp_ym_pcie() {
 }
 
 
+function switch_to_nxp_xl_pcie() {
+  echo ""
+  echo "Setting up for 1XL (NXP - PCIe)"
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2-pcie.dtb
+  fw_setenv bt_hint nxp_1xl_pcie
+  prepare_for_nxp_xl_pcie
+  echo ""
+}
+
+
 function usage() {
   echo ""
   echo "Version: $VERSION"
@@ -269,7 +316,7 @@ function usage() {
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
   echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1XA, 1ZM, 1WZ"
-  echo "     1YM-SDIO, 1YM-PCIe, CURRENT or OFF"
+  echo "     1YM-SDIO, 1YM-PCIe, 1XL, CURRENT or OFF"
   echo ""
 }
 
@@ -294,6 +341,9 @@ case ${1^^} in
     ;;
   YM-PCIE|1YM-PCIE)
     switch_to_nxp_ym_pcie
+    ;;
+  XL|1XL)
+    switch_to_nxp_pcie
     ;;
   CURRENT)
     current
