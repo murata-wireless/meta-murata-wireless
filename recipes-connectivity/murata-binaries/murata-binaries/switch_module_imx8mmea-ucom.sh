@@ -254,6 +254,7 @@ function off() {
 function switch_to_cypress_sdio() {
   echo ""
   echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE (Cypress - SDIO)"
+  echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx8mm-ea-ucom-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   prepare_for_cypress
@@ -264,7 +265,7 @@ function switch_to_cypress_sdio() {
 function switch_to_cypress_pcie() {
   echo ""
   echo "Setting up for 1CX, 1VA, 1XA (Cypress - PCIe)"
-  echo "Please wait..."
+  echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx8mm-ea-ucom-kit_v2-pcie.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   prepare_for_cypress
@@ -275,7 +276,7 @@ function switch_to_cypress_pcie() {
 function switch_to_nxp_sdio() {
   echo ""
   echo "Setting up for 1ZM (NXP - SDIO)"
-  echo "Please wait..."
+  echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx8mm-ea-ucom-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_sdio
@@ -286,7 +287,7 @@ function switch_to_nxp_sdio() {
 function switch_to_nxp_xk_sdio() {
   echo ""
   echo "Setting up for 1XK (NXP - SDIO)"
-  echo "Please wait..."
+  echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx8mm-ea-ucom-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_xk_sdio
@@ -298,7 +299,7 @@ function switch_to_nxp_xk_sdio() {
 function switch_to_nxp_ym_sdio() {
   echo ""
   echo "Setting up for 1YM (NXP - SDIO)"
-  echo "Please wait..."
+  echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx8mm-ea-ucom-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_sdio
   prepare_for_nxp_ym_sdio
@@ -310,7 +311,7 @@ function switch_to_nxp_ym_sdio() {
 function switch_to_nxp_ym_pcie() {
   echo ""
   echo "Setting up for 1YM (NXP - PCIe)"
-  echo "Please wait..."
+  echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx8mm-ea-ucom-kit_v2-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_pcie
   prepare_for_nxp_ym_pcie
@@ -322,7 +323,7 @@ function switch_to_nxp_ym_pcie() {
 function switch_to_nxp_xl_pcie() {
   echo ""
   echo "Setting up for 1XL (NXP - PCIe)"
-  echo "Please wait..."
+  echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx8mm-ea-ucom-kit_v2-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1xl_pcie
   prepare_for_nxp_xl_pcie

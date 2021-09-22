@@ -8,13 +8,22 @@ VERSION="1.0"
 function current() {
   echo ""
   echo "Current setup:"
-  fw_printenv fdt_file
+  fw_printenv fdt_file 2>/dev/null
+
   if [ "/usr/sbin/wpa_supplicant" -ef "/usr/sbin/wpa_supplicant.cyw" ]; then
-    echo "  Link is to Cypress binary"
+    echo "  Link is to Cypress WPA Supplicant binary"
   fi
   if [ "/usr/sbin/wpa_supplicant" -ef "/usr/sbin/wpa_supplicant.nxp" ]; then
-    echo "  Link is to NXP binary"
+    echo "  Link is to NXP WPA Supplicant binary"
   fi
+
+  if [ "/usr/sbin/hostapd" -ef "/usr/sbin/hostapd.cyw" ]; then
+    echo "  Link is to Cypress Hostapd binary"
+  fi
+  if [ "/usr/sbin/hostapd" -ef "/usr/sbin/hostapd.nxp" ]; then
+    echo "  Link is to NXP Hostapd binary"
+  fi
+
   if [ -e /etc/depmod.d/nxp_depmod.conf ]; then
     echo "  Found depmod helper file for NXP"
   fi
@@ -51,6 +60,10 @@ function clean_up() {
     rm /usr/sbin/wpa_supplicant
   fi
 
+  if [ -e /usr/sbin/hostapd ]; then
+    rm /usr/sbin/hostapd
+  fi
+
   if [ -e /etc/depmod.d/nxp_depmod.conf ]; then
     rm /etc/depmod.d/nxp_depmod.conf
   fi
@@ -59,32 +72,12 @@ function clean_up() {
     rm /etc/modprobe.d/nxp_modules.conf
   fi
 
-  if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
-  if [ -L /lib/modules/$(uname -r)/extra/sd8997.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/sd8997.ko
-  fi
-  
-  if [ -L /lib/modules/$(uname -r)/extra/pcie8997.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/pcie8997.ko
-  fi  
 }
-
-
 
 function prepare_for_nxp_sdio() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-
-  cp /lib/firmware/nxp/1ZM/db.txt.1zm 		/lib/firmware/nxp/db.txt
-  cp /lib/firmware/nxp/1ZM/ed_mac.bin.1zm 	/lib/firmware/nxp/ed_mac.bin
-  cp /lib/firmware/nxp/1ZM/bt_power_config_1.sh.1zm  /lib/firmware/nxp/bt_power_config_1.sh
-  cp /lib/firmware/nxp/1ZM/txpower_CA.bin.1zm	/lib/firmware/nxp/txpower_CA.bin
-  cp /lib/firmware/nxp/1ZM/txpower_EU.bin.1zm 	/lib/firmware/nxp/txpower_EU.bin
-  cp /lib/firmware/nxp/1ZM/txpower_JP.bin.1zm 	/lib/firmware/nxp/txpower_JP.bin
-  cp /lib/firmware/nxp/1ZM/txpower_US.bin.1zm 	/lib/firmware/nxp/txpower_US.bin
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -101,7 +94,36 @@ blacklist cfg80211
 alias sdio:c*v02DFd9149 moal
 
 # Specify arguments to pass when loading the moal module
-options moal mod_para=nxp/wifi_mod_para_sd8987.conf
+options moal mod_para=nxp/wifi_mod_para.conf
+EOT
+
+  depmod -a
+
+  # Disable Cypress service and enable NXP service
+  handle_services true false
+}
+
+function prepare_for_nxp_xk_sdio() {
+  clean_up
+  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+
+  cat <<EOT > /etc/depmod.d/nxp_depmod.conf
+# Force modprobe to search kernel/net/wireless (where the NXP
+# version of cfg80211.ko is placed) before looking in updates/net/wireless/
+# (where the Cypress version is)
+override cfg80211 * kernel/net/wireless
+EOT
+
+  cat <<EOT > /etc/modprobe.d/nxp_modules.conf
+# Prevent the Cypress version of cfg80211.ko from being loaded.
+blacklist cfg80211
+
+# Alias for the NXP module(1ZM)
+alias sdio:c*v02DFd9159 moal
+
+# Specify arguments to pass when loading the moal module
+options moal mod_para=nxp/wifi_mod_para.conf
 EOT
 
   depmod -a
@@ -113,16 +135,7 @@ EOT
 function prepare_for_nxp_ym_sdio() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-  ln -s /usr/share/nxp_wireless/bin_sd8997/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
-  ln -s /usr/share/nxp_wireless/bin_sd8997/sd8997.ko /lib/modules/$(uname -r)/extra/sd8997.ko
-
-  cp /lib/firmware/nxp/1YM/db.txt.1ym 		/lib/firmware/nxp/db.txt
-  cp /lib/firmware/nxp/1YM/ed_mac.bin.1ym 	/lib/firmware/nxp/ed_mac.bin
-  cp /lib/firmware/nxp/1YM/bt_power_config_1.sh.1ym  /lib/firmware/nxp/bt_power_config_1.sh
-  cp /lib/firmware/nxp/1YM/txpower_CA.bin.1ym	/lib/firmware/nxp/txpower_CA.bin
-  cp /lib/firmware/nxp/1YM/txpower_EU.bin.1ym 	/lib/firmware/nxp/txpower_EU.bin
-  cp /lib/firmware/nxp/1YM/txpower_JP.bin.1ym 	/lib/firmware/nxp/txpower_JP.bin
-  cp /lib/firmware/nxp/1YM/txpower_US.bin.1ym 	/lib/firmware/nxp/txpower_US.bin
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -133,7 +146,7 @@ override cfg80211 * kernel/net/wireless
 # Force modprobe to search "extra" (where the NXP
 # version of mlan.ko for SD8997 is placed) before looking in mxmwiflex
 # (where the 1ZM-SD8987 version is)
-override mlan * extra
+#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -141,10 +154,10 @@ EOT
 blacklist cfg80211
 
 # Alias for the NXP modules(1YM-SDIO)
-alias sdio:c*v02DFd9141* sd8997
+alias sdio:c*v02DFd9141* moal
 
 # Specify arguments to pass when loading the sd8997 module
-options sd8997 fw_name=nxp/sdsd8997_combo_v4.bin cal_data_cfg=none cfg80211_wext=0xf
+options moal mod_para=nxp/wifi_mod_para.conf
 EOT
 
   depmod -a
@@ -157,16 +170,7 @@ EOT
 function prepare_for_nxp_ym_pcie() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-  ln -s /usr/share/nxp_wireless/bin_pcie8997/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
-  ln -s /usr/share/nxp_wireless/bin_pcie8997/pcie8997.ko /lib/modules/$(uname -r)/extra/pcie8997.ko
-
-  cp /lib/firmware/nxp/1YM/db.txt.1ym 		/lib/firmware/nxp/db.txt
-  cp /lib/firmware/nxp/1YM/ed_mac.bin.1ym 	/lib/firmware/nxp/ed_mac.bin
-  cp /lib/firmware/nxp/1YM/bt_power_config_1.sh.1ym  /lib/firmware/nxp/bt_power_config_1.sh
-  cp /lib/firmware/nxp/1YM/txpower_CA.bin.1ym	/lib/firmware/nxp/txpower_CA.bin
-  cp /lib/firmware/nxp/1YM/txpower_EU.bin.1ym 	/lib/firmware/nxp/txpower_EU.bin
-  cp /lib/firmware/nxp/1YM/txpower_JP.bin.1ym 	/lib/firmware/nxp/txpower_JP.bin
-  cp /lib/firmware/nxp/1YM/txpower_US.bin.1ym 	/lib/firmware/nxp/txpower_US.bin
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -177,7 +181,7 @@ override cfg80211 * kernel/net/wireless
 # Force modprobe to search "extra" (where the NXP
 # version of mlan.ko for PCIe-8997 is placed) before looking in mxmwiflex
 # (where the 1ZM-SD8987 version is)
-override mlan * extra
+#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -185,10 +189,45 @@ EOT
 blacklist cfg80211
 
 # Alias for the 1YM-PCIe M.2 module
-alias pci:v00001B4Bd00002B42sv*sd*bc02sc00i* pcie8997
+alias pci:v00001B4Bd00002B42sv*sd*bc02sc00i* moal
 
 # Specify arguments to pass when loading the pcie8997 module
-options pcie8997 drv_mode=3 ps_mode=2 auto_ds=2 cfg80211_wext=0xf fw_name=nxp/pcieuart8997_combo_v4.bin cal_data_cfg=none
+options moal mod_para=nxp/wifi_mod_para.conf
+EOT
+
+  depmod -a
+
+  # Disable Cypress service and enable NXP service
+  handle_services true false
+}
+
+#[TO-DO]
+function prepare_for_nxp_xl_pcie() {
+  clean_up
+  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  
+  cat <<EOT > /etc/depmod.d/nxp_depmod.conf
+# Force modprobe to search kernel/net/wireless (where the NXP
+# version of cfg80211.ko is placed) before looking in updates/net/wireless/
+# (where the Cypress version is)
+override cfg80211 * kernel/net/wireless
+
+# Force modprobe to search "extra" (where the NXP
+# version of mlan.ko for PCIe-9098 is placed) before looking in mxmwiflex
+# (where the 1ZM-SD8987 version is)
+#override mlan * extra
+EOT
+
+  cat <<EOT > /etc/modprobe.d/nxp_modules.conf
+# Prevent the Cypress version of cfg80211.ko from being loaded.
+blacklist cfg80211
+
+# Alias for the 1XL-PCIe M.2 module [TO-DO]
+alias pci:v00001B4Bd00002B42sv*sd*bc02sc00i* moal
+
+# Specify arguments to pass when loading the pcie9098 module
+options moal mod_para=nxp/wifi_mod_para.conf
 EOT
 
   depmod -a
@@ -214,37 +253,57 @@ function off() {
 
 function switch_to_cypress_sdio() {
   echo ""
-  echo "Setting up for 1DX, 1LV, 1MW, 1WZ (Cypress - SDIO)"
-  fw_setenv fdt_file imx7ulpea-ucom-kit_v2.dtb
+  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE (Cypress - SDIO)"
+  echo "Please wait for 15 seconds (one-time only)..."
+  fw_setenv fdt_file imx7ulpea-ucom-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   prepare_for_cypress
+  echo "Setup complete."
   echo ""
 }
 
 function switch_to_cypress_pcie() {
   echo ""
   echo "Setting up for 1CX, 1VA, 1XA (Cypress - PCIe)"
-  fw_setenv fdt_file imx7ulpea-ucom-kit_v2-pcie.dtb
+  echo "Please wait for 15 seconds (one-time only)..."
+  fw_setenv fdt_file imx7ulpea-ucom-kit_v2-pcie.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   prepare_for_cypress
+  echo "Setup complete."
   echo ""
 }
 
 function switch_to_nxp_sdio() {
   echo ""
   echo "Setting up for 1ZM (NXP - SDIO)"
-  fw_setenv fdt_file imx7ulpea-ucom-kit_v2.dtb
+  echo "Please wait for 15 seconds (one-time only)..."
+  fw_setenv fdt_file imx7ulpea-ucom-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_sdio
+  echo "Setup complete."
   echo ""
 }
+
+function switch_to_nxp_xk_sdio() {
+  echo ""
+  echo "Setting up for 1XK (NXP - SDIO)"
+  echo "Please wait for 15 seconds (one-time only)..."
+  fw_setenv fdt_file imx7ulpea-ucom-kit_v2.dtb 2>/dev/null
+  fw_setenv bt_hint nxp
+  prepare_for_nxp_xk_sdio
+  echo "Setup complete."
+  echo ""
+}
+
 
 function switch_to_nxp_ym_sdio() {
   echo ""
   echo "Setting up for 1YM (NXP - SDIO)"
-  fw_setenv fdt_file imx7ulpea-ucom-kit_v2.dtb
+  echo "Please wait for 15 seconds (one-time only)..."
+  fw_setenv fdt_file imx7ulpea-ucom-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_sdio
   prepare_for_nxp_ym_sdio
+  echo "Setup complete."
   echo ""
 }
 
@@ -252,9 +311,23 @@ function switch_to_nxp_ym_sdio() {
 function switch_to_nxp_ym_pcie() {
   echo ""
   echo "Setting up for 1YM (NXP - PCIe)"
-  fw_setenv fdt_file imx7ulpea-ucom-kit_v2-pcie.dtb
+  echo "Please wait for 15 seconds (one-time only)..."
+  fw_setenv fdt_file imx7ulpea-ucom-kit_v2-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_pcie
   prepare_for_nxp_ym_pcie
+  echo "Setup complete."
+  echo ""
+}
+
+
+function switch_to_nxp_xl_pcie() {
+  echo ""
+  echo "Setting up for 1XL (NXP - PCIe)"
+  echo "Please wait for 15 seconds (one-time only)..."
+  fw_setenv fdt_file imx7ulpea-ucom-kit_v2-pcie.dtb 2>/dev/null
+  fw_setenv bt_hint nxp_1xl_pcie
+  prepare_for_nxp_xl_pcie
+  echo "Setup complete."
   echo ""
 }
 
@@ -268,8 +341,8 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1XA, 1ZM, 1WZ"
-  echo "     1YM-SDIO, 1YM-PCIe, CURRENT or OFF"
+#  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1XA, 1WZ"
+  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL, CURRENT or OFF"
   echo ""
 }
 
@@ -283,17 +356,23 @@ case ${1^^} in
   CYW-PCIE|CX|1CX|XA|1XA)
     switch_to_cypress_pcie
     ;;
-  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|WZ|1WZ)
+  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|WZ|1WZ|1YN|2AE)
     switch_to_cypress_sdio
     ;;
   ZM|1ZM)
     switch_to_nxp_sdio
+    ;;
+  XK|1XK)
+    switch_to_nxp_xk_sdio
     ;;
   YM-SDIO|1YM-SDIO)
     switch_to_nxp_ym_sdio
     ;;
   YM-PCIE|1YM-PCIE)
     switch_to_nxp_ym_pcie
+    ;;
+  XL|1XL)
+    switch_to_nxp_xl_pcie
     ;;
   CURRENT)
     current
