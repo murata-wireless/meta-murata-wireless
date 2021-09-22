@@ -60,6 +60,10 @@ function clean_up() {
     rm /usr/sbin/wpa_supplicant
   fi
 
+  if [ -e /usr/sbin/hostapd ]; then
+    rm /usr/sbin/hostapd
+  fi
+
   if [ -e /etc/depmod.d/nxp_depmod.conf ]; then
     rm /etc/depmod.d/nxp_depmod.conf
   fi
@@ -68,17 +72,6 @@ function clean_up() {
     rm /etc/modprobe.d/nxp_modules.conf
   fi
 
-  if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
-  if [ -L /lib/modules/$(uname -r)/extra/sd8997.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/sd8997.ko
-  fi
-  
-  if [ -L /lib/modules/$(uname -r)/extra/pcie8997.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/pcie8997.ko
-  fi  
 }
 
 
@@ -86,14 +79,7 @@ function clean_up() {
 function prepare_for_nxp_sdio() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-
-  cp /lib/firmware/nxp/1ZM/db.txt.1zm 		/lib/firmware/nxp/db.txt
-  cp /lib/firmware/nxp/1ZM/ed_mac.bin.1zm 	/lib/firmware/nxp/ed_mac.bin
-  cp /lib/firmware/nxp/1ZM/bt_power_config_1.sh.1zm  /lib/firmware/nxp/bt_power_config_1.sh
-  cp /lib/firmware/nxp/1ZM/txpower_CA.bin.1zm	/lib/firmware/nxp/txpower_CA.bin
-  cp /lib/firmware/nxp/1ZM/txpower_EU.bin.1zm 	/lib/firmware/nxp/txpower_EU.bin
-  cp /lib/firmware/nxp/1ZM/txpower_JP.bin.1zm 	/lib/firmware/nxp/txpower_JP.bin
-  cp /lib/firmware/nxp/1ZM/txpower_US.bin.1zm 	/lib/firmware/nxp/txpower_US.bin
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -110,7 +96,7 @@ blacklist cfg80211
 alias sdio:c*v02DFd9149 moal
 
 # Specify arguments to pass when loading the moal module
-options moal mod_para=nxp/wifi_mod_para_sd8987.conf
+options moal mod_para=nxp/wifi_mod_para.conf
 EOT
 
   depmod -a
@@ -122,16 +108,7 @@ EOT
 function prepare_for_nxp_ym_sdio() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-  ln -s /usr/share/nxp_wireless/bin_sd8997/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
-  ln -s /usr/share/nxp_wireless/bin_sd8997/sd8997.ko /lib/modules/$(uname -r)/extra/sd8997.ko
-
-  cp /lib/firmware/nxp/1YM/db.txt.1ym 		/lib/firmware/nxp/db.txt
-  cp /lib/firmware/nxp/1YM/ed_mac.bin.1ym 	/lib/firmware/nxp/ed_mac.bin
-  cp /lib/firmware/nxp/1YM/bt_power_config_1.sh.1ym  /lib/firmware/nxp/bt_power_config_1.sh
-  cp /lib/firmware/nxp/1YM/txpower_CA.bin.1ym	/lib/firmware/nxp/txpower_CA.bin
-  cp /lib/firmware/nxp/1YM/txpower_EU.bin.1ym 	/lib/firmware/nxp/txpower_EU.bin
-  cp /lib/firmware/nxp/1YM/txpower_JP.bin.1ym 	/lib/firmware/nxp/txpower_JP.bin
-  cp /lib/firmware/nxp/1YM/txpower_US.bin.1ym 	/lib/firmware/nxp/txpower_US.bin
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -150,10 +127,10 @@ EOT
 blacklist cfg80211
 
 # Alias for the NXP modules(1YM-SDIO)
-alias sdio:c*v02DFd9141* sd8997
+alias sdio:c*v02DFd9141* moal
 
 # Specify arguments to pass when loading the sd8997 module
-options sd8997 fw_name=nxp/sdsd8997_combo_v4.bin cal_data_cfg=none cfg80211_wext=0xf
+options moal mod_para=nxp/wifi_mod_para.conf
 EOT
 
   depmod -a
@@ -166,16 +143,7 @@ EOT
 function prepare_for_nxp_ym_pcie() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-  ln -s /usr/share/nxp_wireless/bin_pcie8997/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
-  ln -s /usr/share/nxp_wireless/bin_pcie8997/pcie8997.ko /lib/modules/$(uname -r)/extra/pcie8997.ko
-
-  cp /lib/firmware/nxp/1YM/db.txt.1ym 		/lib/firmware/nxp/db.txt
-  cp /lib/firmware/nxp/1YM/ed_mac.bin.1ym 	/lib/firmware/nxp/ed_mac.bin
-  cp /lib/firmware/nxp/1YM/bt_power_config_1.sh.1ym  /lib/firmware/nxp/bt_power_config_1.sh
-  cp /lib/firmware/nxp/1YM/txpower_CA.bin.1ym	/lib/firmware/nxp/txpower_CA.bin
-  cp /lib/firmware/nxp/1YM/txpower_EU.bin.1ym 	/lib/firmware/nxp/txpower_EU.bin
-  cp /lib/firmware/nxp/1YM/txpower_JP.bin.1ym 	/lib/firmware/nxp/txpower_JP.bin
-  cp /lib/firmware/nxp/1YM/txpower_US.bin.1ym 	/lib/firmware/nxp/txpower_US.bin
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -197,7 +165,7 @@ blacklist cfg80211
 alias pci:v00001B4Bd00002B42sv*sd*bc02sc00i* pcie8997
 
 # Specify arguments to pass when loading the pcie8997 module
-options pcie8997 drv_mode=3 ps_mode=2 auto_ds=2 cfg80211_wext=0xf fw_name=nxp/pcieuart8997_combo_v4.bin cal_data_cfg=none
+options moal mod_para=nxp/wifi_mod_para.conf
 EOT
 
   depmod -a
@@ -228,11 +196,11 @@ EOT
 # Prevent the Cypress version of cfg80211.ko from being loaded.
 blacklist cfg80211
 
-# Alias for the 1YM-PCIe M.2 module
+# Alias for the 1YM-PCIe M.2 module [TBD]
 alias pci:v00001B4Bd00002B42sv*sd*bc02sc00i* pcie8997
 
 # Specify arguments to pass when loading the pcie8997 module
-options pcie8997 drv_mode=3 ps_mode=2 auto_ds=2 cfg80211_wext=0xf fw_name=nxp/pcieuart8997_combo_v4.bin cal_data_cfg=none
+options moal mod_para=nxp/wifi_mod_para.conf
 EOT
 
   depmod -a
@@ -240,8 +208,6 @@ EOT
   # Disable Cypress service and enable NXP service
   handle_services true false
 }
-
-
 
 function prepare_for_cypress() {
   clean_up
@@ -325,7 +291,7 @@ function usage() {
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
   echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1XA, 1ZM, 1WZ"
-  echo "     1YM-SDIO, 1YM-PCIe, 1XL, CURRENT or OFF"
+  echo "     1YM-SDIO, 1YM-PCIe, 1XK, 1XL, CURRENT or OFF"
   echo ""
 }
 
@@ -342,7 +308,7 @@ case ${1^^} in
   CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|WZ|1WZ)
     switch_to_cypress_sdio
     ;;
-  ZM|1ZM)
+  ZM|1ZM|XK|1XK)
     switch_to_nxp_sdio
     ;;
   YM-SDIO|1YM-SDIO)
