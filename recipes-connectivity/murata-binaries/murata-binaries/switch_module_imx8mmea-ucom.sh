@@ -8,7 +8,7 @@ VERSION="1.0"
 function current() {
   echo ""
   echo "Current setup:"
-  fw_printenv fdt_file
+  fw_printenv fdt_file 2>/dev/null
 
   if [ "/usr/sbin/wpa_supplicant" -ef "/usr/sbin/wpa_supplicant.cyw" ]; then
     echo "  Link is to Cypress WPA Supplicant binary"
@@ -146,7 +146,7 @@ override cfg80211 * kernel/net/wireless
 # Force modprobe to search "extra" (where the NXP
 # version of mlan.ko for SD8997 is placed) before looking in mxmwiflex
 # (where the 1ZM-SD8987 version is)
-override mlan * extra
+#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -181,7 +181,7 @@ override cfg80211 * kernel/net/wireless
 # Force modprobe to search "extra" (where the NXP
 # version of mlan.ko for PCIe-8997 is placed) before looking in mxmwiflex
 # (where the 1ZM-SD8987 version is)
-override mlan * extra
+#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -189,7 +189,7 @@ EOT
 blacklist cfg80211
 
 # Alias for the 1YM-PCIe M.2 module
-alias pci:v00001B4Bd00002B42sv*sd*bc02sc00i* pcie8997
+alias pci:v00001B4Bd00002B42sv*sd*bc02sc00i* moal
 
 # Specify arguments to pass when loading the pcie8997 module
 options moal mod_para=nxp/wifi_mod_para.conf
@@ -202,7 +202,7 @@ EOT
 }
 
 #[TO-DO]
-function prepare_for_nxp_1xl_pcie() {
+function prepare_for_nxp_xl_pcie() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -214,9 +214,9 @@ function prepare_for_nxp_1xl_pcie() {
 override cfg80211 * kernel/net/wireless
 
 # Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for PCIe-8997 is placed) before looking in mxmwiflex
+# version of mlan.ko for PCIe-9098 is placed) before looking in mxmwiflex
 # (where the 1ZM-SD8987 version is)
-override mlan * extra
+#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -224,7 +224,7 @@ EOT
 blacklist cfg80211
 
 # Alias for the 1XL-PCIe M.2 module [TO-DO]
-alias pci:v00001B4Bd00002B42sv*sd*bc02sc00i* pcie9098
+alias pci:v00001B4Bd00002B42sv*sd*bc02sc00i* moal
 
 # Specify arguments to pass when loading the pcie9098 module
 options moal mod_para=nxp/wifi_mod_para.conf
@@ -254,9 +254,10 @@ function off() {
 function switch_to_cypress_sdio() {
   echo ""
   echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE (Cypress - SDIO)"
-  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2.dtb
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   prepare_for_cypress
+  echo "Setup complete."
   echo ""
 }
 
@@ -264,9 +265,10 @@ function switch_to_cypress_pcie() {
   echo ""
   echo "Setting up for 1CX, 1VA, 1XA (Cypress - PCIe)"
   echo "Please wait..."
-  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2-pcie.dtb
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2-pcie.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   prepare_for_cypress
+  echo "Setup complete."
   echo ""
 }
 
@@ -274,9 +276,10 @@ function switch_to_nxp_sdio() {
   echo ""
   echo "Setting up for 1ZM (NXP - SDIO)"
   echo "Please wait..."
-  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2.dtb
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_sdio
+  echo "Setup complete."
   echo ""
 }
 
@@ -284,9 +287,10 @@ function switch_to_nxp_xk_sdio() {
   echo ""
   echo "Setting up for 1XK (NXP - SDIO)"
   echo "Please wait..."
-  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2.dtb
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint nxp
-  prepare_for_nxp_xm_sdio
+  prepare_for_nxp_xk_sdio
+  echo "Setup complete."
   echo ""
 }
 
@@ -295,9 +299,10 @@ function switch_to_nxp_ym_sdio() {
   echo ""
   echo "Setting up for 1YM (NXP - SDIO)"
   echo "Please wait..."
-  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2.dtb
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_sdio
   prepare_for_nxp_ym_sdio
+  echo "Setup complete."
   echo ""
 }
 
@@ -306,9 +311,10 @@ function switch_to_nxp_ym_pcie() {
   echo ""
   echo "Setting up for 1YM (NXP - PCIe)"
   echo "Please wait..."
-  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2-pcie.dtb
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_pcie
   prepare_for_nxp_ym_pcie
+  echo "Setup complete."
   echo ""
 }
 
@@ -317,9 +323,10 @@ function switch_to_nxp_xl_pcie() {
   echo ""
   echo "Setting up for 1XL (NXP - PCIe)"
   echo "Please wait..."
-  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2-pcie.dtb
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_v2-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1xl_pcie
   prepare_for_nxp_xl_pcie
+  echo "Setup complete."
   echo ""
 }
 
@@ -364,7 +371,7 @@ case ${1^^} in
     switch_to_nxp_ym_pcie
     ;;
   XL|1XL)
-    switch_to_nxp_pcie
+    switch_to_nxp_xl_pcie
     ;;
   CURRENT)
     current
