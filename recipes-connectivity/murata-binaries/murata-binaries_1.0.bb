@@ -165,10 +165,9 @@ do_install () {
 		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
 	fi
 
-	# Added Script file for switching between CYW and NXP
-#	install -m 755 ${S}/switch_module_v1.2.sh ${D}/usr/sbin/switch_module_v1.2.sh
-
+#	Points default to CYW
 	ln -sf /usr/sbin/wpa_supplicant.cyw ${D}${sbindir}/wpa_supplicant
+	ln -sf /usr/sbin/hostapd.cyw ${D}${sbindir}/hostapd
 
 #	Installing 8997 Firmware files
 	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/pcie8997_wlan_v4.bin ${D}/lib/firmware/nxp
@@ -178,7 +177,8 @@ do_install () {
 	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/uart8997_bt_v4.bin ${D}/lib/firmware/nxp
 
 #	Based on MACHINE type
-	echo "DEBUG:: MACHINE TYPE :: ${MACHINE}"
+#	echo "DEBUG:: MACHINE TYPE :: ${MACHINE}"
+	# Added Script file for switching between CYW and NXP
 	case ${MACHINE} in
 	  imx6dlea-com)
 		install -m 755 ${S}/switch_module_imx6dlea-com.sh ${D}/usr/sbin/switch_module.sh

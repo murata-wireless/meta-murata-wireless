@@ -9,12 +9,21 @@ function current() {
   echo ""
   echo "Current setup:"
   fw_printenv fdt_file
+
   if [ "/usr/sbin/wpa_supplicant" -ef "/usr/sbin/wpa_supplicant.cyw" ]; then
-    echo "  Link is to Cypress binary"
+    echo "  Link is to Cypress WPA Supplicant binary"
   fi
   if [ "/usr/sbin/wpa_supplicant" -ef "/usr/sbin/wpa_supplicant.nxp" ]; then
-    echo "  Link is to NXP binary"
+    echo "  Link is to NXP WPA Supplicant binary"
   fi
+
+  if [ "/usr/sbin/hostapd" -ef "/usr/sbin/hostapd.cyw" ]; then
+    echo "  Link is to Cypress Hostapd binary"
+  fi
+  if [ "/usr/sbin/hostapd" -ef "/usr/sbin/hostapd.nxp" ]; then
+    echo "  Link is to NXP Hostapd binary"
+  fi
+
   if [ -e /etc/depmod.d/nxp_depmod.conf ]; then
     echo "  Found depmod helper file for NXP"
   fi

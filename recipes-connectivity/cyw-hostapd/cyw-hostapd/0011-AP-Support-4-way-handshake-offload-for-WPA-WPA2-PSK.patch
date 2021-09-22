@@ -1,7 +1,7 @@
 From 6df8c5e8669ddf2f0921b9c87a44e7d66b4e6d56 Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Tue, 10 Dec 2019 14:03:57 -0600
-Subject: [PATCH 11/20] AP: Support 4-way handshake offload for WPA/WPA2-PSK
+Subject: [PATCH 11/16] AP: Support 4-way handshake offload for WPA/WPA2-PSK
 
 Add support for WPA/WPA2-PSK 4-way handshake offload in AP mode. In this
 case, the 4-way handshake is handled by driver instead of user space.
@@ -16,7 +16,7 @@ Signed-off-by: Chung-Hsien Hsu <stanley.hsu@cypress.com>
  5 files changed, 26 insertions(+), 1 deletion(-)
 
 diff --git a/src/ap/beacon.c b/src/ap/beacon.c
-index a51b94960..73b231ab1 100644
+index a51b949..73b231a 100644
 --- a/src/ap/beacon.c
 +++ b/src/ap/beacon.c
 @@ -1378,6 +1378,14 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
@@ -35,7 +35,7 @@ index a51b94960..73b231ab1 100644
  }
  
 diff --git a/src/ap/hostapd.c b/src/ap/hostapd.c
-index bf1975fbd..f569e7661 100644
+index bf1975f..f569e76 100644
 --- a/src/ap/hostapd.c
 +++ b/src/ap/hostapd.c
 @@ -3049,6 +3049,8 @@ int hostapd_remove_iface(struct hapd_interfaces *interfaces, char *buf)
@@ -61,7 +61,7 @@ index bf1975fbd..f569e7661 100644
  		    sta->auth_alg != WLAN_AUTH_FILS_SK_PFS &&
  		    sta->auth_alg != WLAN_AUTH_FILS_PK &&
 diff --git a/src/ap/wpa_auth.c b/src/ap/wpa_auth.c
-index c56077001..c64ca6688 100644
+index c560770..c64ca66 100644
 --- a/src/ap/wpa_auth.c
 +++ b/src/ap/wpa_auth.c
 @@ -652,6 +652,14 @@ int wpa_auth_sta_associated(struct wpa_authenticator *wpa_auth,
@@ -80,7 +80,7 @@ index c56077001..c64ca6688 100644
  		os_memset(&sm->key_replay, 0, sizeof(sm->key_replay));
  		sm->ReAuthenticationRequest = TRUE;
 diff --git a/src/ap/wpa_auth.h b/src/ap/wpa_auth.h
-index a348bc25a..82cb3f7ae 100644
+index a348bc2..82cb3f7 100644
 --- a/src/ap/wpa_auth.h
 +++ b/src/ap/wpa_auth.h
 @@ -232,6 +232,7 @@ struct wpa_auth_config {
@@ -92,7 +92,7 @@ index a348bc25a..82cb3f7ae 100644
  
  typedef enum {
 diff --git a/src/ap/wpa_auth_glue.c b/src/ap/wpa_auth_glue.c
-index 0800a8748..8d81fd785 100644
+index 0800a87..8d81fd7 100644
 --- a/src/ap/wpa_auth_glue.c
 +++ b/src/ap/wpa_auth_glue.c
 @@ -1305,6 +1305,8 @@ int hostapd_setup_wpa(struct hostapd_data *hapd)
@@ -105,5 +105,5 @@ index 0800a8748..8d81fd785 100644
  	if (hapd->wpa_auth == NULL) {
  		wpa_printf(MSG_ERROR, "WPA initialization failed.");
 -- 
-2.17.1
+1.9.1
 
