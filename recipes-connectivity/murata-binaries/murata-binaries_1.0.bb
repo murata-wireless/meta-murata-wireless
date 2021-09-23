@@ -22,12 +22,6 @@ SRC_URI = " \
 	file://switch_module_imx8mmea-ucom.sh \
 	file://switch_module_imx8mnea-ucom.sh \
 	file://switch_module_imx8mqea-com.sh \
-	file://BCM43439.hcd \
-	file://BCM4373.hcd \
-	file://cyfmac43439-sdio.clm_blob \
-	file://cyfmac43439-sdio.txt \
-	file://cyfmac4373-sdio.clm_blob \
-	file://cyfmac4373-sdio.txt \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 	file://sdiouartiw416_combo_v0.bin \
 	file://wifi_mod_para.conf \
@@ -126,14 +120,6 @@ do_install () {
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4359-sdio.clm_blob ${D}/lib/firmware/cypress/cyfmac4359-sdio.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4359-sdio.clm_blob ${D}/lib/firmware/cypress/cyfmac4359-pcie.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac54591-pcie.clm_blob ${D}/lib/firmware/cypress/cyfmac54591-pcie.clm_blob
-
-#	install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.clm_blob
-	
-#	Using the one shared by Scott
-	install -m 755 ${S}/cyfmac4373-sdio.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
-	install -m 755 ${S}/cyfmac4373-sdio.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.clm_blob
-	install -m 755 ${S}/cyfmac43439-sdio.txt ${D}/lib/firmware/cypress/cyfmac43439-sdio.txt
-	install -m 755 ${S}/cyfmac43439-sdio.clm_blob ${D}/lib/firmware/cypress/cyfmac43439-sdio.clm_blob
 
 	install -m 444 ${S}/cyw-fmac-fw/README_CLM_BLOB.txt ${D}/lib/firmware/cypress/README_CLM_BLOB.txt
 	install -m 444 ${S}/cyw-fmac-fw/README_FW.txt ${D}/lib/firmware/cypress/README_FW.txt

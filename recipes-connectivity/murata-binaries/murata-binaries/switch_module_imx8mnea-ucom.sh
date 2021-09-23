@@ -5,6 +5,18 @@
 
 VERSION="1.0"
 
+
+# Detect if a v2 or v3 Carrier Board is used. This will determine dtb file name.
+found=`i2cdetect -y 1 0x20 0x21|grep "^20:"`
+if [[ $found == *"-- UU"* ]] || [[ $found == *"-- 21"* ]]; then
+  DTB_VER="v3"
+else
+  DTB_VER="v2"
+fi
+
+echo "DTB_VER is ${DTB_VER}"
+
+
 function current() {
   echo ""
   echo "Current setup:"
@@ -255,7 +267,7 @@ function switch_to_cypress_sdio() {
   echo ""
   echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE (Cypress - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx8mn-ea-ucom-kit_v2.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mn-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   prepare_for_cypress
   echo "Setup complete."
@@ -266,7 +278,7 @@ function switch_to_cypress_pcie() {
   echo ""
   echo "Setting up for 1CX, 1VA, 1XA (Cypress - PCIe)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx8mn-ea-ucom-kit_v2-pcie.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mn-ea-ucom-kit_${DTB_VER}-pcie.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   prepare_for_cypress
   echo "Setup complete."
@@ -277,7 +289,7 @@ function switch_to_nxp_sdio() {
   echo ""
   echo "Setting up for 1ZM (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx8mn-ea-ucom-kit_v2.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mn-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_sdio
   echo "Setup complete."
@@ -288,7 +300,7 @@ function switch_to_nxp_xk_sdio() {
   echo ""
   echo "Setting up for 1XK (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx8mn-ea-ucom-kit_v2.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mn-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_xk_sdio
   echo "Setup complete."
@@ -300,7 +312,7 @@ function switch_to_nxp_ym_sdio() {
   echo ""
   echo "Setting up for 1YM (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx8mn-ea-ucom-kit_v2.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mn-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_sdio
   prepare_for_nxp_ym_sdio
   echo "Setup complete."
@@ -312,7 +324,7 @@ function switch_to_nxp_ym_pcie() {
   echo ""
   echo "Setting up for 1YM (NXP - PCIe)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx8mn-ea-ucom-kit_v2-pcie.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mn-ea-ucom-kit_${DTB_VER}-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_pcie
   prepare_for_nxp_ym_pcie
   echo "Setup complete."
@@ -324,7 +336,7 @@ function switch_to_nxp_xl_pcie() {
   echo ""
   echo "Setting up for 1XL (NXP - PCIe)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx8mn-ea-ucom-kit_v2-pcie.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mn-ea-ucom-kit_${DTB_VER}-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1xl_pcie
   prepare_for_nxp_xl_pcie
   echo "Setup complete."
@@ -385,3 +397,4 @@ case ${1^^} in
     usage
     ;;
 esac
+
