@@ -1,12 +1,12 @@
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
-index 83db868..f78c245 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
-@@ -285,6 +285,7 @@ int brcmf_c_preinit_dcmds(struct brcmf_if *ifp)
+diff --git a/v5.10.9-backports/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c b/v5.10.9-backports/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+index 244e9e1..af76da5 100644
+--- a/v5.10.9-backports/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
++++ b/v5.10.9-backports/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+@@ -281,6 +281,7 @@ int brcmf_c_preinit_dcmds(struct brcmf_if *ifp)
  	strsep(&ptr, "\n");
  
  	/* Print fw version info */
-+	brcmf_info("Murata Customized Version: imx-zeus-baragon_r1.0;\n");
++	brcmf_info("Murata Customized Version: imx-hardknott-cynder_r1.0-test;\n");
  	brcmf_info("Firmware: %s %s\n", ri->chipname, buf);
  
  	/* locate firmware version number for ethtool */
