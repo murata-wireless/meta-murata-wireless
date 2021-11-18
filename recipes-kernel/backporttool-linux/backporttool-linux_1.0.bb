@@ -17,6 +17,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
 
 SRC_URI =  " \
     git://github.com/jameel-kareem3/cyw-fmac;protocol=http;branch=imx-hardknott-cynder \
+    file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
     file://0004-makefile-yacc-flex-update.patch;apply=yes \
 "
 
