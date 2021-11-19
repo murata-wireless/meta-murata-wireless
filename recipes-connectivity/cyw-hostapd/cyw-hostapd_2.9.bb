@@ -16,7 +16,7 @@ SRC_URI = " \
     file://defconfig \
     file://init \
     file://hostapd.service \
-    file://0000-hostapd-patch-to-bring-baseline-ver2-9-to-2-9-1.patch;apply=yes \
+    file://0000-murata-hostapd-patch-to-bring-baseline-ver2-9-to-2-9-1.patch;apply=yes \
     file://0003-nl80211-Report-connection-authorized-in-EVENT_ASSOC.patch;apply=yes \
     file://0005-OpenSSL-Fix-build-with-OpenSSL-1.0.1.patch;apply=yes \
     file://0006-nl80211-Check-SAE-authentication-offload-support.patch;apply=yes \
