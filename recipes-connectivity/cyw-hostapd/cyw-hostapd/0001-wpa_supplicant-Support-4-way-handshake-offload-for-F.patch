@@ -1,21 +1,21 @@
-From 6ce23de6fdd3fd610baa3aec65753b30804cefac Mon Sep 17 00:00:00 2001
+From 50d3931c49589fbae8f0ebb947b794180a4693c6 Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Tue, 29 Oct 2019 11:32:11 +0800
-Subject: [PATCH 01/16] wpa_supplicant: Support 4-way handshake offload for
+Subject: [PATCH 01/15] wpa_supplicant: Support 4-way handshake offload for
  FT-EAP
 
 Add support of 4-way handshake offload for FT-EAP.
 
-Signed-off-by: Chung-Hsien Hsu <stanley.hsu@cypress.com>
+Signed-off-by: Chung-Hsien Hsu <chung-hsien.hsu@infineon.com>
 ---
  wpa_supplicant/wpa_supplicant.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/wpa_supplicant/wpa_supplicant.c b/wpa_supplicant/wpa_supplicant.c
-index 911d79d..73e69ab 100644
+index 5cf45b4ff..70d805537 100644
 --- a/wpa_supplicant/wpa_supplicant.c
 +++ b/wpa_supplicant/wpa_supplicant.c
-@@ -3228,7 +3228,8 @@ static void wpas_start_assoc_cb(struct wpa_radio_work *work, int deinit)
+@@ -3736,7 +3736,8 @@ static void wpas_start_assoc_cb(struct wpa_radio_work *work, int deinit)
  	    (params.key_mgmt_suite == WPA_KEY_MGMT_IEEE8021X ||
  	     params.key_mgmt_suite == WPA_KEY_MGMT_IEEE8021X_SHA256 ||
  	     params.key_mgmt_suite == WPA_KEY_MGMT_IEEE8021X_SUITE_B ||
@@ -26,5 +26,5 @@ index 911d79d..73e69ab 100644
  
  	if (wpa_s->conf->key_mgmt_offload) {
 -- 
-1.9.1
+2.17.1
 

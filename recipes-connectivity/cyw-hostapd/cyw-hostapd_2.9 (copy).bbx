@@ -16,7 +16,17 @@ SRC_URI = " \
     file://defconfig \
     file://init \
     file://hostapd.service \
-    file://hostapd-patch-to-bring-baseline-ver2-9-to-2-9-1.patch;apply=yes \
+    file://0003-nl80211-Report-connection-authorized-in-EVENT_ASSOC.patch;apply=yes \
+    file://0005-Sync-with-mac80211-next.git-include-uapi-linux-nl802.patch;apply=yes \
+    file://0006-nl80211-Check-SAE-authentication-offload-support.patch;apply=yes \
+    file://0008-OpenSSL-Fix-build-with-OpenSSL-1.0.1.patch;apply=yes \
+    file://0009-non-upstream-Sync-nl80211.h-for-PSK-4-way-HS-offload.patch;apply=yes \
+    file://0010-nl80211-Support-4-way-handshake-offload-for-WPA-WPA2.patch;apply=yes \
+    file://0011-AP-Support-4-way-handshake-offload-for-WPA-WPA2-PSK.patch;apply=yes \
+    file://0012-nl80211-Support-SAE-authentication-offload-in-AP-mod.patch;apply=yes \
+    file://0013-SAE-Support-SAE-authentication-offload-in-AP-mode.patch;apply=yes \
+    file://0014-P2P-Fix-P2P-authentication-failure-due-to-AP-mode-4-.patch;apply=yes \
+    file://0015-AP-Silently-ignore-management-frame-from-unexpected-.patch;apply=yes \
     file://udhcpd.conf \
 "
 
