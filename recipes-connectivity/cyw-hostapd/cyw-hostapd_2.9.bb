@@ -16,7 +16,7 @@ SRC_URI = " \
     file://defconfig \
     file://init \
     file://hostapd.service \
-    file://hostapd-patch-to-bring-baseline-ver2-9-to-2-9-1.patch;apply=yes \
+    file://0000-hostapd-patch-to-bring-baseline-ver2-9-to-2-9-1.patch;apply=yes \
     file://udhcpd.conf \
 "
 
