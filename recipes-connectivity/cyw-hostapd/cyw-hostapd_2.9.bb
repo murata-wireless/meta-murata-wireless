@@ -17,6 +17,17 @@ SRC_URI = " \
     file://init \
     file://hostapd.service \
     file://0000-hostapd-patch-to-bring-baseline-ver2-9-to-2-9-1.patch;apply=yes \
+    file://0003-nl80211-Report-connection-authorized-in-EVENT_ASSOC.patch;apply=yes \
+    file://0005-OpenSSL-Fix-build-with-OpenSSL-1.0.1.patch;apply=yes \
+    file://0006-nl80211-Check-SAE-authentication-offload-support.patch;apply=yes \
+    file://0007-SAE-Pass-SAE-password-on-connect-for-SAE-authenticat.patch;apply=yes \
+    file://0008-nl80211-Support-4-way-handshake-offload-for-WPA-WPA2.patch;apply=yes \
+    file://0009-AP-Support-4-way-handshake-offload-for-WPA-WPA2-PSK.patch;apply=yes \
+    file://0010-nl80211-Support-SAE-authentication-offload-in-AP-mod.patch;apply=yes \
+    file://0011-SAE-Support-SAE-authentication-offload-in-AP-mode.patch;apply=yes \
+    file://0013-non-upstream-defconfig_base-Add-Infineon-default-con.patch;apply=yes \
+    file://0014-P2P-Fix-copying-of-secondary-device-types-for-P2P-gr.patch;apply=yes \
+    file://0015-P2P-Fix-a-corner-case-in-peer-addition-based-on-PD-R.patch;apply=yes \
     file://udhcpd.conf \
 "
 
