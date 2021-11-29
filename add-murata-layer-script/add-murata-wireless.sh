@@ -22,9 +22,9 @@ cp ./sources/meta-murata-wireless/freescale/imx8mnlpddr4evk.conf ./sources/meta-
 echo "11"
 cp ./sources/meta-murata-wireless/freescale/layer.conf ./sources/meta-imx/meta-bsp/conf/
 echo "12"
-cp ./sources/meta-murata-wireless/freescale/imx8mm-lpddr4-evk.conf ./meta-freescale/conf/machine/
+cp ./sources/meta-murata-wireless/freescale/imx8mm-lpddr4-evk.conf ./sources/meta-freescale/conf/machine/
 echo "13"
-cp ./sources/meta-murata-wireless/freescale/imx8mn-lpddr4-evk.conf ./meta-freescale/conf/machine/
+cp ./sources/meta-murata-wireless/freescale/imx8mn-lpddr4-evk.conf ./sources/meta-freescale/conf/machine/
 echo "14"
 
 
