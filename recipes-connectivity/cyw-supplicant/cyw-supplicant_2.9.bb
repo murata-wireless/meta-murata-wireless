@@ -24,22 +24,22 @@ SRC_URI = "http://w1.fi/releases/wpa_supplicant-${PV}.tar.gz  \
            file://wpa_supplicant.conf \
            file://wpa_supplicant.conf-sane \
            file://99_wpa_supplicant \
+	   file://0000-murata-wpa-supplicant-patch-to-bring-baseline-ver2-9-to-2-9-1.patch;apply=yes \
 	   file://0001-wpa_supplicant-Support-4-way-handshake-offload-for-F.patch;apply=yes \
 	   file://0002-wpa_supplicant-Notify-Neighbor-Report-for-driver-tri.patch;apply=yes \
 	   file://0003-nl80211-Report-connection-authorized-in-EVENT_ASSOC.patch;apply=yes \
 	   file://0004-wpa_supplicant-Add-PMKSA-cache-for-802.1X-4-way-hand.patch;apply=yes \
-	   file://0005-Sync-with-mac80211-next.git-include-uapi-linux-nl802.patch;apply=yes \  
+	   file://0005-OpenSSL-Fix-build-with-OpenSSL-1.0.1.patch;apply=yes \
 	   file://0006-nl80211-Check-SAE-authentication-offload-support.patch;apply=yes \
 	   file://0007-SAE-Pass-SAE-password-on-connect-for-SAE-authenticat.patch;apply=yes \
-           file://0008-OpenSSL-Fix-build-with-OpenSSL-1.0.1.patch;apply=yes \
-	   file://0009-non-upstream-Sync-nl80211.h-for-PSK-4-way-HS-offload.patch;apply=yes \
-	   file://0010-nl80211-Support-4-way-handshake-offload-for-WPA-WPA2.patch;apply=yes \
-	   file://0011-AP-Support-4-way-handshake-offload-for-WPA-WPA2-PSK.patch;apply=yes \
-	   file://0012-nl80211-Support-SAE-authentication-offload-in-AP-mod.patch;apply=yes \
-	   file://0013-SAE-Support-SAE-authentication-offload-in-AP-mode.patch;apply=yes \
-	   file://0014-P2P-Fix-P2P-authentication-failure-due-to-AP-mode-4-.patch;apply=yes \
-	   file://0015-AP-Silently-ignore-management-frame-from-unexpected-.patch;apply=yes \
-	   file://0016-DPP-Do-more-condition-test-for-AKM-type-DPP-offload.patch;apply=yes \
+	   file://0008-nl80211-Support-4-way-handshake-offload-for-WPA-WPA2.patch;apply=yes \
+	   file://0009-AP-Support-4-way-handshake-offload-for-WPA-WPA2-PSK.patch;apply=yes \
+	   file://0010-nl80211-Support-SAE-authentication-offload-in-AP-mod.patch;apply=yes \
+	   file://0011-SAE-Support-SAE-authentication-offload-in-AP-mode.patch;apply=yes \
+	   file://0012-DPP-Do-more-condition-test-for-AKM-type-DPP-offload.patch;apply=yes \
+	   file://0013-non-upstream-defconfig_base-Add-Infineon-default-con.patch;apply=yes \
+	   file://0014-P2P-Fix-copying-of-secondary-device-types-for-P2P-gr.patch;apply=yes \
+	   file://0015-P2P-Fix-a-corner-case-in-peer-addition-based-on-PD-R.patch;apply=yes \
 "
 
 SRC_URI[md5sum] = "2d2958c782576dc9901092fbfecb4190"

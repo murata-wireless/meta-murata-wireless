@@ -16,17 +16,18 @@ SRC_URI = " \
     file://defconfig \
     file://init \
     file://hostapd.service \
+    file://0000-murata-hostapd-patch-to-bring-baseline-ver2-9-to-2-9-1.patch;apply=yes \
     file://0003-nl80211-Report-connection-authorized-in-EVENT_ASSOC.patch;apply=yes \
-    file://0005-Sync-with-mac80211-next.git-include-uapi-linux-nl802.patch;apply=yes \
+    file://0005-OpenSSL-Fix-build-with-OpenSSL-1.0.1.patch;apply=yes \
     file://0006-nl80211-Check-SAE-authentication-offload-support.patch;apply=yes \
-    file://0008-OpenSSL-Fix-build-with-OpenSSL-1.0.1.patch;apply=yes \
-    file://0009-non-upstream-Sync-nl80211.h-for-PSK-4-way-HS-offload.patch;apply=yes \
-    file://0010-nl80211-Support-4-way-handshake-offload-for-WPA-WPA2.patch;apply=yes \
-    file://0011-AP-Support-4-way-handshake-offload-for-WPA-WPA2-PSK.patch;apply=yes \
-    file://0012-nl80211-Support-SAE-authentication-offload-in-AP-mod.patch;apply=yes \
-    file://0013-SAE-Support-SAE-authentication-offload-in-AP-mode.patch;apply=yes \
-    file://0014-P2P-Fix-P2P-authentication-failure-due-to-AP-mode-4-.patch;apply=yes \
-    file://0015-AP-Silently-ignore-management-frame-from-unexpected-.patch;apply=yes \
+    file://0007-SAE-Pass-SAE-password-on-connect-for-SAE-authenticat.patch;apply=yes \
+    file://0008-nl80211-Support-4-way-handshake-offload-for-WPA-WPA2.patch;apply=yes \
+    file://0009-AP-Support-4-way-handshake-offload-for-WPA-WPA2-PSK.patch;apply=yes \
+    file://0010-nl80211-Support-SAE-authentication-offload-in-AP-mod.patch;apply=yes \
+    file://0011-SAE-Support-SAE-authentication-offload-in-AP-mode.patch;apply=yes \
+    file://0013-non-upstream-defconfig_base-Add-Infineon-default-con.patch;apply=yes \
+    file://0014-P2P-Fix-copying-of-secondary-device-types-for-P2P-gr.patch;apply=yes \
+    file://0015-P2P-Fix-a-corner-case-in-peer-addition-based-on-PD-R.patch;apply=yes \
     file://udhcpd.conf \
 "
 
@@ -45,11 +46,11 @@ do_compile() {
 do_install() {
     install -d ${D}${sbindir} ${D}${sysconfdir}/init.d ${D}${systemd_unitdir}/system/
     install -m 0644 ${B}/hostapd.conf ${D}${sysconfdir}
-
 #   Adding udhcdp.conf
     install -m 0644 ${WORKDIR}/udhcpd.conf ${D}${sysconfdir}
 
     install -m 0755 ${B}/hostapd ${D}${sbindir}
+    install -m 755 ${B}/hostapd ${D}${sbindir}/hostapd.cyw
     install -m 0755 ${B}/hostapd_cli ${D}${sbindir}
     install -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/hostapd
     install -m 0644 ${WORKDIR}/hostapd.service ${D}${systemd_unitdir}/system/
