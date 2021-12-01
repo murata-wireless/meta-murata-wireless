@@ -9,7 +9,7 @@ cp ./sources/meta-murata-wireless/freescale/imx8mnevk.conf ./sources/meta-imx/me
 cp ./sources/meta-murata-wireless/freescale/imx8_all.conf ./sources/meta-imx/meta-bsp/conf/machine/
 cp ./sources/meta-murata-wireless/freescale/imx8mnddr4evk.conf ./sources/meta-imx/meta-bsp/conf/machine/
 cp ./sources/meta-murata-wireless/freescale/imx8mnlpddr4evk.conf ./sources/meta-imx/meta-bsp/conf/machine/
-#cp ./sources/meta-murata-wireless/freescale/layer.conf ./sources/meta-imx/meta-bsp/conf/
+cp ./sources/meta-murata-wireless/freescale/layer.conf ./sources/meta-imx/meta-bsp/conf/
 cp ./sources/meta-murata-wireless/freescale/imx8mm-lpddr4-evk.conf ./sources/meta-freescale/conf/machine/
 cp ./sources/meta-murata-wireless/freescale/imx8mn-lpddr4-evk.conf ./sources/meta-freescale/conf/machine/
 
