@@ -7,13 +7,7 @@ SECTION = "kernel/modules"
 LICENSE = "GPLv2"
 
 
-LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
-#SRC_URI =  " \
-#    git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=imx-zeus-baragon \
-#    file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
-#    file://0003-brcmfmac-req-fw-direct-war.patch;apply=yes \
-#    file://0004-makefile-yacc-flex-update.patch;apply=yes \
-#"
+LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 SRC_URI =  " \
     git://github.com/jameel-kareem3/cyw-fmac;protocol=http;branch=imx-hardknott-cynder \
@@ -22,7 +16,7 @@ SRC_URI =  " \
 "
 
 
-SRCREV = "b32d4d7fa117a7c01228ba3002de2f7846bd9f4f"
+SRCREV = "f967e42d4a8a5977741548bea490a799d5f45a62"
 S = "${WORKDIR}/git"
 
 
