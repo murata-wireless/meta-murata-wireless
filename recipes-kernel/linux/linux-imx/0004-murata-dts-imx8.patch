@@ -66,10 +66,10 @@ index 0000000..ac85f9f
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts
 new file mode 100644
-index 0000000..ad8232f
+index 0000000..3509e02
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts
-@@ -0,0 +1,101 @@
+@@ -0,0 +1,105 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2019 NXP
@@ -99,7 +99,7 @@ index 0000000..ad8232f
 +};
 +
 +&uart1 {
-+	/* Onboard 1PJ BT */
++	/* Onboard AW-CM358SM BT */
 +	status = "disabled";
 +};
 +
@@ -107,8 +107,12 @@ index 0000000..ad8232f
 +  	resets = <&modem_reset_usd_m2>;
 +};
 +
++&ecspi2 {
++	status = "disabled";
++};
++
 +&usdhc1 {
-+	/* Disable 1PJ */
++	/* Disable AW-CM358SM */
 +	status = "disabled";
 +};
 +
@@ -173,7 +177,7 @@ index 0000000..ad8232f
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts
 new file mode 100644
-index 0000000..21ce345
+index 0000000..d1826e7
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts
 @@ -0,0 +1,35 @@
@@ -187,7 +191,7 @@ index 0000000..21ce345
 +&pinctrl_usdhc2_gpio {
 +	fsl,pins = <
 +    		MX8MN_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
-+        	MX8MN_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
++		MX8MN_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
 +    		MX8MN_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x19  /* BT_REG_ON */
 +    		MX8MN_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* Murata -- should be pull-up on this */
 +    		MX8MN_IOMUXC_ECSPI2_SCLK_GPIO5_IO10 	0x1d0 /* Murata WL_HOST_WAKE -- pull-up */
@@ -214,10 +218,10 @@ index 0000000..21ce345
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts
 new file mode 100644
-index 0000000..bca1c6a
+index 0000000..c37c29c
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts
-@@ -0,0 +1,107 @@
+@@ -0,0 +1,105 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2019 NXP
@@ -234,14 +238,12 @@ index 0000000..bca1c6a
 +		reset-gpios = <&gpio5 11 GPIO_ACTIVE_LOW>;  /* WL REG ON */
 +	};
 +
-+
 +	modem_reset_usd_m2: modem-reset {
 +		compatible = "gpio-reset";
 +		reset-gpios = <&gpio5 12 GPIO_ACTIVE_LOW>;  /* BT REG ON */
 +		reset-delay-us = <1000>;
 +		#reset-cells = <0>;
 +	};
-+
 +};
 +
 +&reg_usdhc2_vmmc {
@@ -249,7 +251,7 @@ index 0000000..bca1c6a
 +};
 +
 +&uart1 {
-+	/* Onboard 1MW BT */
++	/* Onboard AW-CM358SM BT */
 +	status = "disabled";
 +};
 +
@@ -262,7 +264,7 @@ index 0000000..bca1c6a
 +};
 +
 +&usdhc1 {
-+	/* Disable 1MW */
++	/* Disable AW-CM358SM */
 +	status = "disabled";
 +};
 +
@@ -270,7 +272,7 @@ index 0000000..bca1c6a
 +&pinctrl_usdhc2_gpio {
 +	fsl,pins = <
 +    		MX8MN_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
-+        	MX8MN_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
++		MX8MN_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
 +    		MX8MN_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x19  /* BT_REG_ON */
 +    		MX8MN_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* Murata -- should be pull-up on this */
 +	>;
