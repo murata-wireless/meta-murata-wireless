@@ -21,7 +21,7 @@ SRC_URI += " \
 SRCREV_imx-firmware = "685ace656284167376241c804827f046b984ce25"
 
 SRCREV_nxp-linux-calibration="c4a024850ba019739adb91bde8574fd8d7ebb56e"
-SRCREV_cyw-fmac-fw="8a8da94d1c63be59cd8b831c413693f27e9c5272"
+SRCREV_cyw-fmac-fw="0d7a9eed1313ad1d7057feeb93342bda94aefd5b"
 SRCREV_cyw-fmac-nvram="a8f7498173b23a2f754763d2e15ea53d9fb8f84d"
 SRCREV_cyw-bt-patch="5b3cbf7b95efdc8015e5f41d1ed10bfbd9ef4464"
 SRCREV_cyw-fmac-utils-imx32="e248804b6ba386fedcd462ddd9394f42f73a17af"
@@ -115,8 +115,8 @@ do_install () {
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4359-sdio.clm_blob ${D}/lib/firmware/cypress/cyfmac4359-pcie.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac54591-pcie.clm_blob ${D}/lib/firmware/cypress/cyfmac54591-pcie.clm_blob
 # 	For 2AE and 1YN
-	install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.clm_blob
-	install -m 444 ${S}/cyw-fmac-fw/cyfmac43439-sdio.clm_blob  ${D}/lib/firmware/cypress/cyfmac43439-sdio.clm_blob 
+	install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2AE.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.clm_blob
+	install -m 444 ${S}/cyw-fmac-fw/cyfmac43439-sdio.1YN.clm_blob  ${D}/lib/firmware/cypress/cyfmac43439-sdio.clm_blob 
 
 	install -m 444 ${S}/cyw-fmac-fw/README_CLM_BLOB.txt ${D}/lib/firmware/cypress/README_CLM_BLOB.txt
 	install -m 444 ${S}/cyw-fmac-fw/README_FW.txt ${D}/lib/firmware/cypress/README_FW.txt
