@@ -21,7 +21,7 @@ SRC_URI += " \
 SRCREV_imx-firmware = "685ace656284167376241c804827f046b984ce25"
 
 SRCREV_nxp-linux-calibration="c4a024850ba019739adb91bde8574fd8d7ebb56e"
-SRCREV_cyw-fmac-fw="0d7a9eed1313ad1d7057feeb93342bda94aefd5b"
+SRCREV_cyw-fmac-fw="ef3f16f9bf9eda6a7da301de620d74d3a698088d"
 SRCREV_cyw-fmac-nvram="a8f7498173b23a2f754763d2e15ea53d9fb8f84d"
 SRCREV_cyw-bt-patch="5b3cbf7b95efdc8015e5f41d1ed10bfbd9ef4464"
 SRCREV_cyw-fmac-utils-imx32="e248804b6ba386fedcd462ddd9394f42f73a17af"
