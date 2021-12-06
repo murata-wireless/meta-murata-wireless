@@ -251,6 +251,7 @@ EOT
 function prepare_for_cypress() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.cyw /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/hostapd.cyw /usr/sbin/hostapd
 
   depmod -a
 
