@@ -13,9 +13,6 @@ SRC_URI = " \
 	file://switch_module.sh \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 "
-SRC_URI += " \
-           ${IMX_FIRMWARE_SRC};branch=master;destsuffix=imx-firmware;name=imx-firmware \
-"
 
 SRCREV_nxp-linux-calibration="7c0c175f6544aad35e26e8ce9c44c839d20da290"
 SRCREV_cyw-fmac-fw="86addd0f77da2fc8f9d3743d3bad317348d7e0f8"
