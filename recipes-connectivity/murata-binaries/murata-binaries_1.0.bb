@@ -20,7 +20,7 @@ SRC_URI += " \
 "
 SRCREV_imx-firmware = "685ace656284167376241c804827f046b984ce25"
 
-SRCREV_nxp-linux-calibration="c4a024850ba019739adb91bde8574fd8d7ebb56e"
+SRCREV_nxp-linux-calibration="7c0c175f6544aad35e26e8ce9c44c839d20da290"
 SRCREV_cyw-fmac-fw="86addd0f77da2fc8f9d3743d3bad317348d7e0f8"
 SRCREV_cyw-fmac-nvram="a8f7498173b23a2f754763d2e15ea53d9fb8f84d"
 SRCREV_cyw-bt-patch="5b3cbf7b95efdc8015e5f41d1ed10bfbd9ef4464"
@@ -148,28 +148,15 @@ do_install () {
 		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
 	fi
 
-#	Points default to CYW
-	ln -sf /usr/sbin/wpa_supplicant.cyw ${D}${sbindir}/wpa_supplicant
-	ln -sf /usr/sbin/hostapd.cyw ${D}${sbindir}/hostapd
-
-#	Installing 8997 Firmware files
-	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/pcie8997_wlan_v4.bin ${D}/lib/firmware/nxp
-	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/pcieuart8997_combo_v4.bin ${D}/lib/firmware/nxp
-	install -m 0644 ${S}/git/mrvl/pcieusb8997_combo_v4.bin ${D}/lib/firmware/nxp
-	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/helper_uart_3000000.bin ${D}/lib/firmware/nxp
-	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/uart8997_bt_v4.bin ${D}/lib/firmware/nxp
-
 #	Based on MACHINE type
 	install -m 755 ${S}/switch_module.sh ${D}/usr/sbin/switch_module.sh
 
 #	Install nxp linux calibration files
-	install -m 444 ${S}/nxp-linux-calibration/murata/1XK/* ${D}/lib/firmware/nxp/murata/1XK
-        install -m 444 ${S}/nxp-linux-calibration/murata/1ZM/* ${D}/lib/firmware/nxp/murata/1ZM
-        install -m 444 ${S}/nxp-linux-calibration/murata/1YM/* ${D}/lib/firmware/nxp/murata/1YM
-        install -m 444 ${S}/nxp-linux-calibration/murata/2DS/* ${D}/lib/firmware/nxp/murata/2DS
+	install -m 444 ${S}/nxp-linux-calibration/murata/* ${D}/lib/firmware/nxp/murata/
         install -m 444 ${S}/nxp-linux-calibration/README.txt   ${D}/lib/firmware/nxp/murata/README.txt
+
 #	Copy 1XK Dedicated Bluetooth Antenna configuration file
-	install -m 755 ${S}/WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf ${D}/lib/firmware/nxp/murata/1XK
+	install -m 755 ${S}/WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf ${D}/lib/firmware/nxp/
 }
 
 PACKAGES =+ "${PN}-mfgtest"
