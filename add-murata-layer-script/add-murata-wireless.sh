@@ -1,17 +1,17 @@
-cp ./sources/meta-murata-wireless/freescale/imx6ulevk.conf ./sources/meta-freescale/conf/machine/
-cp ./sources/meta-murata-wireless/freescale/imx6ull14x14evk.conf ./sources/meta-imx/meta-bsp/conf/machine/
-cp ./sources/meta-murata-wireless/freescale/imx6slevk.conf ./sources/meta-freescale/conf/machine/
-cp ./sources/meta-murata-wireless/freescale/imx6sxsabresd.conf ./sources/meta-freescale/conf/machine/
-cp ./sources/meta-murata-wireless/freescale/imx6qsabresd.conf ./sources/meta-imx/meta-bsp/conf/machine/
-cp ./sources/meta-murata-wireless/freescale/imx6qpsabresd.conf ./sources/meta-imx/meta-bsp/conf/machine/
-cp ./sources/meta-murata-wireless/freescale/imx6dlsabresd.conf ./sources/meta-imx/meta-bsp/conf/machine/
-cp ./sources/meta-murata-wireless/freescale/imx8mnevk.conf ./sources/meta-imx/meta-bsp/conf/machine/
-cp ./sources/meta-murata-wireless/freescale/imx8_all.conf ./sources/meta-imx/meta-bsp/conf/machine/
-cp ./sources/meta-murata-wireless/freescale/imx8mnddr4evk.conf ./sources/meta-imx/meta-bsp/conf/machine/
-cp ./sources/meta-murata-wireless/freescale/imx8mnlpddr4evk.conf ./sources/meta-imx/meta-bsp/conf/machine/
-cp ./sources/meta-murata-wireless/freescale/layer.conf ./sources/meta-imx/meta-bsp/conf/
-cp ./sources/meta-murata-wireless/freescale/imx8mm-lpddr4-evk.conf ./sources/meta-freescale/conf/machine/
-cp ./sources/meta-murata-wireless/freescale/imx8mn-lpddr4-evk.conf ./sources/meta-freescale/conf/machine/
+#cp ./sources/meta-murata-wireless/freescale/imx6ulevk.conf ./sources/meta-freescale/conf/machine/
+#cp ./sources/meta-murata-wireless/freescale/imx6ull14x14evk.conf ./sources/meta-imx/meta-bsp/conf/machine/
+#cp ./sources/meta-murata-wireless/freescale/imx6slevk.conf ./sources/meta-freescale/conf/machine/
+#cp ./sources/meta-murata-wireless/freescale/imx6sxsabresd.conf ./sources/meta-freescale/conf/machine/
+#cp ./sources/meta-murata-wireless/freescale/imx6qsabresd.conf ./sources/meta-imx/meta-bsp/conf/machine/
+#cp ./sources/meta-murata-wireless/freescale/imx6qpsabresd.conf ./sources/meta-imx/meta-bsp/conf/machine/
+#cp ./sources/meta-murata-wireless/freescale/imx6dlsabresd.conf ./sources/meta-imx/meta-bsp/conf/machine/
+#cp ./sources/meta-murata-wireless/freescale/imx8mnevk.conf ./sources/meta-imx/meta-bsp/conf/machine/
+#cp ./sources/meta-murata-wireless/freescale/imx8_all.conf ./sources/meta-imx/meta-bsp/conf/machine/
+#cp ./sources/meta-murata-wireless/freescale/imx8mnddr4evk.conf ./sources/meta-imx/meta-bsp/conf/machine/
+#cp ./sources/meta-murata-wireless/freescale/imx8mnlpddr4evk.conf ./sources/meta-imx/meta-bsp/conf/machine/
+#cp ./sources/meta-murata-wireless/freescale/layer.conf ./sources/meta-imx/meta-bsp/conf/
+#cp ./sources/meta-murata-wireless/freescale/imx8mm-lpddr4-evk.conf ./sources/meta-freescale/conf/machine/
+#cp ./sources/meta-murata-wireless/freescale/imx8mn-lpddr4-evk.conf ./sources/meta-freescale/conf/machine/
 
 #EULA=$EULA DISTRO=$DISTRO MACHINE=$MACHINE . ./sources/meta-fsl-bsp-release/imx/tools/fsl-setup-release.sh -b $@
 . ./setup-environment $@
