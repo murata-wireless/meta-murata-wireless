@@ -18,7 +18,6 @@ SRC_URI = " \
 SRC_URI += " \
            ${IMX_FIRMWARE_SRC};branch=master;destsuffix=imx-firmware;name=imx-firmware \
 "
-SRCREV_imx-firmware = "685ace656284167376241c804827f046b984ce25"
 
 SRCREV_nxp-linux-calibration="7c0c175f6544aad35e26e8ce9c44c839d20da290"
 SRCREV_cyw-fmac-fw="86addd0f77da2fc8f9d3743d3bad317348d7e0f8"
@@ -31,7 +30,7 @@ SRCREV_default = "${AUTOREV}"
 
 S = "${WORKDIR}"
 B = "${WORKDIR}"
-DEPENDS = " libnl wpa-supplicant cyw-supplicant linux-firmware"
+DEPENDS = " libnl "
 
 do_compile () {
 	echo "Compiling: "
