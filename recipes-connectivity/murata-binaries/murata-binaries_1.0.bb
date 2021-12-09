@@ -2,7 +2,6 @@ SUMMARY = "Murata Binaries"
 LICENSE = "BSD"
 
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
-IMX_FIRMWARE_SRC ?= "git://github.com/NXP/imx-firmware.git;protocol=https"
 
 SRC_URI = " \
 	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
@@ -11,7 +10,6 @@ SRC_URI = " \
         git://github.com/jameel-kareem3/cyw-bt-patch;protocol=http;branch=hardknott-cynder;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
         git://github.com/jameel-kareem3/cyw-fmac-utils-imx32;protocol=http;branch=cynder;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
         git://github.com/jameel-kareem3/cyw-fmac-utils-imx64;protocol=http;branch=cynder;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
-	git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git;protocol=http;branch=master \
 	file://switch_module_imx6dlea-com.sh \
 	file://switch_module_imx6qea-com.sh \
 	file://switch_module_imx6sxea-com.sh \
@@ -24,12 +22,9 @@ SRC_URI = " \
 	file://switch_module_imx8mqea-com.sh \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 	file://sdiouartiw416_combo_v0.bin \
+	file://pcieuart8997_combo_v4.bin \
 	file://wifi_mod_para.conf \
 "
-SRC_URI += " \
-           ${IMX_FIRMWARE_SRC};branch=master;destsuffix=imx-firmware;name=imx-firmware \
-"
-SRCREV_imx-firmware = "685ace656284167376241c804827f046b984ce25"
 
 SRCREV_nxp-linux-calibration="c4a024850ba019739adb91bde8574fd8d7ebb56e"
 SRCREV_cyw-fmac-fw="54ab3dfa9af17107cacc4888d2ec767f31dc259f"
@@ -42,7 +37,7 @@ SRCREV_default = "${AUTOREV}"
 
 S = "${WORKDIR}"
 B = "${WORKDIR}"
-DEPENDS = " libnl wpa-supplicant cyw-supplicant linux-firmware"
+DEPENDS = " libnl wpa-supplicant cyw-supplicant"
 
 do_compile () {
 	echo "Compiling: "
@@ -166,13 +161,6 @@ do_install () {
 	ln -sf /usr/sbin/wpa_supplicant.nxp ${D}${sbindir}/wpa_supplicant
 	ln -sf /usr/sbin/hostapd.nxp ${D}${sbindir}/hostapd
 
-#	Installing 8997 Firmware files
-	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/pcie8997_wlan_v4.bin ${D}/lib/firmware/nxp
-	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/pcieuart8997_combo_v4.bin ${D}/lib/firmware/nxp
-	install -m 0644 ${S}/git/mrvl/pcieusb8997_combo_v4.bin ${D}/lib/firmware/nxp
-	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/helper_uart_3000000.bin ${D}/lib/firmware/nxp
-	install -m 0644 ${S}/imx-firmware/nxp/FwImage_8997/uart8997_bt_v4.bin ${D}/lib/firmware/nxp
-
 #	Based on MACHINE type
 #	echo "DEBUG:: MACHINE TYPE :: ${MACHINE}"
 	# Added Script file for switching between CYW and NXP
@@ -218,6 +206,7 @@ do_install () {
 #	Copy 1XK Dedicated Bluetooth Antenna configuration file
 	install -m 755 ${S}/WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf ${D}/lib/firmware/nxp/murata/1XK
 	install -m 755 ${S}/sdiouartiw416_combo_v0.bin ${D}/lib/firmware/nxp
+	install -m 755 ${S}/pcieuart8997_combo_v4.bin ${D}/lib/firmware/nxp
 	install -m 755 ${S}/wifi_mod_para.conf ${D}/lib/firmware/nxp
 }
 
