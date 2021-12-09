@@ -32,9 +32,9 @@ SRC_URI += " \
 SRCREV_imx-firmware = "685ace656284167376241c804827f046b984ce25"
 
 SRCREV_nxp-linux-calibration="c4a024850ba019739adb91bde8574fd8d7ebb56e"
-SRCREV_cyw-fmac-fw="86addd0f77da2fc8f9d3743d3bad317348d7e0f8"
-SRCREV_cyw-fmac-nvram="a8f7498173b23a2f754763d2e15ea53d9fb8f84d"
-SRCREV_cyw-bt-patch="5b3cbf7b95efdc8015e5f41d1ed10bfbd9ef4464"
+SRCREV_cyw-fmac-fw="54ab3dfa9af17107cacc4888d2ec767f31dc259f"
+SRCREV_cyw-fmac-nvram="183c13a5073e38821a089701880639ca082f5295"
+SRCREV_cyw-bt-patch="7499d0604cefe5e60ca0d54a13f8668a2f2aec2b"
 SRCREV_cyw-fmac-utils-imx32="e248804b6ba386fedcd462ddd9394f42f73a17af"
 SRCREV_cyw-fmac-utils-imx64="1bc78d68f9609290b2f6578516011c57691f7815"
 
@@ -95,6 +95,7 @@ do_install () {
         install -m 444 ${S}/cyw-bt-patch/BCM4356A2_001.003.015.0112.0410.1CX.hcd ${D}${sysconfdir}/firmware/BCM4356A2_001.003.015.0112.0410.1CX.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0223.0231.1XA.sAnt.hcd ${D}${sysconfdir}/firmware/BCM4359D0_004.001.016.0223.0231.1XA.sAnt.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}${sysconfdir}/firmware/BCM4373A0.2AE.hcd
+        install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}${sysconfdir}/firmware/BCM4373A0.2BC.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}${sysconfdir}/firmware/CYW4343A2_001.003.016.0031.0000.1YN.hcd
         install -m 444 ${S}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}${sysconfdir}/firmware
 
@@ -108,6 +109,7 @@ do_install () {
         install -m 444 ${S}/cyw-bt-patch/BCM4356A2_001.003.015.0112.0410.1CX.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4356A2_001.003.015.0112.0410.1CX.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0223.0231.1XA.sAnt.hcd ${D}${sysconfdir}/firmware/murata-master/_BCM4359D0_004.001.016.0223.0231.1XA.sAnt.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}${sysconfdir}/firmware/_BCM4373A0.2AE.hcd
+        install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2BC.hcd ${D}${sysconfdir}/firmware/_BCM4373A0.2BC.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}${sysconfdir}/firmware/_CYW4343A2_001.003.016.0031.0000.1YN.hcd
         install -m 444 ${S}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}${sysconfdir}/firmware/murata-master
 
