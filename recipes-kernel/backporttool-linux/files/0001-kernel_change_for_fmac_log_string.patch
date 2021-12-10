@@ -6,7 +6,7 @@ index 244e9e1..074127c 100644
  	strsep(&ptr, "\n");
  
  	/* Print fw version info */
-+	brcmf_info("Murata Customized Version: imx-hardknott-cynder-test_r1.3\n");
++	brcmf_info("Murata Customized Version: imx-hardknott-cynder_r1.0\n");
  	brcmf_info("Firmware: %s %s\n", ri->chipname, buf);
  
  	/* locate firmware version number for ethtool */
