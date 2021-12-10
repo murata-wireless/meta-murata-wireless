@@ -8,25 +8,14 @@ LICENSE = "GPLv2"
 
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=bbea815ee2795b2f4230826c0c6b8814"
-#SRC_URI =  " \
-#    git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=imx-zeus-zigra \
-#    file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
-#    file://0003-brcmfmac-req-fw-direct-war.patch;apply=yes \
-#    file://0004-makefile-yacc-flex-update.patch;apply=yes \
-#    file://0005-1XA-fix.patch;apply=yes \
-#    file://0006-patch-for-chip-id-4355.patch;apply=yes \
-#"
-#SRCREV = "f734f2d1bdf1ff401e561093201c3b78ebad10c9"
-#S = "${WORKDIR}/git"
-#
-#
+
 SRC_URI =  " \
-    git://github.com/jameel-kareem3/cyw-fmac;protocol=http;branch=imx-hardknott-cynder \
+    git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=imx-hardknott-cynder \
     file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
     file://0004-makefile-yacc-flex-update.patch;apply=yes \
 "
 
-SRCREV = "b32d4d7fa117a7c01228ba3002de2f7846bd9f4f"
+SRCREV = "cf9836e61256e8c85557cddacfbc6b72eda02fe7"
 S = "${WORKDIR}/git"
 
 
