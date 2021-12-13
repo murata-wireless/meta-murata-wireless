@@ -11,7 +11,7 @@ Build Procedure:
 ================
 Currently only Ubuntu 12.04, 14.04, 16.04 (64-bit) distros are supported. Please install one of these versions on your 
 host machine/environment before invoking the "Host_Setup_for_Yocto.sh" script. Once the host 
-environment is verified/configured, then you can run the "Murata_Wireless_Yocto_Build.sh" script to generate the 
+environment is verified/configured, then you can run the "Murata_Wireless_Yocto_Build_CYW.sh" script to generate the 
 desired Yocto Linux image.
 
 Folder Contents: 
@@ -32,20 +32,32 @@ NOTE: the final "bitbake" command will take hours to complete.
 Open a terminal in desired i.MX Yocto build folder, and run the command: 
 $./Murata_Wireless_Yocto_Build.sh
 
-------------------------------------------------------------------------------------
-| Kernel release | Yocto code name  |  FMAC code name |  Release information       |
-|----------------|------------------|-----------------|----------------------------|
-| 5.4.47_2.2.0   | Zeus             |  Zigra          |  imx-zeus-zigra_r1.0       |
------------------|------------------|-----------------|----------------------------|
-| 4.14.98_2.3.0  | Sumo             |  Zigra          |  imx-sumo-zigra_r1.0       |
-|                |                  |  Kong           |  imx-sumo-kong_r1.1        |
-|		 |                  |  Manda          |  imx-sumo-manda_r1.2       |
------------------|------------------|-----------------|----------------------------|
-| 4.9.123_2.3.0  | Rocko Mini       |  Zigra          |  imx-rocko-mini-zigra_r1.0 |
-|                |                  |  Kong           |  imx-rocko-mini-kong_r1.0  |                                       
-|                |                  |  Manda          |  imx-rocko-mini-manda_r2.2 |
------------------|------------------|-----------------|----------------------------|
-| 4.1.15_2.0.0   | Krogoth          |  Zigra          |  imx-krogoth-zigra_r1.0    |
-|                |                  |  Kong           |  imx-krogoth-kong_r1.0    |                                           
-|                |                  |  Manda          |  imx-krogoth-manda_r2.2    |          
-------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+| Kernel release | Yocto code name  |  FMAC code name |  Release information         |
+|----------------|------------------|-----------------|------------------------------|
+| 5.10.52_2.1.0  | Hardknott        |  Cynder         |  imx-hardknott-cynder_r1.0   |
+|----------------|------------------|-----------------|------------------------------|
+| 5.4.47_2.2.0   | Zeus             |  Baragon        |  imx-zeus-baragon_r1.0       |
+|                |                  |  Spiga          |  imx-zeus-spiga_r1.0         |
+|                |                  |  Zigra          |  imx-zeus-zigra_r1.0         |
+|----------------|------------------|-----------------|------------------------------|
+| 4.14.98_2.3.0  | Sumo             |  Baragon        |  imx-sumo-baragon_r1.0       |
+|                |                  |  Spiga          |  imx-sumo-spiga_r1.0         |
+|                |                  |  Zigra          |  imx-sumo-zigra_r1.0         |
+|                |                  |  Kong           |  imx-sumo-kong_r1.1          |
+|		 |                  |  Manda          |  imx-sumo-manda_r1.2         |
+|----------------|------------------|-----------------|------------------------------|
+| 4.9.123_2.3.0  | Rocko Mini       |  Baragon        |  imx-rocko-mini-baragon_r1.0 |
+|                |                  |  Spiga          |  imx-rocko-mini-spiga_r1.0   |
+|                |                  |  Zigra          |  imx-rocko-mini-zigra_r1.0   |
+|                |                  |  Kong           |  imx-rocko-mini-kong_r1.0    |                                       
+|                |                  |  Manda          |  imx-rocko-mini-manda_r2.2   |
+|----------------|------------------|-----------------|------------------------------|
+| 4.1.15_2.0.0   | Krogoth          |  Baragon        |  imx-krogoth-baragon_r1.0    |
+|                |                  |  Spiga          |  imx-krogoth-spiga_r1.0      |
+|                |                  |  Zigra          |  imx-krogoth-zigra_r1.0      |
+|                |                  |  Manda          |  imx-krogoth-manda_r2.2      |                                           
+|                |                  |  Mothra         |  imx-krogoth-mothra_r1.1     |                                           
+--------------------------------------------------------------------------------------
+
+
