@@ -1,5 +1,35 @@
 #!/bin/bash
-VERSION=10212020
+VERSION=12022021
+
+
+###################################################################################################
+#                             RELEASE HISTORY
+#-------------------------------------------------------------------------------------------------
+#  Revision |  Date        |  Initials    |       Change Description
+#-----------|--------------|--------------|-------------------------------------------------------
+#  1.0      | 12/01/2020   |    JK        |    Added support for sumo-zigra and rocko-mini-zigra
+#  1.1      | 12/09/2020   |    JK        |    Added support for krogoth-zigra, krogoth-kong and
+#           |              |              |    krogoth-manda
+#  1.2      | 12/19/2020   |    JK        |    Fix Zigra FMAC String display for 5.4.47
+#  1.3      | 12/21/2020   |    RC        |    Added support for imx8mmddr4evk machine type
+#  1.4      | 01/06/2021   |    JK        |    Supports NXP Wireless (1ZM, 1YM-SDIO and 1YM-PCIe).
+#           |              |              |    Supports 1.8V VIO Signaling with NXP i.MX6UL(L) EVK.
+#  1.5      | 01/22/2021   |    JK        |    Remove Manda and Add Spiga
+#  1.6      | 01/27/2021   |    RC        |    Remove unsupported machine types for NXP Wireless
+#  1.7      | 02/02/2021   |    RC        |    Added back Manda
+#  1.8      | 02/11/2021   |    JK        |    Add Spiga Revision 1.1
+#           |              |              |    Add Disclaimer
+#  1.9      | 04/05/2021   |    JK        |    Add installation of repo tool from google sources
+#           |              |              |    into a temporary folder, "repo-murata".
+#           |              |              |    Overrides the default Ubuntu repo tool.
+#  1.10     | 05/27/2021   |    RC        |    Add check for previous meta-murata-wireless folder.
+#  1.11     | 05/31/2021   |    RC        |    Add check for .repo folders
+#  1.12     | 06/14/2021   |    JK        |    Add Exiting the script after dash check
+#  1.13     | 06/29/2021   |    RC        |    Add Baragon
+#  1.14     | 11/18/2021   |    RC        |    Removed NXP into seperate script. Renamed script.
+#  1.15     | 11/22/2021   |    RC        |    Added support for hardknott and cynder.
+#  1.16     | 12/02/2021   |    RC        |    Updated hardknott-cynder support.
+####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
 RED='\033[1;31m' # Red font to flag errors
@@ -7,16 +37,158 @@ GRN='\033[1;32m' # Green font to flag pass
 YLW='\033[1;33m' # Yellow font for highlighting
 NC='\033[0m' # No Color
 
+#--------------------------- Variables-----------------------------------------------------------
+STEP_COUNT=1
+
+# BSP directory
+export BSP_DIR=`pwd`
+
+# Initialize variables
+LINUX_SRC=""
+LINUX_DEST=""
+CWD=""
+
+MANDA_FMAC_INDEX="1"
+KONG_FMAC_INDEX="2"
+ZIGRA_FMAC_INDEX="3"
+SPIGA_FMAC_INDEX="4"
+BARAGON_FMAC_INDEX="5"
+CYNDER_FMAC_INDEX="6"
+
+MANDA_FMAC_STR="manda"
+KONG_FMAC_STR="kong"
+ZIGRA_FMAC_STR="zigra"
+SPIGA_FMAC_STR="spiga"
+BARAGON_FMAC_STR="baragon"
+CYNDER_FMAC_STR="cynder"
+
+LINUX_KERNEL_5_10_52=0
+LINUX_KERNEL_5_4_47=1
+LINUX_KERNEL_4_14_98=2
+LINUX_KERNEL_4_9_123=3
+LINUX_KERNEL_4_1_15=4
+
+# Linux Kernel Strings
+LINUX_KERNEL_5_10_52_STR="5.10.52"
+LINUX_KERNEL_5_4_47_STR="5.4.47"
+LINUX_KERNEL_4_14_98_STR="4.14.98"
+LINUX_KERNEL_4_9_123_STR="4.9.123"
+LINUX_KERNEL_4_1_15_STR="4.1.15"
+
+DISTRO_NAME=fsl-imx-fb
+IMAGE_NAME=core-image-base
+
+iMXYoctoRelease=""
+YoctoBranch=""
+fmacversion=""
+linuxVersion=""
+
+# Hardknott
+iMXhardknottcynderStableReleaseTag="imx-hardknott-cynder_r1.0"
+iMXhardknottcynderDeveloperRelease="imx-hardknott-cynder"
+
+iMXhardknottbaragonStableReleaseTag="imx-hardknott-baragon_r1.0"
+iMXhardknottbaragonDeveloperRelease="imx-hardknott-baragon"
+
+iMXhardknottspigaStableReleaseTag="imx-hardknott-spiga_r1.0"
+iMXhardknottspigaDeveloperRelease="imx-hardknott-spiga"
+
+# Zeus
+iMXzeusbaragonStableReleaseTag="imx-zeus-baragon_r1.0"
+iMXzeusbaragonDeveloperRelease="imx-zeus-baragon"
+
+iMXzeusspigaStableReleaseTag="imx-zeus-spiga_r1.0"
+iMXzeusspigaDeveloperRelease="imx-zeus-spiga"
+
+iMXzeuszigraStableReleaseTag="imx-zeus-zigra_r1.0"
+iMXzeuszigraDeveloperRelease="imx-zeus-zigra"
+
+# Sumo
+iMXsumobaragonStableReleaseTag="imx-sumo-baragon_r1.0"
+iMXsumobaragonDeveloperRelease="imx-sumo-baragon"
+
+iMXsumospigaStableReleaseTag="imx-sumo-spiga_r1.1"
+iMXsumospigaDeveloperRelease="imx-sumo-spiga"
+
+iMXsumozigraStableReleaseTag="imx-sumo-zigra_r1.0"
+iMXsumozigraDeveloperRelease="imx-sumo-zigra"
+
+iMXsumokongStableReleaseTag="imx-sumo-kong_r1.1"
+iMXsumokongDeveloperRelease="imx-sumo-kong"
+
+iMXsumomandaStableReleaseTag="imx-sumo-manda_r1.2"
+iMXsumomandaDeveloperRelease="imx-sumo-manda"
+
+# Rocko-Mini
+iMXrockominibaragonStableReleaseTag="imx-rocko-mini-baragon_r1.0"
+iMXrockominibaragonDeveloperRelease="imx-rocko-mini-baragon"
+
+iMXrockominispigaStableReleaseTag="imx-rocko-mini-spiga_r1.0"
+iMXrockominispigaDeveloperRelease="imx-rocko-mini-spiga"
+
+iMXrockominizigraStableReleaseTag="imx-rocko-mini-zigra_r1.0"
+iMXrockominizigraDeveloperRelease="imx-rocko-mini-zigra"
+
+iMXrockominikongStableReleaseTag="imx-rocko-mini-kong_r1.0"
+iMXrockominikongDeveloperRelease="imx-rocko-mini-kong"
+
+iMXrockominimandaStableReleaseTag="imx-rocko-mini-manda_r2.2"
+iMXrockominimandaDeveloperRelease="imx-rocko-mini-manda"
+
+# Krogoth
+iMXkrogothbaragonStableReleaseTag="imx-krogoth-baragon_r1.0"
+iMXkrogothbaragonDeveloperRelease="imx-krogoth-baragon"
+
+iMXkrogothspigaStableReleaseTag="imx-krogoth-spiga_r1.0"
+iMXkrogothspigaDeveloperRelease="imx-krogoth-spiga"
+
+iMXkrogothzigraStableReleaseTag="imx-krogoth-zigra_r1.0"
+iMXkrogothzigraDeveloperRelease="imx-krogoth-zigra"
+
+iMXkrogothkongStableReleaseTag="imx-krogoth-kong_r1.0"
+iMXkrogothkongDeveloperRelease="imx-krogoth-kong"
+
+iMXkrogothmandaStableReleaseTag="imx-krogoth-manda_r2.1"
+iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
+
+imxhardknottYocto="5.10.52_2.1.0 GA"
+imxzeusYocto="5.4.47_2.2.0 GA"
+imxsumoYocto="4.14.98_2.3.0 GA"
+imxrockominiYocto="4.9.123_2.3.0 GA"
+imxkrogothYocto="4.1.15_2.0.0 GA"
+
+
+#--------------------------------------------------------------------------------------------------
+
+
 clear
 #echo "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
+
+if [ -h /bin/sh ] && `which readlink > /dev/null 2>&1` && [ -n "`readlink /bin/sh | grep '\<dash$'`" ]; then
+	printf '%b' "${RED}===============================================================\n"
+	printf '%b'  "Error: DASH shell not supported as system shell\n"
+	printf '%b'  "===============================================================\n${NC}"
+	printf '%b'  "The script has detected that your system uses the dash shell\n"
+	printf '%b'  "as /bin/sh.  This shell is not supported by the script.\n"
+	printf '%b'  "You can work around this problem by changing /bin/sh to be a\n"
+	printf '%b'  "symbolic link to a supported shell such as bash.\n"
+	printf '%b'  "For example, on Ubuntu systems, execute this shell command:\n\n"
+	printf '%b'  "${YLW}   $ sudo dpkg-reconfigure dash\n\n"
+	printf '%b'  "   Then select option 'No'\n\n${NC}"
+	printf '%b'  "${RED}===============================================================\n"
+	printf '%b'  "Exiting script.....\n${NC}"
+	exit 1
+fi
 
 echo " "
 echo "MURATA Custom i.MX Linux build using Yocto"
 echo "=========================================="
 
 echo " "
-echo "1) Verifying Host Environment"
+echo "${STEP_COUNT}) Verifying Host Environment"
 echo "-----------------------------"
+
+(( STEP_COUNT += 1 ))
 
 # Get Linux distro; make sure it is "Ubuntu"
 Linux_Distro=$(lsb_release -i -s)
@@ -27,26 +199,44 @@ else
 	exit
 fi
 
-# Get Ubuntu release version; make sure it is either 16.04, 14.04 or 12.04.
+# Get Ubuntu release version; make sure it is either 18.04, 16.04, 14.04 or 12.04.
 Ubuntu_Release=$(lsb_release -r -s)
-if [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
+if [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
 	echo -e "Murata: Verified Ubuntu Release:${NC}     " ${GRN}$Ubuntu_Release${NC}
 else
-	echo -e "${RED}Murata: Only Ubuntu versions 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
+	echo -e "${RED}Murata: Only Ubuntu versions 18.04, 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
 	echo -e "Exiting script.....${NC}"
 	exit
 fi
 
+# Install "repo" tool within BSP folder
+echo " "
+echo -e "${YLW}NOTE:${NC} Installing repo tool in a temporary folder, named, "\""repo-murata"\"" in $BSP_DIR"
+echo "Temporary folder, "\""repo-murata"\"" will be deleted after the image gets built."
+echo " "
+echo -n -e "Do you want to continue? ${GRN}Y${NC}/${YLW}n${NC}: "
+read PROCEED_UPDATE_OPTION
+
+if [ "$PROCEED_UPDATE_OPTION" = "y" ] || [ "$PROCEED_UPDATE_OPTION" = "Y" ] || [ "$PROCEED_UPDATE_OPTION" = "" ]; then
+	rm -rf repo-murata
+	mkdir repo-murata
+	cd repo-murata
+	curl https://storage.googleapis.com/git-repo-downloads/repo > ${BSP_DIR}/repo-murata/repo
+	chmod a+x ${BSP_DIR}/repo-murata/repo
+	export REPO_PATH=${BSP_DIR}/repo-murata/
+else
+	echo " "
+	echo -e "${RED}Murata: Skipping repo tool installation"
+	echo -e "Exiting script.....${NC}"
+fi
 
 # Ubuntu Distro and Version verified. Now add necessary commands.
 
-# BSP directory
-export BSP_DIR=`pwd`
-
 echo " "
-echo "2) Verifying Script Version"
+echo "${STEP_COUNT}) Verifying Script Version"
 echo "---------------------------"
 
+(( STEP_COUNT += 1 ))
 
 GITHUB_PATH="\""https://github.com/murata-wireless/meta-murata-wireless.git"\""
 META_MURATA_WIRELESS_GIT="https://github.com/murata-wireless/meta-murata-wireless.git"
@@ -61,13 +251,13 @@ echo "Creating "\""meta-murata-wireless"\"" subfolder."
 # else clone meta-murata-wireless
 TEST_DIR_NAME=meta-murata-wireless
 if [ -d "$TEST_DIR_NAME" ]; then
-	cd $TEST_DIR_NAME/cyw-script-utils/latest
+	cd $TEST_DIR_NAME/script-utils/latest
 	git fetch --all 		--quiet
 	git reset --hard origin/master 	--quiet
 	git pull origin master 		--quiet
 else
 	git clone $META_MURATA_WIRELESS_GIT --quiet
-	cd $TEST_DIR_NAME/cyw-script-utils/latest
+	cd $TEST_DIR_NAME/script-utils/latest
 fi
 
 export SCRIPT_DIR=`pwd`
@@ -103,9 +293,10 @@ else
 	read PROCEED_UPDATE_OPTION
 
 	if [ "$PROCEED_UPDATE_OPTION" = "y" ] || [ "$PROCEED_UPDATE_OPTION" = "Y" ] || [ "$PROCEED_UPDATE_OPTION" = "" ]; then
+		echo "NOTE: Latest build script is not tested fully. Please take a backup of the previous script before replacing."
 		echo "Update to latest version using following copy command:"
 		echo " "
-		echo ""\$ "cp ./meta-murata-wireless/cyw-script-utils/latest/Murata_Wireless_Yocto_Build.sh ."
+		echo ""\$ "cp ./meta-murata-wireless/script-utils/latest/Murata_Wireless_Yocto_Build.sh ."
 		echo " "
 		echo -e "${YLW}Exiting script.....${NC}"
        		exit
@@ -115,33 +306,10 @@ else
 	fi
 fi
 
-# Initialize variables
-BRANCH_RELEASE_OPTION=0
-LINUX_SRC=""
-LINUX_DEST=""
-CWD=""
-MANDA_FMAC_INDEX="1"
-KONG_FMAC_INDEX="2"
-GAMERA_FMAC_INDEX="3"
-LINUX_KERNEL_5_4_47=0
-LINUX_KERNEL_4_14_98=1
-LINUX_KERNEL_4_9_123=2
-LINUX_KERNEL_4_1_15=3
-
-# Linux Kernel Strings
-LINUX_KERNEL_5_4_47_STR="5.4.47"
-LINUX_KERNEL_4_14_98_STR="4.14.98"
-LINUX_KERNEL_4_9_123_STR="4.9.123"
-LINUX_KERNEL_4_1_15_STR="4.1.15"
-
-DISTRO_NAME=fsl-imx-fb
-IMAGE_NAME=core-image-base
-
-
 #######################   Functions ##########################################################
-function select_supported_distros_for_5_4_47 {
+function select_supported_distros_for_5_x_onwards {
 	echo " "
-	echo "8.1) Select DISTRO"
+	echo "${STEP_COUNT}.1) Select DISTRO"
 	echo "------------------"
 	echo " "
 	echo "----------------------------------------------------------------------------"
@@ -181,7 +349,7 @@ function select_supported_distros_for_5_4_47 {
 
 function select_previous_distros_supported {
 	echo " "
-	echo "8.1) Select DISTRO"
+	echo "${STEP_COUNT}.1) Select DISTRO"
 	echo "------------------"
 	echo " "
 	echo "----------------------------------------------------------------------------"
@@ -224,7 +392,7 @@ function select_previous_distros_supported {
 }
 
 function select_build_image_name {
-	echo "8.2) Select Image"
+	echo "${STEP_COUNT}.2) Select Image"
 	echo "-----------------"
 	echo " "
 
@@ -295,9 +463,35 @@ function select_build_image_name {
 }
 
 
+# For i.MX8 series, make the default image type to fsl-image-validation-imx
+function select_default_image {
+	if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ]; then
+		IMAGE_NAME=fsl-image-validation-imx
+	fi
+}
+
+# Check for .repo folders
+check_path=`pwd`
+check_path=${check_path%/*}
+while [[ "$check_path" != "" ]]; do
+	#echo "Checking $check_path"
+	if [[ -e "$check_path/.repo" ]]; then
+		echo -e "${RED}Found a .repo folder in $check_path. Please ensure no parent folder contains a .repo folder when running the script. Exiting...${NC}"
+		exit
+	else
+		if [[ "$check_path" == "$HOME" ]]; then
+			break
+		else
+			check_path=${check_path%/*}
+		fi
+	fi
+done
+
 echo " "
-echo "3) Select Release Type"
+echo "${STEP_COUNT}) Select Release Type"
 echo "----------------------"
+
+(( STEP_COUNT += 1 ))
 
 echo -e "a) Stable: Murata tested/verified release tag. ${GRN}Stable is the recommended default.${NC}"
 echo " "
@@ -315,49 +509,20 @@ else
 	echo -e "${YLW}WARNING!!! Developer release selected${NC}"
 fi
 
-iMXYoctoRelease=""
-YoctoBranch=""
-fmacversion=""
-fmacVersion=""
-linuxVersion=""
-
-iMXrockominimandaStableReleaseTag="imx-rocko-mini-manda_r2.2"
-iMXrockominimandaDeveloperRelease="imx-rocko-mini-manda"
-
-iMXrockominikongStableReleaseTag="imx-rocko-mini-kong_r1.0"
-iMXrockominikongDeveloperRelease="imx-rocko-mini-kong"
-
-iMXkrogothmandaStableReleaseTag="imx-krogoth-manda_r2.1"
-iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
-
-iMXsumomandaStableReleaseTag="imx-sumo-manda_r1.2"
-iMXsumomandaDeveloperRelease="imx-sumo-manda"
-
-iMXsumokongStableReleaseTag="imx-sumo-kong_r1.1"
-iMXsumokongDeveloperRelease="imx-sumo-kong"
-
-iMXzeuszigraStableReleaseTag="imx-zeus-zigra_r1.0"
-iMXzeuszigraDeveloperRelease="imx-zeus-zigra"
-
-imxzeusYocto="5.4.47_2.2.0 GA"
-imxsumoYocto="4.14.98_2.3.0 GA"
-imxrockominiYocto="4.9.123_2.3.0 GA"
-imxkrogothYocto="4.1.15_2.0.0 GA"
-
 ############################### Linux Kernel Selection #####################################
 while true; do
 	echo " "
-	echo "4) Select "\""Linux Kernel"\"" "
+	echo "${STEP_COUNT}) Select "\""Linux Kernel"\"" "
 	echo "------------------------"
-	echo -e "${YLW}NOTE:${NC} NXP Supported - 1ZM, 1YM-SDIO and 1YM-PCIe"
-	echo "---------------------------------------------------------------------------"
-	echo "|Entry|   Linux Kernel   | Yocto   | NXP Supported   | FMAC Supported     |"
-	echo "|-----|------------------|---------|--------------------------------------|"
-	echo "|  0  |     ${LINUX_KERNEL_5_4_47_STR}       | zeus    | Yes             | Zigra              |"
-	echo "|  1  |     ${LINUX_KERNEL_4_14_98_STR}      | sumo    | No              | Zigra,Manda,Kong   |"
-	echo "|  2  |     ${LINUX_KERNEL_4_9_123_STR}      | rocko   | No              | Zigra,Manda,Kong   |"
-	echo "|  3  |     ${LINUX_KERNEL_4_1_15_STR}       | krogoth | No              | Zigra,Manda,Mothra |"
-	echo "---------------------------------------------------------------------------"
+	echo "--------------------------------------------------------------------------"
+	echo "|Entry|   Linux Kernel   | Yocto      | FMAC Supported                   |"
+	echo "|-----|------------------|------------|----------------------------------|"
+	echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder, Baragon,Spiga            |"
+	echo "|  1  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga,Zigra              |"
+	echo "|  2  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga,Zigra,Kong,Manda   |"
+	echo "|  3  |     ${LINUX_KERNEL_4_9_123_STR}       | rocko     | Baragon,Spiga,Zigra,Kong,Manda   |"
+	echo "|  4  |     ${LINUX_KERNEL_4_1_15_STR}        | krogoth   | Baragon,Spiga,Zigra,Kong,Manda   |"
+	echo "--------------------------------------------------------------------------"
 	read -p "Select which entry? " LINUX_KERNEL
 
 	case $LINUX_KERNEL in
@@ -377,6 +542,10 @@ while true; do
 		linuxVersion=${LINUX_KERNEL_5_4_47_STR}
 		break
 		;;
+	$LINUX_KERNEL_5_10_52)
+		linuxVersion=${LINUX_KERNEL_5_10_52_STR}
+		break
+		;;
 	*)
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
 		echo $'\n'
@@ -384,34 +553,12 @@ while true; do
 	esac
 done
 echo -e "${GRN}Selected : $linuxVersion${NC}"
-
-############################### <Optional> Step for NXP "1YM-SDIO ###############
-	echo " "
-	echo "5) Optional Step for NXP "\""1YM-SDIO"\"" "
-	echo "-----------------------------------"
-       #echo "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
-	echo "---------------------------------------------------------------------------------"
-	echo "|a) Log into NXP website using the following link.                              |"
-	echo "|   https://www.nxp.com/webapp/sps/download/license.jsp?colCode=SD-WLAN-SD-BT-  |"
-	echo "|   8997-U16-MMC-W16-68-10-p56-16-26-10&appType=file2&DOWNLOAD_ID=null          |"
-	echo "|b) Download the Software package (SD-WLAN-SD-BT-8997-U16-MMC-W16.68.10.p56-16. |"
-	echo "|   26.10.p56-C4X16667_V4-MGPL.zip)                                             |"
-	echo "|c) Copy the file into BSP folder (the place where you are executing the script)|"
-	echo "|d) Ensure that copied file has the same software package name with "\"".zip"\""      |"
-	echo "|   extension. i.e SD-WLAN-SD-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-       |"
-	echo "|   C4X16667_V4-MGPL.zip                                                        |"
-	echo "---------------------------------------------------------------------------------"
-	read -p "Press any key to proceed." ANSWER
-####################################################################################
+(( STEP_COUNT += 1 ))
 
 echo " "
-echo "6) Select "\""fmac"\"" version"
+echo "${STEP_COUNT}) Select "\""fmac"\"" version"
 echo "------------------------"
-
-MANDA_FMAC="manda"
-KONG_FMAC="kong"
-ZIGRA_FMAC="zigra"
-
+(( STEP_COUNT += 1 ))
 
 while true; do
 	case $LINUX_KERNEL in
@@ -420,7 +567,11 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo     "|  0.   | $MANDA_FMAC - Latest release                            |"
+			echo     "|  0.   | $MANDA_FMAC_STR - Old release                               |"
+			echo     "|  1.   | $KONG_FMAC_STR - Old release                                |"
+			echo     "|  2.   | $ZIGRA_FMAC_STR - Old release                               |"
+			echo     "|  3.   | $SPIGA_FMAC_STR - Previous release                          |"
+			echo -e  "|  4.   | $BARAGON_FMAC_STR - ${GRN}Latest release${NC}                          |"
 			echo     "-------------------------------------------------------------"
 			read -p "Select which entry? " ENTRY
 			case $ENTRY in
@@ -428,18 +579,88 @@ while true; do
 				FMAC_VERSION=${MANDA_FMAC_INDEX}
 				if [ "$BRANCH_TAG_OPTION"     = "y" ]; then
 					#echo "DEBUG:: krogoth-manda_r2.0"
-					BRANCH_RELEASE_OPTION=7
 					BRANCH_RELEASE_NAME="$iMXkrogothmandaStableReleaseTag"
 					iMXYoctoRelease="$imxkrogothYocto"
 					YoctoBranch="krogoth"
-					fmacversion="$MANDA_FMAC"
+					fmacversion="$MANDA_FMAC_STR"
 				else
 					#echo "DEBUG:: krogoth-manda"
-					BRANCH_RELEASE_OPTION=8
 					BRANCH_RELEASE_NAME="$iMXkrogothmandaDeveloperRelease"
 					iMXYoctoRelease="$imxkrogothYocto"
 					YoctoBranch="krogoth"
-					fmacversion="$MANDA_FMAC"
+					fmacversion="$MANDA_FMAC_STR"
+				fi
+				break
+				;;
+			1) # for KONG
+				FMAC_VERSION=${KONG_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION" = "y" ]; then
+					#echo "DEBUG:: krogoth-kong_r1.0"
+					BRANCH_RELEASE_NAME="$iMXkrogothkongStableReleaseTag"
+					iMXYoctoRelease="$imxkrogothYocto"
+					YoctoBranch="krogoth"
+					fmacversion="$KONG_FMAC_STR"
+					# krogoth-kong
+				else
+					#echo "DEBUG:: krogoth-kong"
+					BRANCH_RELEASE_NAME="$iMXkrogothkongDeveloperRelease"
+					iMXYoctoRelease="$imxkrogothYocto"
+					YoctoBranch="krogoth"
+					fmacversion="$KONG_FMAC_STR"
+				fi
+				break
+				;;
+			2) # for ZIGRA
+				FMAC_VERSION=${ZIGRA_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION" = "y" ]; then
+					#echo "DEBUGG:: krogoth-zigra_r1.0"
+					BRANCH_RELEASE_NAME="$iMXkrogothzigraStableReleaseTag"
+					iMXYoctoRelease="$imxkrogothYocto"
+					YoctoBranch="krogoth"
+					fmacversion="$ZIGRA_FMAC_STR"
+					# krogoth-zigra
+				else
+					#echo "DEBUG:: krogoth-zigra"
+					BRANCH_RELEASE_NAME="$iMXkrogothzigraDeveloperRelease"
+					iMXYoctoRelease="$imxkrogothYocto"
+					YoctoBranch="krogoth"
+					fmacversion="$ZIGRA_FMAC_STR"
+				fi
+				break
+				;;
+			3) # for SPIGA
+				FMAC_VERSION=${SPIGA_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION" = "y" ]; then
+					#echo "DEBUGG:: krogoth-spiga_r1.0"
+					BRANCH_RELEASE_NAME="$iMXkrogothspigaStableReleaseTag"
+					iMXYoctoRelease="$imxkrogothYocto"
+					YoctoBranch="krogoth"
+					fmacversion="$SPIGA_FMAC_STR"
+					# krogoth-spiga
+				else
+					#echo "DEBUG:: krogoth-spiga"
+					BRANCH_RELEASE_NAME="$iMXkrogothspigaDeveloperRelease"
+					iMXYoctoRelease="$imxkrogothYocto"
+					YoctoBranch="krogoth"
+					fmacversion="$SPIGA_FMAC_STR"
+				fi
+				break
+				;;
+			4) # for BARAGON
+				FMAC_VERSION=${BARAGON_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION" = "y" ]; then
+					#echo "DEBUGG:: krogoth-baragon_r1.0"
+					BRANCH_RELEASE_NAME="$iMXkrogothbaragonStableReleaseTag"
+					iMXYoctoRelease="$imxkrogothYocto"
+					YoctoBranch="krogoth"
+					fmacversion="$BARAGON_FMAC_STR"
+					# krogoth-baragon
+				else
+					#echo "DEBUG:: krogoth-baragon"
+					BRANCH_RELEASE_NAME="$iMXkrogothbaragonDeveloperRelease"
+					iMXYoctoRelease="$imxkrogothYocto"
+					YoctoBranch="krogoth"
+					fmacversion="$BARAGON_FMAC_STR"
 				fi
 				break
 				;;
@@ -456,49 +677,102 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo     "|  0.   | $MANDA_FMAC - Previous release                          |"
-			echo     "|  1.   | $KONG_FMAC - Latest release                             |"
+			echo     "|  0.   | $MANDA_FMAC_STR - Old release                               |"
+			echo     "|  1.   | $KONG_FMAC_STR - Old release                                |"
+			echo     "|  2.   | $ZIGRA_FMAC_STR - Old release                               |"
+			echo     "|  3.   | $SPIGA_FMAC_STR - Previous release                          |"
+			echo -e  "|  4.   | $BARAGON_FMAC_STR - ${GRN}Latest release${NC}                          |"
 			echo     "-------------------------------------------------------------"
 			read -p "Select which entry? " ENTRY
 			case $ENTRY in
 			0) #for MANDA
 				# rocko-mini-manda_r2.0
 				FMAC_VERSION=${MANDA_FMAC_INDEX}
-				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+				if [ "$BRANCH_TAG_OPTION" = "y" ]; then
 					#echo "DEBUG:: rocko-mini-manda_r2.0"
-					BRANCH_RELEASE_OPTION=1
 					BRANCH_RELEASE_NAME="$iMXrockominimandaStableReleaseTag"
 					iMXYoctoRelease="$imxrockominiYocto"
 					YoctoBranch="rocko"
-					fmacversion="$MANDA_FMAC"
+					fmacversion="$MANDA_FMAC_STR"
 					# rocko-mini-manda
 				else
 					#echo "DEBUG:: rocko-mini-manda"
-					BRANCH_RELEASE_OPTION=2
 					BRANCH_RELEASE_NAME="$iMXrockominimandaDeveloperRelease"
 					iMXYoctoRelease="$imxrockominiYocto"
 					YoctoBranch="rocko"
-					fmacversion="$MANDA_FMAC"
+					fmacversion="$MANDA_FMAC_STR"
 				fi
 				break
 				;;
 			1) # for KONG
 				FMAC_VERSION=${KONG_FMAC_INDEX}
-				if [ "$BRANCH_TAG_OPTION"    = "y" ] && [ "$ENTRY" = "1" ]; then
+				if [ "$BRANCH_TAG_OPTION" = "y" ]; then
 					#echo "DEBUG:: rocko-mini-kong_r2.0"
-					BRANCH_RELEASE_OPTION=3
 					BRANCH_RELEASE_NAME="$iMXrockominikongStableReleaseTag"
 					iMXYoctoRelease="$imxrockominiYocto"
 					YoctoBranch="rocko"
-					fmacversion="$KONG_FMAC"
+					fmacversion="$KONG_FMAC_STR"
 					# rocko-mini-kong
 				else
 					#echo "DEBUG:: rocko-mini-kong"
-					BRANCH_RELEASE_OPTION=4
 					BRANCH_RELEASE_NAME="$iMXrockominikongDeveloperRelease"
 					iMXYoctoRelease="$imxrockominiYocto"
 					YoctoBranch="rocko"
-					fmacversion="$KONG_FMAC"
+					fmacversion="$KONG_FMAC_STR"
+				fi
+				break
+				;;
+			2) # for ZIGRA
+				FMAC_VERSION=${ZIGRA_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION" = "y" ]; then
+					#echo "DEBUGG:: rocko-mini-zigra_r1.0"
+					BRANCH_RELEASE_NAME="$iMXrockominizigraStableReleaseTag"
+					iMXYoctoRelease="$imxrockominiYocto"
+					YoctoBranch="rocko"
+					fmacversion="$ZIGRA_FMAC_STR"
+					# rocko-mini-zigra
+				else
+					#echo "DEBUG:: rocko-mini-zigra"
+					BRANCH_RELEASE_NAME="$iMXrockominizigraDeveloperRelease"
+					iMXYoctoRelease="$imxrockominiYocto"
+					YoctoBranch="rocko"
+					fmacversion="$ZIGRA_FMAC_STR"
+				fi
+				break
+				;;
+			3) # for SPIGA
+				FMAC_VERSION=${SPIGA_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION" = "y" ]; then
+					#echo "DEBUGG:: rocko-mini-spiga_r1.0"
+					BRANCH_RELEASE_NAME="$iMXrockominispigaStableReleaseTag"
+					iMXYoctoRelease="$imxrockominiYocto"
+					YoctoBranch="rocko"
+					fmacversion="$SPIGA_FMAC_STR"
+					# rocko-mini-spiga
+				else
+					#echo "DEBUG:: rocko-mini-SPIGA"
+					BRANCH_RELEASE_NAME="$iMXrockominispigaDeveloperRelease"
+					iMXYoctoRelease="$imxrockominiYocto"
+					YoctoBranch="rocko"
+					fmacversion="$SPIGA_FMAC_STR"
+				fi
+				break
+				;;
+			4) # for BARAGON
+				FMAC_VERSION=${BARAGON_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION" = "y" ]; then
+					#echo "DEBUGG:: rocko-mini-baragon_r1.0"
+					BRANCH_RELEASE_NAME="$iMXrockominibaragonStableReleaseTag"
+					iMXYoctoRelease="$imxrockominiYocto"
+					YoctoBranch="rocko"
+					fmacversion="$BARAGON_FMAC_STR"
+					# rocko-mini-baragon
+				else
+					#echo "DEBUG:: rocko-mini-BARAGON"
+					BRANCH_RELEASE_NAME="$iMXrockominibaragonDeveloperRelease"
+					iMXYoctoRelease="$imxrockominiYocto"
+					YoctoBranch="rocko"
+					fmacversion="$BARAGON_FMAC_STR"
 				fi
 				break
 				;;
@@ -515,28 +789,29 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo     "|  0.   | $MANDA_FMAC - Previous release                          |"
-			echo     "|  1.   | $KONG_FMAC - Latest release                             |"
+			echo     "|  0.   | $MANDA_FMAC_STR - Old release                               |"
+			echo     "|  1.   | $KONG_FMAC_STR - Old release                                |"
+			echo     "|  2.   | $ZIGRA_FMAC_STR - Old release                               |"
+			echo     "|  3.   | $SPIGA_FMAC_STR - Previous release                          |"
+			echo -e  "|  4.   | $BARAGON_FMAC_STR - ${GRN}Latest release${NC}                          |"
 			echo     "-------------------------------------------------------------"
-			read -p "Select which entry? " FMAC_VERSION
-			case $FMAC_VERSION in
+			read -p "Select which entry? " ENTRY
+			case $ENTRY in
 			0) # for MANDA
 				FMAC_VERSION=${MANDA_FMAC_INDEX}
 				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
 					#echo "DEBUG:: sumo-manda_r1.0"
-					BRANCH_RELEASE_OPTION=9
 					BRANCH_RELEASE_NAME="$iMXsumomandaStableReleaseTag"
 					iMXYoctoRelease="$imxsumoYocto"
 					YoctoBranch="sumo"
-					fmacversion="$MANDA_FMAC"
+					fmacversion="$MANDA_FMAC_STR"
 				# sumo-manda
 				else
 					#echo "DEBUG:: sumo-manda"
-					BRANCH_RELEASE_OPTION=10
 					BRANCH_RELEASE_NAME="$iMXsumomandaDeveloperRelease"
 					iMXYoctoRelease="$imxsumoYocto"
 					YoctoBranch="sumo"
-					fmacversion="$MANDA_FMAC"
+					fmacversion="$MANDA_FMAC_STR"
 				fi
 				break
 				;;
@@ -544,19 +819,71 @@ while true; do
 				FMAC_VERSION=${KONG_FMAC_INDEX}
 				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
 					#echo "DEBUG:: sumo-kong_r1.0"
-					BRANCH_RELEASE_OPTION=1
 					BRANCH_RELEASE_NAME="$iMXsumokongStableReleaseTag"
 					iMXYoctoRelease="$imxsumoYocto"
 					YoctoBranch="sumo"
-					fmacversion="$KONG_FMAC"
+					fmacversion="$KONG_FMAC_STR"
 				# sumo-kong
 				else
 					#echo "DEBUG:: sumo-kong"
-					BRANCH_RELEASE_OPTION=2
 					BRANCH_RELEASE_NAME="$iMXsumokongDeveloperRelease"
 					iMXYoctoRelease="$imxsumoYocto"
 					YoctoBranch="sumo"
-					fmacversion="$KONG_FMAC"
+					fmacversion="$KONG_FMAC_STR"
+				fi
+				break
+				;;
+			2) #for ZIGRA
+				FMAC_VERSION=${ZIGRA_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+					#echo "DEBUG:: sumo-zigra_r1.0"
+					BRANCH_RELEASE_NAME="$iMXsumozigraStableReleaseTag"
+					iMXYoctoRelease="$imxsumoYocto"
+					YoctoBranch="sumo"
+					fmacversion="$ZIGRA_FMAC_STR"
+				# sumo-kong
+				else
+					#echo "DEBUG:: sumo-zigra"
+					BRANCH_RELEASE_NAME="$iMXsumozigraDeveloperRelease"
+					iMXYoctoRelease="$imxsumoYocto"
+					YoctoBranch="sumo"
+					fmacversion="$ZIGRA_FMAC_STR"
+				fi
+				break
+				;;
+			3) #for SPIGA
+				FMAC_VERSION=${SPIGA_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+					#echo "DEBUG:: sumo-spiga_r1.0"
+					BRANCH_RELEASE_NAME="$iMXsumospigaStableReleaseTag"
+					iMXYoctoRelease="$imxsumoYocto"
+					YoctoBranch="sumo"
+					fmacversion="$SPIGA_FMAC_STR"
+				# sumo-kong
+				else
+					#echo "DEBUG:: sumo-zigra"
+					BRANCH_RELEASE_NAME="$iMXsumospigaDeveloperRelease"
+					iMXYoctoRelease="$imxsumoYocto"
+					YoctoBranch="sumo"
+					fmacversion="$SPIGA_FMAC_STR"
+				fi
+				break
+				;;
+			4) #for BARAGON
+				FMAC_VERSION=${BARAGON_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+					#echo "DEBUG:: sumo-baragon_r1.0"
+					BRANCH_RELEASE_NAME="$iMXsumobaragonStableReleaseTag"
+					iMXYoctoRelease="$imxsumoYocto"
+					YoctoBranch="sumo"
+					fmacversion="$BARAGON_FMAC_STR"
+				# sumo-baragon
+				else
+					#echo "DEBUG:: sumo-baragon"
+					BRANCH_RELEASE_NAME="$iMXsumobaragonDeveloperRelease"
+					iMXYoctoRelease="$imxsumoYocto"
+					YoctoBranch="sumo"
+					fmacversion="$BARAGON_FMAC_STR"
 				fi
 				break
 				;;
@@ -573,7 +900,9 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo -e  "|  0.   | $ZIGRA_FMAC - ${GRN}Latest release${NC}                            |"
+			echo     "|  0.   | $ZIGRA_FMAC_STR - Old release                               |"
+			echo     "|  1.   | $SPIGA_FMAC_STR - Previous release                          |"
+			echo -e  "|  2.   | ${BARAGON_FMAC_STR} - ${GRN}Latest release${NC}                          |"
 			echo     "-------------------------------------------------------------"
 			read -p "Select which entry? " FMAC_VERSION
 			case $FMAC_VERSION in
@@ -582,16 +911,108 @@ while true; do
 				FMAC_VERSION=${ZIGRA_FMAC_INDEX}
 				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
 					#echo "DEBUG:: zeus-zigra"
-					BRANCH_RELEASE_OPTION=1
 					BRANCH_RELEASE_NAME="$iMXzeuszigraStableReleaseTag"
 				else
 					#echo "DEBUG:: zeus-zigra"
-					BRANCH_RELEASE_OPTION=2
 					BRANCH_RELEASE_NAME="$iMXzeuszigraDeveloperRelease"
 				fi
 				iMXYoctoRelease="$imxzeusYocto"
 				YoctoBranch="zeus"
-				fmacversion=$ZIGRA_FMAC
+				fmacversion=${ZIGRA_FMAC_STR}
+				break
+				;;
+			1)
+				# for SPIGA
+				FMAC_VERSION=${SPIGA_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+					#echo "DEBUG:: zeus-spiga"
+					BRANCH_RELEASE_NAME="$iMXzeusspigaStableReleaseTag"
+				else
+					#echo "DEBUG:: zeus-spiga"
+					BRANCH_RELEASE_NAME="$iMXzeusspigaDeveloperRelease"
+				fi
+				iMXYoctoRelease="$imxzeusYocto"
+				YoctoBranch="zeus"
+				fmacversion=${SPIGA_FMAC_STR}
+				break
+				;;
+			2)
+				# for BARAGON
+				FMAC_VERSION=${BARAGON_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+					#echo "DEBUG:: zeus-baragon"
+					BRANCH_RELEASE_NAME="$iMXzeusbaragonStableReleaseTag"
+				else
+					#echo "DEBUG:: zeus-baragon"
+					BRANCH_RELEASE_NAME="$iMXzeusbaragonDeveloperRelease"
+				fi
+				iMXYoctoRelease="$imxzeusYocto"
+				YoctoBranch="zeus"
+				fmacversion=${BARAGON_FMAC_STR}
+				break
+				;;
+			*)
+				echo -e "${RED}That is not a valid choice, try again.${NC}"
+				echo $'\n'
+				;;
+			esac
+		done
+		break
+		;;
+	$LINUX_KERNEL_5_10_52)
+		while true; do
+			echo     "-------------------------------------------------------------"
+			echo     "| Entry | "\""fmac"\"" version                                    |"
+			echo     "|-------|---------------------------------------------------|"
+			echo     "|  0.   | $SPIGA_FMAC_STR - Old release                               |"
+			echo     "|  1.   | $BARAGON_FMAC_STR - Previous release                        |"
+			echo -e  "|  2.   | ${CYNDER_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+			echo     "-------------------------------------------------------------"
+			read -p "Select which entry? " FMAC_VERSION
+			case $FMAC_VERSION in
+			0)
+				# for SPIGA
+				FMAC_VERSION=${SPIGA_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+					#echo "DEBUG:: hardknott-spiga"
+					BRANCH_RELEASE_NAME="$iMXhardknottspigaStableReleaseTag"
+				else
+					#echo "DEBUG:: hardknott-spiga"
+					BRANCH_RELEASE_NAME="$iMXhardknottspigaDeveloperRelease"
+				fi
+				iMXYoctoRelease="$imxhardknottYocto"
+				YoctoBranch="hardknott"
+				fmacversion=${SPIGA_FMAC_STR}
+				break
+				;;
+			1)
+				# for BARAGON
+				FMAC_VERSION=${BARAGON_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+					#echo "DEBUG:: hardknott-baragon"
+					BRANCH_RELEASE_NAME="$iMXhardknottbaragonStableReleaseTag"
+				else
+					#echo "DEBUG:: hardknott-baragon"
+					BRANCH_RELEASE_NAME="$iMXhardknottbaragonDeveloperRelease"
+				fi
+				iMXYoctoRelease="$imxhardknottYocto"
+				YoctoBranch="hardknott"
+				fmacversion=${BARAGON_FMAC_STR}
+				break
+				;;
+			2)
+				# for CYNDER
+				FMAC_VERSION=${CYNDER_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+					#echo "DEBUG:: hardknott-cynder"
+					BRANCH_RELEASE_NAME="$iMXhardknottcynderStableReleaseTag"
+				else
+					#echo "DEBUG:: hardknott-cynder"
+					BRANCH_RELEASE_NAME="$iMXhardknottcynderDeveloperRelease"
+				fi
+				iMXYoctoRelease="$imxhardknottYocto"
+				YoctoBranch="hardknott"
+				fmacversion=${CYNDER_FMAC_STR}
 				break
 				;;
 			*)
@@ -614,7 +1035,7 @@ while true; do
 	$LINUX_KERNEL_4_1_15) # for 4.1.15_2.0.0
 		while true; do
 			echo " "
-			echo "7) Select target"
+			echo "${STEP_COUNT}) Select target"
 			echo "----------------"
 			echo " "
 			echo "----------------------------------------------------------"
@@ -679,7 +1100,7 @@ while true; do
 	$LINUX_KERNEL_4_9_123) #for 4.9.123_2.3.0
 		while true; do
 			echo " "
-			echo "7) Select Target"
+			echo "${STEP_COUNT}) Select Target"
 			echo "----------------"
 			echo " "
 			echo "---------------------------------------------------------"
@@ -690,12 +1111,13 @@ while true; do
 			echo "|  3     |  imx6sxsabresd    | MCIMX6SX-SDB             |"
 			echo "|  4     |  imx6qsabresd     | MCIMX6Q-SDB              |"
 			echo "|  5     |  imx6qpsabresd    | MCIMX6QP-SDB             |"
-			echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB    	      |"
+			echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
 			echo "|  7     |  imx7dsabresd     | MCIMX7SABRE              |"
 			echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
 			echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 			echo "|  10    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 			echo "|  11    |  imx8mmevk        | 8MMINILPD4-EVK           |"
+			echo "|  12    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
 			echo "---------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
@@ -765,6 +1187,14 @@ while true; do
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
+			12)
+				LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
+				LINUX_DEST=linux-imx_4.9.123.bbappend
+				TARGET_NAME=imx8mmddr4evk
+				PART_NUMBER=8MMINID4-EVK
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
 			*)
 				echo -e "${RED}That is not a valid choice, try again.${NC}"
 				;;
@@ -777,7 +1207,7 @@ while true; do
 	$LINUX_KERNEL_4_14_98)
 		while true; do
 			echo " "
-			echo "7) Select Target"
+			echo "${STEP_COUNT}) Select Target"
 			echo "----------------"
 			echo " "
 			echo "---------------------------------------------------------"
@@ -794,7 +1224,8 @@ while true; do
 			echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 			echo "|  10    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 			echo "|  11    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-			echo "|  12    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
+			echo "|  12    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
+			echo "|  13    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
 			echo "---------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
@@ -865,6 +1296,14 @@ while true; do
 				break
 				;;
 			12)
+				TARGET_NAME=imx8mmddr4evk
+				PART_NUMBER=8MMINID4-EVK
+				LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
+				LINUX_DEST=linux-imx_4.14.98.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			13)
 				TARGET_NAME=imx8mnddr4evk
 				PART_NUMBER=8MNANOD4-EVK
 				LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
@@ -883,7 +1322,7 @@ while true; do
 	$LINUX_KERNEL_5_4_47)
 		while true; do
 			echo " "
-			echo "7) Select Target"
+			echo "${STEP_COUNT}) Select Target"
 			echo "----------------"
 			echo " "
 			echo "---------------------------------------------------------"
@@ -899,8 +1338,9 @@ while true; do
 			echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
 			echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 			echo "|  10    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-			echo "|  11    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
-			echo "|  12    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
+			echo "|  11    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
+			echo "|  12    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
+			echo "|  13    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 			echo "---------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
@@ -962,6 +1402,14 @@ while true; do
 				break
 				;;
 			11)
+				TARGET_NAME=imx8mmddr4evk
+				PART_NUMBER=8MMINID4-EVK
+				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
+				LINUX_DEST=linux-imx_5.4.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			12)
 				TARGET_NAME=imx8mnddr4evk
 				PART_NUMBER=8MNANOD4-EVK
 				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
@@ -969,11 +1417,126 @@ while true; do
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
-			12)
+			13)
 				TARGET_NAME=imx8qxpmek
 				PART_NUMBER=MCIMX8QXP-CPU
 				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
 				LINUX_DEST=linux-imx_5.4.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			*)
+				echo -e "${RED}That is not a valid choice, try again.${NC}"
+				;;
+			esac
+		done
+		echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
+		echo $'\n'
+		break
+		;;
+	$LINUX_KERNEL_5_10_52)
+		while true; do
+			echo " "
+			echo "${STEP_COUNT}) Select Target"
+			echo "----------------"
+			echo " "
+			echo "---------------------------------------------------------"
+			echo "| Entry  |    Target Name    | NXP i.MX EVK Part Number |"
+			echo "|--------|-------------------|--------------------------|"
+			echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
+			echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
+			echo "|  3     |  imx6sxsabresd    | MCIMX6SX-SDB             |"
+			echo "|  4     |  imx6qsabresd     | MCIMX6Q-SDB              |"
+			echo "|  5     |  imx6qpsabresd    | MCIMX6QP-SDB             |"
+			echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
+			echo "|  7     |  imx7dsabresd     | MCIMX7SABRE              |"
+			echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
+			echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
+			echo "|  10    |  imx8mmevk        | 8MMINILPD4-EVK           |"
+			echo "|  11    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
+			echo "|  12    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
+			echo "|  13    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
+			echo "---------------------------------------------------------"
+			echo -n "Select your entry: "
+			read TARGET_OPTION
+			case $TARGET_OPTION in
+			1)
+				TARGET_NAME=imx6ulevk
+				PART_NUMBER=MCIMX6UL-EVK
+				break
+				;;
+			2)
+				TARGET_NAME=imx6ull14x14evk
+				PART_NUMBER=MCIMX6ULL-EVK
+				break
+				;;
+			3)
+				TARGET_NAME=imx6sxsabresd
+				PART_NUMBER=MCIMX6SX-SDB
+				break
+				;;
+			4)
+				TARGET_NAME=imx6qsabresd
+				PART_NUMBER=MCIMX6Q-SDB
+				break
+				;;
+			5)
+				TARGET_NAME=imx6qpsabresd
+				PART_NUMBER=MCIMX6QP-SDB
+				break
+				;;
+			6)
+				TARGET_NAME=imx6dlsabresd
+				PART_NUMBER=MCIMX6Q-SDB
+				break
+				;;
+			7)
+				TARGET_NAME=imx7dsabresd
+				PART_NUMBER=MCIMX7SABRE
+				break
+				;;
+			8)
+				TARGET_NAME=imx7ulpevk
+				PART_NUMBER=MCIMX7ULP-EVK
+				break
+				;;
+			9)
+				TARGET_NAME=imx8mqevk
+				PART_NUMBER=MCIMX8M-EVKB
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			10)
+				TARGET_NAME=imx8mmevk
+				PART_NUMBER=8MMINILPD4-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			11)
+				TARGET_NAME=imx8mmddr4evk
+				PART_NUMBER=8MMINID4-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			12)
+				TARGET_NAME=imx8mnddr4evk
+				PART_NUMBER=8MNANOD4-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			13)
+				TARGET_NAME=imx8qxpmek
+				PART_NUMBER=MCIMX8QXP-CPU
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
@@ -991,13 +1554,16 @@ while true; do
 		;;
 	esac
 done
+(( STEP_COUNT += 1 ))
 
-echo " "
-echo "8) Select DISTRO & Image"
+echo "${STEP_COUNT}) Select DISTRO & Image"
 echo "------------------------"
 echo " "
 echo "Murata default DISTRO & Image pre-selected are:"
 echo -e "${GRN}DISTRO: $DISTRO_NAME${NC}"
+
+select_default_image
+
 echo -e "${GRN}Image:  $IMAGE_NAME${NC}"
 echo " "
 echo -e -n "Proceed with this configuration? ${GRN}Y${NC}/${YLW}n${NC}: "
@@ -1011,9 +1577,9 @@ if [ "$PROMPT" = "n" ] || [ "$PROMPT" = "N" ]; then
 
 
 	if [ "$PROMPT" = "U" ] || [ "$PROMPT" = "u" ]; then
-		# For 5.4.47, as per i.MX Yocto Project Users Guide, x11 Distro is no longer supported
-		if [ ${linuxVersion} = ${LINUX_KERNEL_5_4_47_STR} ]; then
-			select_supported_distros_for_5_4_47
+		# For 5.4.47 onwards, as per i.MX Yocto Project Users Guide, x11 Distro is no longer supported
+		if [ ${linuxVersion} = ${LINUX_KERNEL_5_4_47_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_10_52_STR} ]; then
+			select_supported_distros_for_5_x_onwards
 		else
 			select_previous_distros_supported
 		fi		
@@ -1034,12 +1600,13 @@ else
 	echo -e "${GRN}Proceeding with Murata defaults.${NC}"
 fi
 
+(( STEP_COUNT += 1 ))
 
 #echo $'\n'
 #echo "-------------------------------Creation of Build Directory---------------------------"
 echo " "
-echo "9) Creation of Build directory"
-echo "------------------------------"
+echo "${STEP_COUNT}) Creation of Build directory"
+echo "-------------------------------"
 echo " "
 echo "Ex: <build-imx6ulevk-x11> for imx6ulevk with x11 backend"
 echo "Ex: <build-xwayland-imx8mq> for imx8mqevk with xwayland backend"
@@ -1077,11 +1644,13 @@ read BUILD_DIR_NAME
 		break
 	fi
 done
+(( STEP_COUNT += 1 ))
 
 echo " "
-echo "10) Verify your selection"
+echo "${STEP_COUNT}) Verify your selection"
 echo "-------------------------"
 echo " "
+(( STEP_COUNT += 1 ))
 
 echo -e "i.MX Yocto Release              : ${GRN}$iMXYoctoRelease${NC}"
 echo -e "Yocto branch                    : ${GRN}$YoctoBranch${NC}"
@@ -1101,7 +1670,7 @@ read REPLY
 
 if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	echo " "
-	echo "11) Acceptance of End User License Agreement(EULA)"
+	echo "${STEP_COUNT}) Acceptance of End User License Agreement(EULA)"
 	echo "--------------------------------------------------"
 	echo " "
 	#echo "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
@@ -1130,6 +1699,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	echo "* build.                                                                       *"
 	echo "********************************************************************************"
 	echo " "
+	(( STEP_COUNT += 1 ))
 
 
 	while true; do
@@ -1147,28 +1717,31 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	done
 
 	# Invoke Repo Init based on Yocto Release
-	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ]; then
+	if [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]; then
+		#echo "DEBUG:: IMXALL-HARDKNOTT"
+		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-hardknott -m imx-5.10.52-2.1.0.xml
+	elif [ "$iMXYoctoRelease" = "$imxzeusYocto" ]; then
 		#echo "DEBUG:: IMXALL-ZEUS"
-		repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-zeus -m imx-5.4.47-2.2.0.xml
+		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-zeus -m imx-5.4.47-2.2.0.xml
 	elif [ "$iMXYoctoRelease" = "$imxsumoYocto" ]; then
 		#echo "DEBUG:: IMXALL-SUMO"
-		repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-sumo -m imx-4.14.98-2.3.0.xml
+		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-sumo -m imx-4.14.98-2.3.0.xml
 	elif [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
 		#echo "DEBUG:: IMXALL-ROCKO-MINI"
-		repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-rocko -m imx-4.9.123-2.3.0-8mm_ga.xml
+		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-rocko -m imx-4.9.123-2.3.0-8mm_ga.xml
 	elif [ "$iMXYoctoRelease" = "$imxkrogothYocto"  ]; then
 		#echo "DEBUG:: KROGOTH"
-		repo init -u https://source.codeaurora.org/external/imx/fsl-arm-yocto-bsp.git -b imx-4.1-krogoth -m imx-4.1.15-2.1.1.xml
+		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/fsl-arm-yocto-bsp.git -b imx-4.1-krogoth -m imx-4.1.15-2.1.1.xml
 	fi
 
 	#echo "DEBUG:: Performing repo sync......."
-	repo sync
+	$REPO_PATH/repo sync
 	cd $BSP_DIR
 
 
 	#echo "DEBUG:: Performing Setup of DISTRO and MACHINE"
 	#echo "DEBUG:: pwd = $BSP_DIR"
-	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ]; then
+	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]; then
 		DISTRO=$DISTRO_NAME MACHINE=$TARGET_NAME source ./imx-setup-release.sh -b $BUILD_DIR_NAME
 	else
 		DISTRO=$DISTRO_NAME MACHINE=$TARGET_NAME source ./fsl-setup-release.sh -b $BUILD_DIR_NAME
@@ -1176,7 +1749,27 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	export BUILD_DIR=`pwd`
 
 	cd $BSP_DIR/sources
-	git clone $META_MURATA_WIRELESS_GIT
+	# check to see if there is already a folder with name, "meta-murata-wireless"
+	# if it is, then exit
+	TEST_DIR_NAME=meta-murata-wireless
+	if [ -d "$TEST_DIR_NAME" ]; then
+		echo " "
+		echo -e "${YLW}NOTE:${NC} $TEST_DIR_NAME already present in sources folder. This happens if this is not a clean build."
+		echo " "
+		echo -n -e "Do you want to delete this folder and fetch the latest version? (Selecting 'n' will use the existing copy) ${GRN}Y${NC}/${YLW}n${NC}: "
+		read PROCEED_UPDATE_OPTION
+
+		if [ "$PROCEED_UPDATE_OPTION" = "y" ] || [ "$PROCEED_UPDATE_OPTION" = "Y" ] || [ "$PROCEED_UPDATE_OPTION" = "" ]; then
+			rm -rf $TEST_DIR_NAME
+			git clone $META_MURATA_WIRELESS_GIT
+		else
+			echo " "
+			echo -e "${RED}Murata: Skipping $TEST_DIR_NAME download...${NC}"
+		fi
+	else
+		git clone $META_MURATA_WIRELESS_GIT
+	fi
+
 	cd meta-murata-wireless
 
 	git checkout $BRANCH_RELEASE_NAME
@@ -1186,12 +1779,11 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	sh ./sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh $BUILD_DIR_NAME
 	cd $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/linux
 
-	#TARGET_NAME=imx8mqevk => rocko-mini-manda
-	#if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
+	#for rocko-mini-manda or kong
 	if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
 		if [ "$FMAC_VERSION" = "$MANDA_FMAC_INDEX" ] || [ "$FMAC_VERSION" = "$KONG_FMAC_INDEX" ]; then
-			#echo "DEBUG:: MANDA-LOADING-FOR-ROCKO-MINI"
-			if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ]; then
+			#echo "DEBUG:: MANDA/KONG-LOADING-FOR-ROCKO-MINI"
+			if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ]; then
 				#echo "DEBUG FOR IMX8-rocko-mini: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
 				#echo "DEBUG:: SRC::$LINUX_SRC DEST::$LINUX_SRC"
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
@@ -1207,6 +1799,28 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 					$BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
 				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 \
 					$BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
+			fi
+		fi
+	fi
+
+	#for rocko-mini-zigra, spiga or baragon
+	if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
+		if [ "$FMAC_VERSION" = "$ZIGRA_FMAC_INDEX" ] || [ "$FMAC_VERSION" = "$SPIGA_FMAC_INDEX" ] || [ "$FMAC_VERSION" = "$BARAGON_FMAC_INDEX" ]; then
+			#echo "DEBUG:: ZIGRA/SPIGA/BARAGON-LOADING-FOR-ROCKO-MINI"
+			if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ]; then
+				#echo "DEBUG FOR IMX8-rocko-mini: COPYING IMX8 BACKPORTS, and bbx files"
+				#echo "DEBUG:: SRC::$LINUX_SRC DEST::$LINUX_SRC"
+				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+					#echo "DEBUG:: Before copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
+					cp $LINUX_SRC $LINUX_DEST
+					#echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
+				fi
+				mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bb \
+					$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bbx
+				mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bb \
+					$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bbx
+				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 \
+					$BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
 			fi
 		fi
 	fi
@@ -1247,7 +1861,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 			#echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
 		fi
 
-		if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ]; then
+		if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ]; then
 			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bb \
 			$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bbx
 			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.1.bb \
@@ -1257,8 +1871,34 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 		fi
 	fi
 
-	# for zeus-zigra
-	if [ "$FMAC_VERSION" = "$ZIGRA_FMAC_INDEX" ] && [ "$iMXYoctoRelease" = "$imxzeusYocto" ]; then
+
+	#for sumo-zigra, sumo-spiga or sumo-baragon
+	if [ "$iMXYoctoRelease" = "$imxsumoYocto" ]; then
+		if [ "$FMAC_VERSION" = $SPIGA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $ZIGRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $BARAGON_FMAC_INDEX ]; then
+			mv $BSP_DIR/sources/meta-openembedded/meta-oe/recipes-connectivity/hostapd/hostapd_2.6.bb $BSP_DIR/sources/meta-openembedded/meta-oe/recipes-connectivity/hostapd/hostapd_2.6.bbx
+			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-connectivity/hostapd/hostapd_%.bbappend $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-connectivity/hostapd/hostapd_%.bbappendx
+			mv $BSP_DIR/sources/poky/meta/recipes-connectivity/wpa-supplicant/wpa-supplicant_2.6.bb $BSP_DIR/sources/poky/meta/recipes-connectivity/wpa-supplicant/wpa-supplicant_2.6.bbx
+			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-connectivity/wpa-supplicant/wpa-supplicant_%.bbappend $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-connectivity/wpa-supplicant/wpa-supplicant_%.bbappendx
+
+			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+				#echo "DEBUG:: Before copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
+				cp $LINUX_SRC $LINUX_DEST
+				#echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
+			fi
+
+			if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ]; then
+				mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bb \
+				$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.1.bbx
+				mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.1.bb \
+				$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.1.bbx
+				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 \
+				$BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
+			fi
+		fi
+	fi
+
+	# for zeus and hardknott
+	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]; then
 		if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 			cp $LINUX_SRC $LINUX_DEST
 		fi
@@ -1267,7 +1907,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	cd $BUILD_DIR
 
 	echo " "
-	echo "12) Starting Build Now."
+	echo "${STEP_COUNT}) Starting Build Now."
 	echo "-----------------------"
 	echo " "
 	echo -e "${YLW}NOTE: depending on machine type, build may take 1-7 hours to complete.${NC}"
@@ -1275,9 +1915,12 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	echo ""\'"Y"\'" to continue, "\'"n"\'" aborts build."
 	echo -e -n "Do you want to start the build ? ${GRN}Y${NC}/${YLW}n${NC}: "
 	read PROCEED_BUILD
+	(( STEP_COUNT += 1 ))
 
 	if [ "$PROCEED_BUILD" = "y" ] || [ "$PROCEED_BUILD" = "Y" ] || [ "$PROCEED_BUILD" = "" ] ; then
 		bitbake $IMAGE_NAME
+		cd $BSP_DIR
+		rm -rf repo-murata
 		exit
 	else
 		echo -e "${RED}Exiting script.....${NC}"
