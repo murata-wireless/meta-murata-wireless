@@ -72,6 +72,9 @@ function clean_up() {
     rm /etc/modprobe.d/nxp_modules.conf
   fi
 
+  if [ -e /etc/udev/rules.d/regulatory.rules ]; then
+    rm /etc/udev/rules.d/regulatory.rules
+  fi
 }
 
 function prepare_for_nxp_sdio() {
