@@ -26,7 +26,7 @@ SRC_URI = " \
 	file://wifi_mod_para.conf \
 "
 
-SRCREV_nxp-linux-calibration="7c0c175f6544aad35e26e8ce9c44c839d20da290"
+SRCREV_nxp-linux-calibration="76fd40c534a47167f6db47aae373dda20b2d14e1"
 SRCREV_cyw-fmac-fw="67048feb163cbbdbf780ab0a64bbc5250243767f"
 SRCREV_cyw-fmac-nvram="d0ddc35f8ade6ba5629c3a6d0a9c810078a9ebbc"
 SRCREV_cyw-bt-patch="760f04b8f0f68bb38929ed462383e80b19d3e355"
