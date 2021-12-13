@@ -26,7 +26,7 @@ SRC_URI = " \
 	file://wifi_mod_para.conf \
 "
 
-SRCREV_nxp-linux-calibration="c4a024850ba019739adb91bde8574fd8d7ebb56e"
+SRCREV_nxp-linux-calibration="7c0c175f6544aad35e26e8ce9c44c839d20da290"
 SRCREV_cyw-fmac-fw="67048feb163cbbdbf780ab0a64bbc5250243767f"
 SRCREV_cyw-fmac-nvram="d0ddc35f8ade6ba5629c3a6d0a9c810078a9ebbc"
 SRCREV_cyw-bt-patch="760f04b8f0f68bb38929ed462383e80b19d3e355"
@@ -74,10 +74,13 @@ do_install () {
         # Install /lib/firmware/nxp folder
         install -d ${D}/lib/firmware/nxp
         install -d ${D}/lib/firmware/nxp/murata
-        install -d ${D}/lib/firmware/nxp/murata/1XK
-        install -d ${D}/lib/firmware/nxp/murata/1ZM
-        install -d ${D}/lib/firmware/nxp/murata/1YM
-        install -d ${D}/lib/firmware/nxp/murata/2DS
+        install -d ${D}/lib/firmware/nxp/murata/files
+	install -d ${D}/lib/firmware/nxp/murata/files/1XK
+        install -d ${D}/lib/firmware/nxp/murata/files/1ZM
+        install -d ${D}/lib/firmware/nxp/murata/files/1YM
+        install -d ${D}/lib/firmware/nxp/murata/files/2DS
+        install -d ${D}/lib/firmware/nxp/murata/files/32_bit
+        install -d ${D}/lib/firmware/nxp/murata/files/64_bit
 
 
 #       Copying *.HCD files to etc/firmware and etc/firmware/murata-master
@@ -198,13 +201,24 @@ do_install () {
 	esac
 
 #	Install nxp linux calibration files
-	install -m 444 ${S}/nxp-linux-calibration/murata/1XK/* ${D}/lib/firmware/nxp/murata/1XK
-        install -m 444 ${S}/nxp-linux-calibration/murata/1ZM/* ${D}/lib/firmware/nxp/murata/1ZM
-        install -m 444 ${S}/nxp-linux-calibration/murata/1YM/* ${D}/lib/firmware/nxp/murata/1YM
-        install -m 444 ${S}/nxp-linux-calibration/murata/2DS/* ${D}/lib/firmware/nxp/murata/2DS
-        install -m 444 ${S}/nxp-linux-calibration/README.txt   ${D}/lib/firmware/nxp/murata/README.txt
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/1XK/* ${D}/lib/firmware/nxp/murata/files/1XK
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/1YM/* ${D}/lib/firmware/nxp/murata/files/1YM
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/1ZM/* ${D}/lib/firmware/nxp/murata/files/1ZM
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DS/* ${D}/lib/firmware/nxp/murata/files/2DS
+        #       Copying wl tool binary based on 32-bit/64-bit arch to /usr/sbin
+        if [ ${TARGET_ARCH} = "aarch64" ]; then
+		install -m 444 ${S}/nxp-linux-calibration/murata/files/64_bit/* ${D}/lib/firmware/nxp/murata/files/64_bit
+	else
+		install -m 444 ${S}/nxp-linux-calibration/murata/files/32_bit/* ${D}/lib/firmware/nxp/murata/files/32_bit
+	fi
+
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/lib/firmware/nxp/murata/files
+        install -m 444 ${S}/nxp-linux-calibration/murata/files/regulatory.rules ${D}/lib/firmware/nxp/murata/files
+        install -m 444 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/lib/firmware/nxp/murata/files
+
+
 #	Copy 1XK Dedicated Bluetooth Antenna configuration file
-	install -m 755 ${S}/WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf ${D}/lib/firmware/nxp/murata/1XK
+	install -m 755 ${S}/WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf ${D}/lib/firmware/nxp/murata/files/1XK
 	install -m 755 ${S}/sdiouartiw416_combo_v0.bin ${D}/lib/firmware/nxp
 	install -m 755 ${S}/pcieuart8997_combo_v4.bin ${D}/lib/firmware/nxp
 	install -m 755 ${S}/wifi_mod_para.conf ${D}/lib/firmware/nxp
