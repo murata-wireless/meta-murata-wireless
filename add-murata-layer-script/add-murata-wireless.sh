@@ -17,8 +17,8 @@
 . ./setup-environment $@
 
 echo "INTERNAL_MIRROR = \"http://localhost\"" >> conf/local.conf
-echo "CORE_IMAGE_EXTRA_INSTALL += \" hostap-conf hostap-utils hostapd murata-binaries iperf3 crda wireless-regdb-static cyw-hostapd backporttool-linux \"" >> conf/local.conf
-echo "CORE_IMAGE_EXTRA_INSTALL += \" bluez5 bluez5-noinst-tools bluez5-obex openobex obexftp glibc-gconv-utf-16 glibc-utils cyw-supplicant python3\"" >> conf/local.conf
+echo "CORE_IMAGE_EXTRA_INSTALL += \" hostap-conf hostap-utils hostapd murata-binaries iperf3 \"" >> conf/local.conf
+echo "CORE_IMAGE_EXTRA_INSTALL += \" bluez5 bluez5-noinst-tools bluez5-obex openobex obexftp glibc-gconv-utf-16 glibc-utils wpa-supplicant python3\"" >> conf/local.conf
 echo "BBLAYERS += \" \${BSPDIR}/sources/meta-murata-wireless \"" >> conf/bblayers.conf
 echo ""
 echo "CORRECTION: Murata modified the following files"
