@@ -204,7 +204,6 @@ EOT
   handle_services true false
 }
 
-#[TO-DO]
 function prepare_for_nxp_xl_pcie() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
@@ -226,8 +225,9 @@ EOT
 # Prevent the Cypress version of cfg80211.ko from being loaded.
 blacklist cfg80211
 
-# Alias for the 1XL-PCIe M.2 module [TO-DO]
-alias pci:v00001B4Bd00002B42sv*sd*bc02sc00i* moal
+# Alias for the 1XL-PCIe M.2 module
+alias pci:v00001B4Bd00002B43sv*sd*bc02sc00i* moal
+alias pci:v00001B4Bd00002B44sv*sd*bc02sc00i* moal
 
 # Specify arguments to pass when loading the pcie9098 module
 options moal mod_para=nxp/wifi_mod_para.conf
