@@ -26,7 +26,7 @@ SRC_URI = " \
 	file://wifi_mod_para.conf \
 "
 
-SRCREV_nxp-linux-calibration="76fd40c534a47167f6db47aae373dda20b2d14e1"
+SRCREV_nxp-linux-calibration="d244828e3600db50558bc610c8f0e2fbed12ae53"
 SRCREV_cyw-fmac-fw="67048feb163cbbdbf780ab0a64bbc5250243767f"
 SRCREV_cyw-fmac-nvram="d0ddc35f8ade6ba5629c3a6d0a9c810078a9ebbc"
 SRCREV_cyw-bt-patch="760f04b8f0f68bb38929ed462383e80b19d3e355"
@@ -215,7 +215,6 @@ do_install () {
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/lib/firmware/nxp/murata/files
         install -m 444 ${S}/nxp-linux-calibration/murata/files/regulatory.rules ${D}/lib/firmware/nxp/murata/files
         install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/lib/firmware/nxp/murata/files
-#        install -m 777 ${S}/nxp-linux-calibration/murata/switch_regions.sh ${D}/lib/firmware/nxp/murata/switch_regions.sh
         install -m 755 ${S}/nxp-linux-calibration/murata/switch_regions.sh ${D}/usr/sbin/switch_regions.sh
         install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/lib/firmware/nxp/murata/README.txt
 
