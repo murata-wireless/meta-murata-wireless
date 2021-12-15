@@ -94,7 +94,7 @@ EOT
 blacklist cfg80211
 
 # Alias for the NXP module(1ZM)
-alias sdio:c*v02DFd9149 moal
+alias sdio:c*v02DFd9159 moal
 
 # Specify arguments to pass when loading the moal module
 options moal mod_para=nxp/wifi_mod_para.conf 
