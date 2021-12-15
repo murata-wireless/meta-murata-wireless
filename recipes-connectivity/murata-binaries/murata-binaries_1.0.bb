@@ -9,7 +9,7 @@ SRC_URI = " \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 "
 
-SRCREV_nxp-linux-calibration="76fd40c534a47167f6db47aae373dda20b2d14e1"
+SRCREV_nxp-linux-calibration="d244828e3600db50558bc610c8f0e2fbed12ae53"
 
 SRCREV_default = "${AUTOREV}"
 
@@ -66,9 +66,9 @@ do_install () {
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DS/* ${D}/lib/firmware/nxp/murata/files/2DS
         #       Copying wl tool binary based on 32-bit/64-bit arch to /usr/sbin
         if [ ${TARGET_ARCH} = "aarch64" ]; then
-		install -m 444 ${S}/nxp-linux-calibration/murata/files/64_bit/* ${D}/lib/firmware/nxp/murata/files/64_bit
+		install -m 755 ${S}/nxp-linux-calibration/murata/files/64_bit/* ${D}/lib/firmware/nxp/murata/files/64_bit
 	else
-		install -m 444 ${S}/nxp-linux-calibration/murata/files/32_bit/* ${D}/lib/firmware/nxp/murata/files/32_bit
+		install -m 755 ${S}/nxp-linux-calibration/murata/files/32_bit/* ${D}/lib/firmware/nxp/murata/files/32_bit
 	fi
 
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/lib/firmware/nxp/murata/files
