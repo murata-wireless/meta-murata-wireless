@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=12022021
+VERSION=12142021
 
 
 ###################################################################################################
@@ -28,7 +28,7 @@ VERSION=12022021
 #  1.13     | 06/29/2021   |    RC        |    Add Baragon
 #  1.14     | 11/18/2021   |    RC        |    Removed NXP into seperate script. Renamed script.
 #  1.15     | 11/22/2021   |    RC        |    Added support for hardknott and cynder.
-#  1.16     | 12/02/2021   |    RC        |    Updated hardknott-cynder support.
+#  1.16     | 12/14/2021   |    RC        |    Updated hardknott-cynder support.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -48,13 +48,15 @@ LINUX_SRC=""
 LINUX_DEST=""
 CWD=""
 
-MANDA_FMAC_INDEX="1"
-KONG_FMAC_INDEX="2"
-ZIGRA_FMAC_INDEX="3"
-SPIGA_FMAC_INDEX="4"
-BARAGON_FMAC_INDEX="5"
-CYNDER_FMAC_INDEX="6"
+MOTHRA_FMAC_INDEX="1"
+MANDA_FMAC_INDEX="2"
+KONG_FMAC_INDEX="3"
+ZIGRA_FMAC_INDEX="4"
+SPIGA_FMAC_INDEX="5"
+BARAGON_FMAC_INDEX="6"
+CYNDER_FMAC_INDEX="7"
 
+MOTHRA_FMAC_STR="mothra"
 MANDA_FMAC_STR="manda"
 KONG_FMAC_STR="kong"
 ZIGRA_FMAC_STR="zigra"
@@ -84,14 +86,8 @@ fmacversion=""
 linuxVersion=""
 
 # Hardknott
-iMXhardknottcynderStableReleaseTag="imx-hardknott-cynder_r1.0"
+iMXhardknottcynderStableReleaseTag="imx-imx-hardknott-cynder_r1.0"
 iMXhardknottcynderDeveloperRelease="imx-hardknott-cynder"
-
-iMXhardknottbaragonStableReleaseTag="imx-hardknott-baragon_r1.0"
-iMXhardknottbaragonDeveloperRelease="imx-hardknott-baragon"
-
-iMXhardknottspigaStableReleaseTag="imx-hardknott-spiga_r1.0"
-iMXhardknottspigaDeveloperRelease="imx-hardknott-spiga"
 
 # Zeus
 iMXzeusbaragonStableReleaseTag="imx-zeus-baragon_r1.0"
@@ -107,7 +103,7 @@ iMXzeuszigraDeveloperRelease="imx-zeus-zigra"
 iMXsumobaragonStableReleaseTag="imx-sumo-baragon_r1.0"
 iMXsumobaragonDeveloperRelease="imx-sumo-baragon"
 
-iMXsumospigaStableReleaseTag="imx-sumo-spiga_r1.1"
+iMXsumospigaStableReleaseTag="imx-sumo-spiga_r1.0"
 iMXsumospigaDeveloperRelease="imx-sumo-spiga"
 
 iMXsumozigraStableReleaseTag="imx-sumo-zigra_r1.0"
@@ -145,11 +141,11 @@ iMXkrogothspigaDeveloperRelease="imx-krogoth-spiga"
 iMXkrogothzigraStableReleaseTag="imx-krogoth-zigra_r1.0"
 iMXkrogothzigraDeveloperRelease="imx-krogoth-zigra"
 
-iMXkrogothkongStableReleaseTag="imx-krogoth-kong_r1.0"
-iMXkrogothkongDeveloperRelease="imx-krogoth-kong"
-
 iMXkrogothmandaStableReleaseTag="imx-krogoth-manda_r2.1"
 iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
+
+iMXkrogothmothraStableReleaseTag="imx-krogoth-mothra_r1.1"
+iMXkrogothmothraDeveloperRelease="imx-krogoth-mothra"
 
 imxhardknottYocto="5.10.52_2.1.0 GA"
 imxzeusYocto="5.4.47_2.2.0 GA"
@@ -199,12 +195,12 @@ else
 	exit
 fi
 
-# Get Ubuntu release version; make sure it is either 18.04, 16.04, 14.04 or 12.04.
+# Get Ubuntu release version; make sure it is either 20.04, 18.04, 16.04, 14.04 or 12.04.
 Ubuntu_Release=$(lsb_release -r -s)
-if [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
+if [ $Ubuntu_Release == "20.04" ] || [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
 	echo -e "Murata: Verified Ubuntu Release:${NC}     " ${GRN}$Ubuntu_Release${NC}
 else
-	echo -e "${RED}Murata: Only Ubuntu versions 18.04, 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
+	echo -e "${RED}Murata: Only Ubuntu versions 20.04, 18.04, 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
 	echo -e "Exiting script.....${NC}"
 	exit
 fi
@@ -517,11 +513,11 @@ while true; do
 	echo "--------------------------------------------------------------------------"
 	echo "|Entry|   Linux Kernel   | Yocto      | FMAC Supported                   |"
 	echo "|-----|------------------|------------|----------------------------------|"
-	echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder, Baragon,Spiga            |"
+	echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder                           |"
 	echo "|  1  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga,Zigra              |"
 	echo "|  2  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga,Zigra,Kong,Manda   |"
 	echo "|  3  |     ${LINUX_KERNEL_4_9_123_STR}       | rocko     | Baragon,Spiga,Zigra,Kong,Manda   |"
-	echo "|  4  |     ${LINUX_KERNEL_4_1_15_STR}        | krogoth   | Baragon,Spiga,Zigra,Kong,Manda   |"
+	echo "|  4  |     ${LINUX_KERNEL_4_1_15_STR}        | krogoth   | Baragon,Spiga,Zigra,Manda,Mothra |"
 	echo "--------------------------------------------------------------------------"
 	read -p "Select which entry? " LINUX_KERNEL
 
@@ -567,18 +563,36 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo     "|  0.   | $MANDA_FMAC_STR - Old release                               |"
-			echo     "|  1.   | $KONG_FMAC_STR - Old release                                |"
+			echo     "|  0.   | $MOTHRA_FMAC_STR - Old release                               |"
+			echo     "|  1.   | $MANDA_FMAC_STR - Old release                               |"
 			echo     "|  2.   | $ZIGRA_FMAC_STR - Old release                               |"
 			echo     "|  3.   | $SPIGA_FMAC_STR - Previous release                          |"
 			echo -e  "|  4.   | $BARAGON_FMAC_STR - ${GRN}Latest release${NC}                          |"
 			echo     "-------------------------------------------------------------"
 			read -p "Select which entry? " ENTRY
 			case $ENTRY in
-			0) # for MANDA
+			0) # for MOTHRA
+				FMAC_VERSION=${MOTHRA_FMAC_INDEX}
+				if [ "$BRANCH_TAG_OPTION" = "y" ]; then
+					#echo "DEBUG:: krogoth-mothra_r1.1"
+					BRANCH_RELEASE_NAME="$iMXkrogothmothraStableReleaseTag"
+					iMXYoctoRelease="$imxkrogothYocto"
+					YoctoBranch="krogoth"
+					fmacversion="$MOTHRA_FMAC_STR"
+					# krogoth-kong
+				else
+					#echo "DEBUG:: krogoth-mothra"
+					BRANCH_RELEASE_NAME="$iMXkrogothmothraDeveloperRelease"
+					iMXYoctoRelease="$imxkrogothYocto"
+					YoctoBranch="krogoth"
+					fmacversion="$MOTHRA_FMAC_STR"
+				fi
+				break
+				;;
+			1) # for MANDA
 				FMAC_VERSION=${MANDA_FMAC_INDEX}
 				if [ "$BRANCH_TAG_OPTION"     = "y" ]; then
-					#echo "DEBUG:: krogoth-manda_r2.0"
+					#echo "DEBUG:: krogoth-manda_r2.2"
 					BRANCH_RELEASE_NAME="$iMXkrogothmandaStableReleaseTag"
 					iMXYoctoRelease="$imxkrogothYocto"
 					YoctoBranch="krogoth"
@@ -589,24 +603,6 @@ while true; do
 					iMXYoctoRelease="$imxkrogothYocto"
 					YoctoBranch="krogoth"
 					fmacversion="$MANDA_FMAC_STR"
-				fi
-				break
-				;;
-			1) # for KONG
-				FMAC_VERSION=${KONG_FMAC_INDEX}
-				if [ "$BRANCH_TAG_OPTION" = "y" ]; then
-					#echo "DEBUG:: krogoth-kong_r1.0"
-					BRANCH_RELEASE_NAME="$iMXkrogothkongStableReleaseTag"
-					iMXYoctoRelease="$imxkrogothYocto"
-					YoctoBranch="krogoth"
-					fmacversion="$KONG_FMAC_STR"
-					# krogoth-kong
-				else
-					#echo "DEBUG:: krogoth-kong"
-					BRANCH_RELEASE_NAME="$iMXkrogothkongDeveloperRelease"
-					iMXYoctoRelease="$imxkrogothYocto"
-					YoctoBranch="krogoth"
-					fmacversion="$KONG_FMAC_STR"
 				fi
 				break
 				;;
@@ -686,10 +682,10 @@ while true; do
 			read -p "Select which entry? " ENTRY
 			case $ENTRY in
 			0) #for MANDA
-				# rocko-mini-manda_r2.0
+				# rocko-mini-manda_r2.2
 				FMAC_VERSION=${MANDA_FMAC_INDEX}
 				if [ "$BRANCH_TAG_OPTION" = "y" ]; then
-					#echo "DEBUG:: rocko-mini-manda_r2.0"
+					#echo "DEBUG:: rocko-mini-manda_r2.2"
 					BRANCH_RELEASE_NAME="$iMXrockominimandaStableReleaseTag"
 					iMXYoctoRelease="$imxrockominiYocto"
 					YoctoBranch="rocko"
@@ -707,7 +703,7 @@ while true; do
 			1) # for KONG
 				FMAC_VERSION=${KONG_FMAC_INDEX}
 				if [ "$BRANCH_TAG_OPTION" = "y" ]; then
-					#echo "DEBUG:: rocko-mini-kong_r2.0"
+					#echo "DEBUG:: rocko-mini-kong_r1.0"
 					BRANCH_RELEASE_NAME="$iMXrockominikongStableReleaseTag"
 					iMXYoctoRelease="$imxrockominiYocto"
 					YoctoBranch="rocko"
@@ -800,7 +796,7 @@ while true; do
 			0) # for MANDA
 				FMAC_VERSION=${MANDA_FMAC_INDEX}
 				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
-					#echo "DEBUG:: sumo-manda_r1.0"
+					#echo "DEBUG:: sumo-manda_r1.2"
 					BRANCH_RELEASE_NAME="$iMXsumomandaStableReleaseTag"
 					iMXYoctoRelease="$imxsumoYocto"
 					YoctoBranch="sumo"
@@ -818,7 +814,7 @@ while true; do
 			1) #for KONG
 				FMAC_VERSION=${KONG_FMAC_INDEX}
 				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
-					#echo "DEBUG:: sumo-kong_r1.0"
+					#echo "DEBUG:: sumo-kong_r1.1"
 					BRANCH_RELEASE_NAME="$iMXsumokongStableReleaseTag"
 					iMXYoctoRelease="$imxsumoYocto"
 					YoctoBranch="sumo"
@@ -964,43 +960,11 @@ while true; do
 			echo     "-------------------------------------------------------------"
 			echo     "| Entry | "\""fmac"\"" version                                    |"
 			echo     "|-------|---------------------------------------------------|"
-			echo     "|  0.   | $SPIGA_FMAC_STR - Old release                               |"
-			echo     "|  1.   | $BARAGON_FMAC_STR - Previous release                        |"
-			echo -e  "|  2.   | ${CYNDER_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+			echo -e  "|  0.   | ${CYNDER_FMAC_STR} - ${GRN}Latest release${NC}                           |"
 			echo     "-------------------------------------------------------------"
 			read -p "Select which entry? " FMAC_VERSION
 			case $FMAC_VERSION in
 			0)
-				# for SPIGA
-				FMAC_VERSION=${SPIGA_FMAC_INDEX}
-				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
-					#echo "DEBUG:: hardknott-spiga"
-					BRANCH_RELEASE_NAME="$iMXhardknottspigaStableReleaseTag"
-				else
-					#echo "DEBUG:: hardknott-spiga"
-					BRANCH_RELEASE_NAME="$iMXhardknottspigaDeveloperRelease"
-				fi
-				iMXYoctoRelease="$imxhardknottYocto"
-				YoctoBranch="hardknott"
-				fmacversion=${SPIGA_FMAC_STR}
-				break
-				;;
-			1)
-				# for BARAGON
-				FMAC_VERSION=${BARAGON_FMAC_INDEX}
-				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
-					#echo "DEBUG:: hardknott-baragon"
-					BRANCH_RELEASE_NAME="$iMXhardknottbaragonStableReleaseTag"
-				else
-					#echo "DEBUG:: hardknott-baragon"
-					BRANCH_RELEASE_NAME="$iMXhardknottbaragonDeveloperRelease"
-				fi
-				iMXYoctoRelease="$imxhardknottYocto"
-				YoctoBranch="hardknott"
-				fmacversion=${BARAGON_FMAC_STR}
-				break
-				;;
-			2)
 				# for CYNDER
 				FMAC_VERSION=${CYNDER_FMAC_INDEX}
 				if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
