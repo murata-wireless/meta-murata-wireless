@@ -7,12 +7,6 @@ VERSION="1.0"
 function current() {
   echo ""
   echo "Current setup:"
-  if [ "/usr/sbin/wpa_supplicant" -ef "/usr/sbin/wpa_supplicant.cyw" ]; then
-    echo "  Link is to Cypress binary"
-  fi
-  if [ "/usr/sbin/wpa_supplicant" -ef "/usr/sbin/wpa_supplicant.nxp" ]; then
-    echo "  Link is to NXP binary"
-  fi
   if [ -e /etc/depmod.d/nxp_depmod.conf ]; then
     echo "  Found depmod helper file for NXP"
   fi
@@ -59,7 +53,6 @@ function clean_up() {
 }
 
 function prepare_for_nxp_sdio() {
-
   clean_up
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
@@ -104,7 +97,7 @@ blacklist cfg80211
 alias sdio:c*v02DFd9149 moal
 
 # Specify arguments to pass when loading the moal module
-options moal fw_name=nxp/sdiouart8978_combo_v0.bin cfg80211_wext=0xf drv_mode=7 cal_data_cfg=none 
+options moal mod_para=nxp/wifi_mod_para.conf 
 EOT
 
   depmod -a
@@ -113,9 +106,6 @@ EOT
 
 function prepare_for_nxp_ym_sdio() {
   clean_up
-
-  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -199,29 +189,9 @@ EOT
 #  handle_services true false
 }
 
-
-function prepare_for_cypress() {
-  clean_up
-  ln -s /usr/sbin/wpa_supplicant.cyw /usr/sbin/wpa_supplicant
-  ln -s /usr/sbin/hostapd.cyw /usr/sbin/hostapd
-
-  depmod -a
-
-  # Disable NXP service and enable Cypress service
-#  handle_services false true
-}
-
 function off() {
   # Disable both NXP and Cypress services
   handle_services false false
-}
-
-function switch_to_cypress() {
-  echo ""
-  echo "Setting up for Cypress"
-  echo "Please wait for 30 sec..."
-  prepare_for_cypress
-  echo "Setup complete"
 }
 
 function switch_to_nxp_sdio() {
