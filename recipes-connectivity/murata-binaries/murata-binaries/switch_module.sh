@@ -45,24 +45,6 @@ function handle_services() {
 }
 
 function clean_up() {
-
-  # Take a backup of mlan.ko and moal.ko
-  if [ -e /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-     rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
-  if [ -e /lib/modules/$(uname -r)/extra/moal.ko ]; then
-     rm /lib/modules/$(uname -r)/extra/moal.ko
-  fi
-
-  if [ -e /usr/sbin/wpa_supplicant ]; then
-    rm /usr/sbin/wpa_supplicant
-  fi
-
-  if [ -e /usr/sbin/hostapd ]; then
-    rm /usr/sbin/hostapd
-  fi
-
   if [ -e /etc/depmod.d/nxp_depmod.conf ]; then
     rm /etc/depmod.d/nxp_depmod.conf
   fi
@@ -71,57 +53,14 @@ function clean_up() {
     rm /etc/modprobe.d/nxp_modules.conf
   fi
 
-
-  if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
-  if [ -L /lib/modules/$(uname -r)/extra/moal.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/moal.ko
-  fi
-
-# clean up nxp regulatory files
-  if [ -e /lib/firmware/nxp/txpower_CA.bin ]; then
-    rm /lib/firmware/nxp/txpower_CA.bin
-  fi
-
-  if [ -e /lib/firmware/nxp/txpower_EU.bin ]; then
-    rm /lib/firmware/nxp/txpower_EU.bin
-  fi
-
-  if [ -e /lib/firmware/nxp/txpower_JP.bin ]; then
-    rm /lib/firmware/nxp/txpower_JP.bin
-  fi
-
-  if [ -e /lib/firmware/nxp/txpower_US.bin ]; then
-    rm /lib/firmware/nxp/txpower_US.bin
-  fi
-
-  if [ -e /lib/firmware/nxp/db.txt ]; then
-    rm /lib/firmware/nxp/db.txt
-  fi
-
-  if [ -e /lib/firmware/nxp/ed_mac.bin ]; then
-    rm /lib/firmware/nxp/ed_mac.bin
-  fi
-
-  if [ -e /lib/firmware/nxp/bt_power_config_1.sh ]; then
-    rm /lib/firmware/nxp/bt_power_config_1.sh
+  if [ -e /etc/udev/rules.d/regulatory.rules ]; then
+    rm /etc/udev/rules.d/regulatory.rules
   fi
 }
-
-
 
 function prepare_for_nxp_sdio() {
 
   clean_up
-
-  # revert from backup to default
-  cp /usr/share/nxp_wireless/default/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
-  cp /usr/share/nxp_wireless/default/moal.ko /lib/modules/$(uname -r)/extra/moal.ko
-
-  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -150,13 +89,6 @@ EOT
 function prepare_for_nxp_1xk_sdio() {
   clean_up
 
-  # copy from bin_sdio_1xk to original
-  cp /usr/share/nxp_wireless/bin_sdio_1xk/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
-  cp /usr/share/nxp_wireless/bin_sdio_1xk/moal.ko /lib/modules/$(uname -r)/extra/moal.ko
-
-  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
-
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -181,10 +113,6 @@ EOT
 
 function prepare_for_nxp_ym_sdio() {
   clean_up
-
-  # revert from backup to default
-  cp /usr/share/nxp_wireless/default/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
-  cp /usr/share/nxp_wireless/default/moal.ko /lib/modules/$(uname -r)/extra/moal.ko
 
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -218,13 +146,6 @@ EOT
 function prepare_for_nxp_ym_pcie() {
   clean_up
 
-  # revert from backup to default
-  cp /usr/share/nxp_wireless/default/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
-  cp /usr/share/nxp_wireless/default/moal.ko /lib/modules/$(uname -r)/extra/moal.ko
-
-  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
-
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -248,6 +169,36 @@ EOT
   # Disable Cypress service and enable NXP service
 #  handle_services true false
 }
+
+function prepare_for_nxp_xl_pcie() {
+  clean_up
+
+  cat <<EOT > /etc/depmod.d/nxp_depmod.conf
+# Force modprobe to search kernel/net/wireless (where the NXP
+# version of cfg80211.ko is placed) before looking in updates/net/wireless/
+# (where the Cypress version is)
+override cfg80211 * kernel/net/wireless
+
+EOT
+
+  cat <<EOT > /etc/modprobe.d/nxp_modules.conf
+# Prevent the Cypress version of cfg80211.ko from being loaded.
+blacklist cfg80211
+
+# Alias for the 1XL-PCIe M.2 module
+alias pci:v00001B4Bd00002B43sv*sd*bc02sc00i* moal
+alias pci:v00001B4Bd00002B44sv*sd*bc02sc00i* moal
+
+# Specify arguments to pass when loading the pcie8997 module
+options moal mod_para=nxp/wifi_mod_para.conf
+EOT
+
+  depmod -a
+
+  # Disable Cypress service and enable NXP service
+#  handle_services true false
+}
+
 
 function prepare_for_cypress() {
   clean_up
@@ -314,6 +265,17 @@ function switch_to_nxp_ym_pcie() {
   echo "Please reboot."
 }
 
+function switch_to_nxp_xl_pcie() {
+  echo ""
+  echo "Setting up for 1XL (NXP - PCIe)"
+  echo "Please wait for 30 sec..."
+  prepare_for_nxp_xl_pcie
+  echo ""
+  echo "Setup complete."
+  echo "Please reboot."
+}
+
+
 
 function usage() {
   echo ""
@@ -324,24 +286,9 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of :"
-  echo "     cyw, 1zm, 1ym-sdio, 1ym-pcie, 1xk"
+  echo "     1zm, 1ym-sdio, 1ym-pcie, 1xk, 1xl"
   echo ""
 }
-
-# ONE-TIME Only
-#check for the presence of default driver
-#if not , create and store default (mlan.ko and moal.ko)
-# check for the existence of folder, "default"
-if [ ! -d "/usr/share/nxp_wireless/default" ]
-then
-#	echo "Directory /usr/share/nxp_wireless/default does not exist."
-#	echo "Creating default in /usr/share/nxp_wireless/"
-	mkdir /usr/share/nxp_wireless/default
-	# Copy mlan.ko and moal.ko
-	cp /lib/modules/$(uname -r)/extra/mlan.ko /usr/share/nxp_wireless/default
-	cp /lib/modules/$(uname -r)/extra/moal.ko /usr/share/nxp_wireless/default
-fi
-
 
 if [[ $# -eq 0 ]]; then
   current
@@ -350,9 +297,6 @@ if [[ $# -eq 0 ]]; then
 fi
 
 case ${1^^} in
-  CYW)
-    switch_to_cypress
-    ;;
   ZM|1ZM)
     switch_to_nxp_sdio
     ;;
@@ -364,6 +308,9 @@ case ${1^^} in
     ;;
   YM-PCIE|1YM-PCIE)
     switch_to_nxp_ym_pcie
+    ;;
+  XL-PCIE|1XL-PCIE)
+    switch_to_nxp_xl_pcie
     ;;
   *)
     current
