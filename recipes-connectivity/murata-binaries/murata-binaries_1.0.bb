@@ -21,8 +21,6 @@ SRC_URI = " \
 	file://switch_module_imx8mnea-ucom.sh \
 	file://switch_module_imx8mqea-com.sh \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
-	file://sdiouartiw416_combo_v0.bin \
-	file://pcieuart8997_combo_v4.bin \
 	file://wifi_mod_para.conf \
 "
 
@@ -221,8 +219,6 @@ do_install () {
 
 #	Copy 1XK Dedicated Bluetooth Antenna configuration file
 	install -m 755 ${S}/WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf ${D}/lib/firmware/nxp/murata/files/1XK
-	install -m 755 ${S}/sdiouartiw416_combo_v0.bin ${D}/lib/firmware/nxp
-	install -m 755 ${S}/pcieuart8997_combo_v4.bin ${D}/lib/firmware/nxp
 	install -m 755 ${S}/wifi_mod_para.conf ${D}/lib/firmware/nxp
 }
 
