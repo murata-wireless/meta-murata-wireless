@@ -21,7 +21,6 @@ SRC_URI = " \
 	file://switch_module_imx8mnea-ucom.sh \
 	file://switch_module_imx8mqea-com.sh \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
-	file://wifi_mod_para.conf \
 "
 
 SRCREV_nxp-linux-calibration="d244828e3600db50558bc610c8f0e2fbed12ae53"
@@ -216,10 +215,8 @@ do_install () {
         install -m 755 ${S}/nxp-linux-calibration/murata/switch_regions.sh ${D}/usr/sbin/switch_regions.sh
         install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/lib/firmware/nxp/murata/README.txt
 
-
 #	Copy 1XK Dedicated Bluetooth Antenna configuration file
 	install -m 755 ${S}/WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf ${D}/lib/firmware/nxp/murata/files/1XK
-	install -m 755 ${S}/wifi_mod_para.conf ${D}/lib/firmware/nxp
 }
 
 PACKAGES =+ "${PN}-mfgtest"
