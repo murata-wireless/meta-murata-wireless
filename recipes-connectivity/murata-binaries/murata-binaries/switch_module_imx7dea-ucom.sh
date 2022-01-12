@@ -122,8 +122,37 @@ EOT
 # Prevent the Cypress version of cfg80211.ko from being loaded.
 blacklist cfg80211
 
-# Alias for the NXP module(1ZM)
+# Alias for the NXP module(1XK)
 alias sdio:c*v02DFd9159 moal
+
+# Specify arguments to pass when loading the moal module
+options moal mod_para=nxp/wifi_mod_para.conf
+EOT
+
+  depmod -a
+
+  # Disable Cypress service and enable NXP service
+  handle_services true false
+}
+
+function prepare_for_nxp_ds_sdio() {
+  clean_up
+  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+
+  cat <<EOT > /etc/depmod.d/nxp_depmod.conf
+# Force modprobe to search kernel/net/wireless (where the NXP
+# version of cfg80211.ko is placed) before looking in updates/net/wireless/
+# (where the Cypress version is)
+override cfg80211 * kernel/net/wireless
+EOT
+
+  cat <<EOT > /etc/modprobe.d/nxp_modules.conf
+# Prevent the Cypress version of cfg80211.ko from being loaded.
+blacklist cfg80211
+
+# Alias for the NXP module(2DS)
+alias sdio:c*v02DFd9139 moal
 
 # Specify arguments to pass when loading the moal module
 options moal mod_para=nxp/wifi_mod_para.conf
@@ -299,6 +328,16 @@ function switch_to_nxp_xk_sdio() {
   echo ""
 }
 
+function switch_to_nxp_ds_sdio() {
+  echo ""
+  echo "Setting up for 2DS (NXP - SDIO)"
+  echo "Please wait for 15 seconds (one-time only)..."
+  fw_setenv fdt_file imx7dea-ucom-kit_v2.dtb 2>/dev/null
+  fw_setenv bt_hint nxp
+  prepare_for_nxp_ds_sdio
+  echo "Setup complete."
+  echo ""
+}
 
 function switch_to_nxp_ym_sdio() {
   echo ""
@@ -346,7 +385,7 @@ function usage() {
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
   echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 1XA, 1WZ"
-  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL, CURRENT or OFF"
+  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL, 2DS, CURRENT or OFF"
   echo ""
 }
 
@@ -368,6 +407,9 @@ case ${1^^} in
     ;;
   XK|1XK)
     switch_to_nxp_xk_sdio
+    ;;
+  DS|2DS)
+    switch_to_nxp_ds_sdio
     ;;
   YM-SDIO|1YM-SDIO)
     switch_to_nxp_ym_sdio
