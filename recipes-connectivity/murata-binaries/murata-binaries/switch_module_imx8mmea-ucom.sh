@@ -342,7 +342,7 @@ function switch_to_nxp_ds_sdio() {
   echo ""
   echo "Setting up for 2DS (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx8mmea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_ds_sdio
   echo "Setup complete."
