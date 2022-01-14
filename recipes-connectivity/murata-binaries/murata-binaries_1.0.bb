@@ -1,7 +1,7 @@
 SUMMARY = "Murata Binaries"
 LICENSE = "BSD"
 
-LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
+LIC_FILES_CHKSUM = "file://${S}/nxp-linux-calibration/LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a4263"
 
 SRC_URI = " \
 	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
