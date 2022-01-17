@@ -9,7 +9,7 @@ SRC_URI = " \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 "
 
-SRCREV_nxp-linux-calibration="55f8bce3085a7b973f770d3eba8a5a0a8b51cb11"
+SRCREV_nxp-linux-calibration="d244828e3600db50558bc610c8f0e2fbed12ae53"
 
 SRCREV_default = "${AUTOREV}"
 
