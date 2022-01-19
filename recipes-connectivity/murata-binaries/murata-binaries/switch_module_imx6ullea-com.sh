@@ -75,6 +75,11 @@ function clean_up() {
   if [ -e /etc/udev/rules.d/regulatory.rules ]; then
     rm /etc/udev/rules.d/regulatory.rules
   fi
+
+  # check for the existence of folder, "crda"
+  if [  -d "/usr/lib/crda" ]; then
+    rm -rf /usr/lib/crda
+  fi
 }
 
 function prepare_for_nxp_sdio() {
