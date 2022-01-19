@@ -50,6 +50,11 @@ function clean_up() {
   if [ -e /etc/udev/rules.d/regulatory.rules ]; then
     rm /etc/udev/rules.d/regulatory.rules
   fi
+
+  # check for the existence of folder, "crda"
+  if [  -d "/usr/lib/crda" ]; then
+    rm -rf /usr/lib/crda
+  fi
 }
 
 function prepare_for_nxp_sdio() {
@@ -78,6 +83,34 @@ EOT
   # Disable Cypress service and enable NXP service
 #  handle_services true false
 }
+
+function prepare_for_nxp_ds_sdio() {
+  clean_up
+
+  cat <<EOT > /etc/depmod.d/nxp_depmod.conf
+# Force modprobe to search kernel/net/wireless (where the NXP
+# version of cfg80211.ko is placed) before looking in updates/net/wireless/
+# (where the Cypress version is)
+override cfg80211 * kernel/net/wireless
+EOT
+
+  cat <<EOT > /etc/modprobe.d/nxp_modules.conf
+# Prevent the Cypress version of cfg80211.ko from being loaded.
+blacklist cfg80211
+
+# Alias for the NXP module(2DS)
+alias sdio:c*v02DFd9139 moal
+
+# Specify arguments to pass when loading the moal module
+options moal mod_para=nxp/wifi_mod_para.conf
+EOT
+
+  depmod -a
+
+  # Disable Cypress service and enable NXP service
+#  handle_services true false
+}
+
 
 function prepare_for_nxp_1xk_sdio() {
   clean_up
@@ -245,6 +278,15 @@ function switch_to_nxp_xl_pcie() {
   echo "Please reboot."
 }
 
+function switch_to_nxp_ds_sdio() {
+  echo ""
+  echo "Setting up for 2DS (NXP - SDIO)"
+  echo "Please wait for 30 sec..."
+  prepare_for_nxp_ds_sdio
+  echo "Setup complete."
+  echo "Please reboot."
+  echo ""
+}
 
 
 function usage() {
@@ -256,7 +298,7 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of :"
-  echo "     1zm, 1ym-sdio, 1ym-pcie, 1xk, 1xl"
+  echo "     1zm, 1ym-sdio, 1ym-pcie, 1xk, 1xl, 2ds"
   echo ""
 }
 
@@ -269,6 +311,9 @@ fi
 case ${1^^} in
   ZM|1ZM)
     switch_to_nxp_sdio
+    ;;
+  DS|2DS)
+    switch_to_nxp_ds_sdio
     ;;
   1YM|YM-SDIO|1YM-SDIO)
     switch_to_nxp_ym_sdio
