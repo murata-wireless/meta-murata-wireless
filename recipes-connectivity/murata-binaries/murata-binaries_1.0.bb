@@ -23,7 +23,7 @@ SRC_URI = " \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 "
 
-SRCREV_nxp-linux-calibration="55f8bce3085a7b973f770d3eba8a5a0a8b51cb11"
+SRCREV_nxp-linux-calibration="b4f923b0f21983bdbcea911c677c265f39cded2b"
 SRCREV_cyw-fmac-fw="67048feb163cbbdbf780ab0a64bbc5250243767f"
 SRCREV_cyw-fmac-nvram="d0ddc35f8ade6ba5629c3a6d0a9c810078a9ebbc"
 SRCREV_cyw-bt-patch="760f04b8f0f68bb38929ed462383e80b19d3e355"
