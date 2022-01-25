@@ -90,6 +90,18 @@ function clean_up() {
   if [  -d "/usr/lib/crda" ]; then
     rm -rf /usr/lib/crda
   fi
+
+  if [ -e /etc/systemd/system/start_country.service ]; then
+    systemctl stop start_country.service
+    # Disable country code service
+    systemctl disable start_country.service
+    # Remove the file
+    rm /etc/systemd/system/start_country.service
+  fi
+
+  if [ -e /usr/sbin/startup.sh ]; then
+    rm /usr/sbin/startup.sh
+  fi
 }
 
 function prepare_for_nxp_sdio() {
