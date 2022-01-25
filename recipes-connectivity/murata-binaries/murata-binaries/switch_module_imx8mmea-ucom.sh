@@ -99,8 +99,8 @@ function clean_up() {
     rm /etc/systemd/system/start_country.service
   fi
 
-  if [ -e /usr/sbin/startup.sh ]; then
-    rm /usr/sbin/startup.sh
+  if [ -e /usr/sbin/startup_setcountry.sh ]; then
+    rm /usr/sbin/startup_setcountry.sh
   fi
 }
 
