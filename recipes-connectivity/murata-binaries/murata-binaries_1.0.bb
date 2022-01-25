@@ -23,7 +23,7 @@ SRC_URI = " \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 "
 
-SRCREV_nxp-linux-calibration="b4f923b0f21983bdbcea911c677c265f39cded2b"
+SRCREV_nxp-linux-calibration="2efe612c8c9ef924acb0bf9e4bb28859ff5aeb2a"
 SRCREV_cyw-fmac-fw="67048feb163cbbdbf780ab0a64bbc5250243767f"
 SRCREV_cyw-fmac-nvram="d0ddc35f8ade6ba5629c3a6d0a9c810078a9ebbc"
 SRCREV_cyw-bt-patch="760f04b8f0f68bb38929ed462383e80b19d3e355"
@@ -213,6 +213,7 @@ do_install () {
         install -m 444 ${S}/nxp-linux-calibration/murata/files/regulatory.rules ${D}/lib/firmware/nxp/murata/files
         install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/lib/firmware/nxp/murata/files
         install -m 755 ${S}/nxp-linux-calibration/murata/switch_regions.sh ${D}/usr/sbin/switch_regions.sh
+        install -m 755 ${S}/nxp-linux-calibration/murata/start_country.service ${D}/lib/firmware/nxp/murata/files
         install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/lib/firmware/nxp/murata/README.txt
 
 #	Copy 1XK Dedicated Bluetooth Antenna configuration file
