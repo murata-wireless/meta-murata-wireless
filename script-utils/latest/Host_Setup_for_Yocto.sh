@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=12142020
+VERSION=03232022
 
 ###################################################################################################
 #                             RELEASE HISTORY
@@ -8,6 +8,7 @@ VERSION=12142020
 #-----------|--------------|--------------|-------------------------------------------------------
 #  1.0      | 12/14/2020   |    JK        |    Incremented Version and removed references to
 #           |              |              |    cyw-scripts folder.
+#  1.1      | 03/23/2022   |    JK        |    Updated host script to support Ubuntu 20.04
 ###################################################################################################
 
 # Murata Script File used to do necessary host setup on Ubuntu 18.04, 16.04, 14.04 or 12.04 for Linux i.MX Yocto image build. 
