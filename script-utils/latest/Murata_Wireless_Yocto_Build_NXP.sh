@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=03232022
+VERSION=03242022
 
 
 ###################################################################################################
@@ -33,6 +33,8 @@ VERSION=03232022
 #  1.18     | 03/22/2022   |    JK        |    Fix the file name of Murata_Wirless_Yocto_Build to NXP
 #  1.19     | 03/23/2022   |    JK        |    Fix build script error for copying bbappend file.
 #           |              |              |    Add support for 8M-PLUS.
+#  1.20     | 03/24/2022   |    JK        |    Made the image build to fsl-image-validation-imx for
+#           |              |              |    8M-PLUS.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -335,10 +337,9 @@ function select_build_image_name {
 	echo -e "${GRN}Selected Image: $IMAGE_NAME. ${NC}"
 }
 
-
 # For i.MX8 series, make the default image type to fsl-image-validation-imx
 function select_default_image {
-	if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ] || [ "$TARGET_NAME" = "imx8dxl-lpddr4-evk" ]; then
+	if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ] || [ "$TARGET_NAME" = "imx8dxl-lpddr4-evk" ] || [ "$TARGET_NAME" = "imx8mp-lpddr4-evk" ]; then
 		IMAGE_NAME=fsl-image-validation-imx
 	fi
 }
