@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=03222022
+VERSION=03232022
 
 
 ###################################################################################################
@@ -31,6 +31,8 @@ VERSION=03222022
 #  1.16     | 12/20/2021   |    RC        |    Added support for i.MX8DXL.
 #  1.17     | 01/13/2022   |    RC        |    Removed support for 5.4.47, added support for 5.10.72.
 #  1.18     | 03/22/2022   |    JK        |    Fix the file name of Murata_Wirless_Yocto_Build to NXP
+#  1.19     | 03/23/2022   |    JK        |    Fix build script error for copying bbappend file.
+#           |              |              |    Add support for 8M-PLUS.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -458,6 +460,7 @@ while true; do
 			echo "|  6     |  imx8mnddr4evk       | 8MNANOD4-EVK             |"
 			echo "|  7     |  imx8qxpmek          | MCIMX8QXP-CPU            |"
 			echo "|  8     |  imx8dxl-lpddr4-evk  | MCIMX8DXL-EVK            |"
+			echo "|  9     |  imx8mp-lpddr4-evk   | 8MPLUSLPD4-EVK           |"
 			echo "------------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
@@ -475,48 +478,42 @@ while true; do
 			3)
 				TARGET_NAME=imx8mqevk
 				PART_NUMBER=MCIMX8M-EVKB
-				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			4)
 				TARGET_NAME=imx8mmevk
 				PART_NUMBER=8MMINILPD4-EVK
-				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			5)
 				TARGET_NAME=imx8mmddr4evk
 				PART_NUMBER=8MMINID4-EVK
-				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			6)
 				TARGET_NAME=imx8mnddr4evk
 				PART_NUMBER=8MNANOD4-EVK
-				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			7)
 				TARGET_NAME=imx8qxpmek
 				PART_NUMBER=MCIMX8QXP-CPU
-				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			8)
 				TARGET_NAME=imx8dxl-lpddr4-evk
 				PART_NUMBER=MCIMX8DXL-EVK
-				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.10.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			9)
+				TARGET_NAME=imx8mp-lpddr4-evk
+				PART_NUMBER=8MPLUSLPD4-EVK
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
@@ -546,6 +543,7 @@ while true; do
 			echo "|  6     |  imx8mnddr4evk       | 8MNANOD4-EVK             |"
 			echo "|  7     |  imx8qxpmek          | MCIMX8QXP-CPU            |"
 			echo "|  8     |  imx8dxl-lpddr4-evk  | MCIMX8DXL-EVK            |"
+			echo "|  9     |  imx8mp-lpddr4-evk   | 8MPLUSLPD4-EVK           |"
 			echo "------------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
@@ -563,48 +561,42 @@ while true; do
 			3)
 				TARGET_NAME=imx8mqevk
 				PART_NUMBER=MCIMX8M-EVKB
-				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			4)
 				TARGET_NAME=imx8mmevk
 				PART_NUMBER=8MMINILPD4-EVK
-				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			5)
 				TARGET_NAME=imx8mmddr4evk
 				PART_NUMBER=8MMINID4-EVK
-				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			6)
 				TARGET_NAME=imx8mnddr4evk
 				PART_NUMBER=8MNANOD4-EVK
-				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			7)
 				TARGET_NAME=imx8qxpmek
 				PART_NUMBER=MCIMX8QXP-CPU
-				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			8)
 				TARGET_NAME=imx8dxl-lpddr4-evk
 				PART_NUMBER=MCIMX8DXL-EVK
-				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.10.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			9)
+				TARGET_NAME=imx8mp-lpddr4-evk
+				PART_NUMBER=8MPLUSLPD4-EVK
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
@@ -827,11 +819,6 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	chmod 777 sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh
 	sh ./sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh $BUILD_DIR_NAME
 	cd $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/linux
-
-	# Customize
-	if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
-		cp $LINUX_SRC $LINUX_DEST
-	fi
 
 	cd $BUILD_DIR
 
