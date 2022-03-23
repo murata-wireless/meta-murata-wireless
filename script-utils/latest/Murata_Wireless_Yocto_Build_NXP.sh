@@ -29,6 +29,7 @@ VERSION=12202021
 #  1.14     | 11/18/2021   |    RC        |    Removed CYW/IFX into seperate script. Renamed script.
 #  1.15     | 11/22/2021   |    RC        |    Added support for hardknott.
 #  1.16     | 12/20/2021   |    RC        |    Added support for i.MX8DXL.
+#  1.17     | 01/13/2022   |    RC        |    Removed support for 5.4.47, added support for 5.10.72.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -48,30 +49,28 @@ LINUX_SRC=""
 LINUX_DEST=""
 CWD=""
 
-LINUX_KERNEL_5_4_47=0
-LINUX_KERNEL_5_10_52=1
+LINUX_KERNEL_5_10_52=0
+LINUX_KERNEL_5_10_72=1
 
 # Linux Kernel Strings
-LINUX_KERNEL_5_4_47_STR="5.4.47"
 LINUX_KERNEL_5_10_52_STR="5.10.52"
+LINUX_KERNEL_5_10_72_STR="5.10.72"
 
 DISTRO_NAME=fsl-imx-fb
 IMAGE_NAME=core-image-base
-
-FILENAME_1YM="SD-WLAN-SD-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-C4X16667_V4-MGPL.zip"
 
 iMXYoctoRelease=""
 YoctoBranch=""
 linuxVersion=""
 
-iMXzeusStableReleaseTag="imx-zeus_r1.0"
-iMXzeusDeveloperRelease="imx-zeus"
+iMXhardknott52StableReleaseTag="imx-hardknott-5-10-52_r1.0"
+iMXhardknott52DeveloperRelease="imx-hardknott-5-10-52"
 
-iMXhardknottStableReleaseTag="imx-hardknott_r1.0"
-iMXhardknottDeveloperRelease="imx-hardknott"
+iMXhardknott72StableReleaseTag="imx-hardknott-5-10-72_r1.0"
+iMXhardknott72DeveloperRelease="imx-hardknott-5-10-72"
 
-imxzeusYocto="5.4.47_2.2.0 GA"
-imxhardknottYocto="5.10.52_2.1.0 GA"
+imxhardknottYocto52="5.10.52_2.1.0 GA"
+imxhardknottYocto72="5.10.72_2.2.0"
 
 
 #--------------------------------------------------------------------------------------------------
@@ -385,21 +384,21 @@ while true; do
 	echo " "
 	echo "${STEP_COUNT}) Select "\""Linux Kernel"\"" "
 	echo "------------------------"
-	echo "-----------------------------------------------------------------"
-	echo "|Entry|   Linux Kernel    | Yocto     | Modules supported       |"
-	echo "|-----|-------------------|-----------|--------------------------"
-	echo "|  0  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | 1ZM, 1YM-SDIO, 1YM-PCIe |"
-	echo "|  1  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | 1ZM, 1YM-SDIO, 1YM-PCIe |"
-	echo "-----------------------------------------------------------------"
+	echo "---------------------------------------------------------------------------"
+	echo "|Entry|   Linux Kernel    | Yocto     | Modules supported                 |"
+	echo "|-----|-------------------|-----------|------------------------------------"
+	echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
+	echo "|  1  |     ${LINUX_KERNEL_5_10_72_STR}       | hardknott | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
+	echo "---------------------------------------------------------------------------"
 	read -p "Select which entry? " LINUX_KERNEL
 
 	case $LINUX_KERNEL in
-	$LINUX_KERNEL_5_4_47)
-		linuxVersion=${LINUX_KERNEL_5_4_47_STR}
-		break
-		;;
 	$LINUX_KERNEL_5_10_52)
 		linuxVersion=${LINUX_KERNEL_5_10_52_STR}
+		break
+		;;
+	$LINUX_KERNEL_5_10_72)
+		linuxVersion=${LINUX_KERNEL_5_10_72_STR}
 		break
 		;;
 	*)
@@ -411,53 +410,27 @@ done
 echo -e "${GRN}Selected : $linuxVersion${NC}"
 (( STEP_COUNT += 1 ))
 
-
-############################### <Optional> Step for "1YM-SDIO ######################
-echo " "
-echo "${STEP_COUNT}) Optional Step for NXP "\""1YM-SDIO"\"" "
-echo "-----------------------------------"
-#echo "12345678901234567890123456789012345678901234567890123456789012345678901234567890"
-echo "---------------------------------------------------------------------------------"
-echo "|a) Log into NXP website using the following link.                              |"
-echo "|   https://www.nxp.com/webapp/sps/download/license.jsp?colCode=SD-WLAN-SD-BT-  |"
-echo "|   8997-U16-MMC-W16-68-10-p56-16-26-10&appType=file2&DOWNLOAD_ID=null          |"
-echo "|b) Download the Software package (SD-WLAN-SD-BT-8997-U16-MMC-W16.68.10.p56-16. |"
-echo "|   26.10.p56-C4X16667_V4-MGPL.zip)                                             |"
-echo "|c) Copy the file into BSP folder (the place where you are executing the script)|"
-echo "|d) Ensure that copied file has the same software package name with "\"".zip"\""      |"
-echo "|   extension. i.e SD-WLAN-SD-BT-8997-U16-MMC-W16.68.10.p56-16.26.10.p56-       |"
-echo "|   C4X16667_V4-MGPL.zip                                                        |"
-echo "---------------------------------------------------------------------------------"
-read -p "Press any key to proceed." ANSWER
-(( STEP_COUNT += 1 ))
-	if [ -e "$FILENAME_1YM" ] ; then
-	FLAG_1YM="Yes"
-else
-	FLAG_1YM="No"
-fi
-####################################################################################
-
 case $LINUX_KERNEL in
-$LINUX_KERNEL_5_4_47)
-	if [ "$BRANCH_TAG_OPTION" = "y" ] ; then
-		#echo "DEBUG:: zeus release"
-		BRANCH_RELEASE_NAME="$iMXzeusStableReleaseTag"
-	else
-		#echo "DEBUG:: zeus developer"
-		BRANCH_RELEASE_NAME="$iMXzeusDeveloperRelease"
-	fi
-	iMXYoctoRelease="$imxzeusYocto"
-	YoctoBranch="zeus"
-	;;
 $LINUX_KERNEL_5_10_52)
 	if [ "$BRANCH_TAG_OPTION" = "y" ] ; then
 		#echo "DEBUG:: hardknott release"
-		BRANCH_RELEASE_NAME="$iMXhardknottStableReleaseTag"
+		BRANCH_RELEASE_NAME="$iMXhardknott52StableReleaseTag"
 	else
 		#echo "DEBUG:: hardknott developer"
-		BRANCH_RELEASE_NAME="$iMXhardknottDeveloperRelease"
+		BRANCH_RELEASE_NAME="$iMXhardknott52DeveloperRelease"
 	fi
-	iMXYoctoRelease="$imxhardknottYocto"
+	iMXYoctoRelease="$imxhardknottYocto52"
+	YoctoBranch="hardknott"
+	;;
+$LINUX_KERNEL_5_10_72)
+	if [ "$BRANCH_TAG_OPTION" = "y" ] ; then
+		#echo "DEBUG:: hardknott release"
+		BRANCH_RELEASE_NAME="$iMXhardknott72StableReleaseTag"
+	else
+		#echo "DEBUG:: hardknott developer"
+		BRANCH_RELEASE_NAME="$iMXhardknott72DeveloperRelease"
+	fi
+	iMXYoctoRelease="$imxhardknottYocto72"
 	YoctoBranch="hardknott"
 	;;
 *)
@@ -467,7 +440,7 @@ esac
 
 while true; do
 	case $LINUX_KERNEL in
-	$LINUX_KERNEL_5_4_47)
+	$LINUX_KERNEL_5_10_52)
 		while true; do
 			echo " "
 			echo "${STEP_COUNT}) Select Target"
@@ -483,6 +456,7 @@ while true; do
 			echo "|  5     |  imx8mmddr4evk       | 8MMINID4-EVK             |"
 			echo "|  6     |  imx8mnddr4evk       | 8MNANOD4-EVK             |"
 			echo "|  7     |  imx8qxpmek          | MCIMX8QXP-CPU            |"
+			echo "|  8     |  imx8dxl-lpddr4-evk  | MCIMX8DXL-EVK            |"
 			echo "------------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
@@ -500,40 +474,48 @@ while true; do
 			3)
 				TARGET_NAME=imx8mqevk
 				PART_NUMBER=MCIMX8M-EVKB
-				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.4.bbappend
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			4)
 				TARGET_NAME=imx8mmevk
 				PART_NUMBER=8MMINILPD4-EVK
-				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.4.bbappend
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			5)
 				TARGET_NAME=imx8mmddr4evk
 				PART_NUMBER=8MMINID4-EVK
-				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.4.bbappend
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			6)
 				TARGET_NAME=imx8mnddr4evk
 				PART_NUMBER=8MNANOD4-EVK
-				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.4.bbappend
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			7)
 				TARGET_NAME=imx8qxpmek
 				PART_NUMBER=MCIMX8QXP-CPU
-				LINUX_SRC=linux-imx_5.4.bbappend.8MQ
-				LINUX_DEST=linux-imx_5.4.bbappend
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_5.10.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			8)
+				TARGET_NAME=imx8dxl-lpddr4-evk
+				PART_NUMBER=MCIMX8DXL-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_5.10.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
@@ -546,7 +528,7 @@ while true; do
 		echo $'\n'
 		break
 		;;
-	$LINUX_KERNEL_5_10_52)
+	$LINUX_KERNEL_5_10_72)
 		while true; do
 			echo " "
 			echo "${STEP_COUNT}) Select Target"
@@ -734,7 +716,6 @@ echo " "
 
 echo -e "i.MX Yocto Release              : ${GRN}$iMXYoctoRelease${NC}"
 echo -e "Yocto branch                    : ${GRN}$YoctoBranch${NC}"
-echo -e "1YM-SDIO Option                 : ${GRN}$FLAG_1YM${NC}"
 echo -e "Target                          : ${GRN}$TARGET_NAME${NC}"
 echo -e "NXP i.MX EVK Part Number        : ${GRN}$PART_NUMBER${NC}"
 echo -e "meta-murata-wireless Release Tag: ${GRN}$BRANCH_RELEASE_NAME${NC}"
@@ -797,12 +778,12 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	done
 
 	# Invoke Repo Init based on Yocto Release
-	if [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]; then
-		#echo "DEBUG:: IMXALL-HARDKNOTT"
+	if [ "$iMXYoctoRelease" = "$imxhardknottYocto52" ]; then
+		#echo "DEBUG:: IMXALL-HARDKNOTT-52"
 		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-hardknott -m imx-5.10.52-2.1.0.xml
-	elif [ "$iMXYoctoRelease" = "$imxzeusYocto" ]; then
-		#echo "DEBUG:: IMXALL-ZEUS"
-		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-zeus -m imx-5.4.47-2.2.0.xml
+	elif [ "$iMXYoctoRelease" = "$imxhardknottYocto72" ]; then
+		#echo "DEBUG:: IMXALL-HARDKNOTT-52"
+		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-hardknott -m imx-5.10.72-2.2.0.xml
 	fi
 
 	#echo "DEBUG:: Performing repo sync......."
