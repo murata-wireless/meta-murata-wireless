@@ -43,10 +43,10 @@ fi
 
 # Get Ubuntu release version; make sure it is either 18.04, 16.04, 14.04 or 12.04. 
 Ubuntu_Release=$(lsb_release -r -s)
-if [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
+if [ $Ubuntu_Release == "20.04" ] || [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
                 echo -e "Murata: Verified Ubuntu Release:${NC}     " ${GRN}$Ubuntu_Release${NC}
 else
-                echo -e "${RED}Murata: Only Ubuntu versions 18.04, 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
+                echo -e "${RED}Murata: Only Ubuntu versions 20.04, 18.04, 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
 		echo -e "Exiting script.....${NC}"
                 exit
 fi 
@@ -146,9 +146,9 @@ if [ $Ubuntu_Release == "12.04" ]; then
 	# i.MX layers host packages for a Ubuntu 12.04 host setup only are:
         echo -e "${GRN}Murata: Installing i.MX layers host packages for a Ubuntu 12.04 host setup only...${NC}"
 	sudo apt-get install uboot-mkimage 
-elif [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ]; then
-	# i.MX layers host packages for a Ubuntu 14.04 or 16.04 or 18.04 host setup only are:
-	echo -e "${GRN}Murata: Installing i.MX layers host packages for a Ubuntu 18.04 or 16.04 or 14.04 host setup only...${NC}"
+elif [ $Ubuntu_Release == "20.04" ] || [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ]; then
+	# i.MX layers host packages for a Ubuntu 14.04 or 16.04 or 18.04 or 20.04 host setup only are:
+	echo -e "${GRN}Murata: Installing i.MX layers host packages for a Ubuntu 20.04 or 18.04 or 16.04 or 14.04 host setup only...${NC}"
 	sudo apt-get install u-boot-tools
 else
 	echo -e "${RED}Murata: Ubuntu Release version not supported:${NC}" $Ubuntu_Release
