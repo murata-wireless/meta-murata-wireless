@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=12202021
+VERSION=03222022
 
 
 ###################################################################################################
@@ -30,6 +30,7 @@ VERSION=12202021
 #  1.15     | 11/22/2021   |    RC        |    Added support for hardknott.
 #  1.16     | 12/20/2021   |    RC        |    Added support for i.MX8DXL.
 #  1.17     | 01/13/2022   |    RC        |    Removed support for 5.4.47, added support for 5.10.72.
+#  1.18     | 03/22/2022   |    JK        |    Fix the file name of Murata_Wirless_Yocto_Build to NXP
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -178,9 +179,9 @@ fi
 export SCRIPT_DIR=`pwd`
 #echo "Latest folder path: $SCRIPT_DIR"
 
-# Scan through the file Murata_Wireless_Yocto_Build.sh to fetch the Revision Information
+# Scan through the file Murata_Wireless_Yocto_Build_NXP.sh to fetch the Revision Information
 COUNTER=0
-input_file_path="$SCRIPT_DIR/Murata_Wireless_Yocto_Build.sh"
+input_file_path="$SCRIPT_DIR/Murata_Wireless_Yocto_Build_NXP.sh"
 
 while IFS= read -r LATEST_VER
 do
