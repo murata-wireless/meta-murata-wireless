@@ -30,6 +30,8 @@ VERSION=01102022
 #  1.15     | 11/22/2021   |    RC        |    Added support for hardknott and cynder.
 #  1.16     | 12/14/2021   |    RC        |    Updated hardknott-cynder support.
 #  1.17     | 01/10/2022   |    RC        |    Moved legacy support under flags.
+#  1.18     | 04/26/2022   |    JK        |    Rename Murata_Wireless_Yocto_Build to 
+#           |              |              |    Murata_Wireless_Yocto_Build_CYW.sh.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -266,9 +268,9 @@ fi
 export SCRIPT_DIR=`pwd`
 #echo "Latest folder path: $SCRIPT_DIR"
 
-# Scan through the file Murata_Wireless_Yocto_Build.sh to fetch the Revision Information
+# Scan through the file Murata_Wireless_Yocto_Build_CYW.sh to fetch the Revision Information
 COUNTER=0
-input_file_path="$SCRIPT_DIR/Murata_Wireless_Yocto_Build.sh"
+input_file_path="$SCRIPT_DIR/Murata_Wireless_Yocto_Build_CYW.sh"
 
 while IFS= read -r LATEST_VER
 do
@@ -280,7 +282,7 @@ done < "$input_file_path"
 
 cd $BSP_DIR
 
-# read first and second line of Murata_Wireless_Yocto_Build.sh script
+# read first and second line of Murata_Wireless_Yocto_Build_CYW.sh script
 IFS== read FIRST_LINE LATEST_VER <<< $LATEST_VER
 
 # Check for latest revision
@@ -299,7 +301,7 @@ else
 		echo "NOTE: Latest build script is not tested fully. Please take a backup of the previous script before replacing."
 		echo "Update to latest version using following copy command:"
 		echo " "
-		echo ""\$ "cp ./meta-murata-wireless/script-utils/latest/Murata_Wireless_Yocto_Build.sh ."
+		echo ""\$ "cp ./meta-murata-wireless/script-utils/latest/Murata_Wireless_Yocto_Build_CYW.sh ."
 		echo " "
 		echo -e "${YLW}Exiting script.....${NC}"
        		exit

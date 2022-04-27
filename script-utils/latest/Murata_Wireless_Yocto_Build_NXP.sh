@@ -35,6 +35,8 @@ VERSION=03242022
 #           |              |              |    Add support for 8M-PLUS.
 #  1.20     | 03/24/2022   |    JK        |    Made the image build to fsl-image-validation-imx for
 #           |              |              |    8M-PLUS.
+#  1.21     | 04/26/2022   |    JK        |    Rename Murata_Wireless_Yocto_Build to 
+#           |              |              |    Murata_Wireless_Yocto_Build_CYW.sh.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -197,7 +199,7 @@ done < "$input_file_path"
 
 cd $BSP_DIR
 
-# read first and second line of Murata_Wireless_Yocto_Build.sh script
+# read first and second line of Murata_Wireless_Yocto_Build_NXP.sh script
 IFS== read FIRST_LINE LATEST_VER <<< $LATEST_VER
 
 # Check for latest revision
@@ -216,7 +218,7 @@ else
 		echo "NOTE: Latest build script is not tested fully. Please take a backup of the previous script before replacing."
 		echo "Update to latest version using following copy command:"
 		echo " "
-		echo ""\$ "cp ./meta-murata-wireless/script-utils/latest/Murata_Wireless_Yocto_Build.sh ."
+		echo ""\$ "cp ./meta-murata-wireless/script-utils/latest/Murata_Wireless_Yocto_Build_NXP.sh ."
 		echo " "
 		echo -e "${YLW}Exiting script.....${NC}"
        		exit
