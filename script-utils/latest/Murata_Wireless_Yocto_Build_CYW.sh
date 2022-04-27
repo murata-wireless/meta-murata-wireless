@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=01102022
+VERSION=04262022
 
 
 ###################################################################################################
@@ -30,8 +30,9 @@ VERSION=01102022
 #  1.15     | 11/22/2021   |    RC        |    Added support for hardknott and cynder.
 #  1.16     | 12/14/2021   |    RC        |    Updated hardknott-cynder support.
 #  1.17     | 01/10/2022   |    RC        |    Moved legacy support under flags.
-#  1.18     | 04/26/2022   |    JK        |    Rename Murata_Wireless_Yocto_Build to 
-#           |              |              |    Murata_Wireless_Yocto_Build_CYW.sh.
+#  1.18     | 04/26/2022   |    JK        |    a) Rename Murata_Wireless_Yocto_Build to 
+#           |              |              |       Murata_Wireless_Yocto_Build_CYW.sh.
+#           |              |              |    b) Rename release tag
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -95,7 +96,7 @@ fmacversion=""
 linuxVersion=""
 
 # Hardknott
-iMXhardknottcynderStableReleaseTag="imx-imx-hardknott-cynder_r1.0"
+iMXhardknottcynderStableReleaseTag="imx-hardknott-cynder_r1.0"
 iMXhardknottcynderDeveloperRelease="imx-hardknott-cynder"
 
 # Zeus
