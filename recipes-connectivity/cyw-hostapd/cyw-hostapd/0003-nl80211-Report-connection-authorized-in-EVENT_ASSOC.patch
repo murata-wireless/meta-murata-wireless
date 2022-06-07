@@ -1,0 +1,43 @@
+From b6cc464e7d4dc9cdfd813a094e1f61a1d752d0f4 Mon Sep 17 00:00:00 2001
+From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
+Date: Tue, 29 Oct 2019 15:55:21 +0800
+Subject: [PATCH 03/15] nl80211: Report connection authorized in EVENT_ASSOC
+
+When roaming in a network that requires 802.1X authentication, device
+driver could set the authorized flag if 4-way handshake offload or FT
+offload is considered.
+
+This patch enables the report of connection authorized in EVENT_ASSOC to
+indicate the requirement of 802.1X authentication.
+
+Signed-off-by: Chung-Hsien Hsu <chung-hsien.hsu@infineon.com>
+---
+ src/drivers/driver_nl80211_event.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/src/drivers/driver_nl80211_event.c b/src/drivers/driver_nl80211_event.c
+index f75f7b3ae..c76967153 100644
+--- a/src/drivers/driver_nl80211_event.c
++++ b/src/drivers/driver_nl80211_event.c
+@@ -530,7 +530,7 @@ static void mlme_event_connect(struct wpa_driver_nl80211_data *drv,
+ 			   wpa_ssid_txt(drv->ssid, drv->ssid_len));
+ 	}
+ 
+-	if (authorized && nla_get_u8(authorized)) {
++	if (authorized && nla_get_flag(authorized)) {
+ 		event.assoc_info.authorized = 1;
+ 		wpa_printf(MSG_DEBUG, "nl80211: connection authorized");
+ 	}
+@@ -2811,7 +2811,8 @@ static void do_process_drv_event(struct i802_bss *bss, int cmd,
+ 				   tb[NL80211_ATTR_RESP_IE],
+ 				   tb[NL80211_ATTR_TIMED_OUT],
+ 				   tb[NL80211_ATTR_TIMEOUT_REASON],
+-				   NULL, NULL, NULL,
++				   tb[NL80211_ATTR_PORT_AUTHORIZED],
++				   NULL, NULL,
+ 				   tb[NL80211_ATTR_FILS_KEK],
+ 				   NULL,
+ 				   tb[NL80211_ATTR_FILS_ERP_NEXT_SEQ_NUM],
+-- 
+2.17.1
+
