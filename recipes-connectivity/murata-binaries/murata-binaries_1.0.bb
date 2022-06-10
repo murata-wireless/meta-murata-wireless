@@ -22,6 +22,7 @@ SRC_URI = " \
 	file://switch_module_imx8mqea-com.sh \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 	file://cyfmac55560-pcie.txt \
+	file://CYW55560A1_001.002.087.0108.0000_sLNA.hcd \
 "
 
 SRCREV_nxp-linux-calibration="aa3d67d6c01181ef61e29d43feae612f5bfdbdb5"
@@ -93,6 +94,7 @@ do_install () {
         install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}${sysconfdir}/firmware/BCM4373A0.2AE.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}${sysconfdir}/firmware/BCM4373A0.2BC.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}${sysconfdir}/firmware/CYW4343A2_001.003.016.0031.0000.1YN.hcd
+        install -m 444 ${S}/cyw-bt-patch/CYW55560A1_001.002.087.0108.0000.sLNA.hcd ${D}${sysconfdir}/firmware/CYW55560A1_001.002.087.0108.0000.sLNA.hcd
         install -m 444 ${S}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}${sysconfdir}/firmware
 
 #       install -m 444 ${D}${sysconfdir}/firmware/*.hcd       ${D}${sysconfdir}/firmware/murata-master
