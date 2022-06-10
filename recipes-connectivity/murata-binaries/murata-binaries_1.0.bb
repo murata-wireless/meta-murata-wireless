@@ -5,11 +5,11 @@ LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741
 
 SRC_URI = " \
 	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-5-10-72;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
-        git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=cynder;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
-        git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=cynder;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
-        git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=hardknott-cynder;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
-        git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=cynder;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
-        git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=cynder;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
+        git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=drogon;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
+        git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=drogon;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
+        git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=hardknott-drogon;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
+        git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=drogon;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
+        git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=drogon;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
 	file://switch_module_imx6dlea-com.sh \
 	file://switch_module_imx6qea-com.sh \
 	file://switch_module_imx6sxea-com.sh \
@@ -24,7 +24,7 @@ SRC_URI = " \
 "
 
 SRCREV_nxp-linux-calibration="aa3d67d6c01181ef61e29d43feae612f5bfdbdb5"
-SRCREV_cyw-fmac-fw="67048feb163cbbdbf780ab0a64bbc5250243767f"
+SRCREV_cyw-fmac-fw="fd4ce1d37b46fbfd99158b49f7e12ac4e26c9082"
 SRCREV_cyw-fmac-nvram="d0ddc35f8ade6ba5629c3a6d0a9c810078a9ebbc"
 SRCREV_cyw-bt-patch="760f04b8f0f68bb38929ed462383e80b19d3e355"
 SRCREV_cyw-fmac-utils-imx32="e248804b6ba386fedcd462ddd9394f42f73a17af"
