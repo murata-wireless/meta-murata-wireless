@@ -411,7 +411,7 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 1XA, 1WZ"
+  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 1XA, 1WZ, 2EA"
   echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL, 2DS, CURRENT or OFF"
   echo ""
 }
@@ -423,7 +423,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 case ${1^^} in
-  CYW-PCIE|CX|1CX|XA|1XA)
+  CYW-PCIE|CX|1CX|XA|1XA|2EA)
     switch_to_cypress_pcie
     ;;
   CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|WZ|1WZ|1YN|2AE)
