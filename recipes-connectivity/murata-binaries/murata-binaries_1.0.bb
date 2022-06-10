@@ -21,6 +21,7 @@ SRC_URI = " \
 	file://switch_module_imx8mnea-ucom.sh \
 	file://switch_module_imx8mqea-com.sh \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
+	file://cyfmac55560-pcie.txt \
 "
 
 SRCREV_nxp-linux-calibration="aa3d67d6c01181ef61e29d43feae612f5bfdbdb5"
@@ -144,8 +145,9 @@ do_install () {
 #	For 2AE and 1YN
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac43439-sdio.1YN.txt ${D}/lib/firmware/cypress/cyfmac43439-sdio.txt
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
-
-	install -m 444 ${S}/cyw-fmac-nvram/README_NVRAM.txt ${D}/lib/firmware/cypress
+#	For 2EA 
+	install -m 444 ${S}/switch_module_imx6dlea-com.sh ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
+	install -m 444 ${S}/cyfmac55560-pcie.txt ${D}/lib/firmware/cypress
 
 	# Added Calibration configuration file for 1YM(NXP)
 #	install -m 444 ${S}/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
