@@ -22,7 +22,7 @@ SRC_URI = " \
 	file://switch_module_imx8mqea-com.sh \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 	file://cyfmac55560-pcie.txt \
-	file://CYW55560A1_001.002.087.0108.0000_sLNA.hcd \
+	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
 "
 
 SRCREV_nxp-linux-calibration="aa3d67d6c01181ef61e29d43feae612f5bfdbdb5"
