@@ -14,8 +14,6 @@ SRC_URI =  " \
     file://0004-makefile-yacc-flex-update.patch;apply=yes \
 "
 
-#    file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
-
 SRCREV = "c67748e0638bf69e82496862722bca51fff8d886"
 S = "${WORKDIR}/git"
 
