@@ -22,13 +22,14 @@ SRC_URI = " \
 	file://switch_module_imx8mqea-com.sh \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 	file://cyfmac55560-pcie.txt \
+	file://cyfmac55560-pcie.trxse \
 	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
 "
 
 SRCREV_nxp-linux-calibration="aa3d67d6c01181ef61e29d43feae612f5bfdbdb5"
 SRCREV_cyw-fmac-fw="fd4ce1d37b46fbfd99158b49f7e12ac4e26c9082"
 SRCREV_cyw-fmac-nvram="d0ddc35f8ade6ba5629c3a6d0a9c810078a9ebbc"
-SRCREV_cyw-bt-patch="cde45739f957844289024e42d5942b1dc06e3fb8"
+SRCREV_cyw-bt-patch="99d5fba2550aede5ce7989e2fc81b74ec193c4d2"
 SRCREV_cyw-fmac-utils-imx32="e248804b6ba386fedcd462ddd9394f42f73a17af"
 SRCREV_cyw-fmac-utils-imx64="1bc78d68f9609290b2f6578516011c57691f7815"
 
@@ -85,7 +86,7 @@ do_install () {
 #       Copying *.HCD files to etc/firmware and etc/firmware/murata-master
         install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd ${D}${sysconfdir}/firmware/BCM4335C0.ZP.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd ${D}${sysconfdir}/firmware/BCM4345C0_003.001.025.0187.0366.1MW.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0230.0237.1LV.sAnt.hcd ${D}${sysconfdir}/firmware/BCM43012C0_003.001.015.0230.0237.1LV.sAnt.hcd
+        install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd ${D}${sysconfdir}/firmware/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW43341B0.1BW.hcd ${D}${sysconfdir}/firmware/BCM43341B0.1BW.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4343A1_001.002.009.0159.0528.1DX.hcd ${D}${sysconfdir}/firmware/BCM4343A1_001.002.009.0159.0528.1DX.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW4350C0.1BB.hcd ${D}${sysconfdir}/firmware/BCM4350C0.1BB.hcd
@@ -100,7 +101,7 @@ do_install () {
 #       install -m 444 ${D}${sysconfdir}/firmware/*.hcd       ${D}${sysconfdir}/firmware/murata-master
         install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd    ${D}${sysconfdir}/firmware/murata-master/_BCM4335C0.ZP.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4345C0_003.001.025.0187.0366.1MW.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0230.0237.1LV.sAnt.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43012C0_003.001.015.0230.0237.1LV.sAnt.hcd
+        install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW43341B0.1BW.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43341B0.1BW.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4343A1_001.002.009.0159.0528.1DX.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM4343A1_001.002.009.0159.0528.1DX.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW4350C0.1BB.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4350C0.1BB.hcd
@@ -116,8 +117,12 @@ do_install () {
 
 #       Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
 	install -m 444 ${S}/cyw-fmac-fw/*.bin ${D}/lib/firmware/cypress
-#       For 2EA
-	install -m 444 ${S}/cyw-fmac-fw/cyfmac55560-pcie.trxse ${D}/lib/firmware/cypress
+#       For 2EA (TBD)
+#	install -m 444 ${S}/cyw-fmac-fw/cyfmac55560-pcie.trxse ${D}/lib/firmware/cypress
+
+#       For 2EA (From MMW)
+#	install -m 444 ${S}/cyfmac55560-pcie.trxse ${D}/lib/firmware/cypress
+
 
 #       Rename clm blob files accordingly
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4354-sdio.1BB.clm_blob ${D}/lib/firmware/cypress/cyfmac4354-sdio.clm_blob
@@ -245,4 +250,5 @@ FILES_${PN}-mfgtest = " \
 
 INSANE_SKIP_${PN} += "build-deps"
 INSANE_SKIP_${PN} += "file-rdeps"
+
 
