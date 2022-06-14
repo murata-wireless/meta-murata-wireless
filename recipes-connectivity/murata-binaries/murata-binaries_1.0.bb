@@ -118,7 +118,7 @@ do_install () {
 #       Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
 	install -m 444 ${S}/cyw-fmac-fw/*.bin ${D}/lib/firmware/cypress
 #       For 2EA (TBD)
-#	install -m 444 ${S}/cyw-fmac-fw/cyfmac55560-pcie.trxse ${D}/lib/firmware/cypress
+	install -m 444 ${S}/cyw-fmac-fw/cyfmac55560-pcie.trxse ${D}/lib/firmware/cypress
 
 #       For 2EA (From MMW)
 #	install -m 444 ${S}/cyfmac55560-pcie.trxse ${D}/lib/firmware/cypress
