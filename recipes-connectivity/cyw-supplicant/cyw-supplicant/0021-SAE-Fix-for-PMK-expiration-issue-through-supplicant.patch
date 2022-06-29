@@ -1,0 +1,137 @@
+From caf47f3eed8267255a7665bbe529dfb0eedf36a1 Mon Sep 17 00:00:00 2001
+From: Kurt Lee <kurt.lee@cypress.com>
+Date: Mon, 14 Feb 2022 00:08:23 -0600
+Subject: [PATCH 21/23] SAE: Fix for PMK expiration issue through supplicant
+
+Description : Sending Deauth from AP once PMK timeout occurs, So that
+STA will initiate the Auth process.
+Changes : 1) Added support to get the dot11RSNAConfigPMKLifetime conf
+element in wpa_authenticator structure to pass to the lower API's
+2) Sending deauth from the wpa_auth_pmksa_free_cb once PMK time out
+occurs.
+Tested: Confirmed once PMK timeout occurs AP is sending deauth and STA
+starting AUTH frame.
+
+Porting from project: hostap_upstream, branch: IOT_HOSTAP_BRANCH_1_201
+ID: 587411dd with modified hostapd/config_file.c for configuration of
+hostapd
+---
+ hostapd/config_file.c | 2 ++
+ src/ap/ap_config.h    | 1 +
+ src/ap/ieee802_11.c   | 1 +
+ src/ap/wpa_auth.c     | 9 ++++++++-
+ src/ap/wpa_auth.h     | 1 +
+ src/ap/wpa_auth_i.h   | 1 +
+ wpa_supplicant/ap.c   | 1 +
+ 7 files changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/hostapd/config_file.c b/hostapd/config_file.c
+index ce32f3c04..40deec055 100644
+--- a/hostapd/config_file.c
++++ b/hostapd/config_file.c
+@@ -3558,6 +3558,8 @@ static int hostapd_config_fill(struct hostapd_config *conf,
+ 		bss->max_listen_interval = atoi(pos);
+ 	} else if (os_strcmp(buf, "disable_pmksa_caching") == 0) {
+ 		bss->disable_pmksa_caching = atoi(pos);
++	} else if (os_strcmp(buf, "dot11RSNAConfigPMKLifetime") == 0) {
++		bss->dot11RSNAConfigPMKLifetime = atoi(pos);
+ 	} else if (os_strcmp(buf, "okc") == 0) {
+ 		bss->okc = atoi(pos);
+ #ifdef CONFIG_WPS
+diff --git a/src/ap/ap_config.h b/src/ap/ap_config.h
+index bada04c3e..dc8890c69 100644
+--- a/src/ap/ap_config.h
++++ b/src/ap/ap_config.h
+@@ -861,6 +861,7 @@ struct hostapd_bss_config {
+ 	 */
+ 	u8 mka_psk_set;
+ #endif /* CONFIG_MACSEC */
++	unsigned int dot11RSNAConfigPMKLifetime;
+ };
+ 
+ /**
+diff --git a/src/ap/ieee802_11.c b/src/ap/ieee802_11.c
+index ded911bb2..c0d8731a0 100644
+--- a/src/ap/ieee802_11.c
++++ b/src/ap/ieee802_11.c
+@@ -918,6 +918,7 @@ void sae_accept_sta(struct hostapd_data *hapd, struct sta_info *sta)
+ 	crypto_bignum_deinit(sta->sae->peer_commit_scalar_accepted, 0);
+ 	sta->sae->peer_commit_scalar_accepted = sta->sae->peer_commit_scalar;
+ 	sta->sae->peer_commit_scalar = NULL;
++	wpa_auth_set_pmk_life_time(hapd->wpa_auth,hapd->conf->dot11RSNAConfigPMKLifetime);
+ 	wpa_auth_pmksa_add_sae(hapd->wpa_auth, sta->addr,
+ 			       sta->sae->pmk, sta->sae->pmkid);
+ #ifndef CONFIG_WPA3_SAE_AUTH_EARLY_SET
+diff --git a/src/ap/wpa_auth.c b/src/ap/wpa_auth.c
+index aa22750d8..39655e265 100644
+--- a/src/ap/wpa_auth.c
++++ b/src/ap/wpa_auth.c
+@@ -373,6 +373,7 @@ static void wpa_auth_pmksa_free_cb(struct rsn_pmksa_cache_entry *entry,
+ 				   void *ctx)
+ {
+ 	struct wpa_authenticator *wpa_auth = ctx;
++	wpa_sta_disconnect(wpa_auth, entry->spa, WLAN_REASON_PREV_AUTH_NOT_VALID);
+ 	wpa_auth_for_each_sta(wpa_auth, wpa_auth_pmksa_clear_cb, entry);
+ }
+ 
+@@ -4775,6 +4776,12 @@ int wpa_auth_pmksa_add_preauth(struct wpa_authenticator *wpa_auth,
+ }
+ 
+ 
++void wpa_auth_set_pmk_life_time(struct wpa_authenticator *wpa_auth, unsigned int pmk_life_time)
++{
++        wpa_auth->pmk_life_time = pmk_life_time;
++}
++
++
+ int wpa_auth_pmksa_add_sae(struct wpa_authenticator *wpa_auth, const u8 *addr,
+ 			   const u8 *pmk, const u8 *pmkid)
+ {
+@@ -4784,7 +4791,7 @@ int wpa_auth_pmksa_add_sae(struct wpa_authenticator *wpa_auth, const u8 *addr,
+ 	wpa_hexdump_key(MSG_DEBUG, "RSN: Cache PMK from SAE", pmk, PMK_LEN);
+ 	if (pmksa_cache_auth_add(wpa_auth->pmksa, pmk, PMK_LEN, pmkid,
+ 				 NULL, 0,
+-				 wpa_auth->addr, addr, 0, NULL,
++				 wpa_auth->addr, addr, wpa_auth->pmk_life_time, NULL,
+ 				 WPA_KEY_MGMT_SAE))
+ 		return 0;
+ 
+diff --git a/src/ap/wpa_auth.h b/src/ap/wpa_auth.h
+index 4e4c1f63b..23a956f4f 100644
+--- a/src/ap/wpa_auth.h
++++ b/src/ap/wpa_auth.h
+@@ -411,6 +411,7 @@ int wpa_auth_pmksa_add_preauth(struct wpa_authenticator *wpa_auth,
+ 			       struct eapol_state_machine *eapol);
+ int wpa_auth_pmksa_add_sae(struct wpa_authenticator *wpa_auth, const u8 *addr,
+ 			   const u8 *pmk, const u8 *pmkid);
++void wpa_auth_set_pmk_life_time(struct wpa_authenticator *wpa_auth, unsigned int pmk_life_time);
+ void wpa_auth_add_sae_pmkid(struct wpa_state_machine *sm, const u8 *pmkid);
+ int wpa_auth_pmksa_add2(struct wpa_authenticator *wpa_auth, const u8 *addr,
+ 			const u8 *pmk, size_t pmk_len, const u8 *pmkid,
+diff --git a/src/ap/wpa_auth_i.h b/src/ap/wpa_auth_i.h
+index a6dc1a591..f46bdabdd 100644
+--- a/src/ap/wpa_auth_i.h
++++ b/src/ap/wpa_auth_i.h
+@@ -237,6 +237,7 @@ struct wpa_authenticator {
+ #ifdef CONFIG_P2P
+ 	struct bitfield *ip_pool;
+ #endif /* CONFIG_P2P */
++	unsigned int pmk_life_time;
+ };
+ 
+ 
+diff --git a/wpa_supplicant/ap.c b/wpa_supplicant/ap.c
+index ac88a7dc9..83cb4a25f 100644
+--- a/wpa_supplicant/ap.c
++++ b/wpa_supplicant/ap.c
+@@ -501,6 +501,7 @@ static int wpa_supplicant_conf_ap(struct wpa_supplicant *wpa_s,
+ 	}
+ 
+ 	bss->sae_pwe = wpa_s->conf->sae_pwe;
++	bss->dot11RSNAConfigPMKLifetime = wpa_s->conf->dot11RSNAConfigPMKLifetime;
+ #endif /* CONFIG_SAE */
+ 
+ 	if (wpa_s->conf->go_interworking) {
+-- 
+2.17.1
+

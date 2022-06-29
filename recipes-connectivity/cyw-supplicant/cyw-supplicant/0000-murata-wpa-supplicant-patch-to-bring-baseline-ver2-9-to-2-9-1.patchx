@@ -51385,10 +51385,11 @@ index ff8c22a..d4c1da7 100644
  
  	/* keep last */
  	QCA_WLAN_VENDOR_ATTR_GPIO_PARAM_LAST,
-@@ -1947,6 +2516,97 @@ enum qca_wlan_gpio_attr {
+@@ -1946,6 +2515,97 @@ enum qca_wlan_gpio_attr {
+ 	QCA_WLAN_VENDOR_ATTR_GPIO_PARAM_LAST - 1
  };
  
- /**
++/**
 + * enum gpio_cmd_type - GPIO configuration command type
 + * @QCA_WLAN_VENDOR_GPIO_CONFIG: Set GPIO configuration info
 + * @QCA_WLAN_VENDOR_GPIO_OUTPUT: Set GPIO output level
@@ -51479,14 +51480,14 @@ index ff8c22a..d4c1da7 100644
 +	QCA_WLAN_GPIO_DRIVE_MAX,
 +};
 +
-+/**
+ /**
   * qca_wlan_set_qdepth_thresh_attr - Parameters for setting
   * MSDUQ depth threshold per peer per tid in the target
-  *
-@@ -1977,6 +2637,54 @@ enum qca_wlan_set_qdepth_thresh_attr {
+@@ -1976,6 +2636,54 @@ enum qca_wlan_set_qdepth_thresh_attr {
+ 		QCA_WLAN_VENDOR_ATTR_QDEPTH_THRESH_LAST - 1,
  };
  
- /**
++/**
 + * enum qca_acs_dfs_mode - Defines different types of DFS channel
 + * configurations for ACS operation.
 + *
@@ -51534,10 +51535,9 @@ index ff8c22a..d4c1da7 100644
 +		QCA_WLAN_VENDOR_ATTR_ACS_DFS_AFTER_LAST - 1,
 +};
 +
-+/**
+ /**
   * enum qca_wlan_vendor_attr_get_hw_capability - Wi-Fi hardware capability
   */
- enum qca_wlan_vendor_attr_get_hw_capability {
 @@ -2986,7 +3694,7 @@ enum qca_wlan_vendor_attr_ll_stats_results {
  	QCA_WLAN_VENDOR_ATTR_LL_STATS_NUM_RADIOS = 66,
  
@@ -52481,10 +52481,11 @@ index ff8c22a..d4c1da7 100644
  
  	QCA_WLAN_VENDOR_ATTR_RTPLINST_AFTER_LAST,
  	QCA_WLAN_VENDOR_ATTR_RTPLINST_MAX =
-@@ -5505,6 +6967,30 @@ enum qca_wlan_vendor_attr_wake_stats {
+@@ -5504,6 +6966,30 @@ enum qca_wlan_vendor_attr_wake_stats {
+ 		QCA_WLAN_VENDOR_GET_WAKE_STATS_AFTER_LAST - 1,
  };
  
- /**
++/**
 + * enum qca_wlan_vendor_thermal_level - Defines various thermal levels
 + * configured by userspace to the driver/firmware.
 + * The values can be encapsulated in QCA_WLAN_VENDOR_ATTR_THERMAL_LEVEL or
@@ -52508,10 +52509,9 @@ index ff8c22a..d4c1da7 100644
 +	QCA_WLAN_VENDOR_THERMAL_LEVEL_EMERGENCY = 5,
 +};
 +
-+/**
+ /**
   * enum qca_wlan_vendor_attr_thermal_cmd - Vendor subcmd attributes to set
   * cmd value. Used for NL attributes for data used by
-  * QCA_NL80211_VENDOR_SUBCMD_THERMAL_CMD sub command.
 @@ -5517,6 +7003,22 @@ enum qca_wlan_vendor_attr_thermal_cmd {
  	 * u32 attribute.
  	 */
@@ -52640,7 +52640,7 @@ index ff8c22a..d4c1da7 100644
  /* Attributes for data used by
   * QCA_NL80211_VENDOR_SUBCMD_WIFI_TEST_CONFIGURATION
   */
-@@ -6124,6 +7704,76 @@ enum qca_wlan_vendor_attr_wifi_test_config {
+@@ -6124,12 +7704,146 @@ enum qca_wlan_vendor_attr_wifi_test_config {
  	 */
  	QCA_WLAN_VENDOR_ATTR_WIFI_TEST_CONFIG_HE_TWT_REQ_SUPPORT = 37,
  
@@ -52717,10 +52717,10 @@ index ff8c22a..d4c1da7 100644
  	/* keep last */
  	QCA_WLAN_VENDOR_ATTR_WIFI_TEST_CONFIG_AFTER_LAST,
  	QCA_WLAN_VENDOR_ATTR_WIFI_TEST_CONFIG_MAX =
-@@ -6131,6 +7781,70 @@ enum qca_wlan_vendor_attr_wifi_test_config {
+ 	QCA_WLAN_VENDOR_ATTR_WIFI_TEST_CONFIG_AFTER_LAST - 1,
  };
  
- /**
++/**
 + * enum qca_wlan_twt_operation - Operation of the config TWT request
 + * Values for %QCA_WLAN_VENDOR_ATTR_CONFIG_TWT_OPERATION.
 + *
@@ -52784,10 +52784,9 @@ index ff8c22a..d4c1da7 100644
 +	QCA_WLAN_VENDOR_ATTR_CONFIG_TWT_AFTER_LAST - 1,
 +};
 +
-+/**
+ /**
   * enum qca_wlan_vendor_attr_bss_filter - Used by the vendor command
   * QCA_NL80211_VENDOR_SUBCMD_BSS_FILTER.
-  * The user can add/delete the filter by specifying the BSSID/STA MAC address in
 @@ -6281,7 +7995,8 @@ enum qca_wlan_vendor_attr_nan_params {
   * enum qca_wlan_vendor_attr_twt_setup: Represents attributes for
   * TWT (Target Wake Time) setup request. These attributes are sent as part of
@@ -53035,10 +53034,11 @@ index ff8c22a..d4c1da7 100644
  
  	/* keep last */
  	QCA_WLAN_VENDOR_ATTR_TWT_RESUME_AFTER_LAST,
-@@ -6383,6 +8242,66 @@ enum qca_wlan_vendor_attr_twt_resume {
+@@ -6382,6 +8241,66 @@ enum qca_wlan_vendor_attr_twt_resume {
+ 	QCA_WLAN_VENDOR_ATTR_TWT_RESUME_AFTER_LAST - 1,
  };
  
- /**
++/**
 + * enum qca_wlan_vendor_attr_twt_nudge - Represents attributes for
 + * TWT (Target Wake Time) nudge request. TWT nudge is a combination of suspend
 + * and resume in a single request. These attributes are sent as part of
@@ -53098,10 +53098,9 @@ index ff8c22a..d4c1da7 100644
 +	QCA_WLAN_VENDOR_TWT_RESP_ACCEPT = 4,
 +};
 +
-+/**
+ /**
   * enum qca_wlan_vendor_twt_setup_req_type - Required (u8)
   * Represents the setup type being requested for TWT.
-  * @QCA_WLAN_VENDOR_TWT_SETUP_REQUEST: STA is not specifying all the TWT
 @@ -6454,10 +8373,42 @@ enum qca_wlan_vendor_attr_roam_scan {
   * enum qca_wlan_vendor_cfr_method - QCA vendor CFR methods used by
   * attribute QCA_WLAN_VENDOR_ATTR_PEER_CFR_METHOD as part of vendor
@@ -58098,24 +58097,25 @@ index 15f8ad0..7d2ebd6 100644
   * @buf: Buffer for data
   * @len: Number of bytes to generate
   * Returns: 0 on success, -1 on failure
-@@ -519,6 +519,13 @@ struct crypto_bignum * crypto_bignum_init(void);
+@@ -518,6 +518,13 @@ struct crypto_bignum * crypto_bignum_init(void);
+  */
  struct crypto_bignum * crypto_bignum_init_set(const u8 *buf, size_t len);
  
- /**
++/**
 + * crypto_bignum_init_set - Allocate memory for bignum and set the value (uint)
 + * @val: Value to set
 + * Returns: Pointer to allocated bignum or %NULL on failure
 + */
 +struct crypto_bignum * crypto_bignum_init_uint(unsigned int val);
 +
-+/**
+ /**
   * crypto_bignum_deinit - Free bignum
   * @n: Bignum from crypto_bignum_init() or crypto_bignum_init_set()
-  * @clear: Whether to clear the value from memory
-@@ -613,6 +620,19 @@ int crypto_bignum_div(const struct crypto_bignum *a,
+@@ -612,6 +619,19 @@ int crypto_bignum_div(const struct crypto_bignum *a,
+ 		      const struct crypto_bignum *b,
  		      struct crypto_bignum *c);
  
- /**
++/**
 + * crypto_bignum_addmod - d = a + b (mod c)
 + * @a: Bignum
 + * @b: Bignum
@@ -58128,14 +58128,14 @@ index 15f8ad0..7d2ebd6 100644
 +			 const struct crypto_bignum *c,
 +			 struct crypto_bignum *d);
 +
-+/**
+ /**
   * crypto_bignum_mulmod - d = a * b (mod c)
   * @a: Bignum
-  * @b: Bignum
-@@ -626,6 +646,17 @@ int crypto_bignum_mulmod(const struct crypto_bignum *a,
+@@ -625,6 +645,17 @@ int crypto_bignum_mulmod(const struct crypto_bignum *a,
+ 			 const struct crypto_bignum *c,
  			 struct crypto_bignum *d);
  
- /**
++/**
 + * crypto_bignum_sqrmod - c = a^2 (mod b)
 + * @a: Bignum
 + * @b: Bignum
@@ -58146,10 +58146,9 @@ index 15f8ad0..7d2ebd6 100644
 +			 const struct crypto_bignum *b,
 +			 struct crypto_bignum *c);
 +
-+/**
+ /**
   * crypto_bignum_rshift - r = a >> n
   * @a: Bignum
-  * @n: Number of bits
 @@ -731,6 +762,9 @@ const struct crypto_bignum * crypto_ec_get_prime(struct crypto_ec *e);
   */
  const struct crypto_bignum * crypto_ec_get_order(struct crypto_ec *e);
@@ -59548,10 +59547,11 @@ index 2a8459a..722e428 100644
  };
  
  #define HOSTAPD_MODE_FLAG_HT_INFO_KNOWN BIT(0)
-@@ -213,6 +215,24 @@ enum ieee80211_op_mode {
+@@ -212,6 +214,24 @@ enum ieee80211_op_mode {
+ 	IEEE80211_MODE_NUM
  };
  
- /**
++/**
 + * struct ieee80211_edmg_config - EDMG configuration
 + *
 + * This structure describes most essential parameters needed
@@ -59569,10 +59569,9 @@ index 2a8459a..722e428 100644
 +	enum edmg_bw_config bw_config;
 +};
 +
-+/**
+ /**
   * struct hostapd_hw_modes - Supported hardware mode information
   */
- struct hostapd_hw_modes {
 @@ -272,6 +292,12 @@ struct hostapd_hw_modes {
  	 * he_capab - HE (IEEE 802.11ax) capabilities
  	 */
@@ -59637,10 +59636,11 @@ index 2a8459a..722e428 100644
  };
  
  enum hide_ssid {
-@@ -1372,14 +1419,6 @@ struct wpa_driver_ap_params {
+@@ -1371,14 +1418,6 @@ struct wpa_driver_ap_params {
+ 	 */
  	u8 p2p_go_ctwindow;
  
- 	/**
+-	/**
 -	 * smps_mode - SMPS mode
 -	 *
 -	 * SMPS mode to be used by the AP, specified as the relevant bits of
@@ -59648,10 +59648,9 @@ index 2a8459a..722e428 100644
 -	 */
 -	unsigned int smps_mode;
 -
--	/**
+ 	/**
  	 * disable_dgaf - Whether group-addressed frames are disabled
  	 */
- 	int disable_dgaf;
 @@ -1442,6 +1481,49 @@ struct wpa_driver_ap_params {
  	 * type 11 as defined in IEEE Std 802.11-2016, 9.4.2.22.13
  	 */
@@ -60142,10 +60141,11 @@ index 2a8459a..722e428 100644
  
  	/**
  	 * update_ft_ies - Update FT (IEEE 802.11r) IEs
-@@ -2825,6 +3037,33 @@ struct wpa_driver_ops {
+@@ -2824,6 +3036,33 @@ struct wpa_driver_ops {
+ 	int (*read_sta_data)(void *priv, struct hostap_sta_driver_data *data,
  			     const u8 *addr);
  
- 	/**
++	/**
 +	 * tx_control_port - Send a frame over the 802.1X controlled port
 +	 * @priv: Private driver interface data
 +	 * @dest: Destination MAC address
@@ -60172,14 +60172,14 @@ index 2a8459a..722e428 100644
 +			       u16 proto, const u8 *buf, size_t len,
 +			       int no_encrypt);
 +
-+	/**
+ 	/**
  	 * hapd_send_eapol - Send an EAPOL packet (AP only)
  	 * @priv: private driver interface data
- 	 * @addr: Destination MAC address
-@@ -3070,19 +3309,6 @@ struct wpa_driver_ops {
+@@ -3069,19 +3308,6 @@ struct wpa_driver_ops {
+ 	 */
  	int (*commit)(void *priv);
  
- 	/**
+-	/**
 -	 * send_ether - Send an ethernet packet (AP only)
 -	 * @priv: private driver interface data
 -	 * @dst: Destination MAC address
@@ -60192,14 +60192,14 @@ index 2a8459a..722e428 100644
 -	int (*send_ether)(void *priv, const u8 *dst, const u8 *src, u16 proto,
 -			  const u8 *data, size_t data_len);
 -
--	/**
+ 	/**
  	 * set_radius_acl_auth - Notification of RADIUS ACL change
  	 * @priv: Private driver interface data
- 	 * @mac: MAC address of the station
-@@ -3305,20 +3531,6 @@ struct wpa_driver_ops {
+@@ -3304,20 +3530,6 @@ struct wpa_driver_ops {
+ 	 */
  	int (*signal_monitor)(void *priv, int threshold, int hysteresis);
  
- 	/**
+-	/**
 -	 * send_frame - Send IEEE 802.11 frame (testing use only)
 -	 * @priv: Private driver interface data
 -	 * @data: IEEE 802.11 frame with IEEE 802.11 header
@@ -60213,23 +60213,22 @@ index 2a8459a..722e428 100644
 -	int (*send_frame)(void *priv, const u8 *data, size_t data_len,
 -			  int encrypt);
 -
--	/**
+ 	/**
  	 * get_noa - Get current Notice of Absence attribute payload
  	 * @priv: Private driver interface data
- 	 * @buf: Buffer for returning NoA
-@@ -3470,6 +3682,12 @@ struct wpa_driver_ops {
+@@ -3469,6 +3681,12 @@ struct wpa_driver_ops {
+ 	int (*br_set_net_param)(void *priv, enum drv_br_net_param param,
  				unsigned int val);
  
- 	/**
++	/**
 +	 * get_wowlan - Get wake-on-wireless status
 +	 * @priv: Private driver interface data
 +	 */
 +	int (*get_wowlan)(void *priv);
 +
-+	/**
+ 	/**
  	 * set_wowlan - Set wake-on-wireless triggers
  	 * @priv: Private driver interface data
- 	 * @triggers: wowlan triggers
 @@ -3522,6 +3740,8 @@ struct wpa_driver_ops {
  	 * @priv: Private driver interface data
  	 * @vendor_id: Vendor id
@@ -60720,10 +60719,11 @@ index 82ca061..a29d2c8 100644
  	struct ifreq ifr;
  
  	os_memset(&ifr, 0, sizeof(ifr));
-@@ -309,36 +304,24 @@ bsd_ctrl_iface(void *priv, int enable)
+@@ -308,37 +303,25 @@ bsd_ctrl_iface(void *priv, int enable)
+ 			   strerror(errno));
  		return -1;
  	}
- 	drv->flags = ifr.ifr_flags;
+-	drv->flags = ifr.ifr_flags;
 -
 -	if (enable) {
 -		if (ifr.ifr_flags & IFF_UP)
@@ -60741,7 +60741,7 @@ index 82ca061..a29d2c8 100644
 -		return -1;
 -	}
 -
--	drv->flags = ifr.ifr_flags;
+ 	drv->flags = ifr.ifr_flags;
  	return 0;
  }
  
@@ -60957,10 +60957,11 @@ index 82ca061..a29d2c8 100644
  }
  
  #ifdef HOSTAPD
-@@ -770,80 +881,10 @@ bsd_sta_disassoc(void *priv, const u8 *own_addr, const u8 *addr,
+@@ -769,81 +880,11 @@ bsd_sta_disassoc(void *priv, const u8 *own_addr, const u8 *addr,
+ 				   addr);
  }
  
- static void
+-static void
 -bsd_wireless_event_receive(int sock, void *ctx, void *sock_ctx)
 -{
 -	struct bsd_driver_global *global = sock_ctx;
@@ -61030,7 +61031,7 @@ index 82ca061..a29d2c8 100644
 -	}
 -}
 -
--static void
+ static void
  handle_read(void *ctx, const u8 *src_addr, const u8 *buf, size_t len)
  {
  	struct bsd_driver_data *drv = ctx;
@@ -61059,7 +61060,7 @@ index 82ca061..a29d2c8 100644
  		goto bad;
  
  	if (bsd_set_mediaopt(drv, IFM_OMASK, IFM_IEEE80211_HOSTAP) < 0) {
-@@ -901,8 +942,6 @@ bsd_deinit(void *priv)
+@@ -901,21 +942,12 @@ bsd_deinit(void *priv)
  {
  	struct bsd_driver_data *drv = priv;
  
@@ -61068,20 +61069,19 @@ index 82ca061..a29d2c8 100644
  	if (drv->sock_xmit != NULL)
  		l2_packet_deinit(drv->sock_xmit);
  	os_free(drv);
-@@ -910,13 +949,6 @@ bsd_deinit(void *priv)
+ }
  
  
- static int
+-static int
 -bsd_commit(void *priv)
 -{
 -	return bsd_ctrl_iface(priv, 1);
 -}
 -
 -
--static int
+ static int
  bsd_set_sta_authorized(void *priv, const u8 *addr,
  		       unsigned int total_flags, unsigned int flags_or,
- 		       unsigned int flags_and)
 @@ -1169,8 +1201,11 @@ wpa_driver_bsd_scan(void *priv, struct wpa_driver_scan_params *params)
  	}
  
@@ -61095,10 +61095,11 @@ index 82ca061..a29d2c8 100644
  
  #ifdef IEEE80211_IOC_SCAN_MAX_SSID
  	os_memset(&sr, 0, sizeof(sr));
-@@ -1208,153 +1243,6 @@ wpa_driver_bsd_scan(void *priv, struct wpa_driver_scan_params *params)
+@@ -1207,153 +1242,6 @@ wpa_driver_bsd_scan(void *priv, struct wpa_driver_scan_params *params)
+ #endif /* IEEE80211_IOC_SCAN_MAX_SSID */
  }
  
- static void
+-static void
 -wpa_driver_bsd_event_receive(int sock, void *ctx, void *sock_ctx)
 -{
 -	struct bsd_driver_global *global = sock_ctx;
@@ -61245,10 +61246,9 @@ index 82ca061..a29d2c8 100644
 -	}
 -}
 -
--static void
+ static void
  wpa_driver_bsd_add_scan_entry(struct wpa_scan_results *res,
  			      struct ieee80211req_scan_result *sr)
- {
 @@ -1565,17 +1453,12 @@ wpa_driver_bsd_init(void *ctx, const char *ifname, void *priv)
  #define	GETPARAM(drv, param, v) \
  	(((v) = get80211param(drv, param)) != -1)
@@ -61880,10 +61880,11 @@ diff --git a/src/drivers/driver_ndis.c b/src/drivers/driver_ndis.c
 index 5b4b924..b5fff48 100644
 --- a/src/drivers/driver_ndis.c
 +++ b/src/drivers/driver_ndis.c
-@@ -1034,6 +1034,18 @@ static int wpa_driver_ndis_set_key(const char *ifname, void *priv,
+@@ -1033,6 +1033,18 @@ static int wpa_driver_ndis_set_key(const char *ifname, void *priv,
+ }
  
  
- static int
++static int
 +wpa_driver_ndis_set_key_wrapper(void *priv,
 +				struct wpa_driver_set_key_params *params)
 +{
@@ -61895,10 +61896,9 @@ index 5b4b924..b5fff48 100644
 +}
 +
 +
-+static int
+ static int
  wpa_driver_ndis_associate(void *priv,
  			  struct wpa_driver_associate_params *params)
- {
 @@ -2797,6 +2809,7 @@ static void * wpa_driver_ndis_init(void *ctx, const char *ifname)
  {
  	struct wpa_driver_ndis_data *drv;
@@ -67280,10 +67280,11 @@ index 6f09d15..3e0d4a0 100644
   *
   * For 802.1X the PMK or PMK-R0 are set by providing %NL80211_ATTR_PMK
   * using %NL80211_CMD_SET_PMK. For offloaded FT support also
-@@ -235,6 +249,58 @@
+@@ -234,6 +248,58 @@
+  * use in a FILS shared key connection with PMKSA caching.
   */
  
- /**
++/**
 + * DOC: SAE authentication offload
 + *
 + * By setting @NL80211_EXT_FEATURE_SAE_OFFLOAD flag drivers can indicate they
@@ -67335,10 +67336,9 @@ index 6f09d15..3e0d4a0 100644
 + * the interface goes down.
 + */
 +
-+/**
+ /**
   * enum nl80211_commands - supported nl80211 commands
   *
-  * @NL80211_CMD_UNSPEC: unspecified command to catch errors
 @@ -243,13 +309,14 @@
   *	to get a list of all present wiphys.
   * @NL80211_CMD_SET_WIPHY: set wiphy parameters, needs %NL80211_ATTR_WIPHY or
@@ -67823,10 +67823,11 @@ index 6f09d15..3e0d4a0 100644
  #define NL80211_MAX_NR_CIPHER_SUITES		5
  #define NL80211_MAX_NR_AKM_SUITES		2
  
-@@ -2984,6 +3217,18 @@ enum nl80211_he_gi {
+@@ -2983,6 +3216,18 @@ enum nl80211_he_gi {
+ 	NL80211_RATE_INFO_HE_GI_3_2,
  };
  
- /**
++/**
 + * enum nl80211_he_ltf - HE long training field
 + * @NL80211_RATE_INFO_HE_1xLTF: 3.2 usec
 + * @NL80211_RATE_INFO_HE_2xLTF: 6.4 usec
@@ -67838,10 +67839,9 @@ index 6f09d15..3e0d4a0 100644
 +	NL80211_RATE_INFO_HE_4XLTF,
 +};
 +
-+/**
+ /**
   * enum nl80211_he_ru_alloc - HE RU allocation values
   * @NL80211_RATE_INFO_HE_RU_ALLOC_26: 26-tone RU allocation
-  * @NL80211_RATE_INFO_HE_RU_ALLOC_52: 52-tone RU allocation
 @@ -3175,6 +3420,10 @@ enum nl80211_sta_bss_param {
   *	sent to the station (u64, usec)
   * @NL80211_STA_INFO_AIRTIME_WEIGHT: current airtime weight for station (u16)
@@ -68134,10 +68134,11 @@ index 6f09d15..3e0d4a0 100644
  
  	NUM_NL80211_BANDS,
  };
-@@ -4615,6 +4956,92 @@ enum nl80211_tx_power_setting {
+@@ -4614,6 +4955,92 @@ enum nl80211_tx_power_setting {
+ 	NL80211_TX_POWER_FIXED,
  };
  
- /**
++/**
 + * enum nl80211_tid_config - TID config state
 + * @NL80211_TID_CONFIG_ENABLE: Enable config for the TID
 + * @NL80211_TID_CONFIG_DISABLE: Disable config for the TID
@@ -68223,10 +68224,9 @@ index 6f09d15..3e0d4a0 100644
 +	NL80211_TID_CONFIG_ATTR_MAX = __NL80211_TID_CONFIG_ATTR_AFTER_LAST - 1
 +};
 +
-+/**
+ /**
   * enum nl80211_packet_pattern_attr - packet pattern attribute
   * @__NL80211_PKTPAT_INVALID: invalid number for nested attribute
-  * @NL80211_PKTPAT_PATTERN: the pattern, values where the mask has
 @@ -5085,6 +5512,8 @@ enum plink_actions {
  
  #define NL80211_KCK_LEN			16
@@ -69778,10 +69778,11 @@ index 148c906..3238f74 100644
  	/**
  	 * ca_cert - File path to CA certificate file (PEM/DER)
  	 *
-@@ -231,14 +172,6 @@ struct eap_peer_config {
+@@ -230,14 +171,6 @@ struct eap_peer_config {
+ 	 */
  	char *check_cert_subject;
  
- 	/**
+-	/**
 -	 * check_cert_subject2 - Constraint for server certificate subject fields
 -	 *
 -	 * This field is like check_cert_subject, but used for phase 2 (inside
@@ -69789,10 +69790,9 @@ index 148c906..3238f74 100644
 -	 */
 -	char *check_cert_subject2;
 -
--	/**
+ 	/**
  	 * altsubject_match - Constraint for server certificate alt. subject
  	 *
- 	 * Semicolon separated string of entries to be matched against the
 @@ -299,115 +232,181 @@ struct eap_peer_config {
  	char *domain_match;
  
@@ -70040,24 +70040,25 @@ index 148c906..3238f74 100644
  
  	/**
  	 * eap_methods - Allowed EAP methods
-@@ -496,6 +495,13 @@ struct eap_peer_config {
+@@ -495,6 +494,13 @@ struct eap_peer_config {
+ 	 */
  	char *phase2;
  
- 	/**
++	/**
 +	 * machine_phase2 - Phase2 parameters for machine credentials
 +	 *
 +	 * See phase2 for more details.
 +	 */
 +	char *machine_phase2;
 +
-+	/**
+ 	/**
  	 * pcsc - Parameters for PC/SC smartcard interface for USIM and GSM SIM
  	 *
- 	 * This field is used to configure PC/SC smartcard interface.
-@@ -507,123 +513,6 @@ struct eap_peer_config {
+@@ -506,123 +512,6 @@ struct eap_peer_config {
+ 	 */
  	char *pcsc;
  
- 	/**
+-	/**
 -	 * pin - PIN for USIM, GSM SIM, and smartcards
 -	 *
 -	 * This field is used to configure PIN for SIM and smartcards for
@@ -70174,10 +70175,9 @@ index 148c906..3238f74 100644
 -	 */
 -	char *ca_cert2_id;
 -
--	/**
+ 	/**
  	 * otp - One-time-password
  	 *
- 	 * This field should not be set in configuration step. It is only used
 @@ -751,6 +640,8 @@ struct eap_peer_config {
  
  #define EAP_CONFIG_FLAGS_PASSWORD_NTHASH BIT(0)
@@ -70187,7 +70187,7 @@ index 148c906..3238f74 100644
  	/**
  	 * flags - Network configuration flags (bitfield)
  	 *
-@@ -760,19 +651,14 @@ struct eap_peer_config {
+@@ -760,18 +651,13 @@ struct eap_peer_config {
  	 *         instead of plaintext password
  	 * bit 1 = password is stored in external storage; the value in the
  	 *         password field is the name of that external entry
@@ -70198,7 +70198,7 @@ index 148c906..3238f74 100644
  	 */
  	u32 flags;
  
- 	/**
+-	/**
 -	 * ocsp - Whether to use/require OCSP to check server certificate
 -	 *
 -	 * 0 = do not use OCSP stapling (TLS certificate status extension)
@@ -70207,10 +70207,9 @@ index 148c906..3238f74 100644
 -	 */
 -	int ocsp;
 -
--	/**
+ 	/**
  	 * external_sim_resp - Response from external SIM processing
  	 *
- 	 * This field should not be set in configuration step. It is only used
 diff --git a/src/eap_peer/eap_eke.c b/src/eap_peer/eap_eke.c
 index 534af26..9029442 100644
 --- a/src/eap_peer/eap_eke.c
@@ -80626,18 +80625,18 @@ index 425b037..ed8beab 100644
  	u8 max_oper_chwidth;
  
  	unsigned int vht_center_freq2;
-@@ -499,6 +501,11 @@ struct p2p_config {
+@@ -498,6 +500,11 @@ struct p2p_config {
+ 	 */
  	struct p2p_channel *pref_chan;
  
- 	/**
++	/**
 +	 * p2p_6ghz_disable - Disable 6GHz for P2P operations
 +	 */
 +	bool p2p_6ghz_disable;
 +
-+	/**
+ 	/**
  	 * pri_dev_type - Primary Device Type (see WPS)
  	 */
- 	u8 pri_dev_type[8];
 @@ -2098,6 +2105,8 @@ void p2p_update_channel_list(struct p2p_data *p2p,
  			     const struct p2p_channels *chan,
  			     const struct p2p_channels *cli_chan);
@@ -84652,10 +84651,11 @@ index c929e81..e07527b 100644
  int wpa_sm_ocv_enabled(struct wpa_sm *sm)
  {
  	struct wpa_ie_data rsn;
-@@ -3235,6 +3542,83 @@ int wpa_sm_set_assoc_wpa_ie(struct wpa_sm *sm, const u8 *ie, size_t len)
+@@ -3234,6 +3541,83 @@ int wpa_sm_set_assoc_wpa_ie(struct wpa_sm *sm, const u8 *ie, size_t len)
+ }
  
  
- /**
++/**
 + * wpa_sm_set_assoc_rsnxe_default - Generate own RSNXE from configuration
 + * @sm: Pointer to WPA state machine data from wpa_sm_init()
 + * @rsnxe: Pointer to buffer for RSNXE
@@ -84732,14 +84732,14 @@ index c929e81..e07527b 100644
 +}
 +
 +
-+/**
+ /**
   * wpa_sm_set_ap_wpa_ie - Set AP WPA IE from Beacon/ProbeResp
   * @sm: Pointer to WPA state machine data from wpa_sm_init()
-  * @ie: Pointer to IE data (starting from id)
-@@ -3303,6 +3687,39 @@ int wpa_sm_set_ap_rsn_ie(struct wpa_sm *sm, const u8 *ie, size_t len)
+@@ -3302,6 +3686,39 @@ int wpa_sm_set_ap_rsn_ie(struct wpa_sm *sm, const u8 *ie, size_t len)
+ }
  
  
- /**
++/**
 + * wpa_sm_set_ap_rsnxe - Set AP RSNXE from Beacon/ProbeResp
 + * @sm: Pointer to WPA state machine data from wpa_sm_init()
 + * @ie: Pointer to IE data (starting from id)
@@ -84772,10 +84772,9 @@ index c929e81..e07527b 100644
 +}
 +
 +
-+/**
+ /**
   * wpa_sm_parse_own_wpa_ie - Parse own WPA/RSN IE
   * @sm: Pointer to WPA state machine data from wpa_sm_init()
-  * @data: Pointer to data area for parsing results
 @@ -3375,10 +3792,8 @@ void wpa_sm_drop_sa(struct wpa_sm *sm)
  	os_memset(&sm->tptk, 0, sizeof(sm->tptk));
  	os_memset(&sm->gtk, 0, sizeof(sm->gtk));
@@ -88591,10 +88590,11 @@ diff --git a/src/utils/wpabuf.h b/src/utils/wpabuf.h
 index 01da41b..b2a54b2 100644
 --- a/src/utils/wpabuf.h
 +++ b/src/utils/wpabuf.h
-@@ -71,6 +71,21 @@ static inline size_t wpabuf_tailroom(const struct wpabuf *buf)
+@@ -70,6 +70,21 @@ static inline size_t wpabuf_tailroom(const struct wpabuf *buf)
+ 	return buf->size - buf->used;
  }
  
- /**
++/**
 + * wpabuf_cmp - Check if two buffers contain the same data
 + * @a: wpabuf buffer
 + * @b: wpabuf buffer
@@ -88609,10 +88609,9 @@ index 01da41b..b2a54b2 100644
 +	return -1;
 +}
 +
-+/**
+ /**
   * wpabuf_head - Get pointer to the head of the buffer data
   * @buf: wpabuf buffer
-  * Returns: Pointer to the head of the buffer data
 diff --git a/src/utils/xml_libxml2.c b/src/utils/xml_libxml2.c
 index 7b6d276..d73654e 100644
 --- a/src/utils/xml_libxml2.c
@@ -88678,10 +88677,11 @@ index 9963c46..93888b0 100644
  
  	int p2p;
  	u8 multi_ap_ext;
-@@ -344,6 +345,14 @@ struct wps_registrar_config {
+@@ -343,6 +344,14 @@ struct wps_registrar_config {
+ 				 u16 dev_password_id, u8 request_type,
  				 const char *dev_name);
  
- 	/**
++	/**
 +	 * lookup_pskfile_cb - Callback for searching for PSK in wpa_psk_file
 +	 * @ctx: Higher layer context data (cb_ctx)
 +	 * @addr: Enrollee's MAC address
@@ -88689,22 +88689,21 @@ index 9963c46..93888b0 100644
 +	 */
 +	int (*lookup_pskfile_cb)(void *ctx, const u8 *mac_addr, const u8 **psk);
 +
-+	/**
+ 	/**
  	 * cb_ctx: Higher layer context data for Registrar callbacks
  	 */
- 	void *cb_ctx;
-@@ -386,11 +395,6 @@ struct wps_registrar_config {
+@@ -385,11 +394,6 @@ struct wps_registrar_config {
+ 	 */
  	int disable_auto_conf;
  
- 	/**
+-	/**
 -	 * static_wep_only - Whether the BSS supports only static WEP
 -	 */
 -	int static_wep_only;
 -
--	/**
+ 	/**
  	 * dualband - Whether this is a concurrent dualband AP
  	 */
- 	int dualband;
 diff --git a/src/wps/wps_attr_build.c b/src/wps/wps_attr_build.c
 index 4e872f3..f372256 100644
 --- a/src/wps/wps_attr_build.c
@@ -91216,10 +91215,11 @@ index e53dc38..2f32644 100644
  
  	return e->count;
  }
-@@ -117,25 +142,80 @@ int wpa_blacklist_del(struct wpa_supplicant *wpa_s, const u8 *bssid)
+@@ -116,6 +141,27 @@ int wpa_blacklist_del(struct wpa_supplicant *wpa_s, const u8 *bssid)
+ }
  
  
- /**
++/**
 + * wpa_blacklist_is_blacklisted - Check the blacklist status of a BSS
 + * @wpa_s: Pointer to wpa_supplicant data
 + * @bssid: BSSID to be checked
@@ -91240,10 +91240,10 @@ index e53dc38..2f32644 100644
 +}
 +
 +
-+/**
+ /**
   * wpa_blacklist_clear - Clear the blacklist of all entries
   * @wpa_s: Pointer to wpa_supplicant data
-  */
+@@ -123,19 +169,53 @@ int wpa_blacklist_del(struct wpa_supplicant *wpa_s, const u8 *bssid)
  void wpa_blacklist_clear(struct wpa_supplicant *wpa_s)
  {
  	struct wpa_blacklist *e, *prev;
@@ -92690,10 +92690,11 @@ index 6a297ec..648573d 100644
  
  	/**
  	 * auto_interworking - Whether to use network selection automatically
-@@ -1090,6 +1095,16 @@ struct wpa_config {
+@@ -1089,6 +1094,16 @@ struct wpa_config {
+ 	 */
  	int p2p_go_vht;
  
- 	/**
++	/**
 +	 * p2p_go_edmg - Default mode for EDMG enable when operating as GO
 +	 *
 +	 * This will take effect for p2p_group_add, p2p_connect, and p2p_invite.
@@ -92703,14 +92704,14 @@ index 6a297ec..648573d 100644
 +	 */
 +	int p2p_go_edmg;
 +
-+	/**
+ 	/**
  	 * p2p_go_he - Default mode for 11ax HE enable when operating as GO
  	 *
- 	 * This will take effect for p2p_group_add, p2p_connect, and p2p_invite.
-@@ -1165,6 +1180,19 @@ struct wpa_config {
+@@ -1164,6 +1179,19 @@ struct wpa_config {
+ 	 */
  	int *sae_groups;
  
- 	/**
++	/**
 +	 * sae_pwe - SAE mechanism for PWE derivation
 +	 * 0 = hunting-and-pecking loop only
 +	 * 1 = hash-to-element only
@@ -92723,14 +92724,14 @@ index 6a297ec..648573d 100644
 +	 */
 +	int sae_pmkid_in_assoc;
 +
-+	/**
+ 	/**
  	 * dtim_period - Default DTIM period in Beacon intervals
  	 *
- 	 * This parameter can be used to set the default value for network
-@@ -1492,6 +1520,16 @@ struct wpa_config {
+@@ -1491,6 +1519,16 @@ struct wpa_config {
+ 	 */
  	int dpp_config_processing;
  
- 	/**
++	/**
 +	 * dpp_name - Name for Enrollee's DPP Configuration Request
 +	 */
 +	char *dpp_name;
@@ -92740,10 +92741,9 @@ index 6a297ec..648573d 100644
 +	 */
 +	char *dpp_mud_url;
 +
-+	/**
+ 	/**
  	 * coloc_intf_reporting - Colocated interference reporting
  	 *
- 	 * dot11CoLocIntfReportingActivated
 @@ -1537,6 +1575,17 @@ struct wpa_config {
  	 * By default BSS transition management is enabled
  	 */
@@ -93133,10 +93133,11 @@ index d5c5c00..b4fdc8a 100644
  
  #ifdef CONFIG_OCV
  	/**
-@@ -486,6 +499,23 @@ struct wpa_ssid {
+@@ -485,6 +498,23 @@ struct wpa_ssid {
+ 	 */
  	int frequency;
  
- 	/**
++	/**
 +	 * enable_edmg - Enable EDMG feature in STA/AP mode
 +	 *
 +	 * This flag is used for enabling the EDMG capability in STA/AP mode.
@@ -93153,10 +93154,9 @@ index d5c5c00..b4fdc8a 100644
 +	 */
 +	u8 edmg_channel;
 +
-+	/**
+ 	/**
  	 * fixed_freq - Use fixed frequency for IBSS
  	 */
- 	int fixed_freq;
 @@ -536,6 +566,19 @@ struct wpa_ssid {
  	 */
  	int wpa_ptk_rekey;
@@ -93194,10 +93194,11 @@ index d5c5c00..b4fdc8a 100644
  	/**
  	 * ap_max_inactivity - Timeout in seconds to detect STA's inactivity
  	 *
-@@ -971,6 +1024,32 @@ struct wpa_ssid {
+@@ -970,6 +1023,32 @@ struct wpa_ssid {
+ 	 */
  	size_t dpp_csign_len;
  
- 	/**
++	/**
 +	 * dpp_pp_key - ppKey (Configurator privacy protection public key)
 +	 */
 +	u8 *dpp_pp_key;
@@ -93223,14 +93224,14 @@ index d5c5c00..b4fdc8a 100644
 +	 */
 +	int dpp_pfs_fallback;
 +
-+	/**
+ 	/**
  	 * owe_group - OWE DH Group
  	 *
- 	 * 0 = use default (19) first and then try all supported groups one by
-@@ -992,6 +1071,19 @@ struct wpa_ssid {
+@@ -991,6 +1070,19 @@ struct wpa_ssid {
+ 	 */
  	int owe_only;
  
- 	/**
++	/**
 +	 * owe_ptk_workaround - OWE PTK derivation workaround
 +	 *
 +	 * Initial OWE implementation used SHA256 when deriving the PTK for all
@@ -93243,10 +93244,9 @@ index d5c5c00..b4fdc8a 100644
 +	 */
 +	int owe_ptk_workaround;
 +
-+	/**
+ 	/**
  	 * owe_transition_bss_select_count - OWE transition BSS select count
  	 *
- 	 * This is an internally used variable (i.e., not used in external
 @@ -1017,6 +1109,53 @@ struct wpa_ssid {
  	 * FT initial mobility domain association.
  	 */
@@ -95934,10 +95934,11 @@ index 6c36d91..fa9a1a3 100644
  	return TRUE;
  }
  
-@@ -3990,6 +4107,173 @@ out:
+@@ -3989,6 +4106,173 @@ out:
+ }
  
  
- /**
++/**
 + * wpas_dbus_setter_mac_address_randomization_mask - Set masks used for
 + * MAC address randomization
 + * @iter: Pointer to incoming dbus message iter
@@ -96104,10 +96105,9 @@ index 6c36d91..fa9a1a3 100644
 +}
 +
 +
-+/**
+ /**
   * wpas_dbus_getter_sta_address - Return the address of a connected station
   * @iter: Pointer to incoming dbus message iter
-  * @error: Location to store error on failure
 @@ -4497,7 +4781,7 @@ static dbus_bool_t wpas_dbus_get_bss_security_prop(
  	DBusMessageIter iter_dict, variant_iter;
  	const char *group;
@@ -109342,10 +109342,11 @@ index 911d79d..5cf45b4 100644
  static void wpa_supplicant_enable_one_network(struct wpa_supplicant *wpa_s,
  					      struct wpa_ssid *ssid)
  {
-@@ -3602,6 +4126,52 @@ int wpa_supplicant_remove_network(struct wpa_supplicant *wpa_s, int id)
+@@ -3601,6 +4125,52 @@ int wpa_supplicant_remove_network(struct wpa_supplicant *wpa_s, int id)
+ }
  
  
- /**
++/**
 + * wpa_supplicant_remove_all_networks - Remove all configured networks
 + * @wpa_s: wpa_supplicant structure for a network interface
 + * Returns: 0 on success (errors are currently ignored)
@@ -109391,10 +109392,9 @@ index 911d79d..5cf45b4 100644
 +}
 +
 +
-+/**
+ /**
   * wpa_supplicant_enable_network - Mark a configured network as enabled
   * @wpa_s: wpa_supplicant structure for a network interface
-  * @ssid: wpa_ssid structure for a configured network or %NULL
 @@ -3763,9 +4333,12 @@ void wpa_supplicant_select_network(struct wpa_supplicant *wpa_s,
  
  	wpa_s->disconnected = 0;
