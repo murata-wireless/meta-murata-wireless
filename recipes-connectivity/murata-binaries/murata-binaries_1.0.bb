@@ -11,6 +11,10 @@ SRC_URI = " \
         git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=drogon;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
 	file://switch_module.sh \
 "
+SRC_URI += " \
+           ${IMX_FIRMWARE_SRC};branch=master;destsuffix=imx-firmware;name=imx-firmware \
+"
+SRCREV_imx-firmware = "685ace656284167376241c804827f046b984ce25"
 
 SRCREV_cyw-fmac-fw="fd4ce1d37b46fbfd99158b49f7e12ac4e26c9082"
 SRCREV_cyw-fmac-nvram="d0ddc35f8ade6ba5629c3a6d0a9c810078a9ebbc"
@@ -22,7 +26,7 @@ SRCREV_default = "${AUTOREV}"
 
 S = "${WORKDIR}"
 B = "${WORKDIR}"
-DEPENDS = " libnl wpa-supplicant cyw-supplicant"
+DEPENDS = " libnl wpa-supplicant cyw-supplicant linux-firmware"
 
 do_compile () {
 	echo "Compiling: "
@@ -123,11 +127,13 @@ do_install () {
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac43439-sdio.1YN.txt ${D}/lib/firmware/cypress/cyfmac43439-sdio.txt
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
 
+	install -m 444 ${S}/cyw-fmac-nvram/README_NVRAM.txt ${D}/lib/firmware/cypress
+
 	# Added Calibration configuration file for 1YM(NXP)
 #	install -m 444 ${S}/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
 
-#       Copying wl tool binary to /usr/sbin
-	if [ ${DO_INSTALL_64BIT_BINARIES} = "yes" ]; then
+#       Copying wl tool binary based on 32-bit/64-bit arch to /usr/sbin
+	if [ ${TARGET_ARCH} = "aarch64" ]; then
 		install -m 755 ${S}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl
 	else
 		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
