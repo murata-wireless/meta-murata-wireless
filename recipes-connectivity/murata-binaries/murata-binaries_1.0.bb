@@ -4,29 +4,14 @@ LICENSE = "BSD"
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
 SRC_URI = " \
-	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-5-10-72;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=drogon;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=drogon;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=hardknott-drogon;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
         git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=drogon;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
         git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=drogon;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
-	file://switch_module_imx6dlea-com.sh \
-	file://switch_module_imx6qea-com.sh \
-	file://switch_module_imx6sxea-com.sh \
-	file://switch_module_imx6ulea-com.sh \
-	file://switch_module_imx7dea-com.sh \
-	file://switch_module_imx7dea-ucom.sh \
-	file://switch_module_imx7ulpea-ucom.sh \
-	file://switch_module_imx8mmea-ucom.sh \
-	file://switch_module_imx8mnea-ucom.sh \
-	file://switch_module_imx8mqea-com.sh \
-	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
-	file://cyfmac55560-pcie.txt \
-	file://cyfmac55560-pcie.trxse \
-	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
+	file://switch_module.sh \
 "
 
-SRCREV_nxp-linux-calibration="aa3d67d6c01181ef61e29d43feae612f5bfdbdb5"
 SRCREV_cyw-fmac-fw="fd4ce1d37b46fbfd99158b49f7e12ac4e26c9082"
 SRCREV_cyw-fmac-nvram="d0ddc35f8ade6ba5629c3a6d0a9c810078a9ebbc"
 SRCREV_cyw-bt-patch="99d5fba2550aede5ce7989e2fc81b74ec193c4d2"
@@ -71,16 +56,6 @@ do_install () {
 	install -d ${D}/usr/sbin
 	install -d ${D}/etc/udev/rules.d
 
-        # Install /lib/firmware/nxp folder
-        install -d ${D}/lib/firmware/nxp
-        install -d ${D}/lib/firmware/nxp/murata
-        install -d ${D}/lib/firmware/nxp/murata/files
-	install -d ${D}/lib/firmware/nxp/murata/files/1XK
-        install -d ${D}/lib/firmware/nxp/murata/files/1ZM
-        install -d ${D}/lib/firmware/nxp/murata/files/1YM
-        install -d ${D}/lib/firmware/nxp/murata/files/2DS
-        install -d ${D}/lib/firmware/nxp/murata/files/32_bit
-        install -d ${D}/lib/firmware/nxp/murata/files/64_bit
 
 
 #       Copying *.HCD files to etc/firmware and etc/firmware/murata-master
@@ -95,7 +70,6 @@ do_install () {
         install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}${sysconfdir}/firmware/BCM4373A0.2AE.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}${sysconfdir}/firmware/BCM4373A0.2BC.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}${sysconfdir}/firmware/CYW4343A2_001.003.016.0031.0000.1YN.hcd
-        install -m 444 ${S}/CYW55560A1_001.002.087.0108.0000.sLNA.hcd ${D}${sysconfdir}/firmware/CYW55560A1_001.002.087.0108.0000.sLNA.hcd
         install -m 444 ${S}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}${sysconfdir}/firmware
 
 #       install -m 444 ${D}${sysconfdir}/firmware/*.hcd       ${D}${sysconfdir}/firmware/murata-master
@@ -117,12 +91,6 @@ do_install () {
 
 #       Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
 	install -m 444 ${S}/cyw-fmac-fw/*.bin ${D}/lib/firmware/cypress
-#       For 2EA (TBD)
-	install -m 444 ${S}/cyw-fmac-fw/cyfmac55560-pcie.trxse ${D}/lib/firmware/cypress
-
-#       For 2EA (From MMW)
-#	install -m 444 ${S}/cyfmac55560-pcie.trxse ${D}/lib/firmware/cypress
-
 
 #       Rename clm blob files accordingly
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4354-sdio.1BB.clm_blob ${D}/lib/firmware/cypress/cyfmac4354-sdio.clm_blob
@@ -154,14 +122,9 @@ do_install () {
 #	For 2AE and 1YN
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac43439-sdio.1YN.txt ${D}/lib/firmware/cypress/cyfmac43439-sdio.txt
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
-#	For 2EA 
-	install -m 444 ${S}/switch_module_imx6dlea-com.sh ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
-	install -m 444 ${S}/cyfmac55560-pcie.txt ${D}/lib/firmware/cypress
 
 	# Added Calibration configuration file for 1YM(NXP)
 #	install -m 444 ${S}/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
-	# Added by vkjb
-	install -d ${D}/lib/firmware/nxp
 
 #       Copying wl tool binary to /usr/sbin
 	if [ ${DO_INSTALL_64BIT_BINARIES} = "yes" ]; then
@@ -170,67 +133,13 @@ do_install () {
 		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
 	fi
 
-#	Points default to NXP
-	ln -sf /usr/sbin/wpa_supplicant.nxp ${D}${sbindir}/wpa_supplicant
-	ln -sf /usr/sbin/hostapd.nxp ${D}${sbindir}/hostapd
+#	Points default to CYW
+	ln -sf /usr/sbin/wpa_supplicant.cyw ${D}${sbindir}/wpa_supplicant
+	ln -sf /usr/sbin/hostapd.cyw ${D}${sbindir}/hostapd
 
 #	Based on MACHINE type
-#	echo "DEBUG:: MACHINE TYPE :: ${MACHINE}"
-	# Added Script file for switching between CYW and NXP
-	case ${MACHINE} in
-	  imx6dlea-com)
-		install -m 755 ${S}/switch_module_imx6dlea-com.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx6qea-com)
-		install -m 755 ${S}/switch_module_imx6qea-com.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx6sxea-com)
-		install -m 755 ${S}/switch_module_imx6sxea-com.sh ${D}/usr/sbin/switch_module.sh
-		;;
- 	  imx6ulea-com)
-		install -m 755 ${S}/switch_module_imx6ulea-com.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx7dea-com)
-		install -m 755 ${S}/switch_module_imx7dea-com.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx7dea-ucom)
-		install -m 755 ${S}/switch_module_imx7dea-ucom.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx7ulpea-ucom)
-		install -m 755 ${S}/switch_module_imx7ulpea-ucom.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx8mmea-ucom)
-		install -m 755 ${S}/switch_module_imx8mmea-ucom.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx8mnea-ucom)
-		install -m 755 ${S}/switch_module_imx8mnea-ucom.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	  imx8mqea-com)
-		install -m 755 ${S}/switch_module_imx8mqea-com.sh ${D}/usr/sbin/switch_module.sh
-		;;
-	esac
+	install -m 755 ${S}/switch_module.sh ${D}/usr/sbin/switch_module.sh
 
-#	Install nxp linux calibration files
-	install -m 444 ${S}/nxp-linux-calibration/murata/files/1XK/* ${D}/lib/firmware/nxp/murata/files/1XK
-	install -m 444 ${S}/nxp-linux-calibration/murata/files/1YM/* ${D}/lib/firmware/nxp/murata/files/1YM
-	install -m 444 ${S}/nxp-linux-calibration/murata/files/1ZM/* ${D}/lib/firmware/nxp/murata/files/1ZM
-	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DS/* ${D}/lib/firmware/nxp/murata/files/2DS
-        #       Copying wl tool binary based on 32-bit/64-bit arch to /usr/sbin
-        if [ ${TARGET_ARCH} = "aarch64" ]; then
-		install -m 755 ${S}/nxp-linux-calibration/murata/files/64_bit/* ${D}/lib/firmware/nxp/murata/files/64_bit
-	else
-		install -m 755 ${S}/nxp-linux-calibration/murata/files/32_bit/* ${D}/lib/firmware/nxp/murata/files/32_bit
-	fi
-
-	install -m 444 ${S}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/lib/firmware/nxp/murata/files
-        install -m 444 ${S}/nxp-linux-calibration/murata/files/regulatory.rules ${D}/lib/firmware/nxp/murata/files
-        install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/lib/firmware/nxp/murata/files
-        install -m 755 ${S}/nxp-linux-calibration/murata/switch_regions.sh ${D}/usr/sbin/switch_regions.sh
-        install -m 755 ${S}/nxp-linux-calibration/murata/start_country.service ${D}/lib/firmware/nxp/murata/files
-        install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/lib/firmware/nxp/murata/README.txt
-
-#	Copy 1XK Dedicated Bluetooth Antenna configuration file
-	install -m 755 ${S}/WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf ${D}/lib/firmware/nxp/murata/files/1XK
 }
 
 PACKAGES =+ "${PN}-mfgtest"
@@ -250,5 +159,4 @@ FILES_${PN}-mfgtest = " \
 
 INSANE_SKIP_${PN} += "build-deps"
 INSANE_SKIP_${PN} += "file-rdeps"
-
 
