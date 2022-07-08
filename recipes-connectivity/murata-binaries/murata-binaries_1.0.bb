@@ -13,7 +13,7 @@ SRC_URI = " \
 	file://switch_module.sh \
 "
 SRC_URI += " \
-           ${IMX_FIRMWARE_SRC};branch=master;destsuffix=imx-firmware;name=imx-firmware \
+           ${IMX_FIRMWARE_SRC};branch=main;destsuffix=imx-firmware;name=imx-firmware \
 "
 SRCREV_imx-firmware = "685ace656284167376241c804827f046b984ce25"
 
