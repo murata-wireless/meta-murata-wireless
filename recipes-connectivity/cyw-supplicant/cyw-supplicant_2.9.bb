@@ -40,6 +40,13 @@ SRC_URI = "http://w1.fi/releases/wpa_supplicant-${PV}.tar.gz  \
 	   file://0013-non-upstream-defconfig_base-Add-Infineon-default-con.patch;apply=yes \
 	   file://0014-P2P-Fix-copying-of-secondary-device-types-for-P2P-gr.patch;apply=yes \
 	   file://0015-P2P-Fix-a-corner-case-in-peer-addition-based-on-PD-R.patch;apply=yes \
+	   file://0017-SAE-Set-the-right-WPA-Versions-for-FT-SAE-key-manage.patch;apply=yes \
+	   file://0018-wpa_supplicant-Support-WPA_KEY_MGMT_FT-for-eapol-off.patch;apply=yes \
+	   file://0019-wpa_supplicant-suppress-deauth-for-PMKSA-caching-dis.patch;apply=yes \
+	   file://0020-CVE_2019_9501-Fix-to-check-Invalid-GTK-IE-length-in-.patch;apply=yes \
+	   file://0022-SAE-Drop-PMKSA-cache-after-receiving-specific-deauth.patch;apply=yes \
+	   file://0023-Deauthenticate-STA-only-if-PMK-expired-murata1.patch;apply=yes \
+	   file://0023-Deauthenticate-STA-only-if-PMK-expired-murata2.patch;apply=yes \
 "
 
 SRC_URI[md5sum] = "2d2958c782576dc9901092fbfecb4190"
