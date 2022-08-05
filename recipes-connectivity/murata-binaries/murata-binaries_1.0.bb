@@ -11,7 +11,7 @@ SRC_URI = " \
 	git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=zeus-spiga;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
 	git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=spiga;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
 	git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=spiga;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
-	git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git;protocol=http;branch=master \
+	git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git;protocol=http;branch=main \
 	file://WlanCalData_ext_DB_W8997_1YM_ES2_Rev_C.conf \
 	file://switch_module.sh \
 "
