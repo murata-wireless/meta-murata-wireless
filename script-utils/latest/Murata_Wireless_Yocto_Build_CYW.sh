@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=04262022
+VERSION=08222022
 
 
 ###################################################################################################
@@ -33,6 +33,7 @@ VERSION=04262022
 #  1.18     | 04/26/2022   |    JK        |    a) Rename Murata_Wireless_Yocto_Build to 
 #           |              |              |       Murata_Wireless_Yocto_Build_CYW.sh.
 #           |              |              |    b) Rename release tag
+#  1.19     | 08/22/2022   |    RC        |    Added support for FMAC Drogon.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -65,6 +66,7 @@ ZIGRA_FMAC_INDEX="4"
 SPIGA_FMAC_INDEX="5"
 BARAGON_FMAC_INDEX="6"
 CYNDER_FMAC_INDEX="7"
+DROGON_FMAC_INDEX="8"
 
 MOTHRA_FMAC_STR="mothra"
 MANDA_FMAC_STR="manda"
@@ -73,6 +75,7 @@ ZIGRA_FMAC_STR="zigra"
 SPIGA_FMAC_STR="spiga"
 BARAGON_FMAC_STR="baragon"
 CYNDER_FMAC_STR="cynder"
+DROGON_FMAC_STR="drogon"
 
 LINUX_KERNEL_5_10_52=0
 LINUX_KERNEL_5_4_47=1
@@ -98,6 +101,8 @@ linuxVersion=""
 # Hardknott
 iMXhardknottcynderStableReleaseTag="imx-hardknott-cynder_r1.0"
 iMXhardknottcynderDeveloperRelease="imx-hardknott-cynder"
+iMXhardknottdrogonStableReleaseTag="imx-hardknott-drogon_r1.0"
+iMXhardknottdrogonDeveloperRelease="imx-hardknott-drogon"
 
 # Zeus
 iMXzeusbaragonStableReleaseTag="imx-zeus-baragon_r1.0"
@@ -524,13 +529,13 @@ while true; do
 	echo "|Entry|   Linux Kernel   | Yocto      | FMAC Supported                   |"
 	echo "|-----|------------------|------------|----------------------------------|"
 	if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
-		echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder                           |"
+		echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
 		echo "|  1  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga,Zigra              |"
 		echo "|  2  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga,Zigra,Kong,Manda   |"
 		echo "|  3  |     ${LINUX_KERNEL_4_9_123_STR}       | rocko     | Baragon,Spiga,Zigra,Kong,Manda   |"
 		echo "|  4  |     ${LINUX_KERNEL_4_1_15_STR}        | krogoth   | Baragon,Spiga,Zigra,Manda,Mothra |"
 	else
-		echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder                           |"
+		echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
 		echo "|  1  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga                    |"
 		echo "|  2  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga                    |"
 		echo "|  3  |     ${LINUX_KERNEL_4_9_123_STR}       | rocko     | Baragon,Spiga                    |"
@@ -1004,7 +1009,8 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo -e  "|  0.   | ${CYNDER_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo -e  "|  0.   | ${CYNDER_FMAC_STR} - Previous release                         |"
+				echo -e  "|  1.   | ${DROGON_FMAC_STR} - ${GRN}Latest release${NC}                           |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1021,6 +1027,21 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 					iMXYoctoRelease="$imxhardknottYocto"
 					YoctoBranch="hardknott"
 					fmacversion=${CYNDER_FMAC_STR}
+					break
+					;;
+				1)
+					# for DROGON
+					FMAC_VERSION=${DROGON_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: hardknott-drogon"
+						BRANCH_RELEASE_NAME="$iMXhardknottdrogonStableReleaseTag"
+					else
+						#echo "DEBUG:: hardknott-drogon"
+						BRANCH_RELEASE_NAME="$iMXhardknottdrogonDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxhardknottYocto"
+					YoctoBranch="hardknott"
+					fmacversion=${DROGON_FMAC_STR}
 					break
 					;;
 				*)
@@ -1200,7 +1221,8 @@ else
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo -e  "|  0.   | ${CYNDER_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo -e  "|  0.   | ${CYNDER_FMAC_STR} - Previous release                         |"
+				echo -e  "|  1.   | ${DROGON_FMAC_STR} - ${GRN}Latest release${NC}                           |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1217,6 +1239,21 @@ else
 					iMXYoctoRelease="$imxhardknottYocto"
 					YoctoBranch="hardknott"
 					fmacversion=${CYNDER_FMAC_STR}
+					break
+					;;
+				1)
+					# for DROGON
+					FMAC_VERSION=${DROGON_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: hardknott-drogon"
+						BRANCH_RELEASE_NAME="$iMXhardknottdrogonStableReleaseTag"
+					else
+						#echo "DEBUG:: hardknott-drogon"
+						BRANCH_RELEASE_NAME="$iMXhardknottdrogonDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxhardknottYocto"
+					YoctoBranch="hardknott"
+					fmacversion=${DROGON_FMAC_STR}
 					break
 					;;
 				*)

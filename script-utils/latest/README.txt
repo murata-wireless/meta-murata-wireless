@@ -35,7 +35,8 @@ $./Murata_Wireless_Yocto_Build.sh
 --------------------------------------------------------------------------------------
 | Kernel release | Yocto code name  |  FMAC code name |  Release information         |
 |----------------|------------------|-----------------|------------------------------|
-| 5.10.52_2.1.0  | Hardknott        |  Cynder         |  imx-hardknott-cynder_r1.0   |
+| 5.10.52_2.1.0  | Hardknott        |  Drogon         |  imx-hardknott-drogon_r1.0   |
+|                |                  |  Cynder         |  imx-hardknott-cynder_r1.0   |
 |----------------|------------------|-----------------|------------------------------|
 | 5.4.47_2.2.0   | Zeus             |  Baragon        |  imx-zeus-baragon_r1.0       |
 |                |                  |  Spiga          |  imx-zeus-spiga_r1.0         |
