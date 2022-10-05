@@ -9,7 +9,7 @@ For more details email Murata support at "wirelessFAQ@murata.com" or for i.MX pr
 
 Build Procedure: 
 ================
-Currently only Ubuntu 12.04, 14.04, 16.04 (64-bit) distros are supported. Please install one of these versions on your 
+Currently only Ubuntu 12.04, 14.04, 16.04, 18.04, and 20.04 (64-bit) distros are supported. Please install one of these versions on your 
 host machine/environment before invoking the "Host_Setup_for_Yocto.sh" script. Once the host 
 environment is verified/configured, then you can run the "Murata_Wireless_Yocto_Build_CYW.sh" script to generate the 
 desired Yocto Linux image.
