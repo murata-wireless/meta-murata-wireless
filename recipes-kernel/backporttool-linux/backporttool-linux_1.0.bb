@@ -10,11 +10,11 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 SRC_URI =  " \
-    git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=imx-hardknott-drogon \
+    git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=imx-kirkstone-ebirah \
     file://0004-makefile-yacc-flex-update.patch;apply=yes \
 "
 
-SRCREV = "c67748e0638bf69e82496862722bca51fff8d886"
+SRCREV = "e9338c39e820c5a72d8521c14bf503e98041c421"
 S = "${WORKDIR}/git"
 
 
