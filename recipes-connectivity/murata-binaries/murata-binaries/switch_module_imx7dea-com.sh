@@ -58,10 +58,12 @@ function handle_services() {
 function clean_up() {
   if [ -e /usr/sbin/wpa_supplicant ]; then
     rm /usr/sbin/wpa_supplicant
+    rm /usr/sbin/wpa_cli
   fi
 
   if [ -e /usr/sbin/hostapd ]; then
     rm /usr/sbin/hostapd
+    rm /usr/sbin/hostapd_cli
   fi
 
   if [ -e /etc/depmod.d/nxp_depmod.conf ]; then
@@ -97,7 +99,9 @@ function clean_up() {
 function prepare_for_nxp_sdio() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -126,7 +130,9 @@ EOT
 function prepare_for_nxp_xk_sdio() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -155,7 +161,9 @@ EOT
 function prepare_for_nxp_ds_sdio() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -184,7 +192,9 @@ EOT
 function prepare_for_nxp_ym_sdio() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -219,7 +229,9 @@ EOT
 function prepare_for_nxp_ym_pcie() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -253,7 +265,9 @@ EOT
 function prepare_for_nxp_xl_pcie() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
   
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -288,7 +302,21 @@ EOT
 function prepare_for_cypress() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.cyw /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.cyw /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.cyw /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.cyw /usr/sbin/hostapd_cli
+
+#  echo "IFX module : $cyw_module"
+
+  if [ $cyw_module == "2AE" ]; then
+     cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
+     cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2AE.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
+  fi
+
+  if [ $cyw_module == "2BC" ]; then
+     cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
+     cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2BC.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
+  fi
 
   depmod -a
 
@@ -337,6 +365,18 @@ function switch_to_nxp_sdio() {
   echo "Setup complete."
   echo ""
 }
+
+function switch_to_nxp_xl_sdio() {
+  echo ""
+  echo "Setting up for 1XL (NXP - SDIO)"
+  echo "Please wait for 15 seconds (one-time only)..."
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
+  fw_setenv bt_hint nxp
+  prepare_for_nxp_sdio
+  echo "Setup complete."
+  echo ""
+}
+
 
 function switch_to_nxp_xk_sdio() {
   echo ""

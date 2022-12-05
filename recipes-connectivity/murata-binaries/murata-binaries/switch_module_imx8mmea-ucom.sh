@@ -321,16 +321,13 @@ function prepare_for_cypress() {
 #  echo "IFX module : $cyw_module"
 
   if [ $cyw_module == "2AE" ]; then
-     echo "Setup complete. 2AE"
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
      cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2AE.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
   fi
 
   if [ $cyw_module == "2BC" ]; then
-
      cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
      cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2BC.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
-     echo "Setup complete for 2BC"
   fi
 
   depmod -a
