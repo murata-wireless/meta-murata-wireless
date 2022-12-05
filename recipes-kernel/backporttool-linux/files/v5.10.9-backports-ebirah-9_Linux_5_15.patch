@@ -1,0 +1,35 @@
+diff -Napur v5.10.9-backports-ebirah-9_bak/drivers/net/wireless/broadcom/brcm80211/brcmutil/utils.c v5.10.9-backports-ebirah-9/drivers/net/wireless/broadcom/brcm80211/brcmutil/utils.c
+--- v5.10.9-backports-ebirah-9_bak/drivers/net/wireless/broadcom/brcm80211/brcmutil/utils.c	2022-08-26 13:47:06.000000000 +0800
++++ v5.10.9-backports-ebirah-9/drivers/net/wireless/broadcom/brcm80211/brcmutil/utils.c	2022-09-07 10:03:25.337986342 +0800
+@@ -12,7 +12,7 @@
+ 
+ MODULE_AUTHOR("Broadcom Corporation");
+ MODULE_DESCRIPTION("Broadcom 802.11n wireless LAN driver utilities.");
+-MODULE_SUPPORTED_DEVICE("Broadcom 802.11n WLAN cards");
++//MODULE_SUPPORTED_DEVICE("Broadcom 802.11n WLAN cards");
+ MODULE_LICENSE("Dual BSD/GPL");
+ 
+ struct sk_buff *brcmu_pkt_buf_get_skb(uint len)
+diff -Napur v5.10.9-backports-ebirah-9_bak/net/wireless/sysfs.c v5.10.9-backports-ebirah-9/net/wireless/sysfs.c
+--- v5.10.9-backports-ebirah-9_bak/net/wireless/sysfs.c	2022-08-26 13:47:06.000000000 +0800
++++ v5.10.9-backports-ebirah-9/net/wireless/sysfs.c	2022-09-07 10:03:00.657987308 +0800
+@@ -101,7 +101,8 @@ static int wiphy_suspend(struct device *
+ 	struct cfg80211_registered_device *rdev = dev_to_rdev(dev);
+ 	int ret = 0;
+ 
+-	rdev->suspend_at = get_seconds();
++//	rdev->suspend_at = get_seconds();
++	rdev->suspend_at = ktime_get_boottime_seconds();
+ 
+ 	rtnl_lock();
+ 	if (rdev->wiphy.registered) {
+@@ -129,7 +130,8 @@ static int wiphy_resume(struct device *d
+ 	int ret = 0;
+ 
+ 	/* Age scan results with time spent in suspend */
+-	cfg80211_bss_age(rdev, get_seconds() - rdev->suspend_at);
++//	cfg80211_bss_age(rdev, get_seconds() - rdev->suspend_at);
++	cfg80211_bss_age(rdev, ktime_get_boottime_seconds() - rdev->suspend_at);
+ 
+ 	rtnl_lock();
+ 	if (rdev->wiphy.registered && rdev->ops->resume)

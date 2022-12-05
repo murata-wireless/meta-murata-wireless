@@ -1,7 +1,7 @@
-From ed2b98800220254ea5538f7c235f955432b2e6bb Mon Sep 17 00:00:00 2001
+From cc6eb76989552e74313ba71a3bc7b31ef68ce92b Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Tue, 29 Oct 2019 16:05:49 +0800
-Subject: [PATCH 04/15] wpa_supplicant: Add PMKSA cache for 802.1X 4-way
+Subject: [PATCH 04/34] wpa_supplicant: Add PMKSA cache for 802.1X 4-way
  handshake
 
 Add PMKSA cache and set PMK to the driver for 802.1X 4-way handshake
@@ -13,7 +13,7 @@ Signed-off-by: Chung-Hsien Hsu <chung-hsien.hsu@infineon.com>
  1 file changed, 36 insertions(+), 23 deletions(-)
 
 diff --git a/wpa_supplicant/wpas_glue.c b/wpa_supplicant/wpas_glue.c
-index a9a66baad..c56969fa7 100644
+index 17fc05bcb..0cffe52fa 100644
 --- a/wpa_supplicant/wpas_glue.c
 +++ b/wpa_supplicant/wpas_glue.c
 @@ -12,6 +12,7 @@
@@ -24,7 +24,7 @@ index a9a66baad..c56969fa7 100644
  #include "eloop.h"
  #include "config.h"
  #include "l2_packet/l2_packet.h"
-@@ -284,6 +285,7 @@ static void wpa_supplicant_eapol_cb(struct eapol_sm *eapol,
+@@ -285,6 +286,7 @@ static void wpa_supplicant_eapol_cb(struct eapol_sm *eapol,
  				    void *ctx)
  {
  	struct wpa_supplicant *wpa_s = ctx;
@@ -32,7 +32,7 @@ index a9a66baad..c56969fa7 100644
  	int res, pmk_len;
  	u8 pmk[PMK_LEN];
  
-@@ -318,35 +320,46 @@ static void wpa_supplicant_eapol_cb(struct eapol_sm *eapol,
+@@ -319,35 +321,46 @@ static void wpa_supplicant_eapol_cb(struct eapol_sm *eapol,
  		   "handshake");
  
  	pmk_len = PMK_LEN;

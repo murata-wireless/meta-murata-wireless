@@ -1,7 +1,7 @@
-From 346575dba8eaf35c0d60f9e9e8df9b11a7589e63 Mon Sep 17 00:00:00 2001
+From 7835b805d8ae28e073b6c0fcc9d6d83c3e070b4b Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Tue, 10 Dec 2019 14:05:16 -0600
-Subject: [PATCH 10/15] nl80211: Support SAE authentication offload in AP mode
+Subject: [PATCH 10/34] nl80211: Support SAE authentication offload in AP mode
 
 If driver advertises support for SAE authentication offload, pass SAE
 password in NL80211_CMD_NEW_BEACON command for AP mode.
@@ -14,10 +14,10 @@ Signed-off-by: Chung-Hsien Hsu <chung-hsien.hsu@infineon.com>
  3 files changed, 42 insertions(+), 2 deletions(-)
 
 diff --git a/src/drivers/driver.h b/src/drivers/driver.h
-index 750b6d679..47f7e55b2 100644
+index a42ec5e1f..45260e8c5 100644
 --- a/src/drivers/driver.h
 +++ b/src/drivers/driver.h
-@@ -1553,6 +1553,14 @@ struct wpa_driver_ap_params {
+@@ -1611,6 +1611,14 @@ struct wpa_driver_ap_params {
  	 * should be prepared to handle %NULL value as an error.
  	 */
  	const u8 *psk;
@@ -32,25 +32,25 @@ index 750b6d679..47f7e55b2 100644
  };
  
  struct wpa_driver_mesh_bss_params {
-@@ -1979,10 +1987,12 @@ struct wpa_driver_capa {
- #define WPA_DRIVER_FLAGS2_CONTROL_PORT_RX	0x0000000000000001ULL
- /** Driver supports TX status reports for EAPOL frames through control port */
- #define WPA_DRIVER_FLAGS2_CONTROL_PORT_TX_STATUS 0x0000000000000002ULL
+@@ -2057,10 +2065,12 @@ struct wpa_driver_capa {
+ #define WPA_DRIVER_FLAGS2_OCV			0x0000000000000080ULL
+ /** Driver expects user space implementation of SME in AP mode */
+ #define WPA_DRIVER_FLAGS2_AP_SME		0x0000000000000100ULL
 -/** Driver supports SAE authentication offload */
 +/** Driver supports SAE authentication offload in station mode */
- #define WPA_DRIVER_FLAGS2_SAE_OFFLOAD		0x0000000000000004ULL
+ #define WPA_DRIVER_FLAGS2_SAE_OFFLOAD		0x0000000000000200ULL
  /** Driver supports 4-way handshake offload for WPA-Personal in AP mode */
- #define WPA_DRIVER_FLAGS2_4WAY_HANDSHAKE_AP_PSK	0x0000000000000008ULL
+ #define WPA_DRIVER_FLAGS2_4WAY_HANDSHAKE_AP_PSK	0x0000000000000400ULL
 +/** Driver supports SAE authentication offload in AP mode */
-+#define WPA_DRIVER_FLAGS2_SAE_OFFLOAD_AP	0x0000000000000010ULL
++#define WPA_DRIVER_FLAGS2_SAE_OFFLOAD_AP	0x0000000000000800ULL
  	u64 flags2;
  
  #define FULL_AP_CLIENT_STATE_SUPP(drv_flags) \
 diff --git a/src/drivers/driver_nl80211.c b/src/drivers/driver_nl80211.c
-index fdf89c5cb..417930ded 100644
+index f228a0715..b6afc6e7a 100644
 --- a/src/drivers/driver_nl80211.c
 +++ b/src/drivers/driver_nl80211.c
-@@ -4424,8 +4424,13 @@ static int wpa_driver_nl80211_set_ap(void *priv,
+@@ -4630,8 +4630,13 @@ static int wpa_driver_nl80211_set_ap(void *priv,
  	ver = 0;
  	if (params->wpa_version & WPA_PROTO_WPA)
  		ver |= NL80211_WPA_VERSION_1;
@@ -65,7 +65,7 @@ index fdf89c5cb..417930ded 100644
  	if (ver &&
  	    nla_put_u32(msg, NL80211_ATTR_WPA_VERSIONS, ver))
  		goto fail;
-@@ -4479,6 +4484,27 @@ static int wpa_driver_nl80211_set_ap(void *priv,
+@@ -4685,6 +4690,27 @@ static int wpa_driver_nl80211_set_ap(void *priv,
  			goto fail;
  	}
  
@@ -94,10 +94,10 @@ index fdf89c5cb..417930ded 100644
  		wpa_hexdump_buf(MSG_DEBUG, "nl80211: beacon_ies",
  				params->beacon_ies);
 diff --git a/src/drivers/driver_nl80211_capa.c b/src/drivers/driver_nl80211_capa.c
-index 86b646c07..822131c87 100644
+index dc4988c7c..ae6029a92 100644
 --- a/src/drivers/driver_nl80211_capa.c
 +++ b/src/drivers/driver_nl80211_capa.c
-@@ -597,6 +597,10 @@ static void wiphy_info_ext_feature_flags(struct wiphy_info_data *info,
+@@ -602,6 +602,10 @@ static void wiphy_info_ext_feature_flags(struct wiphy_info_data *info,
  			      NL80211_EXT_FEATURE_SAE_OFFLOAD))
  		capa->flags2 |= WPA_DRIVER_FLAGS2_SAE_OFFLOAD;
  

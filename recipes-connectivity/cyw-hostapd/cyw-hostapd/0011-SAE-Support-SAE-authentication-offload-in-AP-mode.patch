@@ -1,7 +1,7 @@
-From 3d67a2c8cb4fb227833a63269168c07603e97cef Mon Sep 17 00:00:00 2001
+From 30af1cda4b33f55e89411ec2a58a1da299ded0dd Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Tue, 10 Dec 2019 14:06:20 -0600
-Subject: [PATCH 11/15] SAE: Support SAE authentication offload in AP mode
+Subject: [PATCH 11/34] SAE: Support SAE authentication offload in AP mode
 
 Add support for SAE authentication offload in AP mode. In this case, the
 SAE authentication process is handled by driver instead of user space.
@@ -15,10 +15,10 @@ Signed-off-by: Chung-Hsien Hsu <chung-hsien.hsu@infineon.com>
  4 files changed, 22 insertions(+), 1 deletion(-)
 
 diff --git a/src/ap/beacon.c b/src/ap/beacon.c
-index d21a2665f..609643e00 100644
+index 583b6836e..e2d7c6970 100644
 --- a/src/ap/beacon.c
 +++ b/src/ap/beacon.c
-@@ -1459,6 +1459,17 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
+@@ -1763,6 +1763,17 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
  			params->psk = hapd->conf->ssid.wpa_psk->psk;
  	}
  
@@ -37,12 +37,12 @@ index d21a2665f..609643e00 100644
  }
  
 diff --git a/src/ap/wpa_auth.h b/src/ap/wpa_auth.h
-index e612f9e51..4e4c1f63b 100644
+index 2f807893f..ff36cfe95 100644
 --- a/src/ap/wpa_auth.h
 +++ b/src/ap/wpa_auth.h
-@@ -263,6 +263,9 @@ struct wpa_auth_config {
- 	int dpp_pfs;
- #endif /* CONFIG_DPP2 */
+@@ -275,6 +275,9 @@ struct wpa_auth_config {
+ 	bool force_kdk_derivation;
+ 
  	int psk_4way_hs_offload;
 +#ifdef CONFIG_SAE
 +	int sae_offload;
@@ -51,10 +51,10 @@ index e612f9e51..4e4c1f63b 100644
  
  typedef enum {
 diff --git a/src/ap/wpa_auth_glue.c b/src/ap/wpa_auth_glue.c
-index 1a3358152..8798d165a 100644
+index 26de12b5b..c8dee2aef 100644
 --- a/src/ap/wpa_auth_glue.c
 +++ b/src/ap/wpa_auth_glue.c
-@@ -1484,6 +1484,11 @@ int hostapd_setup_wpa(struct hostapd_data *hapd)
+@@ -1532,6 +1532,11 @@ int hostapd_setup_wpa(struct hostapd_data *hapd)
  	    (hapd->iface->drv_flags2 & WPA_DRIVER_FLAGS2_4WAY_HANDSHAKE_AP_PSK))
  		_conf.psk_4way_hs_offload = 1;
  
@@ -67,10 +67,10 @@ index 1a3358152..8798d165a 100644
  	if (hapd->wpa_auth == NULL) {
  		wpa_printf(MSG_ERROR, "WPA initialization failed.");
 diff --git a/src/ap/wpa_auth_ie.c b/src/ap/wpa_auth_ie.c
-index 3704fc05e..ef89c64ec 100644
+index 524922e4e..30de0c19c 100644
 --- a/src/ap/wpa_auth_ie.c
 +++ b/src/ap/wpa_auth_ie.c
-@@ -948,7 +948,9 @@ wpa_validate_wpa_ie(struct wpa_authenticator *wpa_auth,
+@@ -977,7 +977,9 @@ wpa_validate_wpa_ie(struct wpa_authenticator *wpa_auth,
  	}
  
  #ifdef CONFIG_SAE

@@ -5,8 +5,8 @@ LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741
 
 SRC_URI = " \
 	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-5-10-72;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
-        git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=drogon;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
-        git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=drogon;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
+        git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=ebirah;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
+        git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=ebirah;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=hardknott-drogon;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
         git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=drogon;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
         git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=drogon;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
@@ -21,14 +21,14 @@ SRC_URI = " \
 	file://switch_module_imx8mnea-ucom.sh \
 	file://switch_module_imx8mqea-com.sh \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
-	file://cyfmac55560-pcie.txt \
-	file://cyfmac55560-pcie.trxse \
+	file://cyfmac55572-pcie.txt \
+        file://cyfmac55572-sdio.txt \
 	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
 "
 
 SRCREV_nxp-linux-calibration="aa3d67d6c01181ef61e29d43feae612f5bfdbdb5"
-SRCREV_cyw-fmac-fw="fd4ce1d37b46fbfd99158b49f7e12ac4e26c9082"
-SRCREV_cyw-fmac-nvram="d0ddc35f8ade6ba5629c3a6d0a9c810078a9ebbc"
+SRCREV_cyw-fmac-fw="db52f08cebae7288a04ef9183d46740492172d7c"
+SRCREV_cyw-fmac-nvram="f1786018c8fead61e78e04a7e9651c7250651413"
 SRCREV_cyw-bt-patch="99d5fba2550aede5ce7989e2fc81b74ec193c4d2"
 SRCREV_cyw-fmac-utils-imx32="e248804b6ba386fedcd462ddd9394f42f73a17af"
 SRCREV_cyw-fmac-utils-imx64="1bc78d68f9609290b2f6578516011c57691f7815"
@@ -54,8 +54,8 @@ do_compile () {
         pwd
 }
 
-PACKAGES_prepend = "murata-binaries-wlarm "
-FILES_murata-binaries-wlarm = "${bindir}/wlarm"
+PACKAGES:prepend = "murata-binaries-wlarm "
+FILES:murata-binaries-wlarm = "${bindir}/wlarm"
 
 DO_INSTALL_64BIT_BINARIES = "no"
 DO_INSTALL_64BIT_BINARIES_mx6 = "no"
@@ -117,12 +117,10 @@ do_install () {
 
 #       Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
 	install -m 444 ${S}/cyw-fmac-fw/*.bin ${D}/lib/firmware/cypress
-#       For 2EA (TBD)
-	install -m 444 ${S}/cyw-fmac-fw/cyfmac55560-pcie.trxse ${D}/lib/firmware/cypress
-
-#       For 2EA (From MMW)
-#	install -m 444 ${S}/cyfmac55560-pcie.trxse ${D}/lib/firmware/cypress
-
+	install -m 444 ${S}/cyw-fmac-fw/cyfmac55572-pcie.trxse ${D}/lib/firmware/cypress
+        install -m 444 ${S}/cyw-fmac-fw/cyfmac55572-sdio.trxse ${D}/lib/firmware/cypress
+	install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2AE.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.bin
+	install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.bin
 
 #       Rename clm blob files accordingly
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4354-sdio.1BB.clm_blob ${D}/lib/firmware/cypress/cyfmac4354-sdio.clm_blob
@@ -132,9 +130,14 @@ do_install () {
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac43455-sdio.1MW.clm_blob ${D}/lib/firmware/cypress/cyfmac43455-sdio.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4359-sdio.1WZ.clm_blob ${D}/lib/firmware/cypress/cyfmac4359-pcie.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac54591-pcie.1XA.clm_blob ${D}/lib/firmware/cypress/cyfmac54591-pcie.clm_blob
+
 # 	For 2AE and 1YN
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2AE.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac43439-sdio.1YN.clm_blob  ${D}/lib/firmware/cypress/cyfmac43439-sdio.clm_blob 
+
+#       For 2EA
+        install -m 444 ${S}/cyw-fmac-fw/cyfmac55572-sdio.2EA.clm_blob  ${D}/lib/firmware/cypress/cyfmac55572-sdio.clm_blob
+        install -m 444 ${S}/cyw-fmac-fw/cyfmac55572-pcie.2EA.clm_blob  ${D}/lib/firmware/cypress/cyfmac55572-pcie.clm_blob
 
 	install -m 444 ${S}/cyw-fmac-fw/README_CLM_BLOB.txt ${D}/lib/firmware/cypress/README_CLM_BLOB.txt
 	install -m 444 ${S}/cyw-fmac-fw/README_FW.txt ${D}/lib/firmware/cypress/README_FW.txt
@@ -151,12 +154,16 @@ do_install () {
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac43430-sdio.1DX.txt ${D}/lib/firmware/cypress/cyfmac43430-sdio.txt
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac43455-sdio.1MW.txt ${D}/lib/firmware/cypress/cyfmac43455-sdio.txt
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac54591-pcie.1XA.txt ${D}/lib/firmware/cypress/cyfmac54591-pcie.txt
+
 #	For 2AE and 1YN
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac43439-sdio.1YN.txt ${D}/lib/firmware/cypress/cyfmac43439-sdio.txt
-	install -m 444 ${S}/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
+
 #	For 2EA 
-	install -m 444 ${S}/switch_module_imx6dlea-com.sh ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
-	install -m 444 ${S}/cyfmac55560-pcie.txt ${D}/lib/firmware/cypress
+	install -m 444 ${S}/cyfmac55572-pcie.txt ${D}/lib/firmware/cypress
+        install -m 444 ${S}/cyfmac55572-sdio.txt ${D}/lib/firmware/cypress
+
+#       For 2BZ
+	install -m 444 ${S}/cyw-fmac-nvram/cyfmac54591-sdio.2ant.2BZ.txt ${D}/lib/firmware/cypress/cyfmac54591-sdio.txt
 
 	# Added Calibration configuration file for 1YM(NXP)
 #	install -m 444 ${S}/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
@@ -164,15 +171,17 @@ do_install () {
 	install -d ${D}/lib/firmware/nxp
 
 #       Copying wl tool binary to /usr/sbin
-	if [ ${DO_INSTALL_64BIT_BINARIES} = "yes" ]; then
+#	if [ ${DO_INSTALL_64BIT_BINARIES} = "yes" ]; then
 		install -m 755 ${S}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl
-	else
-		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
-	fi
+#	else
+#		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
+#	fi
 
 #	Points default to NXP
 	ln -sf /usr/sbin/wpa_supplicant.nxp ${D}${sbindir}/wpa_supplicant
+        ln -sf /usr/sbin/wpa_cli.nxp ${D}${sbindir}/wpa_cli
 	ln -sf /usr/sbin/hostapd.nxp ${D}${sbindir}/hostapd
+	ln -sf /usr/sbin/hostapd_cli.nxp ${D}${sbindir}/hostapd_cli
 
 #	Based on MACHINE type
 #	echo "DEBUG:: MACHINE TYPE :: ${MACHINE}"
@@ -235,20 +244,20 @@ do_install () {
 
 PACKAGES =+ "${PN}-mfgtest"
 
-FILES_${PN} += "/lib/firmware"
-FILES_${PN} += "/lib/firmware/*"
-FILES_${PN} += "${bindir}"
-FILES_${PN} += "${sbindir}"
-FILES_${PN} += "{sysconfdir}/firmware"
-FILES_${PN} += "/lib"
-FILES_${PN} += "{sysconfdir}/firmware/nxp"
-#FILES_${PN} += "/usr/sbin/wpa_supplicant"
+FILES:${PN} += "/lib/firmware"
+FILES:${PN} += "/lib/firmware/*"
+FILES:${PN} += "${bindir}"
+FILES:${PN} += "${sbindir}"
+FILES:${PN} += "{sysconfdir}/firmware"
+FILES:${PN} += "/lib"
+FILES:${PN} += "{sysconfdir}/firmware/nxp"
+#FILES:${PN} += "/usr/sbin/wpa_supplicant"
 
-FILES_${PN}-mfgtest = " \
+FILES:${PN}-mfgtest = " \
 	/usr/bin/wl \
 "
 
-INSANE_SKIP_${PN} += "build-deps"
-INSANE_SKIP_${PN} += "file-rdeps"
+INSANE_SKIP:${PN} += "build-deps"
+INSANE_SKIP:${PN} += "file-rdeps"
 
 

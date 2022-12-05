@@ -11,6 +11,8 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 SRC_URI =  " \
     git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=imx-kirkstone-ebirah \
+    file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
+    file://v5.10.9-backports-ebirah-9_Linux_5_15.patch;apply=yes \
     file://0004-makefile-yacc-flex-update.patch;apply=yes \
 "
 
@@ -26,18 +28,17 @@ inherit module-base
 #do_make_scripts[lockfiles] = "${TMPDIR}/kernel-scripts.lock"
 #do_make_scripts[deptask] = "do_populate_sysroot"
 
-do_configure_prepend() {
+do_configure:prepend() {
 	chmod -R 777 ./
 	cp ${STAGING_KERNEL_BUILDDIR}/.config ${STAGING_KERNEL_DIR}/.config
 	CC=${BUILD_CC} oe_runmake defconfig-brcmfmac
 }
 
-do_configure_append() {
+do_configure:append() {
 	oe_runmake	
 }
 
-
-FILES_${PN} += "${nonarch_base_libdir}/udev \
+FILES:${PN} += "${nonarch_base_libdir}/udev \
                 ${sysconfdir}/udev \
 				${nonarch_base_libdir} \
                "
