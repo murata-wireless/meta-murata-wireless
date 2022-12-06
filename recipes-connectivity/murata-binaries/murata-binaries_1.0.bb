@@ -110,6 +110,7 @@ do_install () {
         install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}${sysconfdir}/firmware/_BCM4373A0.2AE.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2BC.hcd ${D}${sysconfdir}/firmware/_BCM4373A0.2BC.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}${sysconfdir}/firmware/_CYW4343A2_001.003.016.0031.0000.1YN.hcd
+
 #	Temporary from MMW
 	install -m 444 ${S}/CYW55560A1_001.002.087.0108.0000.sLNA.hcd ${D}${sysconfdir}/firmware/_CYW55560A1_001.002.087.0108.0000.sLNA.hcd
         install -m 444 ${S}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}${sysconfdir}/firmware/murata-master
@@ -171,11 +172,11 @@ do_install () {
 	install -d ${D}/lib/firmware/nxp
 
 #       Copying wl tool binary to /usr/sbin
-#	if [ ${DO_INSTALL_64BIT_BINARIES} = "yes" ]; then
+        if [ ${TARGET_ARCH} = "aarch64" ]; then
 		install -m 755 ${S}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl
-#	else
-#		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
-#	fi
+	else
+		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
+	fi
 
 #	Points default to NXP
 	ln -sf /usr/sbin/wpa_supplicant.nxp ${D}${sbindir}/wpa_supplicant

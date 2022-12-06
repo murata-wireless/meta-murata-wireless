@@ -464,8 +464,6 @@ if [[ $# -eq 0 ]]; then
   exit 1
 fi
 
-cyw_module=${1^^}
-
 case ${1^^} in
   CYW-PCIE|CX|1CX|XA|1XA|2EA-PCIe)
     switch_to_cypress_pcie
@@ -491,7 +489,7 @@ case ${1^^} in
   XL-SDIO|1XL-SDIO|XS-SDIO|2XS-SDIO)
     switch_to_nxp_xl_sdio
     ;;
-  XL-PCIe|1XL-PCIe|XS-PCIe|2XS-PCIe)
+  XL-PCIE|1XL-PCIE|XS-PCIE|2XS-PCIE)
     switch_to_nxp_xl_pcie
     ;;
   CURRENT)

@@ -58,10 +58,12 @@ function handle_services() {
 function clean_up() {
   if [ -e /usr/sbin/wpa_supplicant ]; then
     rm /usr/sbin/wpa_supplicant
+    rm /usr/sbin/wpa_cli
   fi
 
   if [ -e /usr/sbin/hostapd ]; then
     rm /usr/sbin/hostapd
+    rm /usr/sbin/hostapd_cli
   fi
 
   if [ -e /etc/depmod.d/nxp_depmod.conf ]; then
@@ -97,7 +99,9 @@ function clean_up() {
 function prepare_for_nxp_sdio() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -126,7 +130,9 @@ EOT
 function prepare_for_nxp_xk_sdio() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -155,7 +161,9 @@ EOT
 function prepare_for_nxp_ds_sdio() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -184,7 +192,9 @@ EOT
 function prepare_for_nxp_ym_sdio() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -219,7 +229,9 @@ EOT
 function prepare_for_nxp_ym_pcie() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -253,7 +265,9 @@ EOT
 function prepare_for_nxp_xl_pcie() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
   
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -288,7 +302,21 @@ EOT
 function prepare_for_cypress() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.cyw /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.cyw /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.cyw /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.cyw /usr/sbin/hostapd_cli
+
+#  echo "IFX module : $cyw_module"
+
+  if [ $cyw_module == "2AE" ]; then
+     cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
+     cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2AE.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
+  fi
+
+  if [ $cyw_module == "2BC" ]; then
+     cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
+     cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2BC.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
+  fi
 
   depmod -a
 
@@ -333,6 +361,18 @@ function switch_to_nxp_sdio() {
   echo "Setup complete."
   echo ""
 }
+
+function switch_to_nxp_xl_sdio() {
+  echo ""
+  echo "Setting up for 1XL (NXP - SDIO)"
+  echo "Please wait for 15 seconds (one-time only)..."
+  fw_setenv fdt_file imx6dlea-com-kit_v2.dtb 2>/dev/null
+  fw_setenv bt_hint nxp
+  prepare_for_nxp_sdio
+  echo "Setup complete."
+  echo ""
+}
+
 
 function switch_to_nxp_xk_sdio() {
   echo ""
@@ -401,8 +441,8 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 1XA, 1WZ"
-  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL, 2DS, CURRENT or OFF"
+  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 2BC, 1XA, 2BZ, 1WZ, 2EA-SDIO, 2EA-PCIe"
+  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2DS, CURRENT or OFF"
   echo ""
 }
 
@@ -413,16 +453,16 @@ if [[ $# -eq 0 ]]; then
 fi
 
 case ${1^^} in
-  CYW-PCIE|CX|1CX|XA|1XA)
+  CYW-PCIE|CX|1CX|XA|1XA|2EA-PCIe)
     switch_to_cypress_pcie
     ;;
-  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|WZ|1WZ|1YN|2AE)
+  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|WZ|1WZ|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ)
     switch_to_cypress_sdio
     ;;
   ZM|1ZM)
     switch_to_nxp_sdio
     ;;
-  XK|1XK)
+  XK|1XK|2XK)
     switch_to_nxp_xk_sdio
     ;;
   DS|2DS)
@@ -434,7 +474,10 @@ case ${1^^} in
   YM-PCIE|1YM-PCIE)
     switch_to_nxp_ym_pcie
     ;;
-  XL|1XL)
+  XL-SDIO|1XL-SDIO|XS-SDIO|2XS-SDIO)
+    switch_to_nxp_xl_sdio
+    ;;
+  XL-PCIE|1XL-PCIE|XS-PCIE|2XS-PCIE)
     switch_to_nxp_xl_pcie
     ;;
   CURRENT)
