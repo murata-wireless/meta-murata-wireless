@@ -453,7 +453,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 case ${1^^} in
-  CYW-PCIE|CX|1CX|XA|1XA|2EA-PCIe)
+  CYW-PCIE|CX|1CX|XA|1XA|2EA-PCIE)
     switch_to_cypress_pcie
     ;;
   CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|WZ|1WZ|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ)

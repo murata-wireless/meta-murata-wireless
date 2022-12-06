@@ -377,7 +377,6 @@ function switch_to_nxp_xl_sdio() {
   echo ""
 }
 
-
 function switch_to_nxp_xk_sdio() {
   echo ""
   echo "Setting up for 1XK (NXP - SDIO)"
@@ -448,8 +447,8 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 1XA, 1WZ"
-  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL, 2DS, CURRENT or OFF"
+  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 2BC, 1XA, 2BZ, 1WZ, 2EA-SDIO, 2EA-PCIe"
+  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2DS, CURRENT or OFF"
   echo ""
 }
 
@@ -460,16 +459,16 @@ if [[ $# -eq 0 ]]; then
 fi
 
 case ${1^^} in
-  CYW-PCIE|CX|1CX|XA|1XA)
+  CYW-PCIE|CX|1CX|XA|1XA|2EA-PCIE)
     switch_to_cypress_pcie
     ;;
-  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|WZ|1WZ|1YN|2AE)
+  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|WZ|1WZ|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ)
     switch_to_cypress_sdio
     ;;
   ZM|1ZM)
     switch_to_nxp_sdio
     ;;
-  XK|1XK)
+  XK|1XK|2XK)
     switch_to_nxp_xk_sdio
     ;;
   DS|2DS)
@@ -481,7 +480,10 @@ case ${1^^} in
   YM-PCIE|1YM-PCIE)
     switch_to_nxp_ym_pcie
     ;;
-  XL|1XL)
+  XL-SDIO|1XL-SDIO|XS-SDIO|2XS-SDIO)
+    switch_to_nxp_xl_sdio
+    ;;
+  XL-PCIE|1XL-PCIE|XS-PCIE|2XS-PCIE)
     switch_to_nxp_xl_pcie
     ;;
   CURRENT)
