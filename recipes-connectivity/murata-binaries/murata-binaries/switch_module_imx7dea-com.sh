@@ -5,6 +5,8 @@
 
 VERSION="1.0"
 
+cyw_module="none"
+
 function current() {
   echo ""
   echo "Current setup:"
@@ -331,7 +333,7 @@ function off() {
 
 function switch_to_cypress_sdio() {
   echo ""
-  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE (Cypress - SDIO)"
+  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ (Cypress - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx7dea-com-kit_v2.dtb 2>/dev/null
   fw_setenv cmd_custom
@@ -343,7 +345,7 @@ function switch_to_cypress_sdio() {
 
 function switch_to_cypress_pcie() {
   echo ""
-  echo "Setting up for 1CX, 1VA, 1XA (Cypress - PCIe)"
+  echo "Setting up for 1CX, 1XA (Cypress - PCIe)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx7dea-com-kit_v2-pcie.dtb 2>/dev/null
   fw_setenv cmd_custom
@@ -370,7 +372,7 @@ function switch_to_nxp_xl_sdio() {
   echo ""
   echo "Setting up for 1XL (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
+  fw_setenv fdt_file imx7dea-com-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_sdio
   echo "Setup complete."
@@ -457,6 +459,8 @@ if [[ $# -eq 0 ]]; then
   usage
   exit 1
 fi
+
+cyw_module=${1^^}
 
 case ${1^^} in
   CYW-PCIE|CX|1CX|XA|1XA|2EA-PCIE)
