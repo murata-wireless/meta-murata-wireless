@@ -1,5 +1,5 @@
 SUMMARY = "Murata Binaries"
-LICENSE = "BSD"
+LICENSE = "BSD-3-Clause"
 
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
