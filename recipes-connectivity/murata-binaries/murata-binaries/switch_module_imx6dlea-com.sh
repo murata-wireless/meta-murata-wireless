@@ -333,7 +333,7 @@ function off() {
 
 function switch_to_cypress_sdio() {
   echo ""
-  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ (Cypress - SDIO)"
+  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA (Cypress - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx6dlea-com-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint cypress
@@ -344,7 +344,7 @@ function switch_to_cypress_sdio() {
 
 function switch_to_cypress_pcie() {
   echo ""
-  echo "Setting up for 1CX, 1XA (Cypress - PCIe)"
+  echo "Setting up for 1CX, 1XA, 2EA (Cypress - PCIe)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx6dlea-com-kit_v2-pcie.dtb 2>/dev/null
   fw_setenv bt_hint cypress
@@ -366,7 +366,7 @@ function switch_to_nxp_sdio() {
 
 function switch_to_nxp_xl_sdio() {
   echo ""
-  echo "Setting up for 1XL (NXP - SDIO)"
+  echo "Setting up for 1XL, 2XS (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx6dlea-com-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint nxp
@@ -377,7 +377,7 @@ function switch_to_nxp_xl_sdio() {
 
 function switch_to_nxp_xk_sdio() {
   echo ""
-  echo "Setting up for 1XK (NXP - SDIO)"
+  echo "Setting up for 1XK, 2XK (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx6dlea-com-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint nxp

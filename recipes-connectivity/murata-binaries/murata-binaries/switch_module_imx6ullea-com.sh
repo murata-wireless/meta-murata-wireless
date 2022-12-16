@@ -333,7 +333,7 @@ function off() {
 
 function switch_to_cypress_sdio() {
   echo ""
-  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ (Cypress - SDIO)"
+  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA (Cypress - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx6ullea-com-kit_v2.dtb 2>/dev/null
   fw_setenv cmd_custom
@@ -345,7 +345,7 @@ function switch_to_cypress_sdio() {
 
 function switch_to_cypress_pcie() {
   echo ""
-  echo "Setting up for 1CX, 1XA (Cypress - PCIe)"
+  echo "Setting up for 1CX, 1XA, 2EA (Cypress - PCIe)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx6ullea-com-kit_v2-pcie.dtb 2>/dev/null
   fw_setenv cmd_custom
@@ -370,7 +370,7 @@ function switch_to_nxp_sdio() {
 
 function switch_to_nxp_xl_sdio() {
   echo ""
-  echo "Setting up for 1XL (NXP - SDIO)"
+  echo "Setting up for 1XL, 2XS (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx6ullea-com-kit_v2.dtb 2>/dev/null
   # Limiting SDIO frequency to 50MHz
@@ -383,7 +383,7 @@ function switch_to_nxp_xl_sdio() {
 
 function switch_to_nxp_xk_sdio() {
   echo ""
-  echo "Setting up for 1XK (NXP - SDIO)"
+  echo "Setting up for 1XK, 2XK (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx6ullea-com-kit_v2.dtb 2>/dev/null
   # Limiting SDIO frequency to 50MHz
@@ -455,7 +455,7 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 2BC, 1XA, 2BZ, 1WZ, 2EA-SDIO, 2EA-PCIe"
+  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 2BC, 1XA, 2BZ, 2EA-SDIO, 2EA-PCIe"
   echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2DS, CURRENT or OFF"
   echo ""
 }
