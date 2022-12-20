@@ -4,7 +4,7 @@ LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
 SRC_URI = " \
-	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-5-10-72;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
+	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-5-15-22;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=ebirah;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=ebirah;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-ebirah;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
@@ -26,7 +26,7 @@ SRC_URI = " \
 	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
 "
 
-SRCREV_nxp-linux-calibration="aa3d67d6c01181ef61e29d43feae612f5bfdbdb5"
+SRCREV_nxp-linux-calibration="8130ff1339f77329aaac1ec3d63d96caf12f0798"
 SRCREV_cyw-fmac-fw="8bb9d9c845182becc809eda17afc35edda32607f"
 SRCREV_cyw-fmac-nvram="f1786018c8fead61e78e04a7e9651c7250651413"
 SRCREV_cyw-bt-patch="bed4497c1642af892086e0b65b67606a1fa5e3be"
