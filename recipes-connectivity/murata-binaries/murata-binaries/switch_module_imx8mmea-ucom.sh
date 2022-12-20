@@ -330,6 +330,12 @@ function prepare_for_cypress() {
      cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2BC.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
   fi
 
+  if [ $cyw_module == "2BZ" ]; then
+     fw_setenv cmd_custom "fdt list mmc0/bcrmf@1\; fdt rm mmc0/bcrmf@1 interrupt-parent\; fdt rm mmc0/bcrmf@1 interrupts\; fdt rm mmc0/bcrmf@1 interrupt-names\; fdt list mmc0/bcrmf@1"
+  else
+     fw_setenv cmd_custom
+  fi
+
   depmod -a
 
   # Disable NXP service and enable Cypress service
