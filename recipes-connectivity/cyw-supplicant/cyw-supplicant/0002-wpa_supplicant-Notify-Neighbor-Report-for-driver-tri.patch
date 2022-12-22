@@ -1,7 +1,7 @@
-From 43352b8ec8a43194bba6ad3a9c3368fd74e75ca0 Mon Sep 17 00:00:00 2001
+From edaea7ba3a1b1d3fa032b5dc639e814faf41ee2c Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Tue, 29 Oct 2019 15:22:57 +0800
-Subject: [PATCH 02/15] wpa_supplicant: Notify Neighbor Report for
+Subject: [PATCH 02/34] wpa_supplicant: Notify Neighbor Report for
  driver-triggered request
 
 Sending a Neighbor Report request can be triggered by either supplicant
@@ -14,7 +14,7 @@ Signed-off-by: Chung-Hsien Hsu <chung-hsien.hsu@infineon.com>
  1 file changed, 83 insertions(+), 17 deletions(-)
 
 diff --git a/wpa_supplicant/rrm.c b/wpa_supplicant/rrm.c
-index a9c7b90fd..92a8e2858 100644
+index cf107ebaf..16e3ab318 100644
 --- a/wpa_supplicant/rrm.c
 +++ b/wpa_supplicant/rrm.c
 @@ -52,6 +52,71 @@ void wpas_rrm_reset(struct wpa_supplicant *wpa_s)

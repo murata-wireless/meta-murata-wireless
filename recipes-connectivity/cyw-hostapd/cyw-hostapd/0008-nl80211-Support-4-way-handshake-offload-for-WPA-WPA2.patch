@@ -1,7 +1,7 @@
-From 0e45b079b1e26487f41d29ec437d4fe39f1d6513 Mon Sep 17 00:00:00 2001
+From 679010794bc567e274283356f5031a205774f7c4 Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Tue, 10 Dec 2019 14:02:39 -0600
-Subject: [PATCH 08/15] nl80211: Support 4-way handshake offload for
+Subject: [PATCH 08/34] nl80211: Support 4-way handshake offload for
  WPA/WPA2-PSK in AP mode
 
 If driver advertises support for WPA/WPA2-PSK 4-way handshake offload in
@@ -16,13 +16,13 @@ Signed-off-by: Chung-Hsien Hsu <chung-hsien.hsu@infineon.com>
  3 files changed, 39 insertions(+), 3 deletions(-)
 
 diff --git a/src/drivers/driver.h b/src/drivers/driver.h
-index 3a951f843..750b6d679 100644
+index 7cfa92ed8..a42ec5e1f 100644
 --- a/src/drivers/driver.h
 +++ b/src/drivers/driver.h
-@@ -1532,6 +1532,27 @@ struct wpa_driver_ap_params {
- 	 * 2 = both hunting-and-pecking loop and hash-to-element enabled
+@@ -1590,6 +1590,27 @@ struct wpa_driver_ap_params {
+ 	 * Unsolicited broadcast Probe Response template length
  	 */
- 	int sae_pwe;
+ 	size_t unsol_bcast_probe_resp_tmpl_len;
 +
 +	/**
 +	 * passphrase - RSN passphrase for PSK
@@ -47,7 +47,7 @@ index 3a951f843..750b6d679 100644
  };
  
  struct wpa_driver_mesh_bss_params {
-@@ -1811,8 +1832,9 @@ struct wpa_driver_capa {
+@@ -1872,8 +1893,9 @@ struct wpa_driver_capa {
  #define WPA_DRIVER_FLAGS_SET_KEYS_AFTER_ASSOC 0x00000002
  /** Driver takes care of all DFS operations */
  #define WPA_DRIVER_FLAGS_DFS_OFFLOAD			0x00000004
@@ -59,7 +59,7 @@ index 3a951f843..750b6d679 100644
  #define WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X		0x00000008
  /** Driver is for a wired Ethernet interface */
  #define WPA_DRIVER_FLAGS_WIRED		0x00000010
-@@ -1937,7 +1959,7 @@ struct wpa_driver_capa {
+@@ -1998,7 +2020,7 @@ struct wpa_driver_capa {
  #define WPA_DRIVER_FLAGS_SELF_MANAGED_REGULATORY       0x0080000000000000ULL
  /** Driver supports FTM responder functionality */
  #define WPA_DRIVER_FLAGS_FTM_RESPONDER		0x0100000000000000ULL
@@ -68,20 +68,20 @@ index 3a951f843..750b6d679 100644
  #define WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_PSK	0x0200000000000000ULL
  /** Driver supports a separate control port TX for EAPOL frames */
  #define WPA_DRIVER_FLAGS_CONTROL_PORT		0x0400000000000000ULL
-@@ -1959,6 +1981,8 @@ struct wpa_driver_capa {
- #define WPA_DRIVER_FLAGS2_CONTROL_PORT_TX_STATUS 0x0000000000000002ULL
+@@ -2037,6 +2059,8 @@ struct wpa_driver_capa {
+ #define WPA_DRIVER_FLAGS2_AP_SME		0x0000000000000100ULL
  /** Driver supports SAE authentication offload */
- #define WPA_DRIVER_FLAGS2_SAE_OFFLOAD		0x0000000000000004ULL
+ #define WPA_DRIVER_FLAGS2_SAE_OFFLOAD		0x0000000000000200ULL
 +/** Driver supports 4-way handshake offload for WPA-Personal in AP mode */
-+#define WPA_DRIVER_FLAGS2_4WAY_HANDSHAKE_AP_PSK	0x0000000000000008ULL
++#define WPA_DRIVER_FLAGS2_4WAY_HANDSHAKE_AP_PSK	0x0000000000000400ULL
  	u64 flags2;
  
  #define FULL_AP_CLIENT_STATE_SUPP(drv_flags) \
 diff --git a/src/drivers/driver_nl80211.c b/src/drivers/driver_nl80211.c
-index ef21f43b8..fdf89c5cb 100644
+index 91e8d44d8..f228a0715 100644
 --- a/src/drivers/driver_nl80211.c
 +++ b/src/drivers/driver_nl80211.c
-@@ -4471,6 +4471,14 @@ static int wpa_driver_nl80211_set_ap(void *priv,
+@@ -4677,6 +4677,14 @@ static int wpa_driver_nl80211_set_ap(void *priv,
  	    nla_put_u32(msg, NL80211_ATTR_CIPHER_SUITE_GROUP, suite))
  		goto fail;
  
@@ -97,10 +97,10 @@ index ef21f43b8..fdf89c5cb 100644
  		wpa_hexdump_buf(MSG_DEBUG, "nl80211: beacon_ies",
  				params->beacon_ies);
 diff --git a/src/drivers/driver_nl80211_capa.c b/src/drivers/driver_nl80211_capa.c
-index 08c018ebf..86b646c07 100644
+index a443b7c87..dc4988c7c 100644
 --- a/src/drivers/driver_nl80211_capa.c
 +++ b/src/drivers/driver_nl80211_capa.c
-@@ -589,6 +589,10 @@ static void wiphy_info_ext_feature_flags(struct wiphy_info_data *info,
+@@ -594,6 +594,10 @@ static void wiphy_info_ext_feature_flags(struct wiphy_info_data *info,
  			      NL80211_EXT_FEATURE_4WAY_HANDSHAKE_STA_1X))
  		capa->flags |= WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X;
  

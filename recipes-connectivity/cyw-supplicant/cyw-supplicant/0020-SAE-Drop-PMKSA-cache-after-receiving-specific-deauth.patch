@@ -1,0 +1,44 @@
+From a642723299cd694162b4c04a22162be791bd6c7e Mon Sep 17 00:00:00 2001
+From: Kurt Lee <kurt.lee@cypress.com>
+Date: Thu, 24 Feb 2022 03:57:22 -0600
+Subject: [PATCH 20/34] SAE: Drop PMKSA cache after receiving specific deauth
+
+As a STA mode, when receiving deauth frame with reason code
+WLAN_REASON_PREV_AUTH_NOT_VALID, it should drop its PMKSA cache.
+---
+ wpa_supplicant/events.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/wpa_supplicant/events.c b/wpa_supplicant/events.c
+index fe8dbd91d..bfd49ee43 100644
+--- a/wpa_supplicant/events.c
++++ b/wpa_supplicant/events.c
+@@ -4159,6 +4159,25 @@ static void wpas_event_disconnect(struct wpa_supplicant *wpa_s, const u8 *addr,
+ 	}
+ #endif /* CONFIG_P2P */
+ 
++#ifdef CONFIG_SAE
++	if (reason_code == WLAN_REASON_PREV_AUTH_NOT_VALID) {
++		const u8 *bssid = wpa_s->bssid;
++
++		if (is_zero_ether_addr(bssid))
++			bssid = wpa_s->pending_bssid;
++
++		if ((!is_zero_ether_addr(bssid) ||
++			(wpa_s->wpa_state >= WPA_AUTHENTICATING)) &&
++			wpa_s->current_ssid &&
++			wpa_key_mgmt_sae(wpa_s->current_ssid->key_mgmt)) {
++			wpa_dbg(wpa_s, MSG_DEBUG, "SAE: Drop PMKSA "
++				"cache entry");
++			wpa_sm_aborted_cached(wpa_s->wpa);
++			wpa_sm_pmksa_cache_flush(wpa_s->wpa,
++				wpa_s->current_ssid);
++		}
++	}
++#endif /* CONFIG_SAE */
+ 	wpa_supplicant_event_disassoc_finish(wpa_s, reason_code,
+ 					     locally_generated);
+ }
+-- 
+2.17.1
+

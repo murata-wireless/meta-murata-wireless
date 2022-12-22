@@ -2,7 +2,7 @@ SUMMARY = "User mode helpers for the hostap driver"
 DESCRIPTION = "The hostap driver supports Host AP mode, it allows for IEEE 802.11 \
 management functions on the host computer and allows the system to act as an access point."
 HOMEPAGE = "https://w1.fi"
-LICENSE = "GPLv2"
+LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://COPYING;md5=0636e73ff0215e8d672dc4c32c317bb3 \
 			file://util.c;beginline=1;endline=9;md5=d3b9280851302e5ba34e5fb717489b6d"
 SECTION = "kernel/userland"
