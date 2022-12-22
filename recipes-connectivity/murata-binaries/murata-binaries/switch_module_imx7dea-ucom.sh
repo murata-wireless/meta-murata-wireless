@@ -430,7 +430,7 @@ function switch_to_nxp_ym_pcie() {
 
 function switch_to_nxp_xl_pcie() {
   echo ""
-  echo "Setting up for 1XL (NXP - PCIe)"
+  echo "Setting up for 1XL, 2XS (NXP - PCIe)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx7dea-ucom-kit_v2-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1xl_pcie
@@ -466,7 +466,7 @@ case ${1^^} in
   CYW-PCIE|CX|1CX|XA|1XA|2EA-PCIE)
     switch_to_cypress_pcie
     ;;
-  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|WZ|1WZ|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ)
+  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ)
     switch_to_cypress_sdio
     ;;
   ZM|1ZM)

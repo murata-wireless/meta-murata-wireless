@@ -8,8 +8,8 @@ SRC_URI = " \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=ebirah;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=ebirah;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-ebirah;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
-        git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=drogon;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
-        git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=drogon;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
+        git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=ebirah;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
+        git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=ebirah;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
 	file://switch_module_imx6dlea-com.sh \
 	file://switch_module_imx6qea-com.sh \
 	file://switch_module_imx6sxea-com.sh \

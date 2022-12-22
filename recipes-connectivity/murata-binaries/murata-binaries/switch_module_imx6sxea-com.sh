@@ -322,7 +322,7 @@ function prepare_for_cypress() {
 
 # For 2BZ, enabling only in-band interrupt and no OOB
   if [ $cyw_module == "2BZ" ]; then
-     fw_setenv cmd_custom "fdt list mmc0/bcrmf@1\; fdt rm mmc0/bcrmf@1 interrupt-parent\; fdt rm mmc0/bcrmf@1 interrupts\; fdt rm mmc0/bcrmf@1 interrupt-names\; fdt list mmc0/bcrmf@1"
+     fw_setenv cmd_custom "fdt list mmc1/bcrmf@1\; fdt rm mmc1/bcrmf@1 interrupt-parent\; fdt rm mmc1/bcrmf@1 interrupts\; fdt rm mmc1/bcrmf@1 interrupt-names\; fdt list mmc1/bcrmf@1"
   else
      fw_setenv cmd_custom
   fi
@@ -430,7 +430,7 @@ function switch_to_nxp_ym_pcie() {
 
 function switch_to_nxp_xl_pcie() {
   echo ""
-  echo "Setting up for 1XL (NXP - PCIe)"
+  echo "Setting up for 1XL, 2XS (NXP - PCIe)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx6sxea-com-kit_v2-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1xl_pcie
@@ -466,7 +466,7 @@ case ${1^^} in
   CYW-PCIE|CX|1CX|XA|1XA|2EA-PCIE)
     switch_to_cypress_pcie
     ;;
-  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|WZ|1WZ|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ)
+  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ)
     switch_to_cypress_sdio
     ;;
   ZM|1ZM)
