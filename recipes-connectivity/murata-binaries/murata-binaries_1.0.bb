@@ -10,7 +10,6 @@ SRC_URI = " \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-ebirah;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
         git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=ebirah;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
         git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=ebirah;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
-	file://switch_module.sh \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 	file://cyfmac55572-pcie.txt \
         file://cyfmac55572-sdio.txt \
@@ -180,7 +179,7 @@ do_install () {
 
 
 #	Based on MACHINE type
-	install -m 755 ${S}/switch_module.sh ${D}/usr/sbin/switch_module.sh
+#	install -m 755 ${S}/switch_module.sh ${D}/usr/sbin/switch_module.sh
 
 #	Install nxp linux calibration files
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1XK/* ${D}/lib/firmware/nxp/murata/files/1XK
