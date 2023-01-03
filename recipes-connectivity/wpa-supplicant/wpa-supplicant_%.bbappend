@@ -1,4 +1,4 @@
-do_install_append () {
+do_install:append () {
     	install -d ${D}${sbindir}
 	install -m 755 ${D}${sbindir}/wpa_supplicant ${D}${sbindir}/wpa_supplicant.nxp
 	install -m 755 ${D}${sbindir}/wpa_cli ${D}${sbindir}/wpa_cli.nxp
