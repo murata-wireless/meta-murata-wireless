@@ -26,7 +26,7 @@ SRCREV_default = "${AUTOREV}"
 
 S = "${WORKDIR}"
 B = "${WORKDIR}"
-DEPENDS = " libnl wpa-supplicant cyw-supplicant linux-firmware"
+DEPENDS = " libnl wpa-supplicant linux-firmware"
 
 do_compile () {
 	echo "Compiling: "
