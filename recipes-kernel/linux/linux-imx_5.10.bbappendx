@@ -1,9 +1,9 @@
 # Copyright (C) 2016 Freescale Semiconductor
 # Released under the MIT license (see COPYING.MIT for the terms)
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-${PV}:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}-${PV}:"
 
-SRC_URI_append = " file://0001-defconfig.patch \
+SRC_URI:append = " file://0001-defconfig.patch \
 		   file://0002-murata-dts.patch"
 
 
