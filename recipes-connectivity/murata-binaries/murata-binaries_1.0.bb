@@ -4,7 +4,6 @@ LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
 SRC_URI = " \
-	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-5-15-32;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=ebirah;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=ebirah;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-ebirah;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
