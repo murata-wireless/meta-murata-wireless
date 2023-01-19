@@ -10,22 +10,15 @@ SRC_URI = " \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-ebirah;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
         git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=ebirah;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
         git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=ebirah;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
-	git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git;protocol=http;branch=main \
-	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 	file://set_module.sh \
 	file://cyfmac55572-pcie.txt \
         file://cyfmac55572-sdio.txt \
 	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
 "
-SRC_URI += " \
-           ${IMX_FIRMWARE_SRC};branch=master;destsuffix=imx-firmware;name=imx-firmware \
-"
-SRCREV_imx-firmware = "685ace656284167376241c804827f046b984ce25"
 
-SRCREV_nxp-linux-calibration="a33c54c01be8ec8bef7ffbdb61459fbdc2486b0a"
 SRCREV_cyw-fmac-fw="8bb9d9c845182becc809eda17afc35edda32607f"
 SRCREV_cyw-fmac-nvram="f1786018c8fead61e78e04a7e9651c7250651413"
-SRCREV_cyw-bt-patch="bed4497c1642af892086e0b65b67606a1fa5e3be"
+SRCREV_cyw-bt-patch="71b3bf2e197a93a578395feb5ebf5e328f46ebbc"
 SRCREV_cyw-fmac-utils-imx32="e248804b6ba386fedcd462ddd9394f42f73a17af"
 SRCREV_cyw-fmac-utils-imx64="1bc78d68f9609290b2f6578516011c57691f7815"
 
@@ -72,7 +65,7 @@ do_install () {
         install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd ${D}${sysconfdir}/firmware/BCM4345C0_003.001.025.0187.0366.1MW.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd ${D}${sysconfdir}/firmware/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW43341B0.1BW.hcd ${D}${sysconfdir}/firmware/BCM43341B0.1BW.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4343A1_001.002.009.0159.0528.1DX.hcd ${D}${sysconfdir}/firmware/BCM4343A1_001.002.009.0159.0528.1DX.hcd
+        install -m 444 ${S}/cyw-bt-patch/BCM43430A1_001.002.009.0159.0528.1DX.hcd ${D}${sysconfdir}/firmware/BCM43430A1_001.002.009.0159.0528.1DX.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW4350C0.1BB.hcd ${D}${sysconfdir}/firmware/BCM4350C0.1BB.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4356A2_001.003.015.0112.0410.1CX.hcd ${D}${sysconfdir}/firmware/BCM4356A2_001.003.015.0112.0410.1CX.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd ${D}${sysconfdir}/firmware/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd
@@ -89,7 +82,7 @@ do_install () {
         install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0300.0266.1LV.dAnt.hcd ${D}${sysconfdir}/firmware/murata-master/_BCM43012C0_003.001.015.0300.0266.1LV.dAnt.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW43341B0.1BW.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43341B0.1BW.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4343A1_001.002.009.0159.0528.1DX.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM4343A1_001.002.009.0159.0528.1DX.hcd
+        install -m 444 ${S}/cyw-bt-patch/BCM43430A1_001.002.009.0159.0528.1DX.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43430A1_001.002.009.0159.0528.1DX.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW4350C0.1BB.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4350C0.1BB.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4356A2_001.003.015.0112.0410.1CX.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4356A2_001.003.015.0112.0410.1CX.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd ${D}${sysconfdir}/firmware/murata-master/_BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd
