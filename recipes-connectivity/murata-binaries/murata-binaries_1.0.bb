@@ -15,7 +15,7 @@ SRC_URI = " \
 	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
 "
 
-SRCREV_cyw-fmac-fw="8bb9d9c845182becc809eda17afc35edda32607f"
+SRCREV_cyw-fmac-fw="48c4a929cc4cc18686d5dc19b13b9016c9e2b863"
 SRCREV_cyw-fmac-nvram="f1786018c8fead61e78e04a7e9651c7250651413"
 SRCREV_cyw-bt-patch="71b3bf2e197a93a578395feb5ebf5e328f46ebbc"
 SRCREV_cyw-fmac-utils-imx32="e248804b6ba386fedcd462ddd9394f42f73a17af"
