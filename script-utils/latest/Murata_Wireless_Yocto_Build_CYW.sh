@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=08222022
+VERSION=01232023
 
 
 ###################################################################################################
@@ -34,6 +34,7 @@ VERSION=08222022
 #           |              |              |       Murata_Wireless_Yocto_Build_CYW.sh.
 #           |              |              |    b) Rename release tag
 #  1.19     | 08/22/2022   |    RC        |    Added support for FMAC Drogon.
+#  1.20     | 01/23/2023   |    JK        |    Added support for FMAC Ebirah.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -67,6 +68,7 @@ SPIGA_FMAC_INDEX="5"
 BARAGON_FMAC_INDEX="6"
 CYNDER_FMAC_INDEX="7"
 DROGON_FMAC_INDEX="8"
+EBIRAH_FMAC_INDEX="9"
 
 MOTHRA_FMAC_STR="mothra"
 MANDA_FMAC_STR="manda"
@@ -76,14 +78,17 @@ SPIGA_FMAC_STR="spiga"
 BARAGON_FMAC_STR="baragon"
 CYNDER_FMAC_STR="cynder"
 DROGON_FMAC_STR="drogon"
+EBIRAH_FMAC_STR="ebirah"
 
-LINUX_KERNEL_5_10_52=0
-LINUX_KERNEL_5_4_47=1
-LINUX_KERNEL_4_14_98=2
-LINUX_KERNEL_4_9_123=3
-LINUX_KERNEL_4_1_15=4
+LINUX_KERNEL_5_15_32=0
+LINUX_KERNEL_5_10_52=1
+LINUX_KERNEL_5_4_47=2
+LINUX_KERNEL_4_14_98=3
+LINUX_KERNEL_4_9_123=4
+LINUX_KERNEL_4_1_15=5
 
 # Linux Kernel Strings
+LINUX_KERNEL_5_15_32_STR="5.15.32"
 LINUX_KERNEL_5_10_52_STR="5.10.52"
 LINUX_KERNEL_5_4_47_STR="5.4.47"
 LINUX_KERNEL_4_14_98_STR="4.14.98"
@@ -97,6 +102,11 @@ iMXYoctoRelease=""
 YoctoBranch=""
 fmacversion=""
 linuxVersion=""
+
+# Kirkstone
+iMXkirkstoneebirahStableReleaseTag="imx-kirkstone-ebirah_r1.0"
+iMXkirkstoneebirahDeveloperRelease="imx-kirkstone-ebirah"
+
 
 # Hardknott
 iMXhardknottcynderStableReleaseTag="imx-hardknott-cynder_r1.0"
@@ -162,6 +172,7 @@ iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
 iMXkrogothmothraStableReleaseTag="imx-krogoth-mothra_r1.1"
 iMXkrogothmothraDeveloperRelease="imx-krogoth-mothra"
 
+imxkirkstoneYocto="5.15.32_2.0.0 GA"
 imxhardknottYocto="5.10.52_2.1.0 GA"
 imxzeusYocto="5.4.47_2.2.0 GA"
 imxsumoYocto="4.14.98_2.3.0 GA"
@@ -239,6 +250,7 @@ else
 	echo " "
 	echo -e "${RED}Murata: Skipping repo tool installation"
 	echo -e "Exiting script.....${NC}"
+	echo 1
 fi
 
 # Ubuntu Distro and Version verified. Now add necessary commands.
@@ -529,16 +541,18 @@ while true; do
 	echo "|Entry|   Linux Kernel   | Yocto      | FMAC Supported                   |"
 	echo "|-----|------------------|------------|----------------------------------|"
 	if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
-		echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
-		echo "|  1  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga,Zigra              |"
-		echo "|  2  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga,Zigra,Kong,Manda   |"
-		echo "|  3  |     ${LINUX_KERNEL_4_9_123_STR}       | rocko     | Baragon,Spiga,Zigra,Kong,Manda   |"
-		echo "|  4  |     ${LINUX_KERNEL_4_1_15_STR}        | krogoth   | Baragon,Spiga,Zigra,Manda,Mothra |"
+		echo "|  0  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah                           |"
+		echo "|  1  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
+		echo "|  2  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga,Zigra              |"
+		echo "|  3  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga,Zigra,Kong,Manda   |"
+		echo "|  4  |     ${LINUX_KERNEL_4_9_123_STR}       | rocko     | Baragon,Spiga,Zigra,Kong,Manda   |"
+		echo "|  5  |     ${LINUX_KERNEL_4_1_15_STR}        | krogoth   | Baragon,Spiga,Zigra,Manda,Mothra |"
 	else
-		echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
-		echo "|  1  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga                    |"
-		echo "|  2  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga                    |"
-		echo "|  3  |     ${LINUX_KERNEL_4_9_123_STR}       | rocko     | Baragon,Spiga                    |"
+		echo "|  0  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah                           |"
+		echo "|  1  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
+		echo "|  2  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga                    |"
+		echo "|  3  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga                    |"
+		echo "|  4  |     ${LINUX_KERNEL_4_9_123_STR}       | rocko     | Baragon,Spiga                    |"
 	fi
 
 	echo "--------------------------------------------------------------------------"
@@ -566,6 +580,10 @@ while true; do
 			linuxVersion=${LINUX_KERNEL_5_10_52_STR}
 			break
 			;;
+		$LINUX_KERNEL_5_15_32)
+			linuxVersion=${LINUX_KERNEL_5_15_32_STR}
+			break
+			;;
 		*)
 			echo -e "${RED}That is not a valid choice, try again.${NC}"
 			echo $'\n'
@@ -587,6 +605,10 @@ while true; do
 			;;
 		$LINUX_KERNEL_5_10_52)
 			linuxVersion=${LINUX_KERNEL_5_10_52_STR}
+			break
+			;;
+		$LINUX_KERNEL_5_15_32)
+			linuxVersion=${LINUX_KERNEL_5_15_32_STR}
 			break
 			;;
 		*)
@@ -1052,6 +1074,38 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 			done
 			break
 			;;
+		$LINUX_KERNEL_5_15_32)
+			while true; do
+				echo     "-------------------------------------------------------------"
+				echo     "| Entry | "\""fmac"\"" version                                    |"
+				echo     "|-------|---------------------------------------------------|"
+				echo -e  "|  0.   | ${EBIRAH_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "-------------------------------------------------------------"
+				read -p "Select which entry? " FMAC_VERSION
+				case $FMAC_VERSION in
+				0)
+					# for EBIRAH
+					FMAC_VERSION=${EBIRAH_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: kirkstone-ebirah"
+						BRANCH_RELEASE_NAME="$iMXkirkstoneebirahStableReleaseTag"
+					else
+						#echo "DEBUG:: kirkstone-ebirah"
+						BRANCH_RELEASE_NAME="$iMXkirkstoneebirahDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxkirkstoneYocto"
+					YoctoBranch="kirkstone"
+					fmacversion=${EBIRAH_FMAC_STR}
+					break
+					;;
+				*)
+					echo -e "${RED}That is not a valid choice, try again.${NC}"
+					echo $'\n'
+					;;
+				esac
+			done
+			break
+			;;
 		*)
 			echo -e "${RED}That is not a valid choice, try again.${NC}"
 			;;
@@ -1264,6 +1318,40 @@ else
 			done
 			break
 			;;
+		$LINUX_KERNEL_5_15_32)
+			while true; do
+				echo     "-------------------------------------------------------------"
+				echo     "| Entry | "\""fmac"\"" version                                    |"
+				echo     "|-------|---------------------------------------------------|"
+				echo -e  "|  0.   | ${EBIRAH_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "-------------------------------------------------------------"
+				read -p "Select which entry? " FMAC_VERSION
+				case $FMAC_VERSION in
+				0)
+					# for EBIRAH
+					FMAC_VERSION=${EBIRAH_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: kirkstone-ebirah"
+						BRANCH_RELEASE_NAME="$iMXkirkstoneebirahStableReleaseTag"
+					else
+						#echo "DEBUG:: kirkstone-ebirah"
+						BRANCH_RELEASE_NAME="$iMXkirkstoneebirahDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxkirkstoneYocto"
+					YoctoBranch="kirkstone"
+					fmacversion=${EBIRAH_FMAC_STR}
+					break
+					;;
+				*)
+					echo -e "${RED}That is not a valid choice, try again.${NC}"
+					echo $'\n'
+					;;
+				esac
+			done
+			break
+			;;
+
+
 		*)
 			echo -e "${RED}That is not a valid choice, try again.${NC}"
 			;;
@@ -1792,6 +1880,121 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 			echo $'\n'
 			break
 			;;
+		$LINUX_KERNEL_5_15_32)
+			while true; do
+				echo " "
+				echo "${STEP_COUNT}) Select Target"
+				echo "----------------"
+				echo " "
+				echo "---------------------------------------------------------"
+				echo "| Entry  |    Target Name    | NXP i.MX EVK Part Number |"
+				echo "|--------|-------------------|--------------------------|"
+				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
+				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
+				echo "|  3     |  imx6sxsabresd    | MCIMX6SX-SDB             |"
+				echo "|  4     |  imx6qsabresd     | MCIMX6Q-SDB              |"
+				echo "|  5     |  imx6qpsabresd    | MCIMX6QP-SDB             |"
+				echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
+				echo "|  7     |  imx7dsabresd     | MCIMX7SABRE              |"
+				echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
+				echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
+				echo "|  10    |  imx8mmevk        | 8MMINILPD4-EVK           |"
+				echo "|  11    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
+				echo "|  12    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
+				echo "|  13    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
+				echo "---------------------------------------------------------"
+				echo -n "Select your entry: "
+				read TARGET_OPTION
+				case $TARGET_OPTION in
+				1)
+					TARGET_NAME=imx6ulevk
+					PART_NUMBER=MCIMX6UL-EVK
+					break
+					;;
+				2)
+					TARGET_NAME=imx6ull14x14evk
+					PART_NUMBER=MCIMX6ULL-EVK
+					break
+					;;
+				3)
+					TARGET_NAME=imx6sxsabresd
+					PART_NUMBER=MCIMX6SX-SDB
+					break
+					;;
+				4)
+					TARGET_NAME=imx6qsabresd
+					PART_NUMBER=MCIMX6Q-SDB
+					break
+					;;
+				5)
+					TARGET_NAME=imx6qpsabresd
+					PART_NUMBER=MCIMX6QP-SDB
+					break
+					;;
+				6)
+					TARGET_NAME=imx6dlsabresd
+					PART_NUMBER=MCIMX6Q-SDB
+					break
+					;;
+				7)
+					TARGET_NAME=imx7dsabresd
+					PART_NUMBER=MCIMX7SABRE
+					break
+					;;
+				8)
+					TARGET_NAME=imx7ulpevk
+					PART_NUMBER=MCIMX7ULP-EVK
+					break
+					;;
+				9)
+					TARGET_NAME=imx8mqevk
+					PART_NUMBER=MCIMX8M-EVKB
+					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				10)
+					TARGET_NAME=imx8mmevk
+					PART_NUMBER=8MMINILPD4-EVK
+					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				11)
+					TARGET_NAME=imx8mmddr4evk
+					PART_NUMBER=8MMINID4-EVK
+					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				12)
+					TARGET_NAME=imx8mnddr4evk
+					PART_NUMBER=8MNANOD4-EVK
+					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				13)
+					TARGET_NAME=imx8qxpmek
+					PART_NUMBER=MCIMX8QXP-CPU
+					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				*)
+					echo -e "${RED}That is not a valid choice, try again.${NC}"
+					;;
+				esac
+			done
+			echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
+			echo $'\n'
+			break
+			;;
 		*)
 			echo -e "${RED}That is not a valid choice, try again.${NC}"
 			;;
@@ -2167,6 +2370,89 @@ else
 			echo $'\n'
 			break
 			;;
+
+		$LINUX_KERNEL_5_15_32)
+			while true; do
+				echo " "
+				echo "${STEP_COUNT}) Select Target"
+				echo "----------------"
+				echo " "
+				echo "---------------------------------------------------------"
+				echo "| Entry  |    Target Name    | NXP i.MX EVK Part Number |"
+				echo "|--------|-------------------|--------------------------|"
+				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
+				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
+				echo "|  3     |  imx6qsabresd     | MCIMX6Q-SDB              |"
+				echo "|  4     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
+				echo "|  5     |  imx8mqevk        | MCIMX8M-EVKB             |"
+				echo "|  6     |  imx8mmevk        | 8MMINILPD4-EVK           |"
+				echo "|  7     |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
+				echo "|  8     |  imx8qxpmek       | MCIMX8QXP-CPU            |"
+				echo "---------------------------------------------------------"
+				echo -n "Select your entry: "
+				read TARGET_OPTION
+				case $TARGET_OPTION in
+				1)
+					TARGET_NAME=imx6ulevk
+					PART_NUMBER=MCIMX6UL-EVK
+					break
+					;;
+				2)
+					TARGET_NAME=imx6ull14x14evk
+					PART_NUMBER=MCIMX6ULL-EVK
+					break
+					;;
+				3)
+					TARGET_NAME=imx6qsabresd
+					PART_NUMBER=MCIMX6Q-SDB
+					break
+					;;
+				4)
+					TARGET_NAME=imx6dlsabresd
+					PART_NUMBER=MCIMX6Q-SDB
+					break
+					;;
+				5)
+					TARGET_NAME=imx8mqevk
+					PART_NUMBER=MCIMX8M-EVKB
+					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				6)
+					TARGET_NAME=imx8mmevk
+					PART_NUMBER=8MMINILPD4-EVK
+					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				7)
+					TARGET_NAME=imx8mnddr4evk
+					PART_NUMBER=8MNANOD4-EVK
+					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				8)
+					TARGET_NAME=imx8qxpmek
+					PART_NUMBER=MCIMX8QXP-CPU
+					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				*)
+					echo -e "${RED}That is not a valid choice, try again.${NC}"
+					;;
+				esac
+			done
+			echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
+			echo $'\n'
+			break
+			;;
 		*)
 			echo -e "${RED}That is not a valid choice, try again.${NC}"
 			;;
@@ -2198,7 +2484,7 @@ if [ "$PROMPT" = "n" ] || [ "$PROMPT" = "N" ]; then
 
 	if [ "$PROMPT" = "U" ] || [ "$PROMPT" = "u" ]; then
 		# For 5.4.47 onwards, as per i.MX Yocto Project Users Guide, x11 Distro is no longer supported
-		if [ ${linuxVersion} = ${LINUX_KERNEL_5_4_47_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_10_52_STR} ]; then
+		if [ ${linuxVersion} = ${LINUX_KERNEL_5_4_47_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_10_52_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_15_32_STR} ]; then
 			select_supported_distros_for_5_x_onwards
 		else
 			select_previous_distros_supported
@@ -2337,7 +2623,10 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	done
 
 	# Invoke Repo Init based on Yocto Release
-	if [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]; then
+	if [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ]; then
+		#echo "DEBUG:: IMXALL-KIRKSTONE"
+		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-kirkstone -m imx-5.15.32-2.0.0.xml
+	elif [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]; then
 		#echo "DEBUG:: IMXALL-HARDKNOTT"
 		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-hardknott -m imx-5.10.52-2.1.0.xml
 	elif [ "$iMXYoctoRelease" = "$imxzeusYocto" ]; then
@@ -2361,7 +2650,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 
 	#echo "DEBUG:: Performing Setup of DISTRO and MACHINE"
 	#echo "DEBUG:: pwd = $BSP_DIR"
-	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]; then
+	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]  || [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ]; then
 		DISTRO=$DISTRO_NAME MACHINE=$TARGET_NAME source ./imx-setup-release.sh -b $BUILD_DIR_NAME
 	else
 		DISTRO=$DISTRO_NAME MACHINE=$TARGET_NAME source ./fsl-setup-release.sh -b $BUILD_DIR_NAME
@@ -2518,7 +2807,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	fi
 
 	# for zeus and hardknott
-	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]; then
+	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]  || [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ]; then
 		if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 			cp $LINUX_SRC $LINUX_DEST
 		fi
