@@ -250,7 +250,7 @@ else
 	echo " "
 	echo -e "${RED}Murata: Skipping repo tool installation"
 	echo -e "Exiting script.....${NC}"
-	echo 1
+	exit 1
 fi
 
 # Ubuntu Distro and Version verified. Now add necessary commands.
@@ -2538,7 +2538,7 @@ read BUILD_DIR_NAME
 		echo "   (a) Execute the following command from BSP directory:"
 		echo "       $ source setup-environment $BUILD_DIR_NAME"
 		echo "   (b) Execute the following command from $BUILD_DIR_NAME directory:"
-		echo "       $ bitbake fsl-imaga-validation-imx"
+		echo "       $ bitbake fsl-image-validation-imx"
 		echo " "
 		read -p "Select which entry 1 or 2? " DIR_OPTION
 		if [ "$DIR_OPTION" = "2" ]; then
@@ -2806,7 +2806,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 		fi
 	fi
 
-	# for zeus and hardknott
+	# for zeus, hardknott, and kirkstone
 	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]  || [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ]; then
 		if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 			cp $LINUX_SRC $LINUX_DEST
