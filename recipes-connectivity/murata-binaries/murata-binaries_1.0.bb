@@ -5,11 +5,11 @@ LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741
 
 SRC_URI = " \
 	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-5-15-32;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
-        git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=ebirah;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
-        git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=ebirah;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
-        git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-ebirah;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
-        git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=ebirah;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
-        git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=ebirah;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
+        git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=fafnir;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
+        git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=fafnir;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
+        git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-fafnir;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
+        git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=fafnir;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
+        git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=fafnir;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
 	file://switch_module_imx6dlea-com.sh \
 	file://switch_module_imx6qea-com.sh \
 	file://switch_module_imx6sxea-com.sh \
@@ -27,7 +27,7 @@ SRC_URI = " \
 "
 
 SRCREV_nxp-linux-calibration="a33c54c01be8ec8bef7ffbdb61459fbdc2486b0a"
-SRCREV_cyw-fmac-fw="8bb9d9c845182becc809eda17afc35edda32607f"
+SRCREV_cyw-fmac-fw="8bc97b821a8ae7bff151fef065e2aaa0f1c851d6"
 SRCREV_cyw-fmac-nvram="f1786018c8fead61e78e04a7e9651c7250651413"
 SRCREV_cyw-bt-patch="bed4497c1642af892086e0b65b67606a1fa5e3be"
 SRCREV_cyw-fmac-utils-imx32="e248804b6ba386fedcd462ddd9394f42f73a17af"
@@ -88,7 +88,7 @@ do_install () {
         install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd ${D}${sysconfdir}/firmware/BCM4345C0_003.001.025.0187.0366.1MW.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd ${D}${sysconfdir}/firmware/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW43341B0.1BW.hcd ${D}${sysconfdir}/firmware/BCM43341B0.1BW.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4343A1_001.002.009.0159.0528.1DX.hcd ${D}${sysconfdir}/firmware/BCM4343A1_001.002.009.0159.0528.1DX.hcd
+        install -m 444 ${S}/cyw-bt-patch/BCM43430A1_001.002.009.0159.0528.1DX.hcd ${D}${sysconfdir}/firmware/BCM43430A1_001.002.009.0159.0528.1DX.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW4350C0.1BB.hcd ${D}${sysconfdir}/firmware/BCM4350C0.1BB.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4356A2_001.003.015.0112.0410.1CX.hcd ${D}${sysconfdir}/firmware/BCM4356A2_001.003.015.0112.0410.1CX.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd ${D}${sysconfdir}/firmware/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd
@@ -105,7 +105,7 @@ do_install () {
         install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0300.0266.1LV.dAnt.hcd ${D}${sysconfdir}/firmware/murata-master/_BCM43012C0_003.001.015.0300.0266.1LV.dAnt.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW43341B0.1BW.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43341B0.1BW.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4343A1_001.002.009.0159.0528.1DX.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM4343A1_001.002.009.0159.0528.1DX.hcd
+        install -m 444 ${S}/cyw-bt-patch/BCM43430A1_001.002.009.0159.0528.1DX.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43430A1_001.002.009.0159.0528.1DX.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW4350C0.1BB.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4350C0.1BB.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4356A2_001.003.015.0112.0410.1CX.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4356A2_001.003.015.0112.0410.1CX.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd ${D}${sysconfdir}/firmware/murata-master/_BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd
@@ -125,8 +125,8 @@ do_install () {
 	install -m 444 ${S}/cyw-fmac-fw/*.bin ${D}/lib/firmware/cypress
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac55572-pcie.trxse ${D}/lib/firmware/cypress
         install -m 444 ${S}/cyw-fmac-fw/cyfmac55572-sdio.trxse ${D}/lib/firmware/cypress
-	install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2AE.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.bin
-	install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.bin
+	install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2AE.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.2AE.bin
+	install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.2BC.bin
 
 #       Rename clm blob files accordingly
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4354-sdio.1BB.clm_blob ${D}/lib/firmware/cypress/cyfmac4354-sdio.clm_blob
@@ -162,8 +162,22 @@ do_install () {
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac43455-sdio.1MW.txt ${D}/lib/firmware/cypress/cyfmac43455-sdio.txt
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac54591-pcie.1XA.txt ${D}/lib/firmware/cypress/cyfmac54591-pcie.txt
 
-#	For 2AE and 1YN
+#	For 2AE, 2BC, and 1YN
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac43439-sdio.1YN.txt ${D}/lib/firmware/cypress/cyfmac43439-sdio.txt
+
+	install -m 444 ${S}/cyw-fmac-nvram/cyfmac4373-sdio.2BC.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.2BC.txt
+	install -m 444 ${S}/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.2AE.txt
+
+        install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.2BC.bin
+        install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2AE.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.2AE.bin
+
+        install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.2BC.clm_blob
+        install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2AE.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.2AE.clm_blob
+
+
+        install -m 444 ${S}/cyw-fmac-nvram/cyfmac4373-sdio.2BC.txt      ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
+        install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.bin         ${D}/lib/firmware/cypress/cyfmac4373-sdio.bin
+        install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.clm_blob    ${D}/lib/firmware/cypress/cyfmac4373-sdio.clm_blob
 
 #	For 2EA 
 	install -m 444 ${S}/cyfmac55572-pcie.txt ${D}/lib/firmware/cypress
@@ -172,9 +186,11 @@ do_install () {
 #       For 2BZ
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac54591-sdio.2ant.2BZ.txt ${D}/lib/firmware/cypress/cyfmac54591-sdio.txt
 
+	install -m 444 ${S}/cyw-fmac-nvram/README_NVRAM.txt ${D}/lib/firmware/cypress
+
 	# Added Calibration configuration file for 1YM(NXP)
 #	install -m 444 ${S}/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
-	# Added by vkjb
+
 	install -d ${D}/lib/firmware/nxp
 
 #       Copying wl tool binary to /usr/sbin
