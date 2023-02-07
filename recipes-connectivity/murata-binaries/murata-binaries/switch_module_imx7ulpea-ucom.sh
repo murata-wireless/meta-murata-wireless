@@ -264,6 +264,42 @@ EOT
   handle_services true false
 }
 
+function prepare_for_nxp_xl_sdio() {
+  clean_up
+  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
+
+  cat <<EOT > /etc/depmod.d/nxp_depmod.conf
+# Force modprobe to search kernel/net/wireless (where the NXP
+# version of cfg80211.ko is placed) before looking in updates/net/wireless/
+# (where the Cypress version is)
+override cfg80211 * kernel/net/wireless
+
+# Force modprobe to search "extra" (where the NXP
+# version of mlan.ko for SD9098 is placed) before looking in mxmwiflex
+# (where the 1XL/2XS-SD9098 version is)
+#override mlan * extra
+EOT
+
+  cat <<EOT > /etc/modprobe.d/nxp_modules.conf
+# Prevent the Cypress version of cfg80211.ko from being loaded.
+blacklist cfg80211
+
+# Alias for the NXP modules
+alias sdio:c*v02DFd914* moal
+
+# Specify arguments to pass when loading the sd9098 module
+options moal mod_para=nxp/wifi_mod_para.conf
+EOT
+
+  depmod -a
+
+  # Disable Cypress service and enable NXP service
+  handle_services true false
+}
+
 function prepare_for_nxp_xl_pcie() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
@@ -377,7 +413,7 @@ function switch_to_nxp_xl_sdio() {
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx7ulpea-ucom-kit_v2.dtb 2>/dev/null
   fw_setenv bt_hint nxp
-  prepare_for_nxp_sdio
+  prepare_for_nxp_xl_sdio
   echo "Setup complete."
   echo ""
 }
