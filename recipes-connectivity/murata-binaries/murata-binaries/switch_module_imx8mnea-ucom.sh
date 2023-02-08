@@ -359,11 +359,13 @@ function prepare_for_cypress() {
   if [ $cyw_module == "2AE" ]; then
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
      cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2AE.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
+     cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2AE.CLM_BLOB /lib/firmware/cypress/cyfmac4373-sdio.2AE.CLM_BLOB
   fi
 
   if [ $cyw_module == "2BC" ]; then
      cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
      cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2BC.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
+     cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2BC.CLM_BLOB /lib/firmware/cypress/cyfmac4373-sdio.2BC.CLM_BLOB
   fi
 
 # For 2BZ, enabling only in-band interrupt and no OOB
