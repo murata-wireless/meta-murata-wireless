@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=01232023
+VERSION=02122023
 
 
 ###################################################################################################
@@ -35,6 +35,7 @@ VERSION=01232023
 #           |              |              |    b) Rename release tag
 #  1.19     | 08/22/2022   |    RC        |    Added support for FMAC Drogon.
 #  1.20     | 01/23/2023   |    JK        |    Added support for FMAC Ebirah.
+#  1.21     | 02/12/2023   |    JK        |    Added support for FMAC Ebirah@8M-Plus.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -488,7 +489,7 @@ function select_build_image_name {
 
 # For i.MX8 series, make the default image type to fsl-image-validation-imx
 function select_default_image {
-	if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ]; then
+	if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ] ||  [ "$TARGET_NAME" = "imx8mp-lpddr4-evk" ]; then
 		IMAGE_NAME=fsl-image-validation-imx
 	fi
 }
@@ -2388,6 +2389,7 @@ else
 				echo "|  6     |  imx8mmevk        | 8MMINILPD4-EVK           |"
 				echo "|  7     |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
 				echo "|  8     |  imx8qxpmek       | MCIMX8QXP-CPU            |"
+				echo "|  9     |  imx8mp-lpddr4-evk| 8MPLUSLPD4-EVK           |"
 				echo "---------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
@@ -2444,6 +2446,15 @@ else
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
+				9)
+					TARGET_NAME=imx8mp-lpddr4-evk
+					PART_NUMBER=8MPLUSLPD4-EVK
+					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					;;
