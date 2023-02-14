@@ -4,20 +4,20 @@ LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
 SRC_URI = " \
-        git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=ebirah;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
-        git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=ebirah;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
-        git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-ebirah;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
-        git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=ebirah;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
-        git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=ebirah;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
+        git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=fafnir;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
+        git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=fafnir;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
+        git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-fafnir;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
+        git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=fafnir;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
+        git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=fafnir;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
 	file://set_module.sh \
 	file://cyfmac55572-pcie.txt \
         file://cyfmac55572-sdio.txt \
 	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
 "
 
-SRCREV_cyw-fmac-fw="48c4a929cc4cc18686d5dc19b13b9016c9e2b863"
+SRCREV_cyw-fmac-fw="8bc97b821a8ae7bff151fef065e2aaa0f1c851d6"
 SRCREV_cyw-fmac-nvram="f1786018c8fead61e78e04a7e9651c7250651413"
-SRCREV_cyw-bt-patch="71b3bf2e197a93a578395feb5ebf5e328f46ebbc"
+SRCREV_cyw-bt-patch="32af98f8bc8a8e123b4c428af0035d74e85ae4bb"
 SRCREV_cyw-fmac-utils-imx32="e248804b6ba386fedcd462ddd9394f42f73a17af"
 SRCREV_cyw-fmac-utils-imx64="1bc78d68f9609290b2f6578516011c57691f7815"
 

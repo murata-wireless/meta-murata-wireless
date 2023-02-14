@@ -1,12 +1,12 @@
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
-index 5b42c5c..dc4ac2a 100644
+index 859dcbe..070556d 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
-@@ -294,6 +294,7 @@ int brcmf_c_preinit_dcmds(struct brcmf_if *ifp)
+@@ -298,6 +298,7 @@ int brcmf_c_preinit_dcmds(struct brcmf_if *ifp)
  	strsep(&ptr, "\n");
  
  	/* Print fw version info */
-+	brcmf_info("Murata Customized Version: imx-kirkstone-ebirah_r1.0\n");
++	brcmf_info("Murata Customized Version: imx-kirkstone-fafnir_r1.0\n");
  	brcmf_info("Firmware: %s %s\n", ri->chipname, buf);
  
  	/* locate firmware version number for ethtool */

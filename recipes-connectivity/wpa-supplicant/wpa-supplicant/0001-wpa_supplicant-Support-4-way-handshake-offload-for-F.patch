@@ -1,7 +1,7 @@
-From d229c74d5c8518aa7ffae7dc42b4395d028962a2 Mon Sep 17 00:00:00 2001
+From 6b4bc7fbb9be8eb668985de04eb11618f9dc1781 Mon Sep 17 00:00:00 2001
 From: Chung-Hsien Hsu <stanley.hsu@cypress.com>
 Date: Tue, 29 Oct 2019 11:32:11 +0800
-Subject: [PATCH 01/34] wpa_supplicant: Support 4-way handshake offload for
+Subject: [PATCH 01/49] wpa_supplicant: Support 4-way handshake offload for
  FT-EAP
 
 Add support of 4-way handshake offload for FT-EAP.
