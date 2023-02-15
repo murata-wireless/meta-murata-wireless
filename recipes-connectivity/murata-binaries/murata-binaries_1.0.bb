@@ -27,8 +27,8 @@ SRC_URI = " \
 "
 
 SRCREV_nxp-linux-calibration="a33c54c01be8ec8bef7ffbdb61459fbdc2486b0a"
-SRCREV_cyw-fmac-fw="8bc97b821a8ae7bff151fef065e2aaa0f1c851d6"
-SRCREV_cyw-fmac-nvram="f1786018c8fead61e78e04a7e9651c7250651413"
+SRCREV_cyw-fmac-fw="1f83e807b8187508c811a7d91a353a768fef2d37"
+SRCREV_cyw-fmac-nvram="303acf1b04441f62fbc48d278a70a099fabacb4a"
 SRCREV_cyw-bt-patch="32af98f8bc8a8e123b4c428af0035d74e85ae4bb"
 SRCREV_cyw-fmac-utils-imx32="e248804b6ba386fedcd462ddd9394f42f73a17af"
 SRCREV_cyw-fmac-utils-imx64="1bc78d68f9609290b2f6578516011c57691f7815"
