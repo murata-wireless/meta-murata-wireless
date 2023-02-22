@@ -32,7 +32,7 @@ do_compile () {
         pwd
 }
 
-PACKAGES_prepend = "murata-binaries-wlarm "
+PACKAGES:prepend = "murata-binaries-wlarm "
 FILES_murata-binaries-wlarm = "${bindir}/wlarm"
 
 DO_INSTALL_64BIT_BINARIES = "no"
@@ -83,18 +83,18 @@ do_install () {
 
 PACKAGES =+ "${PN}-mfgtest"
 
-FILES_${PN} += "/lib/firmware"
-FILES_${PN} += "/lib/firmware/*"
-FILES_${PN} += "${bindir}"
-FILES_${PN} += "${sbindir}"
-FILES_${PN} += "{sysconfdir}/firmware"
-FILES_${PN} += "/lib"
-FILES_${PN} += "{sysconfdir}/firmware/nxp"
-FILES_${PN} += "{sysconfdir}/firmware/nxp/murata"
-FILES_${PN} += "{sysconfdir}/firmware/nxp/murata/files"
-FILES_${PN} += "{sysconfdir}/firmware/nxp/murata/1XK"
-#FILES_${PN} += "/usr/sbin/wpa_supplicant"
+FILES:${PN} += "/lib/firmware"
+FILES:${PN} += "/lib/firmware/*"
+FILES:${PN} += "${bindir}"
+FILES:${PN} += "${sbindir}"
+FILES:${PN} += "{sysconfdir}/firmware"
+FILES:${PN} += "/lib"
+FILES:${PN} += "{sysconfdir}/firmware/nxp"
+FILES:${PN} += "{sysconfdir}/firmware/nxp/murata"
+FILES:${PN} += "{sysconfdir}/firmware/nxp/murata/files"
+FILES:${PN} += "{sysconfdir}/firmware/nxp/murata/1XK"
+#FILES:${PN} += "/usr/sbin/wpa_supplicant"
 
-INSANE_SKIP_${PN} += "build-deps"
-INSANE_SKIP_${PN} += "file-rdeps"
+INSANE_SKIP:${PN} += "build-deps"
+INSANE_SKIP:${PN} += "file-rdeps"
 
