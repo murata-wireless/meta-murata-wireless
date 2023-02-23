@@ -80,8 +80,8 @@ do_install() {
 #   Adding udhcdp.conf
     install -m 0644 ${WORKDIR}/udhcpd.conf ${D}${sysconfdir}
 
-    install -m 0755 ${B}/hostapd ${D}${sbindir}/hostapd.cyw
-    install -m 0755 ${B}/hostapd_cli ${D}${sbindir}/hostapd_cli.cyw
+    install -m 0755 ${B}/hostapd ${D}${sbindir}/hostapd
+    install -m 0755 ${B}/hostapd_cli ${D}${sbindir}/hostapd_cli
     install -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/hostapd
     install -m 0644 ${WORKDIR}/hostapd.service ${D}${systemd_unitdir}/system/
     sed -i -e 's,@SBINDIR@,${sbindir},g' -e 's,@SYSCONFDIR@,${sysconfdir},g' ${D}${systemd_unitdir}/system/hostapd.service
