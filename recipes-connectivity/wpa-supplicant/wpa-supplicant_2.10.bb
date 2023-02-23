@@ -97,7 +97,7 @@ do_compile () {
 	oe_runmake -C wpa_supplicant
 }
 
-#do_install () {
+do_install () {
 	install -d ${D}${sbindir}
 	install -m 755 wpa_supplicant/wpa_supplicant ${D}${sbindir}
 	install -m 755 wpa_supplicant/wpa_cli        ${D}${sbindir}
