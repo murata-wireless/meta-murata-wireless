@@ -8,7 +8,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=5ebcb90236d1ad640558c3d3cd3035df \
                     file://README;beginline=1;endline=56;md5=e3d2f6c2948991e37c1ca4960de84747 \
                     file://wpa_supplicant/wpa_supplicant.c;beginline=1;endline=12;md5=76306a95306fee9a976b0ac1be70f705"
 DEPENDS = "dbus libnl"
-#RRECOMMENDS:${PN} = "wpa-supplicant-passphrase wpa-supplicant-cli"
+RRECOMMENDS:${PN} = "wpa-supplicant-passphrase wpa-supplicant-cli"
 
 PACKAGECONFIG ??= "openssl"
 PACKAGECONFIG[gnutls] = ",,gnutls libgcrypt"
@@ -16,8 +16,8 @@ PACKAGECONFIG[openssl] = ",,openssl"
 
 inherit pkgconfig systemd
 
-#SYSTEMD_SERVICE:${PN} = "wpa_supplicant.service"
-#SYSTEMD_AUTO_ENABLE = "disable"
+SYSTEMD_SERVICE:${PN} = "wpa_supplicant.service"
+SYSTEMD_AUTO_ENABLE = "disable"
 
 SRC_URI = "http://w1.fi/releases/wpa_supplicant-${PV}.tar.gz \
            file://defconfig \
@@ -156,5 +156,3 @@ pkg_postinst:${PN} () {
 	fi
 
 }
-
-
