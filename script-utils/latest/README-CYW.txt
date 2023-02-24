@@ -36,6 +36,7 @@ $./Murata_Wireless_Yocto_Build_CYW.sh
 | Kernel release | Yocto code name  |  FMAC code name |  Release information         |
 |----------------|------------------|-----------------|------------------------------|
 | 5.15.32_2.0.0  | Kirkstone        |  Ebirah         |  imx-kirkstone-ebirah_r1.0   |
+|                |                  |  Fafnir         |  imx-kirkstone-fafnir_r1.0   |
 |----------------|------------------|-----------------|------------------------------|
 | 5.10.52_2.1.0  | Hardknott        |  Drogon         |  imx-hardknott-drogon_r1.0   |
 |                |                  |  Cynder         |  imx-hardknott-cynder_r1.0   |
@@ -48,9 +49,6 @@ $./Murata_Wireless_Yocto_Build_CYW.sh
 |----------------|------------------|-----------------|------------------------------|
 | 4.9.123_2.3.0  | Rocko Mini       |  Baragon        |  imx-rocko-mini-baragon_r1.0 |
 |                |                  |  Spiga          |  imx-rocko-mini-spiga_r1.0   |
-|----------------|------------------|-----------------|------------------------------|
-| 4.1.15_2.0.0   | Krogoth          |  Baragon        |  imx-krogoth-baragon_r1.0    |
-|                |                  |  Spiga          |  imx-krogoth-spiga_r1.0      |
 --------------------------------------------------------------------------------------
 
 

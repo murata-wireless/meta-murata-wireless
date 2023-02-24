@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=02122023
+VERSION=02242023
 
 
 ###################################################################################################
@@ -36,6 +36,8 @@ VERSION=02122023
 #  1.19     | 08/22/2022   |    RC        |    Added support for FMAC Drogon.
 #  1.20     | 01/23/2023   |    JK        |    Added support for FMAC Ebirah.
 #  1.21     | 02/12/2023   |    JK        |    Added support for FMAC Ebirah@8M-Plus.
+#  1.22     | 02/24/2023   |    RC        |    Added support for FMAC Fafnir. Moved 4.9.123 kernel
+#           |              |              |    support to legacy.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -70,6 +72,7 @@ BARAGON_FMAC_INDEX="6"
 CYNDER_FMAC_INDEX="7"
 DROGON_FMAC_INDEX="8"
 EBIRAH_FMAC_INDEX="9"
+FAFNIR_FMAC_INDEX="10"
 
 MOTHRA_FMAC_STR="mothra"
 MANDA_FMAC_STR="manda"
@@ -80,6 +83,7 @@ BARAGON_FMAC_STR="baragon"
 CYNDER_FMAC_STR="cynder"
 DROGON_FMAC_STR="drogon"
 EBIRAH_FMAC_STR="ebirah"
+FAFNIR_FMAC_STR="fafnir"
 
 LINUX_KERNEL_5_15_32=0
 LINUX_KERNEL_5_10_52=1
@@ -107,6 +111,8 @@ linuxVersion=""
 # Kirkstone
 iMXkirkstoneebirahStableReleaseTag="imx-kirkstone-ebirah_r1.0"
 iMXkirkstoneebirahDeveloperRelease="imx-kirkstone-ebirah"
+iMXkirkstonefafnirStableReleaseTag="imx-kirkstone-fafnir_r1.0"
+iMXkirkstonefafnirDeveloperRelease="imx-kirkstone-fafnir"
 
 
 # Hardknott
@@ -542,18 +548,17 @@ while true; do
 	echo "|Entry|   Linux Kernel   | Yocto      | FMAC Supported                   |"
 	echo "|-----|------------------|------------|----------------------------------|"
 	if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
-		echo "|  0  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah                           |"
+		echo "|  0  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah, Fafnir                   |"
 		echo "|  1  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
 		echo "|  2  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga,Zigra              |"
 		echo "|  3  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga,Zigra,Kong,Manda   |"
 		echo "|  4  |     ${LINUX_KERNEL_4_9_123_STR}       | rocko     | Baragon,Spiga,Zigra,Kong,Manda   |"
 		echo "|  5  |     ${LINUX_KERNEL_4_1_15_STR}        | krogoth   | Baragon,Spiga,Zigra,Manda,Mothra |"
 	else
-		echo "|  0  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah                           |"
+		echo "|  0  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah, Fafnir                   |"
 		echo "|  1  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
 		echo "|  2  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga                    |"
 		echo "|  3  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga                    |"
-		echo "|  4  |     ${LINUX_KERNEL_4_9_123_STR}       | rocko     | Baragon,Spiga                    |"
 	fi
 
 	echo "--------------------------------------------------------------------------"
@@ -592,10 +597,6 @@ while true; do
 		esac
 	else
 		case $LINUX_KERNEL in
-		$LINUX_KERNEL_4_9_123)
-			linuxVersion=${LINUX_KERNEL_4_9_123_STR}
-			break
-			;;
 		$LINUX_KERNEL_4_14_98)
 			linuxVersion=${LINUX_KERNEL_4_14_98_STR}
 			break
@@ -1080,7 +1081,8 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo -e  "|  0.   | ${EBIRAH_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "|  0.   | ${EBIRAH_FMAC_STR}                                            |"
+				echo -e  "|  1.   | ${FAFNIR_FMAC_STR} - ${GRN}Latest release${NC}                           |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1099,6 +1101,21 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 					fmacversion=${EBIRAH_FMAC_STR}
 					break
 					;;
+				1)
+					# for FAFNIR
+					FMAC_VERSION=${FAFNIR_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: kirkstone-fafnir"
+						BRANCH_RELEASE_NAME="$iMXkirkstonefafnirStableReleaseTag"
+					else
+						#echo "DEBUG:: kirkstone-fafnir"
+						BRANCH_RELEASE_NAME="$iMXkirkstonefafnirDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxkirkstoneYocto"
+					YoctoBranch="kirkstone"
+					fmacversion=${FAFNIR_FMAC_STR}
+					break
+					;;
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					echo $'\n'
@@ -1115,60 +1132,6 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 else
 	while true; do
 		case $LINUX_KERNEL in
-		$LINUX_KERNEL_4_9_123) #for 4.9.123_2.3.0
-			while true; do
-				echo     "-------------------------------------------------------------"
-				echo     "| Entry | "\""fmac"\"" version                                    |"
-				echo     "|-------|---------------------------------------------------|"
-				echo     "|  0.   | $SPIGA_FMAC_STR - Previous release                          |"
-				echo -e  "|  1.   | $BARAGON_FMAC_STR - ${GRN}Latest release${NC}                          |"
-				echo     "-------------------------------------------------------------"
-				read -p "Select which entry? " ENTRY
-				case $ENTRY in
-				0) # for SPIGA
-					FMAC_VERSION=${SPIGA_FMAC_INDEX}
-					if [ "$BRANCH_TAG_OPTION" = "y" ]; then
-						#echo "DEBUGG:: rocko-mini-spiga_r1.0"
-						BRANCH_RELEASE_NAME="$iMXrockominispigaStableReleaseTag"
-						iMXYoctoRelease="$imxrockominiYocto"
-						YoctoBranch="rocko"
-						fmacversion="$SPIGA_FMAC_STR"
-						# rocko-mini-spiga
-					else
-						#echo "DEBUG:: rocko-mini-SPIGA"
-						BRANCH_RELEASE_NAME="$iMXrockominispigaDeveloperRelease"
-						iMXYoctoRelease="$imxrockominiYocto"
-						YoctoBranch="rocko"
-						fmacversion="$SPIGA_FMAC_STR"
-					fi
-					break
-					;;
-				1) # for BARAGON
-					FMAC_VERSION=${BARAGON_FMAC_INDEX}
-					if [ "$BRANCH_TAG_OPTION" = "y" ]; then
-						#echo "DEBUGG:: rocko-mini-baragon_r1.0"
-						BRANCH_RELEASE_NAME="$iMXrockominibaragonStableReleaseTag"
-						iMXYoctoRelease="$imxrockominiYocto"
-						YoctoBranch="rocko"
-						fmacversion="$BARAGON_FMAC_STR"
-						# rocko-mini-baragon
-					else
-						#echo "DEBUG:: rocko-mini-BARAGON"
-						BRANCH_RELEASE_NAME="$iMXrockominibaragonDeveloperRelease"
-						iMXYoctoRelease="$imxrockominiYocto"
-						YoctoBranch="rocko"
-						fmacversion="$BARAGON_FMAC_STR"
-					fi
-					break
-					;;
-				*)
-					echo -e "${RED}That is not a valid choice, try again.${NC}"
-					echo $'\n'
-					;;
-				esac
-			done
-			break
-			;;
 		$LINUX_KERNEL_4_14_98)
 			while true; do
 				echo     "-------------------------------------------------------------"
@@ -1324,7 +1287,8 @@ else
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo -e  "|  0.   | ${EBIRAH_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "|  0.   | ${EBIRAH_FMAC_STR}                                            |"
+				echo -e  "|  1.   | ${FAFNIR_FMAC_STR} - ${GRN}Latest release${NC}                           |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1341,6 +1305,21 @@ else
 					iMXYoctoRelease="$imxkirkstoneYocto"
 					YoctoBranch="kirkstone"
 					fmacversion=${EBIRAH_FMAC_STR}
+					break
+					;;
+				1)
+					# for FAFNIR
+					FMAC_VERSION=${FAFNIR_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: kirkstone-fafnir"
+						BRANCH_RELEASE_NAME="$iMXkirkstonefafnirStableReleaseTag"
+					else
+						#echo "DEBUG:: kirkstone-fafnir"
+						BRANCH_RELEASE_NAME="$iMXkirkstonefafnirDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxkirkstoneYocto"
+					YoctoBranch="kirkstone"
+					fmacversion=${FAFNIR_FMAC_STR}
 					break
 					;;
 				*)
@@ -2004,127 +1983,6 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 else
 	while true; do
 		case $LINUX_KERNEL in
-		$LINUX_KERNEL_4_1_15) # for 4.1.15_2.0.0
-			while true; do
-				echo " "
-				echo "${STEP_COUNT}) Select target"
-				echo "----------------"
-				echo " "
-				echo "----------------------------------------------------------"
-				echo "| Entry  |    Target Name    | NXP i.MX EVK Part Number  |"
-				echo "|--------|-------------------|---------------------------|"
-				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK              |"
-				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK             |"
-				echo "|  3     |  imx6qsabresd     | MCIMX6Q-SDB               |"
-				echo "|  4     |  imx6dlsabresd    | MCIMX6Q-SDB               |"
-				echo "----------------------------------------------------------"
-				echo -n "Select your entry: "
-				read TARGET_OPTION
-				case $TARGET_OPTION in
-				1)
-					TARGET_NAME=imx6ulevk
-					PART_NUMBER=MCIMX6UL-EVK
-					break
-					;;
-				2)
-					TARGET_NAME=imx6ull14x14evk
-					PART_NUMBER=MCIMX6ULL-EVK
-					break
-					;;
-				3)
-					TARGET_NAME=imx6qsabresd
-					PART_NUMBER=MCIMX6Q-SDB 
-					break
-					;;
-				4)
-					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
-					break
-					;;
-				*)
-					echo -e "${RED}That is not a valid choice, try again.${NC}"
-					;;
-				esac
-			done
-
-			echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
-			echo $'\n'
-			break
-			;;
-		$LINUX_KERNEL_4_9_123) #for 4.9.123_2.3.0
-			while true; do
-				echo " "
-				echo "${STEP_COUNT}) Select Target"
-				echo "----------------"
-				echo " "
-				echo "---------------------------------------------------------"
-				echo "| Entry  |    Target Name    | NXP i.MX EVK Part Number |"
-				echo "|--------|-------------------|--------------------------|"
-				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
-				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
-				echo "|  3     |  imx6qsabresd     | MCIMX6Q-SDB              |"
-				echo "|  4     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
-				echo "|  5     |  imx8mqevk        | MCIMX8M-EVKB             |"
-				echo "|  6     |  imx8qxpmek       | MCIMX8QXP-CPU            |"
-				echo "|  7     |  imx8mmevk        | 8MMINILPD4-EVK           |"
-				echo "---------------------------------------------------------"
-				echo -n "Select your entry: "
-				read TARGET_OPTION
-
-				case $TARGET_OPTION in
-				1)
-					TARGET_NAME=imx6ulevk
-					PART_NUMBER=MCIMX6UL-EVK
-					break
-					;;
-				2)
-					TARGET_NAME=imx6ull14x14evk
-					PART_NUMBER=MCIMX6ULL-EVK
-					break
-					;;
-				3)
-					TARGET_NAME=imx6qsabresd
-					PART_NUMBER=MCIMX6Q-SDB
-					break
-					;;
-				4)
-					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
-					break
-					;;
-				5)
-					LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
-					LINUX_DEST=linux-imx_4.9.123.bbappend
-					TARGET_NAME=imx8mqevk
-					PART_NUMBER=MCIMX8M-EVKB
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				6)
-					LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
-					LINUX_DEST=linux-imx_4.9.123.bbappend
-					TARGET_NAME=imx8qxpmek
-					PART_NUMBER=MCIMX8QXP-CPU
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				7)
-					LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
-					LINUX_DEST=linux-imx_4.9.123.bbappend
-					TARGET_NAME=imx8mmevk
-					PART_NUMBER=8MMINILPD4-EVK
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				*)
-					echo -e "${RED}That is not a valid choice, try again.${NC}"
-					;;
-				esac
-			done
-			echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
-			echo $'\n'
-			break
-			;;
 		$LINUX_KERNEL_4_14_98)
 			while true; do
 				echo " "
