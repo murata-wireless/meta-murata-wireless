@@ -120,8 +120,6 @@ function clean_up() {
     cp /lib/modules/$(uname -r)/extra/mlan.ko /usr/share/murata_wireless/mlan.ko.orig
     rm /lib/modules/$(uname -r)/extra/mlan.ko
   fi
-  
-  
 }
 
 function prepare_for_nxp_sdio() {
@@ -459,7 +457,6 @@ EOT
   handle_services true false
 }
 
-
 function prepare_for_cypress() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.cyw /usr/sbin/wpa_supplicant
@@ -547,8 +544,7 @@ function switch_to_nxp_el_sdio() {
   echo ""
   echo "Setting up for 2EL, 2DL (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-#(TBRemoved - vkjb)  fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
-  fw_setenv fdt_file imx8mm-ea-ucom-kit_v3.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_el_sdio
   echo "Setup complete."
