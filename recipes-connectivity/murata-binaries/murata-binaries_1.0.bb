@@ -24,6 +24,13 @@ SRC_URI = " \
 	file://cyfmac55572-pcie.txt \
         file://cyfmac55572-sdio.txt \
 	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
+	file://uartspi_n61x_v1.bin.se \
+	file://spi-hdlc-adapter \
+	file://ot-daemon.64-bit \
+	file://ot-ctl.64-bit \
+	file://fw_loader_imx_lnx.64-bit \
+	file://ot-daemon.32-bit \
+	file://ot-ctl.32-bit \
 "
 
 SRCREV_nxp-linux-calibration="a33c54c01be8ec8bef7ffbdb61459fbdc2486b0a"
@@ -196,10 +203,15 @@ do_install () {
 #       Copying wl tool binary to /usr/sbin
         if [ ${TARGET_ARCH} = "aarch64" ]; then
 		install -m 755 ${S}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl
+		install -m 755 ${S}/ot-ctl.64-bit ${D}/usr/sbin/ot-ctl
+		install -m 755 ${S}/ot-daemon.64-bit ${D}/usr/sbin/ot-daemon
+		install -m 755 ${S}/fw_loader_imx_lnx.64-bit ${D}/usr/sbin/fw_loader_imx_lnx
 	else
 		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
+		install -m 755 ${S}/ot-ctl.32-bit ${D}/usr/sbin/ot-ctl
+		install -m 755 ${S}/ot-daemon.32-bit ${D}/usr/sbin/ot-daemon
 	fi
-
+	
 #	Points default to NXP
 	ln -sf /usr/sbin/wpa_supplicant.nxp ${D}${sbindir}/wpa_supplicant
         ln -sf /usr/sbin/wpa_cli.nxp ${D}${sbindir}/wpa_cli
@@ -263,6 +275,7 @@ do_install () {
 
 #	Copy 1XK Dedicated Bluetooth Antenna configuration file
 	install -m 755 ${S}/WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf ${D}/lib/firmware/nxp/murata/files/1XK
+	install -m 755 ${S}/uartspi_n61x_v1.bin.se ${D}/lib/firmware/nxp
 }
 
 PACKAGES =+ "${PN}-mfgtest"
