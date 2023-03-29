@@ -25,12 +25,13 @@ SRC_URI = " \
         file://cyfmac55572-sdio.txt \
 	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
 	file://uartspi_n61x_v1.bin.se \
-	file://spi-hdlc-adapter \
+	file://sduart_nw61x_v1.bin.se \
 	file://ot-daemon.64-bit \
 	file://ot-ctl.64-bit \
 	file://fw_loader_imx_lnx.64-bit \
 	file://ot-daemon.32-bit \
 	file://ot-ctl.32-bit \
+	file://WlanCalData_ext.conf \
 "
 
 SRCREV_nxp-linux-calibration="a33c54c01be8ec8bef7ffbdb61459fbdc2486b0a"
@@ -276,6 +277,8 @@ do_install () {
 #	Copy 1XK Dedicated Bluetooth Antenna configuration file
 	install -m 755 ${S}/WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf ${D}/lib/firmware/nxp/murata/files/1XK
 	install -m 755 ${S}/uartspi_n61x_v1.bin.se ${D}/lib/firmware/nxp
+	install -m 755 ${S}/sduart_nw61x_v1.bin.se ${D}/lib/firmware/nxp
+	install -m 444 ${S}/WlanCalData_ext.conf ${D}/lib/firmware/nxp
 }
 
 PACKAGES =+ "${PN}-mfgtest"
