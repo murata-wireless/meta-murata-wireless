@@ -6,8 +6,8 @@
 VERSION="1.0"
 
 # Detect if a v2 or v3 Carrier Board is used. This will determine dtb file name.
-found=`i2cdetect -y 1 0x20 0x21|grep "^20:"`
-if [[ $found == *"-- UU"* ]] || [[ $found == *"-- 21"* ]]; then
+found=`i2cdetect -y 1 0x21 0x21|grep "^20:"`
+if [[ $found == *" UU"* ]] || [[ $found == *" 21"* ]]; then
   DTB_VER="v3"
 else
   DTB_VER="v2"
