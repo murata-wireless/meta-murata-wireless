@@ -5,6 +5,16 @@
 
 VERSION="1.0"
 
+# Detect if a v2 or v3 Carrier Board is used. This will determine dtb file name.
+found=`i2cdetect -y 1 0x21 0x21|grep "^20:"`
+if [[ $found == *" UU"* ]] || [[ $found == *" 21"* ]]; then
+  DTB_VER="v3"
+else
+  DTB_VER="v2"
+fi
+
+echo "DTB_VER is ${DTB_VER}"
+
 cyw_module="none"
 
 function current() {
@@ -490,7 +500,7 @@ function switch_to_cypress_sdio() {
   echo ""
   echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA (Cypress - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx6ullea-com-kit_v2.dtb 2>/dev/null
+  fw_setenv fdt_file imx6ullea-com-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv cmd_custom
   fw_setenv bt_hint cypress
   prepare_for_cypress
@@ -502,7 +512,7 @@ function switch_to_cypress_pcie() {
   echo ""
   echo "Setting up for 1CX, 1XA, 2EA (Cypress - PCIe)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx6ullea-com-kit_v2-pcie.dtb 2>/dev/null
+  fw_setenv fdt_file imx6ullea-com-kit_${DTB_VER}-pcie.dtb 2>/dev/null
   fw_setenv cmd_custom
   fw_setenv bt_hint cypress
   prepare_for_cypress
@@ -514,7 +524,7 @@ function switch_to_nxp_sdio() {
   echo ""
   echo "Setting up for 1ZM (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx6ullea-com-kit_v2.dtb 2>/dev/null
+  fw_setenv fdt_file imx6ullea-com-kit_${DTB_VER}.dtb 2>/dev/null
   # Limiting SDIO frequency to 50MHz
   fw_setenv cmd_custom "fdt set mmc0 max-frequency <50000000>"
   fw_setenv bt_hint nxp
@@ -527,7 +537,7 @@ function switch_to_nxp_xl_sdio() {
   echo ""
   echo "Setting up for 1XL, 2XS (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx6ullea-com-kit_v2.dtb 2>/dev/null
+  fw_setenv fdt_file imx6ullea-com-kit_${DTB_VER}.dtb 2>/dev/null
   # Limiting SDIO frequency to 50MHz
   fw_setenv cmd_custom "fdt set mmc0 max-frequency <50000000>"
   fw_setenv bt_hint nxp
@@ -540,7 +550,7 @@ function switch_to_nxp_el_sdio() {
   echo ""
   echo "Setting up for 2EL, 2DL (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx6ullea-com-kit_v2.dtb 2>/dev/null
+  fw_setenv fdt_file imx6ullea-com-kit_${DTB_VER}.dtb 2>/dev/null
   # Limiting SDIO frequency to 50MHz
   fw_setenv cmd_custom "fdt set mmc0 max-frequency <50000000>"
   fw_setenv bt_hint nxp
@@ -553,7 +563,7 @@ function switch_to_nxp_xk_sdio() {
   echo ""
   echo "Setting up for 1XK, 2XK (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx6ullea-com-kit_v2.dtb 2>/dev/null
+  fw_setenv fdt_file imx6ullea-com-kit_${DTB_VER}.dtb 2>/dev/null
   # Limiting SDIO frequency to 50MHz
   fw_setenv cmd_custom "fdt set mmc0 max-frequency <50000000>"
   fw_setenv bt_hint nxp
@@ -566,7 +576,7 @@ function switch_to_nxp_ds_sdio() {
   echo ""
   echo "Setting up for 2DS (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx6ullea-com-kit_v2.dtb 2>/dev/null
+  fw_setenv fdt_file imx6ullea-com-kit_${DTB_VER}.dtb 2>/dev/null
   # Limiting SDIO frequency to 50MHz
   fw_setenv cmd_custom "fdt set mmc0 max-frequency <50000000>"
   fw_setenv bt_hint nxp
@@ -579,7 +589,7 @@ function switch_to_nxp_ym_sdio() {
   echo ""
   echo "Setting up for 1YM (NXP - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx6ullea-com-kit_v2.dtb 2>/dev/null
+  fw_setenv fdt_file imx6ullea-com-kit_${DTB_VER}.dtb 2>/dev/null
   # Limiting SDIO frequency to 50MHz
   fw_setenv cmd_custom "fdt set mmc0 max-frequency <50000000>"
   fw_setenv bt_hint nxp_1ym_sdio
@@ -593,7 +603,7 @@ function switch_to_nxp_ym_pcie() {
   echo ""
   echo "Setting up for 1YM (NXP - PCIe)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx6ullea-com-kit_v2-pcie.dtb 2>/dev/null
+  fw_setenv fdt_file imx6ullea-com-kit_${DTB_VER}-pcie.dtb 2>/dev/null
   fw_setenv cmd_custom
   fw_setenv bt_hint nxp_1ym_pcie
   prepare_for_nxp_ym_pcie
@@ -606,7 +616,7 @@ function switch_to_nxp_xl_pcie() {
   echo ""
   echo "Setting up for 1XL, 2XS (NXP - PCIe)"
   echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx6ullea-com-kit_v2-pcie.dtb 2>/dev/null
+  fw_setenv fdt_file imx6ullea-com-kit_${DTB_VER}-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1xl_pcie
   prepare_for_nxp_xl_pcie
   echo "Setup complete."
