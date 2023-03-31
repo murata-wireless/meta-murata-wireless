@@ -203,14 +203,14 @@ do_install () {
 
 #       Copying wl tool binary to /usr/sbin
         if [ ${TARGET_ARCH} = "aarch64" ]; then
-		install -m 755 ${S}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl
-		install -m 755 ${S}/ot-ctl.64-bit ${D}/usr/sbin/ot-ctl
-		install -m 755 ${S}/ot-daemon.64-bit ${D}/usr/sbin/ot-daemon
-		install -m 755 ${S}/fw_loader_imx_lnx.64-bit ${D}/usr/sbin/fw_loader_imx_lnx
+		install -m 755 ${WORKDIR}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl
+		install -m 755 ${WORKDIR}/ot-ctl.64-bit ${D}/usr/sbin/ot-ctl
+		install -m 755 ${WORKDIR}/ot-daemon.64-bit ${D}/usr/sbin/ot-daemon
+		install -m 755 ${WORKDIR}/fw_loader_imx_lnx.64-bit ${D}/usr/sbin/fw_loader_imx_lnx
 	else
-		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
-		install -m 755 ${S}/ot-ctl.32-bit ${D}/usr/sbin/ot-ctl
-		install -m 755 ${S}/ot-daemon.32-bit ${D}/usr/sbin/ot-daemon
+		install -m 755 ${WORKDIR}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
+		install -m 755 ${WORKDIR}/ot-ctl.32-bit ${D}/usr/sbin/ot-ctl
+		install -m 755 ${WORKDIR}/ot-daemon.32-bit ${D}/usr/sbin/ot-daemon
 	fi
 	
 #	Points default to NXP
