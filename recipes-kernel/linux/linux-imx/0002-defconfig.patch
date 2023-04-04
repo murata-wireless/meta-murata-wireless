@@ -1,0 +1,9 @@
+diff --git a/arch/arm/configs/imx_v7_defconfig b/arch/arm/configs/imx_v7_defconfig
+index 6ca0833e437e..eebf67582647 100644
+--- a/arch/arm/configs/imx_v7_defconfig
++++ b/arch/arm/configs/imx_v7_defconfig
+@@ -582,3 +582,4 @@ CONFIG_DEBUG_FS=y
+ # CONFIG_SCHED_DEBUG is not set
+ # CONFIG_DEBUG_PREEMPT is not set
+ # CONFIG_FTRACE is not set
++CFG80211_USE_KERNEL_REGDB_KEYS=n
