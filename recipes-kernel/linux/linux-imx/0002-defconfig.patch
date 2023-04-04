@@ -1,0 +1,9 @@
+diff --git a/arch/arm/configs/imx_v7_defconfig b/arch/arm/configs/imx_v7_defconfig
+index 582625f227d5..6c6975347bf5 100644
+--- a/arch/arm/configs/imx_v7_defconfig
++++ b/arch/arm/configs/imx_v7_defconfig
+@@ -586,3 +586,4 @@ CONFIG_CRYPTO_USER_API_AEAD=m
+ # enable KTLS
+ CONFIG_TLS=y
+ CONFIG_TLS_DEVICE=y
++CFG80211_USE_KERNEL_REGDB_KEYS=n

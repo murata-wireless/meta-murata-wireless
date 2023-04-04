@@ -1,0 +1,9 @@
+diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
+index 74dc82cb4dde..f144220ec89f 100644
+--- a/arch/arm64/configs/imx_v8_defconfig
++++ b/arch/arm64/configs/imx_v8_defconfig
+@@ -1048,3 +1048,4 @@ CONFIG_TRUSTED_KEYS=m
+ CONFIG_TRUSTED_KEYS_TPM=n
+ CONFIG_TRUSTED_KEYS_TEE=n
+ CONFIG_TRUSTED_KEYS_CAAM=y
++CFG80211_USE_KERNEL_REGDB_KEYS=n
