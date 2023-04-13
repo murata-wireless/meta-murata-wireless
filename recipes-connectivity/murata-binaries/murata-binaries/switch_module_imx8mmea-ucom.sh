@@ -111,10 +111,6 @@ function clean_up() {
     rm /lib/modules/$(uname -r)/extra/mlan.ko
   fi
   
-  if [ -L /lib/modules/$(uname -r)/extra/sdxxx.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/sdxxx.ko
-  fi
-  
   #Take a back-up of original mlan.ko and remove it from "extra"
   if [ -e /lib/modules/$(uname -r)/extra/mlan.ko ]; then
     cp /lib/modules/$(uname -r)/extra/mlan.ko /usr/share/murata_wireless/mlan.ko.orig
@@ -438,8 +434,17 @@ function prepare_for_nxp_el_sdio() {
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
   
+  # Remove existing link of mlan.ko
+  if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
+    rm /lib/modules/$(uname -r)/extra/mlan.ko
+  fi
+  
   ln -s /usr/share/murata_wireless/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
-  ln -s /usr/share/murata_wireless/sdxxx.ko /lib/modules/$(uname -r)/extra/sdxxx.ko
+  
+  # if there isn't link for 2EL@sdxxx.ko, then create Link only once
+  if [ ! -L /lib/modules/$(uname -r)/extra/sdxxx.ko ]; then
+     ln -s /usr/share/murata_wireless/sdxxx.ko /lib/modules/$(uname -r)/extra/sdxxx.ko
+  fi
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
