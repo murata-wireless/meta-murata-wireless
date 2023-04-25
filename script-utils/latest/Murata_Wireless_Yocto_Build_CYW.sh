@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=02242023
+VERSION=04252023
 
 
 ###################################################################################################
@@ -38,6 +38,7 @@ VERSION=02242023
 #  1.21     | 02/12/2023   |    JK        |    Added support for FMAC Ebirah@8M-Plus.
 #  1.22     | 02/24/2023   |    RC        |    Added support for FMAC Fafnir. Moved 4.9.123 kernel
 #           |              |              |    support to legacy.
+#  1.23     | 04/25/2023   |    RC        |    Updated to use correct NXP repositories.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -2494,22 +2495,22 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	# Invoke Repo Init based on Yocto Release
 	if [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ]; then
 		#echo "DEBUG:: IMXALL-KIRKSTONE"
-		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-kirkstone -m imx-5.15.32-2.0.0.xml
+		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-kirkstone -m imx-5.15.32-2.0.0.xml
 	elif [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]; then
 		#echo "DEBUG:: IMXALL-HARDKNOTT"
-		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-hardknott -m imx-5.10.52-2.1.0.xml
+		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-hardknott -m imx-5.10.52-2.1.0.xml
 	elif [ "$iMXYoctoRelease" = "$imxzeusYocto" ]; then
 		#echo "DEBUG:: IMXALL-ZEUS"
-		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-zeus -m imx-5.4.47-2.2.0.xml
+		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-zeus -m imx-5.4.47-2.2.0.xml
 	elif [ "$iMXYoctoRelease" = "$imxsumoYocto" ]; then
 		#echo "DEBUG:: IMXALL-SUMO"
-		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-sumo -m imx-4.14.98-2.3.0.xml
+		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-sumo -m imx-4.14.98-2.3.0.xml
 	elif [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
 		#echo "DEBUG:: IMXALL-ROCKO-MINI"
-		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-rocko -m imx-4.9.123-2.3.0-8mm_ga.xml
+		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-rocko -m imx-4.9.123-2.3.0-8mm_ga.xml
 	elif [ "$iMXYoctoRelease" = "$imxkrogothYocto"  ]; then
 		#echo "DEBUG:: KROGOTH"
-		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/fsl-arm-yocto-bsp.git -b imx-4.1-krogoth -m imx-4.1.15-2.1.1.xml
+		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-4.1-krogoth -m imx-4.1.15-2.1.1.xml
 	fi
 
 	#echo "DEBUG:: Performing repo sync......."

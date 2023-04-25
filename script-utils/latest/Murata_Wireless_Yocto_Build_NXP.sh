@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=04262022
+VERSION=04252023
 
 
 ###################################################################################################
@@ -37,6 +37,8 @@ VERSION=04262022
 #           |              |              |    8M-PLUS.
 #  1.21     | 04/26/2022   |    JK        |    Rename Murata_Wireless_Yocto_Build to 
 #           |              |              |    Murata_Wireless_Yocto_Build_CYW.sh.
+#  1.22     | 03/16/2023   |    RC        |    Added support for 5.15.32.
+#  1.23     | 04/25/2023   |    RC        |    Updated to use correct NXP repositories.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -58,10 +60,12 @@ CWD=""
 
 LINUX_KERNEL_5_10_52=0
 LINUX_KERNEL_5_10_72=1
+LINUX_KERNEL_5_15_32=2
 
 # Linux Kernel Strings
 LINUX_KERNEL_5_10_52_STR="5.10.52"
 LINUX_KERNEL_5_10_72_STR="5.10.72"
+LINUX_KERNEL_5_15_32_STR="5.15.32"
 
 DISTRO_NAME=fsl-imx-fb
 IMAGE_NAME=core-image-base
@@ -76,8 +80,12 @@ iMXhardknott52DeveloperRelease="imx-hardknott-5-10-52"
 iMXhardknott72StableReleaseTag="imx-hardknott-5-10-72_r1.0"
 iMXhardknott72DeveloperRelease="imx-hardknott-5-10-72"
 
+iMXkirkstoneStableReleaseTag="imx-kirkstone-5-15-32_r1.0"
+iMXkirkstoneDeveloperRelease="imx-kirkstone-5-15-32"
+
 imxhardknottYocto52="5.10.52_2.1.0 GA"
 imxhardknottYocto72="5.10.72_2.2.0"
+imxkirkstone="5.15.32_2.0.0"
 
 
 #--------------------------------------------------------------------------------------------------
@@ -395,6 +403,7 @@ while true; do
 	echo "|-----|-------------------|-----------|------------------------------------"
 	echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
 	echo "|  1  |     ${LINUX_KERNEL_5_10_72_STR}       | hardknott | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
+	echo "|  2  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
 	echo "---------------------------------------------------------------------------"
 	read -p "Select which entry? " LINUX_KERNEL
 
@@ -405,6 +414,10 @@ while true; do
 		;;
 	$LINUX_KERNEL_5_10_72)
 		linuxVersion=${LINUX_KERNEL_5_10_72_STR}
+		break
+		;;
+	$LINUX_KERNEL_5_15_32)
+		linuxVersion=${LINUX_KERNEL_5_15_32_STR}
 		break
 		;;
 	*)
@@ -438,6 +451,17 @@ $LINUX_KERNEL_5_10_72)
 	fi
 	iMXYoctoRelease="$imxhardknottYocto72"
 	YoctoBranch="hardknott"
+	;;
+$LINUX_KERNEL_5_15_32)
+	if [ "$BRANCH_TAG_OPTION" = "y" ] ; then
+		#echo "DEBUG:: kirkstone release"
+		BRANCH_RELEASE_NAME="$iMXkirkstoneStableReleaseTag"
+	else
+		#echo "DEBUG:: kirkstone developer"
+		BRANCH_RELEASE_NAME="$iMXkirkstoneDeveloperRelease"
+	fi
+	iMXYoctoRelease="$imxkirkstone"
+	YoctoBranch="kirkstone"
 	;;
 *)
 	echo -e "${RED}NXP support is not avilable in this kernel.${NC}"
@@ -481,42 +505,56 @@ while true; do
 			3)
 				TARGET_NAME=imx8mqevk
 				PART_NUMBER=MCIMX8M-EVKB
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			4)
 				TARGET_NAME=imx8mmevk
 				PART_NUMBER=8MMINILPD4-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			5)
 				TARGET_NAME=imx8mmddr4evk
 				PART_NUMBER=8MMINID4-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			6)
 				TARGET_NAME=imx8mnddr4evk
 				PART_NUMBER=8MNANOD4-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			7)
 				TARGET_NAME=imx8qxpmek
 				PART_NUMBER=MCIMX8QXP-CPU
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			8)
 				TARGET_NAME=imx8dxl-lpddr4-evk
 				PART_NUMBER=MCIMX8DXL-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			9)
 				TARGET_NAME=imx8mp-lpddr4-evk
 				PART_NUMBER=8MPLUSLPD4-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
@@ -564,42 +602,153 @@ while true; do
 			3)
 				TARGET_NAME=imx8mqevk
 				PART_NUMBER=MCIMX8M-EVKB
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			4)
 				TARGET_NAME=imx8mmevk
 				PART_NUMBER=8MMINILPD4-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			5)
 				TARGET_NAME=imx8mmddr4evk
 				PART_NUMBER=8MMINID4-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			6)
 				TARGET_NAME=imx8mnddr4evk
 				PART_NUMBER=8MNANOD4-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			7)
 				TARGET_NAME=imx8qxpmek
 				PART_NUMBER=MCIMX8QXP-CPU
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			8)
 				TARGET_NAME=imx8dxl-lpddr4-evk
 				PART_NUMBER=MCIMX8DXL-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
 			9)
 				TARGET_NAME=imx8mp-lpddr4-evk
 				PART_NUMBER=8MPLUSLPD4-EVK
+				LINUX_SRC=linux-imx_5.10.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			*)
+				echo -e "${RED}That is not a valid choice, try again.${NC}"
+				;;
+			esac
+		done
+		echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
+		echo $'\n'
+		break
+		;;
+	$LINUX_KERNEL_5_15_32)
+		while true; do
+			echo " "
+			echo "${STEP_COUNT}) Select Target"
+			echo "----------------"
+			echo " "
+			echo "------------------------------------------------------------"
+			echo "| Entry  |    Target Name       | NXP i.MX EVK Part Number |"
+			echo "|--------|----------------------|--------------------------|"
+			echo "|  1     |  imx6ulevk           | MCIMX6UL-EVK             |"
+			echo "|  2     |  imx6ull14x14evk     | MCIMX6ULL-EVK            |"
+			echo "|  3     |  imx8mqevk           | MCIMX8M-EVKB             |"
+			echo "|  4     |  imx8mmevk           | 8MMINILPD4-EVK           |"
+			echo "|  5     |  imx8mmddr4evk       | 8MMINID4-EVK             |"
+			echo "|  6     |  imx8mnddr4evk       | 8MNANOD4-EVK             |"
+			echo "|  7     |  imx8qxpmek          | MCIMX8QXP-CPU            |"
+			echo "|  8     |  imx8dxl-lpddr4-evk  | MCIMX8DXL-EVK            |"
+			echo "|  9     |  imx8mp-lpddr4-evk   | 8MPLUSLPD4-EVK           |"
+			echo "------------------------------------------------------------"
+			echo -n "Select your entry: "
+			read TARGET_OPTION
+			case $TARGET_OPTION in
+			1)
+				TARGET_NAME=imx6ulevk
+				PART_NUMBER=MCIMX6UL-EVK
+				break
+				;;
+			2)
+				TARGET_NAME=imx6ull14x14evk
+				PART_NUMBER=MCIMX6ULL-EVK
+				break
+				;;
+			3)
+				TARGET_NAME=imx8mqevk
+				PART_NUMBER=MCIMX8M-EVKB
+				LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			4)
+				TARGET_NAME=imx8mmevk
+				PART_NUMBER=8MMINILPD4-EVK
+				LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			5)
+				TARGET_NAME=imx8mmddr4evk
+				PART_NUMBER=8MMINID4-EVK
+				LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			6)
+				TARGET_NAME=imx8mnddr4evk
+				PART_NUMBER=8MNANOD4-EVK
+				LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			7)
+				TARGET_NAME=imx8qxpmek
+				PART_NUMBER=MCIMX8QXP-CPU
+				LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			8)
+				TARGET_NAME=imx8dxl-lpddr4-evk
+				PART_NUMBER=MCIMX8DXL-EVK
+				LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			9)
+				TARGET_NAME=imx8mp-lpddr4-evk
+				PART_NUMBER=8MPLUSLPD4-EVK
+				LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
 				DISTRO_NAME=fsl-imx-wayland
 				break
 				;;
@@ -776,10 +925,13 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	# Invoke Repo Init based on Yocto Release
 	if [ "$iMXYoctoRelease" = "$imxhardknottYocto52" ]; then
 		#echo "DEBUG:: IMXALL-HARDKNOTT-52"
-		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-hardknott -m imx-5.10.52-2.1.0.xml
+		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-hardknott -m imx-5.10.52-2.1.0.xml
 	elif [ "$iMXYoctoRelease" = "$imxhardknottYocto72" ]; then
 		#echo "DEBUG:: IMXALL-HARDKNOTT-52"
-		$REPO_PATH/repo init -u https://source.codeaurora.org/external/imx/imx-manifest -b imx-linux-hardknott -m imx-5.10.72-2.2.0.xml
+		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-hardknott -m imx-5.10.72-2.2.0.xml
+	elif [ "$iMXYoctoRelease" = "$imxkirkstone" ]; then
+		#echo "DEBUG:: IMXALL-KIRKSTONE"
+		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-kirkstone -m imx-5.15.32-2.0.0.xml
 	fi
 
 	#echo "DEBUG:: Performing repo sync......."
@@ -822,6 +974,10 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	chmod 777 sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh
 	sh ./sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh $BUILD_DIR_NAME
 	cd $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/linux
+
+	if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+		cp $LINUX_SRC $LINUX_DEST
+	fi
 
 	cd $BUILD_DIR
 
