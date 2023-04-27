@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=03232022
+VERSION=04272023
 
 ###################################################################################################
 #                             RELEASE HISTORY
@@ -9,6 +9,7 @@ VERSION=03232022
 #  1.0      | 12/14/2020   |    JK        |    Incremented Version and removed references to
 #           |              |              |    cyw-scripts folder.
 #  1.1      | 03/23/2022   |    JK        |    Updated host script to support Ubuntu 20.04
+#  1.2      | 04/27/2023   |    JK        |    Updated host script to support Ubuntu 22.04
 ###################################################################################################
 
 # Murata Script File used to do necessary host setup on Ubuntu 18.04, 16.04, 14.04 or 12.04 for Linux i.MX Yocto image build. 
@@ -44,10 +45,10 @@ fi
 
 # Get Ubuntu release version; make sure it is either 18.04, 16.04, 14.04 or 12.04. 
 Ubuntu_Release=$(lsb_release -r -s)
-if [ $Ubuntu_Release == "20.04" ] || [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
+if [ $Ubuntu_Release == "22.04" ] || [ $Ubuntu_Release == "20.04" ] || [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
                 echo -e "Murata: Verified Ubuntu Release:${NC}     " ${GRN}$Ubuntu_Release${NC}
 else
-                echo -e "${RED}Murata: Only Ubuntu versions 20.04, 18.04, 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
+                echo -e "${RED}Murata: Only Ubuntu versions 22.04, 20.04, 18.04, 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
 		echo -e "Exiting script.....${NC}"
                 exit
 fi 
@@ -147,7 +148,7 @@ if [ $Ubuntu_Release == "12.04" ]; then
 	# i.MX layers host packages for a Ubuntu 12.04 host setup only are:
         echo -e "${GRN}Murata: Installing i.MX layers host packages for a Ubuntu 12.04 host setup only...${NC}"
 	sudo apt-get install uboot-mkimage 
-elif [ $Ubuntu_Release == "20.04" ] || [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ]; then
+elif [ $Ubuntu_Release == "22.04" ] || [ $Ubuntu_Release == "20.04" ] || [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ]; then
 	# i.MX layers host packages for a Ubuntu 14.04 or 16.04 or 18.04 or 20.04 host setup only are:
 	echo -e "${GRN}Murata: Installing i.MX layers host packages for a Ubuntu 20.04 or 18.04 or 16.04 or 14.04 host setup only...${NC}"
 	sudo apt-get install u-boot-tools
