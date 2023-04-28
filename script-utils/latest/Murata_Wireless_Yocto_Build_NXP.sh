@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=04252023
+VERSION=04282023
 
 
 ###################################################################################################
@@ -39,6 +39,7 @@ VERSION=04252023
 #           |              |              |    Murata_Wireless_Yocto_Build_CYW.sh.
 #  1.22     | 03/16/2023   |    RC        |    Added support for 5.15.32.
 #  1.23     | 04/25/2023   |    RC        |    Updated to use correct NXP repositories.
+#  1.24     | 04/28/2023   |    JK        |    Updated to support 22.04.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -131,10 +132,10 @@ fi
 
 # Get Ubuntu release version; make sure it is either 20.04, 18.04, 16.04, 14.04 or 12.04.
 Ubuntu_Release=$(lsb_release -r -s)
-if [ $Ubuntu_Release == "20.04" ] || [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
+if [ $Ubuntu_Release == "22.04" ] || [ $Ubuntu_Release == "20.04" ] || [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
 	echo -e "Murata: Verified Ubuntu Release:${NC}     " ${GRN}$Ubuntu_Release${NC}
 else
-	echo -e "${RED}Murata: Only Ubuntu versions 20.04, 18.04, 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
+	echo -e "${RED}Murata: Only Ubuntu versions 22.04, 20.04, 18.04, 16.04, 14.04, and 12.04 are supported; not:" $Ubuntu_Release
 	echo -e "Exiting script.....${NC}"
 	exit
 fi
