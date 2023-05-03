@@ -4,7 +4,6 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
 SRC_URI:append = " file://0001-murata-dts-imx6.patch \
-                   file://0002-defconfig.patch \
                    file://0004-kconfig-imx6.patch"
 
 addtask copy_defconfig_after_patch after do_patch before do_configure
