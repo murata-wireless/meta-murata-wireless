@@ -20,12 +20,9 @@ SRC_URI = " \
 	file://switch_module_imx8mmea-ucom.sh \
 	file://switch_module_imx8mnea-ucom.sh \
 	file://switch_module_imx8mqea-com.sh \
-	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 	file://cyfmac55572-pcie.txt \
         file://cyfmac55572-sdio.txt \
 	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
-	file://uartspi_n61x_v1.bin.se \
-	file://sduart_nw61x_v1.bin.se \
 	file://ot-daemon.64-bit \
 	file://ot-ctl.64-bit \
 	file://fw_loader_imx_lnx.64-bit \
@@ -274,10 +271,7 @@ do_install () {
         install -m 755 ${S}/nxp-linux-calibration/murata/start_country.service ${D}/lib/firmware/nxp/murata/files
         install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/lib/firmware/nxp/murata/README.txt
 
-#	Copy 1XK Dedicated Bluetooth Antenna configuration file
-	install -m 755 ${S}/WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf ${D}/lib/firmware/nxp/murata/files/1XK
-	install -m 755 ${S}/uartspi_n61x_v1.bin.se ${D}/lib/firmware/nxp
-	install -m 755 ${S}/sduart_nw61x_v1.bin.se ${D}/lib/firmware/nxp
+#	Copy configuration file for 2EL
 	install -m 444 ${S}/WlanCalData_ext.conf ${D}/lib/firmware/nxp
 }
 
