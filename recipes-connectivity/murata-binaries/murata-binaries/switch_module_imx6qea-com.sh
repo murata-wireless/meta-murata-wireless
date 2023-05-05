@@ -106,16 +106,6 @@ function clean_up() {
   if [ -e /usr/sbin/startup_setcountry.sh ]; then
     rm /usr/sbin/startup_setcountry.sh
   fi
-  
-  if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
-  #Take a back-up of original mlan.ko and remove it from "extra"
-  if [ -e /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-    cp /lib/modules/$(uname -r)/extra/mlan.ko /usr/share/murata_wireless/mlan.ko.orig
-    rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
 }
 
 function prepare_for_nxp_sdio() {
@@ -124,16 +114,6 @@ function prepare_for_nxp_sdio() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
-  # Remove existing link of mlan.ko
-  if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
-  # Bring back mlan.ko from backup to extra
-  if [ -e /usr/share/murata_wireless/mlan.ko.orig ]; then
-    cp /usr/share/murata_wireless/mlan.ko.orig /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -165,16 +145,6 @@ function prepare_for_nxp_xk_sdio() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
-  # Remove existing link of mlan.ko
-  if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
-  # Bring back mlan.ko from backup to extra
-  if [ -e /usr/share/murata_wireless/mlan.ko.orig ]; then
-    cp /usr/share/murata_wireless/mlan.ko.orig /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -206,16 +176,6 @@ function prepare_for_nxp_ds_sdio() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
-  # Remove existing link of mlan.ko
-  if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
-  # Bring back mlan.ko from backup to extra
-  if [ -e /usr/share/murata_wireless/mlan.ko.orig ]; then
-    cp /usr/share/murata_wireless/mlan.ko.orig /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -247,16 +207,6 @@ function prepare_for_nxp_ym_sdio() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
-  # Remove existing link of mlan.ko
-  if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
-  # Bring back mlan.ko from backup to extra
-  if [ -e /usr/share/murata_wireless/mlan.ko.orig ]; then
-    cp /usr/share/murata_wireless/mlan.ko.orig /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -264,10 +214,6 @@ function prepare_for_nxp_ym_sdio() {
 # (where the Cypress version is)
 override cfg80211 * kernel/net/wireless
 
-# Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for SD8997 is placed) before looking in mxmwiflex
-# (where the 1ZM-SD8987 version is)
-#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -294,16 +240,6 @@ function prepare_for_nxp_ym_pcie() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
-  # Remove existing link of mlan.ko
-  if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
-  # Bring back mlan.ko from backup to extra
-  if [ -e /usr/share/murata_wireless/mlan.ko.orig ]; then
-    cp /usr/share/murata_wireless/mlan.ko.orig /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -311,10 +247,6 @@ function prepare_for_nxp_ym_pcie() {
 # (where the Cypress version is)
 override cfg80211 * kernel/net/wireless
 
-# Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for PCIe-8997 is placed) before looking in mxmwiflex
-# (where the 1ZM-SD8987 version is)
-#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -340,16 +272,6 @@ function prepare_for_nxp_xl_sdio() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
-  # Remove existing link of mlan.ko
-  if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
-  # Bring back mlan.ko from backup to extra
-  if [ -e /usr/share/murata_wireless/mlan.ko.orig ]; then
-    cp /usr/share/murata_wireless/mlan.ko.orig /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
 
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
@@ -357,10 +279,6 @@ function prepare_for_nxp_xl_sdio() {
 # (where the Cypress version is)
 override cfg80211 * kernel/net/wireless
 
-# Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for SD9098 is placed) before looking in mxmwiflex
-# (where the 1XL/2XS-SD9098 version is)
-#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -387,26 +305,12 @@ function prepare_for_nxp_xl_pcie() {
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
   
-  # Remove existing link of mlan.ko
-  if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
-  # Bring back mlan.ko from backup to extra
-  if [ -e /usr/share/murata_wireless/mlan.ko.orig ]; then
-    cp /usr/share/murata_wireless/mlan.ko.orig /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
 # (where the Cypress version is)
 override cfg80211 * kernel/net/wireless
 
-# Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for PCIe-9098 is placed) before looking in mxmwiflex
-# (where the 1ZM-SD8987 version is)
-#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -434,28 +338,12 @@ function prepare_for_nxp_el_sdio() {
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
   
-  # Remove existing link of mlan.ko
-  if [ -L /lib/modules/$(uname -r)/extra/mlan.ko ]; then
-    rm /lib/modules/$(uname -r)/extra/mlan.ko
-  fi
-  
-  ln -s /usr/share/murata_wireless/mlan.ko /lib/modules/$(uname -r)/extra/mlan.ko
-  
-  # if there isn't link for 2EL@sdxxx.ko, then create Link only once
-  if [ ! -L /lib/modules/$(uname -r)/extra/sdxxx.ko ]; then
-     ln -s /usr/share/murata_wireless/sdxxx.ko /lib/modules/$(uname -r)/extra/sdxxx.ko
-  fi
-
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
 # (where the Cypress version is)
 override cfg80211 * kernel/net/wireless
 
-# Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for SD9177 is placed) before looking in mxmwiflex
-# (where the 2EL/2DL-SD9177 version is)
-#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -463,10 +351,10 @@ EOT
 blacklist cfg80211
 
 # Alias for the NXP modules
-alias sdio:c*v0471d0205* sdxxx
+alias sdio:c*v0471d0205* moal
 
-# Specify arguments to pass when loading the sd9098 module
-options sdxxx fw_name=nxp/sduart_nw61x_v1.bin.se cal_data_cfg=nxp/WlanCalData_ext.conf cfg80211_wext=0xf ps_mode=2
+# Specify arguments to pass when loading the iw612 module
+options moal mod_para=nxp/wifi_mod_para.conf
 EOT
 
   depmod -a
