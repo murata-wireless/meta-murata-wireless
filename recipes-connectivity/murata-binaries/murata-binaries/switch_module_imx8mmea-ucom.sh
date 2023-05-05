@@ -214,10 +214,6 @@ function prepare_for_nxp_ym_sdio() {
 # (where the Cypress version is)
 override cfg80211 * kernel/net/wireless
 
-# Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for SD8997 is placed) before looking in mxmwiflex
-# (where the 1ZM-SD8987 version is)
-#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -251,10 +247,6 @@ function prepare_for_nxp_ym_pcie() {
 # (where the Cypress version is)
 override cfg80211 * kernel/net/wireless
 
-# Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for PCIe-8997 is placed) before looking in mxmwiflex
-# (where the 1ZM-SD8987 version is)
-#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -287,10 +279,6 @@ function prepare_for_nxp_xl_sdio() {
 # (where the Cypress version is)
 override cfg80211 * kernel/net/wireless
 
-# Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for SD9098 is placed) before looking in mxmwiflex
-# (where the 1XL/2XS-SD9098 version is)
-#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -323,10 +311,6 @@ function prepare_for_nxp_xl_pcie() {
 # (where the Cypress version is)
 override cfg80211 * kernel/net/wireless
 
-# Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for PCIe-9098 is placed) before looking in mxmwiflex
-# (where the 1ZM-SD8987 version is)
-#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -360,10 +344,6 @@ function prepare_for_nxp_el_sdio() {
 # (where the Cypress version is)
 override cfg80211 * kernel/net/wireless
 
-# Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for SD9177 is placed) before looking in mxmwiflex
-# (where the 2EL/2DL-SD9177 version is)
-#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf
@@ -371,7 +351,7 @@ EOT
 blacklist cfg80211
 
 # Alias for the NXP modules
-alias sdio:c*v0471d0205* sdxxx
+alias sdio:c*v0471d0205* moal
 
 # Specify arguments to pass when loading the iw612 module
 options moal mod_para=nxp/wifi_mod_para.conf
