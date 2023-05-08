@@ -47,10 +47,23 @@ function current() {
   echo ""
 }
 
+function disable_systemd_prints() {
+  # Temporarily mutes the prints to dmesg to avoid getting spammed
+  # with "systemd-sysv-generator[469]: SysV service..."
+  # prints when enabling/disabling systemd services
+  echo 1 > /proc/sys/kernel/printk
+}
+
+function enable_systemd_prints() {
+  # Enables the dmesg prints again
+  echo 7 > /proc/sys/kernel/printk
+}
+
 function handle_services() {
   enable_mlan0=$1
   enable_wlan0=$2
 
+  disable_systemd_prints
   if ($enable_mlan0); then
     echo "Enabling mlan0"
     systemctl enable wpa_supplicant@mlan0
@@ -65,6 +78,7 @@ function handle_services() {
     echo "Disabling wlan0"
     systemctl disable wpa_supplicant@wlan0
   fi
+  enable_systemd_prints
 }
 
 function clean_up() {
@@ -96,11 +110,13 @@ function clean_up() {
   fi
 
   if [ -e /etc/systemd/system/start_country.service ]; then
+    disable_systemd_prints
     systemctl stop start_country.service
     # Disable country code service
     systemctl disable start_country.service
     # Remove the file
     rm /etc/systemd/system/start_country.service
+    enable_systemd_prints
   fi
 
   if [ -e /usr/sbin/startup_setcountry.sh ]; then
@@ -344,10 +360,6 @@ function prepare_for_nxp_el_sdio() {
 # (where the Cypress version is)
 override cfg80211 * kernel/net/wireless
 
-# Force modprobe to search "extra" (where the NXP
-# version of mlan.ko for SD9177 is placed) before looking in mxmwiflex
-# (where the 2EL/2DL-SD9177 version is)
-#override mlan * extra
 EOT
 
   cat <<EOT > /etc/modprobe.d/nxp_modules.conf

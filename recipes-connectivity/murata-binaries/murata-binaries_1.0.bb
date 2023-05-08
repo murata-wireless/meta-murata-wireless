@@ -20,6 +20,7 @@ SRC_URI = " \
 	file://switch_module_imx8mmea-ucom.sh \
 	file://switch_module_imx8mnea-ucom.sh \
 	file://switch_module_imx8mqea-com.sh \
+	file://switch_module_imx93ea-ucom.sh \
 	file://cyfmac55572-pcie.txt \
         file://cyfmac55572-sdio.txt \
 	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
@@ -66,6 +67,7 @@ DO_INSTALL_64BIT_BINARIES = "no"
 DO_INSTALL_64BIT_BINARIES_mx6 = "no"
 DO_INSTALL_64BIT_BINARIES_mx7 = "no"
 DO_INSTALL_64BIT_BINARIES_mx8 = "yes"
+DO_INSTALL_64BIT_BINARIES_mx9 = "yes"
 
 do_install () {
 	echo "Installing: "
@@ -249,6 +251,9 @@ do_install () {
 		;;
 	  imx8mqea-com)
 		install -m 755 ${S}/switch_module_imx8mqea-com.sh ${D}/usr/sbin/switch_module.sh
+		;;
+	  imx93ea-ucom)
+		install -m 755 ${S}/switch_module_imx93ea-ucom.sh ${D}/usr/sbin/switch_module.sh
 		;;
 	esac
 
