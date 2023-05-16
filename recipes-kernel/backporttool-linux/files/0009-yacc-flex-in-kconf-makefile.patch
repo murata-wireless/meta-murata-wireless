@@ -1,0 +1,14 @@
+diff --git a/kconf/Makefile b/kconf/Makefile
+index 2004c44..8f2c01d 100644
+--- a/kconf/Makefile
++++ b/kconf/Makefile
+@@ -17,7 +17,7 @@ clean:
+ zconf.tab.c: zconf.lex.c
+ 
+ %.tab.c: %.y
+-	$(YACC) -o$@ -t -l $<
++	yacc -o$@ -t -l $<
+ 
+ %.lex.c: %.l
+-	$(LEX) -o$@ -L $<
++	flex -o$@ -L $<

@@ -9,13 +9,24 @@ LICENSE = "GPL-2.0-only"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
+#SRC_URI =  " \
+#    git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=master \
+#    file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
+#    file://0004-makefile-yacc-flex-update.patch;apply=yes \
+#"
+
+#SRCREV = "1d605c8b97cce0b7bea0eb178a1bd0a6751554cb"
+
+
 SRC_URI =  " \
-    git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=imx-kirkstone-fafnir \
+    git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=master \
     file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
+    file://0007-backports-pkg-for-6.1.1.patch;apply=yes \
     file://0004-makefile-yacc-flex-update.patch;apply=yes \
 "
 
-SRCREV = "0f8147b6ad3af4819652d6edf23bc86618c16172"
+SRCREV = "1d605c8b97cce0b7bea0eb178a1bd0a6751554cb"
+
 S = "${WORKDIR}/git"
 
 

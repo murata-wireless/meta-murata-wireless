@@ -1,0 +1,19 @@
+diff --git a/Makefile.real b/Makefile.real
+index d0a8c20..502aa42 100644
+--- a/Makefile.real
++++ b/Makefile.real
+@@ -20,10 +20,10 @@ menuconfig:
+ 	silentoldconfig olddefconfig oldnoconfig \
+ 	allnoconfig allyesconfig allmodconfig \
+ 	alldefconfig randconfig
+-listnewconfig oldaskconfig oldconfig \
+-silentoldconfig olddefconfig oldnoconfig \
+-allnoconfig allyesconfig allmodconfig \
+-alldefconfig randconfig:
++	listnewconfig oldaskconfig oldconfig \
++	silentoldconfig olddefconfig oldnoconfig \
++	allnoconfig allyesconfig allmodconfig \
++	alldefconfig randconfig:
+ 	@$(MAKE) -C kconf conf
+ 	@./kconf/conf --$@ Kconfig
+ 

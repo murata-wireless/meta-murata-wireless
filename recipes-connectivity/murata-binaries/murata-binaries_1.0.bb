@@ -5,11 +5,11 @@ LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741
 
 SRC_URI = " \
 	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-5-15-32;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
-        git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=fafnir;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
+        git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=master;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=fafnir;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-fafnir;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
-        git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=fafnir;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
-        git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=fafnir;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
+        git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=master;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
+        git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=master;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
 	file://switch_module_imx6dlea-com.sh \
 	file://switch_module_imx6qea-com.sh \
 	file://switch_module_imx6sxea-com.sh \
@@ -33,11 +33,11 @@ SRC_URI = " \
 "
 
 SRCREV_nxp-linux-calibration="a33c54c01be8ec8bef7ffbdb61459fbdc2486b0a"
-SRCREV_cyw-fmac-fw="1f83e807b8187508c811a7d91a353a768fef2d37"
+SRCREV_cyw-fmac-fw="7e333850fe70666c973cbb785c0350ec0d5cf88a"
 SRCREV_cyw-fmac-nvram="303acf1b04441f62fbc48d278a70a099fabacb4a"
 SRCREV_cyw-bt-patch="32af98f8bc8a8e123b4c428af0035d74e85ae4bb"
-SRCREV_cyw-fmac-utils-imx32="e248804b6ba386fedcd462ddd9394f42f73a17af"
-SRCREV_cyw-fmac-utils-imx64="1bc78d68f9609290b2f6578516011c57691f7815"
+SRCREV_cyw-fmac-utils-imx32="8cb3dd4af05446c3f5b7acec6fa063ad9d7f2e1f"
+SRCREV_cyw-fmac-utils-imx64="ca1b46fcb3bcf61dba6bdd9692741f5304c0899a"
 
 SRCREV_default = "${AUTOREV}"
 
