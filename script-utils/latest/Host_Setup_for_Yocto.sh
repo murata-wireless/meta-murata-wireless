@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=04272023
+VERSION=05222023
 
 ###################################################################################################
 #                             RELEASE HISTORY
@@ -10,9 +10,10 @@ VERSION=04272023
 #           |              |              |    cyw-scripts folder.
 #  1.1      | 03/23/2022   |    JK        |    Updated host script to support Ubuntu 20.04
 #  1.2      | 04/27/2023   |    JK        |    Updated host script to support Ubuntu 22.04
+#  1.2      | 05/22/2023   |    JK        |    Updated host script to support Ubuntu 22.04
 ###################################################################################################
 
-# Murata Script File used to do necessary host setup on Ubuntu 18.04, 16.04, 14.04 or 12.04 for Linux i.MX Yocto image build. 
+# Murata Script File used to do necessary host setup on Ubuntu 22.04, 20.04, 18.04, 16.04, 14.04 or 12.04 for Linux i.MX Yocto image build. 
 #
 # User running this script needs root priviledges - i.e. included in "sudoers" file. 
 # Script assumes that "root" is not executing it. 
@@ -43,7 +44,7 @@ else
                 exit
 fi
 
-# Get Ubuntu release version; make sure it is either 18.04, 16.04, 14.04 or 12.04. 
+# Get Ubuntu release version; make sure it is either 22.04, 20.04, 18.04, 16.04, 14.04 or 12.04. 
 Ubuntu_Release=$(lsb_release -r -s)
 if [ $Ubuntu_Release == "22.04" ] || [ $Ubuntu_Release == "20.04" ] || [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
                 echo -e "Murata: Verified Ubuntu Release:${NC}     " ${GRN}$Ubuntu_Release${NC}
@@ -139,7 +140,7 @@ echo    "Murata: Installing Essential Yocto Project host packages."
 echo -e "        ${YLW}sudoers-priviledged user will be prompted for password...${NC}"
 
 sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev
-# i.MX layers host packages for a Ubuntu 12.04 or 14.04 or 16.04 or 18.04 host setup are:
+# i.MX layers host packages for a Ubuntu 12.04/14.04/16.04/18.04/20.04/22.04 host setup are:
 echo -e "${GRN}Murata: Installing i.MX layers host packages...${NC}"
 sudo apt-get install git libsdl1.2-dev xterm sed cvs subversion coreutils texi2html docbook-utils python-pysqlite2 help2man make gcc g++ desktop-file-utils libgl1-mesa-dev libglu1-mesa-dev mercurial autoconf automake groff curl lzop asciidoc repo
 
@@ -148,10 +149,14 @@ if [ $Ubuntu_Release == "12.04" ]; then
 	# i.MX layers host packages for a Ubuntu 12.04 host setup only are:
         echo -e "${GRN}Murata: Installing i.MX layers host packages for a Ubuntu 12.04 host setup only...${NC}"
 	sudo apt-get install uboot-mkimage 
-elif [ $Ubuntu_Release == "22.04" ] || [ $Ubuntu_Release == "20.04" ] || [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ]; then
-	# i.MX layers host packages for a Ubuntu 14.04 or 16.04 or 18.04 or 20.04 host setup only are:
-	echo -e "${GRN}Murata: Installing i.MX layers host packages for a Ubuntu 20.04 or 18.04 or 16.04 or 14.04 host setup only...${NC}"
+elif [ $Ubuntu_Release == "20.04" ] || [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ]; then
+	# i.MX layers host packages for a Ubuntu 14.04/16.04/18.04/20.04 host setup only are:
+	echo -e "${GRN}Murata: Installing i.MX layers host packages for a Ubuntu 22.04 or 20.04 or 18.04 or 16.04 or 14.04 host setup only...${NC}"
 	sudo apt-get install u-boot-tools
+elif [ $Ubuntu_Release == "22.04" ]; then
+	# i.MX layers host packages for a Ubuntu 22.04 host setup only are:
+	echo -e "${GRN}Murata: Installing i.MX layers host packages for a Ubuntu 22.04 host setup only...${NC}"
+	sudo apt-get install u-boot-tools gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat cpio pylint3 xterm rsync curl zstd pzstd xz-utils python python3 python3-pip python3-pexpect python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev debianutils iputils-ping lz4c lz4 libssl-dev
 else
 	echo -e "${RED}Murata: Ubuntu Release version not supported:${NC}" $Ubuntu_Release
 	exit        
