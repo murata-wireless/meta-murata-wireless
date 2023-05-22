@@ -25,56 +25,58 @@ SRC_URI = "http://w1.fi/releases/wpa_supplicant-${PV}.tar.gz \
            file://wpa_supplicant.conf \
            file://wpa_supplicant.conf-sane \
            file://99_wpa_supplicant \
-	   file://0001-wpa_supplicant-Support-4-way-handshake-offload-for-F.patch;apply=yes \
-	   file://0002-wpa_supplicant-Notify-Neighbor-Report-for-driver-tri.patch;apply=yes \
-	   file://0003-nl80211-Report-connection-authorized-in-EVENT_ASSOC.patch;apply=yes \
-	   file://0004-wpa_supplicant-Add-PMKSA-cache-for-802.1X-4-way-hand.patch;apply=yes \
-	   file://0005-OpenSSL-Fix-build-with-OpenSSL-1.0.1.patch;apply=yes \
-	   file://0006-nl80211-Check-SAE-authentication-offload-support.patch;apply=yes \
-	   file://0007-SAE-Pass-SAE-password-on-connect-for-SAE-authenticat.patch;apply=yes \
-	   file://0008-nl80211-Support-4-way-handshake-offload-for-WPA-WPA2.patch;apply=yes \
-	   file://0009-AP-Support-4-way-handshake-offload-for-WPA-WPA2-PSK.patch;apply=yes \
-	   file://0010-nl80211-Support-SAE-authentication-offload-in-AP-mod.patch;apply=yes \
-	   file://0011-SAE-Support-SAE-authentication-offload-in-AP-mode.patch;apply=yes \
-	   file://0012-DPP-Do-more-condition-test-for-AKM-type-DPP-offload.patch;apply=yes \
-	   file://0013-non-upstream-defconfig_base-Add-Infineon-default-con.patch;apply=yes \
-	   file://0014-CVE_2019_9501-Fix-to-check-Invalid-GTK-IE-length-in-.patch;apply=yes \
-	   file://0015-Add-CONFIG_WPA3_SAE_AUTH_EARLY_SET-flags-and-codes.murata.patch;apply=yes \
-	   file://0016-SAE-Set-the-right-WPA-Versions-for-FT-SAE-key-manage.patch;apply=yes \
-	   file://0017-wpa_supplicant-Support-WPA_KEY_MGMT_FT-for-eapol-off.patch;apply=yes \
-	   file://0018-wpa_supplicant-suppress-deauth-for-PMKSA-caching-dis.patch;apply=yes \
-	   file://0019-Fix-for-PMK-expiration-issue-through-supplicant.murata.patch;apply=yes \
-	   file://0020-SAE-Drop-PMKSA-cache-after-receiving-specific-deauth.patch;apply=yes \
-	   file://0021-Avoid-deauthenticating-STA-if-the-reason-for-freeing.patch;apply=yes \
-	   file://0022-wpa_supplicant-support-bgscan.patch;apply=yes \
-	   file://0023-non-upstream-wl-cmd-create-interface-to-support-driv.murata.patch;apply=yes \
-	   file://0024-non-upstream-wl-cmd-create-wl_do_cmd-as-an-entry-doi.patch;apply=yes \
-	   file://0025-non-upstream-wl-cmd-create-ops-table-to-do-wl-comman.patch;apply=yes \
-	   file://0026-non-upstream-wl-cmd-add-more-compile-flag.patch;apply=yes \
-	   file://0027-Fix-dpp-config-parameter-setting.patch;apply=yes \
-	   file://0028-DPP-Resolving-failure-of-dpp-configurator-exchange-f.patch;apply=yes \
-	   file://0029-Enabling-SUITEB192-and-SUITEB-compile-options.patch;apply=yes \
-	   file://0030-DPP-Enabling-CLI_EDIT-option-for-enrollee-plus-respo.patch;apply=yes \
-	   file://0031-P2P-Fixes-Scan-trigger-failed-once-GC-invited-by-GO.patch;apply=yes \
-	   file://0032-non-upstream-SAE-disconnect-after-PMKSA-cache-expire.patch;apply=yes \
-	   file://0033-Add-support-for-beacon-loss-roaming.patch;apply=yes \
-	   file://0034-wpa_supplicant-Set-PMKSA-to-driver-while-key-mgmt-is.patch;apply=yes \
-	   file://0035-nl80211-Set-NL80211_SCAN_FLAG_COLOCATED_6GHZ-in-scan.patch;apply=yes \
-	   file://0036-scan-Add-option-to-disable-6-GHz-collocated-scanning.patch;apply=yes \
-	   file://0037-Enabling-OWE-in-wpa_supplicant.patch;apply=yes \
-	   file://0038-Add-link-loss-timer-on-beacon-loss.patch;apply=yes \
-	   file://0039-FT-Sync-nl80211-ext-feature-index.patch;apply=yes \
-	   file://0040-nl80211-Introduce-a-vendor-header-for-vendor-NL-ifac.patch;apply=yes \
-	   file://0041-add-support-to-offload-TWT-setup-request-handling-to.patch;apply=yes \
-	   file://0042-add-support-to-offload-TWT-Teardown-request-handling.patch;apply=yes \
-	   file://0043-Add-support-to-configure-TWT-of-a-session-using-offs.patch;apply=yes \
-	   file://0044-Establish-a-Default-TWT-session-in-the-STA-after-ass.patch;apply=yes \
-	   file://0045-validate-the-TWT-parameters-exponent-and-mantissa-pa.patch;apply=yes \
-	   file://0046-Fix-for-station-sending-open-auth-instead-of-SAE-aut.patch;apply=yes \
-	   file://0047-Fix-ROAMOFFLOAD-raises-portValid-too-early.patch;apply=yes \
-	   file://0048-Fix-associating-failed-when-PMK-lifetime-is-set-to-1.patch;apply=yes \
-	   file://0049-non-upstream-p2p_add_group-command-unification.patch;apply=yes \
-           "
+    	   file://0001-wpa_supplicant-Support-4-way-handshake-offload-for-F.patch;apply=yes \
+    	   file://0002-wpa_supplicant-Notify-Neighbor-Report-for-driver-tri.patch;apply=yes \
+    	   file://0003-nl80211-Report-connection-authorized-in-EVENT_ASSOC.patch;apply=yes \
+    	   file://0004-wpa_supplicant-Add-PMKSA-cache-for-802.1X-4-way-hand.patch;apply=yes \
+    	   file://0005-OpenSSL-Fix-build-with-OpenSSL-1.0.1.patch;apply=yes \
+    	   file://0006-nl80211-Check-SAE-authentication-offload-support.patch;apply=yes \
+    	   file://0007-SAE-Pass-SAE-password-on-connect-for-SAE-authenticat.patch;apply=yes \
+    	   file://0008-nl80211-Support-4-way-handshake-offload-for-WPA-WPA2.patch;apply=yes \
+    	   file://0009-AP-Support-4-way-handshake-offload-for-WPA-WPA2-PSK.patch;apply=yes \
+    	   file://0010-nl80211-Support-SAE-authentication-offload-in-AP-mod.patch;apply=yes \
+    	   file://0011-SAE-Support-SAE-authentication-offload-in-AP-mode.patch;apply=yes \
+    	   file://0012-DPP-Do-more-condition-test-for-AKM-type-DPP-offload.patch;apply=yes \
+    	   file://0013-non-upstream-defconfig_base-Add-Infineon-default-con.patch;apply=yes \
+    	   file://0014-CVE_2019_9501-Fix-to-check-Invalid-GTK-IE-length-in-.patch;apply=yes \
+    	   file://0015-Add-CONFIG_WPA3_SAE_AUTH_EARLY_SET-flags-and-codes.murata.patch;apply=yes \
+    	   file://0016-SAE-Set-the-right-WPA-Versions-for-FT-SAE-key-manage.patch;apply=yes \
+    	   file://0017-wpa_supplicant-Support-WPA_KEY_MGMT_FT-for-eapol-off.patch;apply=yes \
+    	   file://0018-wpa_supplicant-suppress-deauth-for-PMKSA-caching-dis.patch;apply=yes \
+    	   file://0019-Fix-for-PMK-expiration-issue-through-supplicant.murata.patch;apply=yes \
+    	   file://0020-SAE-Drop-PMKSA-cache-after-receiving-specific-deauth.patch;apply=yes \
+    	   file://0021-Avoid-deauthenticating-STA-if-the-reason-for-freeing.patch;apply=yes \
+    	   file://0022-wpa_supplicant-support-bgscan.patch;apply=yes \
+    	   file://0023-non-upstream-wl-cmd-create-interface-to-support-driv.murata.patch;apply=yes \
+    	   file://0024-non-upstream-wl-cmd-create-wl_do_cmd-as-an-entry-doi.patch;apply=yes \
+    	   file://0025-non-upstream-wl-cmd-create-ops-table-to-do-wl-comman.patch;apply=yes \
+    	   file://0026-non-upstream-wl-cmd-add-more-compile-flag.patch;apply=yes \
+    	   file://0027-Fix-dpp-config-parameter-setting.patch;apply=yes \
+    	   file://0028-DPP-Resolving-failure-of-dpp-configurator-exchange-f.patch;apply=yes \
+    	   file://0029-Enabling-SUITEB192-and-SUITEB-compile-options.patch;apply=yes \
+    	   file://0030-DPP-Enabling-CLI_EDIT-option-for-enrollee-plus-respo.patch;apply=yes \
+    	   file://0031-P2P-Fixes-Scan-trigger-failed-once-GC-invited-by-GO.patch;apply=yes \
+    	   file://0032-non-upstream-SAE-disconnect-after-PMKSA-cache-expire.patch;apply=yes \
+    	   file://0033-Add-support-for-beacon-loss-roaming.patch;apply=yes \
+    	   file://0034-wpa_supplicant-Set-PMKSA-to-driver-while-key-mgmt-is.patch;apply=yes \
+    	   file://0035-nl80211-Set-NL80211_SCAN_FLAG_COLOCATED_6GHZ-in-scan.patch;apply=yes \
+    	   file://0036-scan-Add-option-to-disable-6-GHz-collocated-scanning.patch;apply=yes \
+    	   file://0037-Enabling-OWE-in-wpa_supplicant.patch;apply=yes \
+    	   file://0038-Add-link-loss-timer-on-beacon-loss.patch;apply=yes \
+    	   file://0039-FT-Sync-nl80211-ext-feature-index.patch;apply=yes \
+    	   file://0040-nl80211-Introduce-a-vendor-header-for-vendor-NL-ifac.patch;apply=yes \
+    	   file://0041-add-support-to-offload-TWT-setup-request-handling-to.patch;apply=yes \
+    	   file://0042-add-support-to-offload-TWT-Teardown-request-handling.patch;apply=yes \
+    	   file://0043-Add-support-to-configure-TWT-of-a-session-using-offs.patch;apply=yes \
+    	   file://0044-Establish-a-Default-TWT-session-in-the-STA-after-ass.patch;apply=yes \
+    	   file://0045-validate-the-TWT-parameters-exponent-and-mantissa-pa.patch;apply=yes \
+    	   file://0046-Fix-for-station-sending-open-auth-instead-of-SAE-aut.patch;apply=yes \
+    	   file://0047-Fix-ROAMOFFLOAD-raises-portValid-too-early.patch;apply=yes \
+    	   file://0048-Fix-associating-failed-when-PMK-lifetime-is-set-to-1.patch;apply=yes \
+    	   file://0049-non-upstream-p2p_add_group-command-unification.patch;apply=yes \
+    	   file://0050-non-upstream-MBO-wpa_cli-mbo-command-by-IFX-vendorID.patch;apply=yes \
+    	   file://0051-Flush-PMKID-info-irrespective-of-reason-code-on-deau.patch;apply=yes \
+"
 SRC_URI[sha256sum] = "20df7ae5154b3830355f8ab4269123a87affdea59fe74fe9292a91d0d7e17b2f"
 
 CVE_PRODUCT = "wpa_supplicant"
@@ -163,4 +165,3 @@ do_install () {
 	install -m 755 wpa_supplicant/wpa_supplicant ${D}${sbindir}/wpa_supplicant.cyw
         install -m 755 wpa_supplicant/wpa_cli ${D}${sbindir}/wpa_cli.cyw
 }
-

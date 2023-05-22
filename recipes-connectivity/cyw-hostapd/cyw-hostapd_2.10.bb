@@ -47,6 +47,7 @@ SRC_URI = " \
 	   file://0042-add-support-to-offload-TWT-Teardown-request-handling.murata.patch;apply=yes \
 	   file://0043-Add-support-to-configure-TWT-of-a-session-using-offs.murata.patch;apply=yes \
 	   file://0048-Fix-associating-failed-when-PMK-lifetime-is-set-to-1.patch;apply=yes \
+	   file://0050-non-upstream-MBO-wpa_cli-mbo-command-by-IFX-vendorID.murata.patch;apply=yes \
 "
 
 

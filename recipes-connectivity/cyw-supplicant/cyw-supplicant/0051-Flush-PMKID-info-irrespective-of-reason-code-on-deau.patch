@@ -1,0 +1,63 @@
+From 0e7869b9a014833ecda6be27f603d652bbe0e2a5 Mon Sep 17 00:00:00 2001
+From: Ramesh Rangavittal <ramesh.rangavittal@infineon.com>
+Date: Thu, 12 Jan 2023 16:17:18 -0600
+Subject: [PATCH 51/51] Flush PMKID info irrespective of reason code on deauth
+ or disassoc
+
+---
+ wpa_supplicant/events.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
+
+diff --git a/wpa_supplicant/events.c b/wpa_supplicant/events.c
+index b42f758ce..37095cb0d 100644
+--- a/wpa_supplicant/events.c
++++ b/wpa_supplicant/events.c
+@@ -4129,6 +4129,10 @@ static void wpas_event_disconnect(struct wpa_supplicant *wpa_s, const u8 *addr,
+ 				  u16 reason_code, int locally_generated,
+ 				  const u8 *ie, size_t ie_len, int deauth)
+ {
++#ifdef CONFIG_SAE
++	const u8 *bssid = wpa_s->bssid;
++#endif /* CONFIG_SAE */
++
+ #ifdef CONFIG_AP
+ 	if (wpa_s->ap_iface && addr) {
+ 		hostapd_notif_disassoc(wpa_s->ap_iface->bss[0], addr);
+@@ -4167,22 +4171,18 @@ static void wpas_event_disconnect(struct wpa_supplicant *wpa_s, const u8 *addr,
+ #endif /* CONFIG_P2P */
+ 
+ #ifdef CONFIG_SAE
+-	if (reason_code <= WLAN_REASON_PREV_AUTH_NOT_VALID) {
+-		const u8 *bssid = wpa_s->bssid;
+-
+-		if (is_zero_ether_addr(bssid))
+-			bssid = wpa_s->pending_bssid;
+-
+-		if ((!is_zero_ether_addr(bssid) ||
+-			(wpa_s->wpa_state >= WPA_AUTHENTICATING)) &&
+-			wpa_s->current_ssid &&
+-			wpa_key_mgmt_sae(wpa_s->current_ssid->key_mgmt)) {
+-			wpa_dbg(wpa_s, MSG_DEBUG, "SAE: Drop PMKSA "
+-				"cache entry");
+-			wpa_sm_aborted_cached(wpa_s->wpa);
+-			wpa_sm_pmksa_cache_flush(wpa_s->wpa,
+-				wpa_s->current_ssid);
+-		}
++	if (is_zero_ether_addr(bssid))
++		bssid = wpa_s->pending_bssid;
++
++	if ((!is_zero_ether_addr(bssid) ||
++		(wpa_s->wpa_state >= WPA_AUTHENTICATING)) &&
++		wpa_s->current_ssid &&
++		wpa_key_mgmt_sae(wpa_s->current_ssid->key_mgmt)) {
++		wpa_dbg(wpa_s, MSG_DEBUG, "SAE: Drop PMKSA "
++			"cache entry");
++		wpa_sm_aborted_cached(wpa_s->wpa);
++		wpa_sm_pmksa_cache_flush(wpa_s->wpa,
++			wpa_s->current_ssid);
+ 	}
+ #endif /* CONFIG_SAE */
+ 	wpa_supplicant_event_disassoc_finish(wpa_s, reason_code,
+-- 
+2.17.1
+
