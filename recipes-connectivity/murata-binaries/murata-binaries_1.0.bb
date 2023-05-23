@@ -10,26 +10,27 @@ SRC_URI = " \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-fafnir;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
         git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=master;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
         git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=master;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
-	file://switch_module_imx6dlea-com.sh \
-	file://switch_module_imx6qea-com.sh \
-	file://switch_module_imx6sxea-com.sh \
-	file://switch_module_imx6ulea-com.sh \
-	file://switch_module_imx7dea-com.sh \
-	file://switch_module_imx7dea-ucom.sh \
-	file://switch_module_imx7ulpea-ucom.sh \
-	file://switch_module_imx8mmea-ucom.sh \
-	file://switch_module_imx8mnea-ucom.sh \
-	file://switch_module_imx8mqea-com.sh \
-	file://switch_module_imx93ea-ucom.sh \
-	file://cyfmac55572-pcie.txt \
+    	file://switch_module_imx6dlea-com.sh \
+	    file://switch_module_imx6qea-com.sh \
+        file://switch_module_imx6sxea-com.sh \
+	    file://switch_module_imx6ulea-com.sh \
+        file://switch_module_imx7dea-com.sh \
+	    file://switch_module_imx7dea-ucom.sh \
+        file://switch_module_imx7ulpea-ucom.sh \
+        file://switch_module_imx8mmea-ucom.sh \
+        file://switch_module_imx8mnea-ucom.sh \
+        file://switch_module_imx8mqea-com.sh \
+        file://switch_module_imx93ea-ucom.sh \
+	    file://cyfmac55572-pcie.txt \
         file://cyfmac55572-sdio.txt \
-	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
-	file://ot-daemon.64-bit \
-	file://ot-ctl.64-bit \
-	file://fw_loader_imx_lnx.64-bit \
-	file://ot-daemon.32-bit \
-	file://ot-ctl.32-bit \
-	file://WlanCalData_ext.conf \
+	    file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
+	    file://ot-daemon.64-bit \
+	    file://ot-ctl.64-bit \
+        file://fw_loader_imx_lnx.64-bit \
+        file://ot-daemon.32-bit \
+        file://ot-ctl.32-bit \
+        file://WlanCalData_ext.conf \
+        file://test_spi.sh \
 "
 
 SRCREV_nxp-linux-calibration="a33c54c01be8ec8bef7ffbdb61459fbdc2486b0a"
@@ -175,22 +176,22 @@ do_install () {
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac4373-sdio.2BC.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.2BC.txt
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.2AE.txt
 
-        install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.2BC.bin
-        install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2AE.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.2AE.bin
+    install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.2BC.bin
+    install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2AE.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.2AE.bin
 
-        install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.2BC.clm_blob
-        install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2AE.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.2AE.clm_blob
+    install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.2BC.clm_blob
+    install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2AE.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.2AE.clm_blob
 
 
-        install -m 444 ${S}/cyw-fmac-nvram/cyfmac4373-sdio.2BC.txt      ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
-        install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.bin         ${D}/lib/firmware/cypress/cyfmac4373-sdio.bin
-        install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.clm_blob    ${D}/lib/firmware/cypress/cyfmac4373-sdio.clm_blob
+    install -m 444 ${S}/cyw-fmac-nvram/cyfmac4373-sdio.2BC.txt      ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
+    install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.bin         ${D}/lib/firmware/cypress/cyfmac4373-sdio.bin
+    install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.clm_blob    ${D}/lib/firmware/cypress/cyfmac4373-sdio.clm_blob
 
 #	For 2EA 
 	install -m 444 ${S}/cyfmac55572-pcie.txt ${D}/lib/firmware/cypress
-        install -m 444 ${S}/cyfmac55572-sdio.txt ${D}/lib/firmware/cypress
+    install -m 444 ${S}/cyfmac55572-sdio.txt ${D}/lib/firmware/cypress
 
-#       For 2BZ
+#   For 2BZ
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac54591-sdio.2ant.2BZ.txt ${D}/lib/firmware/cypress/cyfmac54591-sdio.txt
 
 	install -m 444 ${S}/cyw-fmac-nvram/README_NVRAM.txt ${D}/lib/firmware/cypress
@@ -200,8 +201,8 @@ do_install () {
 
 	install -d ${D}/lib/firmware/nxp
 
-#       Copying wl tool binary to /usr/sbin
-        if [ ${TARGET_ARCH} = "aarch64" ]; then
+#   Copying wl tool binary to /usr/sbin
+    if [ ${TARGET_ARCH} = "aarch64" ]; then
 		install -m 755 ${WORKDIR}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl
 		install -m 755 ${WORKDIR}/ot-ctl.64-bit ${D}/usr/sbin/ot-ctl
 		install -m 755 ${WORKDIR}/ot-daemon.64-bit ${D}/usr/sbin/ot-daemon
@@ -270,14 +271,15 @@ do_install () {
 	fi
 
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/lib/firmware/nxp/murata/files
-        install -m 444 ${S}/nxp-linux-calibration/murata/files/regulatory.rules ${D}/lib/firmware/nxp/murata/files
-        install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/lib/firmware/nxp/murata/files
-        install -m 755 ${S}/nxp-linux-calibration/murata/switch_regions.sh ${D}/usr/sbin/switch_regions.sh
-        install -m 755 ${S}/nxp-linux-calibration/murata/start_country.service ${D}/lib/firmware/nxp/murata/files
-        install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/lib/firmware/nxp/murata/README.txt
+    install -m 444 ${S}/nxp-linux-calibration/murata/files/regulatory.rules ${D}/lib/firmware/nxp/murata/files
+    install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/lib/firmware/nxp/murata/files
+    install -m 755 ${S}/nxp-linux-calibration/murata/switch_regions.sh ${D}/usr/sbin/switch_regions.sh
+    install -m 755 ${S}/nxp-linux-calibration/murata/start_country.service ${D}/lib/firmware/nxp/murata/files
+    install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/lib/firmware/nxp/murata/README.txt
 
 #	Copy configuration file for 2EL
 	install -m 444 ${S}/WlanCalData_ext.conf ${D}/lib/firmware/nxp
+    install -m 755 ${S}/test_spi.sh ${D}/usr/sbin/test_spi.sh
 }
 
 PACKAGES =+ "${PN}-mfgtest"
