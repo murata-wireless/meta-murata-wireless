@@ -72,6 +72,14 @@ function handle_services() {
 }
 
 function clean_up() {
+  if [ -e /lib/firmware/regulatory.db ]; then
+    rm /lib/firmware/regulatory.db
+  fi
+
+  if [ -e /lib/firmware/regulatory.db.p7s ]; then
+    rm /lib/firmware/regulatory.db.p7s
+  fi
+
   if [ -e /usr/sbin/wpa_supplicant ]; then
     rm /usr/sbin/wpa_supplicant
     rm /usr/sbin/wpa_cli
@@ -380,14 +388,14 @@ function prepare_for_cypress() {
 
   if [ $cyw_module == "2AE" ]; then
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
-     cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2AE.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
-     cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2AE.CLM_BLOB /lib/firmware/cypress/cyfmac4373-sdio.2AE.CLM_BLOB
+     cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
+     cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.clm_blob /lib/firmware/cypress/cyfmac4373-sdio.clm_blob
   fi
 
   if [ $cyw_module == "2BC" ]; then
      cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
-     cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2BC.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
-     cp /lib/firmware/cypress/murata-master/cyfmac4373-sdio.2BC.CLM_BLOB /lib/firmware/cypress/cyfmac4373-sdio.2BC.CLM_BLOB
+     cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
+     cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.clm_blob /lib/firmware/cypress/cyfmac4373-sdio.clm_blob
   fi
 
 # For 2BZ, enabling only in-band interrupt and no OOB
