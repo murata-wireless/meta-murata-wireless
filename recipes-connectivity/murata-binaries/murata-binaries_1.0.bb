@@ -31,6 +31,8 @@ SRC_URI = " \
         file://ot-ctl.32-bit \
         file://WlanCalData_ext.conf \
         file://test_spi.sh \
+        file://mlanutl.32-bit \
+        file://mlanutl.64-bit \
 "
 
 SRCREV_nxp-linux-calibration="a33c54c01be8ec8bef7ffbdb61459fbdc2486b0a"
@@ -200,6 +202,7 @@ do_install () {
 #	install -m 444 ${S}/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
 
 	install -d ${D}/lib/firmware/nxp
+    install -d ${D}/usr/share/nxp_wireless
 
 #   Copying wl tool binary to /usr/sbin
     if [ ${TARGET_ARCH} = "aarch64" ]; then
@@ -207,10 +210,12 @@ do_install () {
 		install -m 755 ${WORKDIR}/ot-ctl.64-bit ${D}/usr/sbin/ot-ctl
 		install -m 755 ${WORKDIR}/ot-daemon.64-bit ${D}/usr/sbin/ot-daemon
 		install -m 755 ${WORKDIR}/fw_loader_imx_lnx.64-bit ${D}/usr/sbin/fw_loader_imx_lnx
+		install -m 755 ${WORKDIR}/mlanutl.64-bit ${D}/usr/share/nxp_wireless/mlanutl
 	else
 		install -m 755 ${WORKDIR}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
 		install -m 755 ${WORKDIR}/ot-ctl.32-bit ${D}/usr/sbin/ot-ctl
 		install -m 755 ${WORKDIR}/ot-daemon.32-bit ${D}/usr/sbin/ot-daemon
+		install -m 755 ${WORKDIR}/mlanutl.32-bit ${D}/usr/share/nxp_wireless/mlanutl
 	fi
 	
 #	Points default to NXP
@@ -263,7 +268,7 @@ do_install () {
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1YM/* ${D}/lib/firmware/nxp/murata/files/1YM
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1ZM/* ${D}/lib/firmware/nxp/murata/files/1ZM
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DS/* ${D}/lib/firmware/nxp/murata/files/2DS
-        #       Copying wl tool binary based on 32-bit/64-bit arch to /usr/sbin
+    #   Copying wl tool binary based on 32-bit/64-bit arch to /usr/sbin
         if [ ${TARGET_ARCH} = "aarch64" ]; then
 		install -m 755 ${S}/nxp-linux-calibration/murata/files/64_bit/* ${D}/lib/firmware/nxp/murata/files/64_bit
 	else
@@ -288,6 +293,7 @@ FILES:${PN} += "/lib/firmware"
 FILES:${PN} += "/lib/firmware/*"
 FILES:${PN} += "/lib/firmware/brcm"
 FILES:${PN} += "/lib/firmware/brcm/murata-master"
+FILES:${PN} += "usr/share/nxp_wireless"
 
 FILES:${PN} += "${bindir}"
 FILES:${PN} += "${sbindir}"
@@ -302,5 +308,4 @@ FILES:${PN}-mfgtest = " \
 
 INSANE_SKIP:${PN} += "build-deps"
 INSANE_SKIP:${PN} += "file-rdeps"
-
-
+INSANE_SKIP:${PN} += "already-stripped"
