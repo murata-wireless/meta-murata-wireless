@@ -4,7 +4,7 @@ LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
 SRC_URI = " \
-	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-6-1-1-temp;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
+        git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-6-1-1;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=master;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=fafnir;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-fafnir;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
@@ -35,7 +35,7 @@ SRC_URI = " \
         file://mlanutl.64-bit \
 "
 
-SRCREV_nxp-linux-calibration="87e138e5f20b98e51c0573a33dc717d2f95e1ee6"
+SRCREV_nxp-linux-calibration="fc2cdcb2d725a66e5025154ea6248e49da17d731"
 SRCREV_cyw-fmac-fw="6dc00b239d13681774c3945841e7d9905fb0d393"
 SRCREV_cyw-fmac-nvram="303acf1b04441f62fbc48d278a70a099fabacb4a"
 SRCREV_cyw-bt-patch="32af98f8bc8a8e123b4c428af0035d74e85ae4bb"
@@ -49,18 +49,18 @@ B = "${WORKDIR}"
 DEPENDS = " linux-firmware libnl wpa-supplicant cyw-supplicant"
 
 do_compile () {
-	echo "Compiling: "
-        echo "Testing Make        Display:: ${MAKE}"
-        echo "Testing bindir      Display:: ${bindir}"
-        echo "Testing base_libdir Display:: ${base_libdir}"
-        echo "Testing sysconfdir  Display:: ${sysconfdir}"
-        echo "Testing S  Display:: ${S}"
-        echo "Testing B  Display:: ${B}"
-        echo "Testing D  Display:: ${D}"
-        echo "WORK_DIR :: ${WORKDIR}"
+    echo "Compiling: "
+    echo "Testing Make        Display:: ${MAKE}"
+    echo "Testing bindir      Display:: ${bindir}"
+    echo "Testing base_libdir Display:: ${base_libdir}"
+    echo "Testing sysconfdir  Display:: ${sysconfdir}"
+    echo "Testing S  Display:: ${S}"
+    echo "Testing B  Display:: ${B}"
+    echo "Testing D  Display:: ${D}"
+    echo "WORK_DIR :: ${WORKDIR}"
 	echo "MACHINE TYPE :: ${MACHINE}"
-        echo "PWD :: "
-        pwd
+    echo "PWD :: "
+    pwd
 }
 
 PACKAGES:prepend = "murata-binaries-wlarm "
@@ -73,25 +73,23 @@ DO_INSTALL_64BIT_BINARIES_mx8 = "yes"
 DO_INSTALL_64BIT_BINARIES_mx9 = "yes"
 
 do_install () {
-	echo "Installing: "
-	install -d ${D}/lib/firmware/cypress
-	install -d ${D}/lib/firmware/cypress/murata-master
-	install -d ${D}/lib/firmware/brcm
-	install -d ${D}/lib/firmware/brcm/murata-master
-	install -d ${D}/usr/sbin
-	install -d ${D}/etc/udev/rules.d
+    echo "Installing: "
+    install -d ${D}/lib/firmware/cypress
+    install -d ${D}/lib/firmware/cypress/murata-master
+    install -d ${D}/lib/firmware/brcm
+    install -d ${D}/lib/firmware/brcm/murata-master
+    install -d ${D}/usr/sbin
+    install -d ${D}/etc/udev/rules.d
 
-        # Install /lib/firmware/nxp folder
-        install -d ${D}/lib/firmware/nxp
-        install -d ${D}/lib/firmware/nxp/murata
-        install -d ${D}/lib/firmware/nxp/murata/files
+    # Install /lib/firmware/nxp folder
+    install -d ${D}/lib/firmware/nxp
+    install -d ${D}/lib/firmware/nxp/murata
+    install -d ${D}/lib/firmware/nxp/murata/files
 	install -d ${D}/lib/firmware/nxp/murata/files/1XK
-        install -d ${D}/lib/firmware/nxp/murata/files/1ZM
-        install -d ${D}/lib/firmware/nxp/murata/files/1YM
-        install -d ${D}/lib/firmware/nxp/murata/files/2DS
-        install -d ${D}/lib/firmware/nxp/murata/files/32_bit
-        install -d ${D}/lib/firmware/nxp/murata/files/64_bit
-
+    install -d ${D}/lib/firmware/nxp/murata/files/1ZM
+    install -d ${D}/lib/firmware/nxp/murata/files/1YM
+    install -d ${D}/lib/firmware/nxp/murata/files/2DS
+    install -d ${D}/lib/firmware/nxp/murata/files/1XL
 
 #       Copying *.HCD files to etc/firmware and etc/firmware/murata-master (using "_" before the name of the file in murata-master)
         install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd ${D}/lib/firmware/brcm/BCM4335C0.ZP.hcd
@@ -131,14 +129,14 @@ do_install () {
     install -m 444 ${S}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}/lib/firmware/brcm/murata-master
 
 
-#       Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
+#   Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
 	install -m 444 ${S}/cyw-fmac-fw/*.bin ${D}/lib/firmware/cypress
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac55572-pcie.trxse ${D}/lib/firmware/cypress
-        install -m 444 ${S}/cyw-fmac-fw/cyfmac55572-sdio.trxse ${D}/lib/firmware/cypress
+    install -m 444 ${S}/cyw-fmac-fw/cyfmac55572-sdio.trxse ${D}/lib/firmware/cypress
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2AE.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.2AE.bin
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2BC.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.2BC.bin
 
-#       Rename clm blob files accordingly
+#   Rename clm blob files accordingly
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4354-sdio.1BB.clm_blob ${D}/lib/firmware/cypress/cyfmac4354-sdio.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4356-pcie.1CX.clm_blob ${D}/lib/firmware/cypress/cyfmac4356-pcie.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac43012-sdio.1LV.clm_blob ${D}/lib/firmware/cypress/cyfmac43012-sdio.clm_blob
@@ -152,14 +150,14 @@ do_install () {
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac4373-sdio.2AE.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.clm_blob
 	install -m 444 ${S}/cyw-fmac-fw/cyfmac43439-sdio.1YN.clm_blob  ${D}/lib/firmware/cypress/cyfmac43439-sdio.clm_blob 
 
-#       For 2EA
-        install -m 444 ${S}/cyw-fmac-fw/cyfmac55572-sdio.2EA.clm_blob  ${D}/lib/firmware/cypress/cyfmac55572-sdio.clm_blob
-        install -m 444 ${S}/cyw-fmac-fw/cyfmac55572-pcie.2EA.clm_blob  ${D}/lib/firmware/cypress/cyfmac55572-pcie.clm_blob
+#   For 2EA
+    install -m 444 ${S}/cyw-fmac-fw/cyfmac55572-sdio.2EA.clm_blob  ${D}/lib/firmware/cypress/cyfmac55572-sdio.clm_blob
+    install -m 444 ${S}/cyw-fmac-fw/cyfmac55572-pcie.2EA.clm_blob  ${D}/lib/firmware/cypress/cyfmac55572-pcie.clm_blob
 
 	install -m 444 ${S}/cyw-fmac-fw/README_CLM_BLOB.txt ${D}/lib/firmware/cypress/README_CLM_BLOB.txt
 	install -m 444 ${S}/cyw-fmac-fw/README_FW.txt ${D}/lib/firmware/cypress/README_FW.txt
 
-#       Copying NVRAM files (*.txt) to lib/firmware/cypress and lib/firmware/cypress/murata-master
+#   Copying NVRAM files (*.txt) to lib/firmware/cypress and lib/firmware/cypress/murata-master
 	install -m 444 ${S}/cyw-fmac-nvram/*.txt ${D}/lib/firmware/cypress/murata-master
 
 	install -m 444 ${S}/cyw-fmac-nvram/cyfmac4339-sdio.ZP.txt ${D}/lib/firmware/cypress/cyfmac4339-sdio.txt
@@ -220,7 +218,7 @@ do_install () {
 	
 #	Points default to NXP
 	ln -sf /usr/sbin/wpa_supplicant.nxp ${D}${sbindir}/wpa_supplicant
-        ln -sf /usr/sbin/wpa_cli.nxp ${D}${sbindir}/wpa_cli
+    ln -sf /usr/sbin/wpa_cli.nxp ${D}${sbindir}/wpa_cli
 	ln -sf /usr/sbin/hostapd.nxp ${D}${sbindir}/hostapd
 	ln -sf /usr/sbin/hostapd_cli.nxp ${D}${sbindir}/hostapd_cli
 
@@ -268,18 +266,12 @@ do_install () {
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1YM/* ${D}/lib/firmware/nxp/murata/files/1YM
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1ZM/* ${D}/lib/firmware/nxp/murata/files/1ZM
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DS/* ${D}/lib/firmware/nxp/murata/files/2DS
-    #   Copying wl tool binary based on 32-bit/64-bit arch to /usr/sbin
-        if [ ${TARGET_ARCH} = "aarch64" ]; then
-		install -m 755 ${S}/nxp-linux-calibration/murata/files/64_bit/* ${D}/lib/firmware/nxp/murata/files/64_bit
-	else
-		install -m 755 ${S}/nxp-linux-calibration/murata/files/32_bit/* ${D}/lib/firmware/nxp/murata/files/32_bit
-	fi
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/1XL/* ${D}/lib/firmware/nxp/murata/files/1XL
+
 
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/lib/firmware/nxp/murata/files
-    install -m 444 ${S}/nxp-linux-calibration/murata/files/regulatory.rules ${D}/lib/firmware/nxp/murata/files
     install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/lib/firmware/nxp/murata/files
     install -m 755 ${S}/nxp-linux-calibration/murata/switch_regions.sh ${D}/usr/sbin/switch_regions.sh
-    install -m 755 ${S}/nxp-linux-calibration/murata/start_country.service ${D}/lib/firmware/nxp/murata/files
     install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/lib/firmware/nxp/murata/README.txt
 
 #	Copy configuration file for 2EL
@@ -309,3 +301,4 @@ FILES:${PN}-mfgtest = " \
 INSANE_SKIP:${PN} += "build-deps"
 INSANE_SKIP:${PN} += "file-rdeps"
 INSANE_SKIP:${PN} += "already-stripped"
+
