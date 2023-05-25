@@ -35,7 +35,7 @@ SRC_URI = " \
         file://mlanutl.64-bit \
 "
 
-SRCREV_nxp-linux-calibration="fc2cdcb2d725a66e5025154ea6248e49da17d731"
+SRCREV_nxp-linux-calibration="f4cce135cd5f3ee8ebea3db7ff15209d13fec411"
 SRCREV_cyw-fmac-fw="6dc00b239d13681774c3945841e7d9905fb0d393"
 SRCREV_cyw-fmac-nvram="303acf1b04441f62fbc48d278a70a099fabacb4a"
 SRCREV_cyw-bt-patch="32af98f8bc8a8e123b4c428af0035d74e85ae4bb"
