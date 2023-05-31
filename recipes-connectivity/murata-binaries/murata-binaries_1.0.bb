@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741
 SRC_URI = " \
         git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-6-1-1;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=master;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
-        git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=fafnir;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
+        git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=master;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-fafnir;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
         git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=master;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
         git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=master;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
@@ -33,11 +33,12 @@ SRC_URI = " \
         file://test_spi.sh \
         file://mlanutl.32-bit \
         file://mlanutl.64-bit \
+        file://BCM.hcd \
 "
 
 SRCREV_nxp-linux-calibration="f4cce135cd5f3ee8ebea3db7ff15209d13fec411"
 SRCREV_cyw-fmac-fw="6dc00b239d13681774c3945841e7d9905fb0d393"
-SRCREV_cyw-fmac-nvram="303acf1b04441f62fbc48d278a70a099fabacb4a"
+SRCREV_cyw-fmac-nvram="9b7d93eb3e13b2d2ed8ce3a01338ceb54151b77a"
 SRCREV_cyw-bt-patch="32af98f8bc8a8e123b4c428af0035d74e85ae4bb"
 SRCREV_cyw-fmac-utils-imx32="8cb3dd4af05446c3f5b7acec6fa063ad9d7f2e1f"
 SRCREV_cyw-fmac-utils-imx64="ca1b46fcb3bcf61dba6bdd9692741f5304c0899a"
@@ -91,41 +92,45 @@ do_install () {
     install -d ${D}/lib/firmware/nxp/murata/files/2DS
     install -d ${D}/lib/firmware/nxp/murata/files/1XL
 
-#       Copying *.HCD files to etc/firmware and etc/firmware/murata-master (using "_" before the name of the file in murata-master)
-        install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd ${D}/lib/firmware/brcm/BCM4335C0.ZP.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd ${D}/lib/firmware/brcm/BCM4345C0_003.001.025.0187.0366.1MW.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd ${D}/lib/firmware/brcm/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd
-        install -m 444 ${S}/cyw-bt-patch/CYW43341B0.1BW.hcd ${D}/lib/firmware/brcm/BCM43341B0.1BW.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM43430A1_001.002.009.0159.0528.1DX.hcd ${D}/lib/firmware/brcm/BCM43430A1_001.002.009.0159.0528.1DX.hcd
-        install -m 444 ${S}/cyw-bt-patch/CYW4350C0.1BB.hcd ${D}/lib/firmware/brcm/BCM4350C0.1BB.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4356A2_001.003.015.0112.0410.1CX.hcd ${D}/lib/firmware/brcm/BCM4356A2_001.003.015.0112.0410.1CX.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd ${D}/lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}/lib/firmware/brcm/BCM4373A0.2AE.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}/lib/firmware/brcm/BCM4373A0.2BC.hcd
-        install -m 444 ${S}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}/lib/firmware/brcm/CYW4343A2_001.003.016.0031.0000.1YN.hcd
-        install -m 444 ${S}/CYW55560A1_001.002.087.0108.0000.sLNA.hcd ${D}/lib/firmware/brcm/CYW55560A1_001.002.087.0108.0000.sLNA.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}/lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
-        install -m 444 ${S}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}/lib/firmware/brcm/
+#   Copying *.HCD files to etc/firmware and etc/firmware/murata-master (using "_" before the name of the file in murata-master)
+    install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd ${D}/lib/firmware/brcm/BCM4335C0.ZP.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd ${D}/lib/firmware/brcm/BCM4345C0_003.001.025.0187.0366.1MW.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd ${D}/lib/firmware/brcm/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd
+    install -m 444 ${S}/cyw-bt-patch/CYW43341B0.1BW.hcd ${D}/lib/firmware/brcm/BCM43341B0.1BW.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM43430A1_001.002.009.0159.0528.1DX.hcd ${D}/lib/firmware/brcm/BCM43430A1_001.002.009.0159.0528.1DX.hcd
+    install -m 444 ${S}/cyw-bt-patch/CYW4350C0.1BB.hcd ${D}/lib/firmware/brcm/BCM4350C0.1BB.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4356A2_001.003.015.0112.0410.1CX.hcd ${D}/lib/firmware/brcm/BCM4356A2_001.003.015.0112.0410.1CX.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd ${D}/lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}/lib/firmware/brcm/BCM4373A0.2AE.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}/lib/firmware/brcm/BCM4373A0.2BC.hcd
+    install -m 444 ${S}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}/lib/firmware/brcm/CYW4343A2_001.003.016.0031.0000.1YN.hcd
+    install -m 444 ${S}/CYW55560A1_001.002.087.0108.0000.sLNA.hcd ${D}/lib/firmware/brcm/CYW55560A1_001.002.087.0108.0000.sLNA.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}/lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
+    install -m 444 ${S}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}/lib/firmware/brcm/
 
-#       install -m 444 ${D}${sysconfdir}/firmware/*.hcd       ${D}/lib/firmware/brcm/murata-master
-        install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd    ${D}/lib/firmware/brcm/murata-master/_BCM4335C0.ZP.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd   ${D}/lib/firmware/brcm/murata-master/_BCM4345C0_003.001.025.0187.0366.1MW.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd  ${D}/lib/firmware/brcm/murata-master/_BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0300.0266.1LV.dAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM43012C0_003.001.015.0300.0266.1LV.dAnt.hcd
-        install -m 444 ${S}/cyw-bt-patch/CYW43341B0.1BW.hcd  ${D}/lib/firmware/brcm/murata-master/_BCM43341B0.1BW.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM43430A1_001.002.009.0159.0528.1DX.hcd  ${D}/lib/firmware/brcm/murata-master/_BCM43430A1_001.002.009.0159.0528.1DX.hcd
-        install -m 444 ${S}/cyw-bt-patch/CYW4350C0.1BB.hcd   ${D}/lib/firmware/brcm/murata-master/_BCM4350C0.1BB.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4356A2_001.003.015.0112.0410.1CX.hcd   ${D}/lib/firmware/brcm/murata-master/_BCM4356A2_001.003.015.0112.0410.1CX.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0274.1XA.dAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0274.1XA.dAnt.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4373A0.2AE.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2BC.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4373A0.2BC.hcd
-        install -m 444 ${S}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}/lib/firmware/brcm/murata-master/_CYW4343A2_001.003.016.0031.0000.1YN.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
-        install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd
+#   install -m 444 ${D}${sysconfdir}/firmware/*.hcd       ${D}/lib/firmware/brcm/murata-master
+    install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd    ${D}/lib/firmware/brcm/murata-master/_BCM4335C0.ZP.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd   ${D}/lib/firmware/brcm/murata-master/_BCM4345C0_003.001.025.0187.0366.1MW.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd  ${D}/lib/firmware/brcm/murata-master/_BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0300.0266.1LV.dAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM43012C0_003.001.015.0300.0266.1LV.dAnt.hcd
+    install -m 444 ${S}/cyw-bt-patch/CYW43341B0.1BW.hcd  ${D}/lib/firmware/brcm/murata-master/_BCM43341B0.1BW.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM43430A1_001.002.009.0159.0528.1DX.hcd  ${D}/lib/firmware/brcm/murata-master/_BCM43430A1_001.002.009.0159.0528.1DX.hcd
+    install -m 444 ${S}/cyw-bt-patch/CYW4350C0.1BB.hcd   ${D}/lib/firmware/brcm/murata-master/_BCM4350C0.1BB.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4356A2_001.003.015.0112.0410.1CX.hcd   ${D}/lib/firmware/brcm/murata-master/_BCM4356A2_001.003.015.0112.0410.1CX.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0274.1XA.dAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0274.1XA.dAnt.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4373A0.2AE.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4373A0.2BC.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4373A0.2BC.hcd
+    install -m 444 ${S}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}/lib/firmware/brcm/murata-master/_CYW4343A2_001.003.016.0031.0000.1YN.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
+    install -m 444 ${S}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd
 
 #	Temporary from MMW
 	install -m 444 ${S}/CYW55560A1_001.002.087.0108.0000.sLNA.hcd ${D}/lib/firmware/brcm/murata-master/_CYW55560A1_001.002.087.0108.0000.sLNA.hcd
+	install -m 444 ${S}/CYW55560A1_001.002.087.0108.0000.sLNA.hcd ${D}/lib/firmware/brcm/CYW55560A1_001.002.087.0108.0000.sLNA.hcd
+	install -m 444 ${S}/BCM.hcd ${D}/lib/firmware/brcm/murata-master/_BCM.hcd
+	install -m 444 ${S}/BCM.hcd ${D}/lib/firmware/brcm/BCM.hcd
+
     install -m 444 ${S}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}/lib/firmware/brcm/murata-master
 
 
