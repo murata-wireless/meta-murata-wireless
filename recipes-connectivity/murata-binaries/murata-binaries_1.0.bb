@@ -34,6 +34,8 @@ SRC_URI = " \
         file://mlanutl.32-bit \
         file://mlanutl.64-bit \
         file://BCM.hcd \
+        file://load-fmac.sh \
+        file://prepare-for-2ea..sh \
 "
 
 SRCREV_nxp-linux-calibration="f4cce135cd5f3ee8ebea3db7ff15209d13fec411"
@@ -282,6 +284,8 @@ do_install () {
 #	Copy configuration file for 2EL
 	install -m 444 ${S}/WlanCalData_ext.conf ${D}/lib/firmware/nxp
     install -m 755 ${S}/test_spi.sh ${D}/usr/sbin/test_spi.sh
+    install -m 755 ${S}/load-fmac.sh ${D}/usr/sbin/load-fmac.sh
+    install -m 755 ${S}/prepare-for-2ea.sh ${D}/usr/sbin/prepare-for-2ea.sh
 }
 
 PACKAGES =+ "${PN}-mfgtest"
