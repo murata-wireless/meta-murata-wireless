@@ -130,6 +130,12 @@ function clean_up() {
   if [ -e /usr/sbin/startup_setcountry.sh ]; then
     rm /usr/sbin/startup_setcountry.sh
   fi
+
+  # Take a backup of hci_uart.ko to murata_wireless
+  if [ ! -e /usr/share/murata_wireless/hci_uart.ko ]; then
+      cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless/hci_uart.ko 
+  fi
+
 }
 
 function prepare_for_nxp_sdio() {
@@ -433,8 +439,17 @@ function switch_to_cypress_sdio() {
 
   if [ $cyw_module == "2EA-SDIO" ]; then
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-2ea.dtb 2>/dev/null
+     # Check for the presence of hci_uart.ko in Kernel, if it is then move it to /usr/share/murata_wireless dir
+     if [ -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
+        mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
+     fi
   else
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
+     # Check for the presence of hci_uart.ko in murata_wireless
+     if [ ! -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
+        echo "  Not Found hci_uart.ko. Copying it ..."
+        cp /usr/share/murata_wireless/hci_uart.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth
+     fi
   fi
 
   fw_setenv bt_hint cypress
@@ -450,8 +465,17 @@ function switch_to_cypress_pcie() {
 
   if [ $cyw_module == "2EA-PCIE" ]; then
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-pcie-2ea.dtb 2>/dev/null
+     # Check for the presence of hci_uart.ko in Kernel, if it is then move it to /usr/share/murata_wireless dir
+     if [ -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
+        mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
+     fi
   else
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-pcie.dtb 2>/dev/null
+     # Check for the presence of hci_uart.ko in murata_wireless
+     if [ ! -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
+        echo "  Not Found hci_uart.ko. Copying it ..."
+        cp /usr/share/murata_wireless/hci_uart.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth
+     fi
   fi
 
   fw_setenv bt_hint cypress
