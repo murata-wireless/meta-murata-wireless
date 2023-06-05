@@ -450,11 +450,10 @@ function off() {
 function switch_to_cypress_sdio() {
   echo ""
   echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA (Cypress - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
 
   if [ $cyw_module == "2EA-SDIO" ]; then
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-2ea.dtb 2>/dev/null
-     fw_setenv bt_hint cypress-2ea
+     fw_setenv bt_hint cypress_2ea
      move_ko
   else
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
@@ -470,18 +469,16 @@ function switch_to_cypress_sdio() {
 function switch_to_cypress_pcie() {
   echo ""
   echo "Setting up for 1CX, 1XA, 2EA (Cypress - PCIe)"
-  echo "Please wait for 15 seconds (one-time only)..."
 
   if [ $cyw_module == "2EA-PCIE" ]; then
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-pcie-2ea.dtb 2>/dev/null
-     fw_setenv bt_hint cypress-2ea
+     fw_setenv bt_hint cypress_2ea
      move_ko
   else
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-pcie.dtb 2>/dev/null
      fw_setenv bt_hint cypress
      restore_ko
   fi
-
 
   prepare_for_cypress
   echo "Setup complete."

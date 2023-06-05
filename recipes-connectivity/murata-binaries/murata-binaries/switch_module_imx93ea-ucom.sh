@@ -49,6 +49,22 @@ function enable_systemd_prints() {
   echo 7 > /proc/sys/kernel/printk
 }
 
+function move_ko() {
+     # Check for the presence of hci_uart.ko in Kernel, if it is then move/store it to /usr/share/murata_wireless dir
+     if [ -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
+        echo "DEBUG::store() Found hci_uart.ko. Moving it murata_wireless"
+        mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
+     fi
+}
+
+function restore_ko {
+     # Check for the presence of hci_uart.ko in murata_wireless
+     if [ ! -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
+        echo "DEBUG::restore() Not Found hci_uart.ko. Copying it to Kernel"
+        cp /usr/share/murata_wireless/hci_uart.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth
+     fi
+}
+
 function handle_services() {
   enable_mlan0=$1
   enable_wlan0=$2
@@ -119,6 +135,11 @@ function clean_up() {
 
   if [ -e /usr/sbin/startup_setcountry.sh ]; then
     rm /usr/sbin/startup_setcountry.sh
+  fi
+
+  # Take a backup of hci_uart.ko to murata_wireless
+  if [ ! -e /usr/share/murata_wireless/hci_uart.ko ]; then
+      cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless/hci_uart.ko 
   fi
 }
 
@@ -419,9 +440,17 @@ function off() {
 function switch_to_cypress_sdio() {
   echo ""
   echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA (Cypress - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
-  fw_setenv bt_hint cypress
+
+  if [ $cyw_module == "2EA-SDIO" ]; then
+     fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+     fw_setenv bt_hint cypress_2ea
+     move_ko
+  else
+     fw_setenv fdt_file imx93-ea-ucom-kit-2ea.dtb 2>/dev/null
+     fw_setenv bt_hint cypress
+     restore_ko
+  fi
+
   prepare_for_cypress
   echo "Setup complete."
   echo ""
@@ -430,9 +459,17 @@ function switch_to_cypress_sdio() {
 function switch_to_cypress_pcie() {
   echo ""
   echo "Setting up for 1CX, 1XA, 2EA (Cypress - PCIe)"
-  echo "Please wait for 15 seconds (one-time only)..."
-  fw_setenv fdt_file imx93-ea-ucom-kit-pcie.dtb 2>/dev/null
-  fw_setenv bt_hint cypress
+
+  if [ $cyw_module == "2EA-PCIE" ]; then
+     fw_setenv fdt_file imx93-ea-ucom-kit-pcie.dtb 2>/dev/null
+     fw_setenv bt_hint cypress_2ea
+     move_ko
+  else
+     fw_setenv fdt_file imx93-ea-ucom-kit-pcie-ea.dtb 2>/dev/null
+     fw_setenv bt_hint cypress
+     restore_ko
+  fi
+
   prepare_for_cypress
   echo "Setup complete."
   echo ""
@@ -441,7 +478,7 @@ function switch_to_cypress_pcie() {
 function switch_to_nxp_sdio() {
   echo ""
   echo "Setting up for 1ZM (NXP - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_sdio
@@ -452,7 +489,7 @@ function switch_to_nxp_sdio() {
 function switch_to_nxp_xl_sdio() {
   echo ""
   echo "Setting up for 1XL, 2XS (NXP - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_xl_sdio
@@ -463,7 +500,7 @@ function switch_to_nxp_xl_sdio() {
 function switch_to_nxp_el_sdio() {
   echo ""
   echo "Setting up for 2EL, 2DL (NXP - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_el_sdio
@@ -474,7 +511,7 @@ function switch_to_nxp_el_sdio() {
 function switch_to_nxp_xk_sdio() {
   echo ""
   echo "Setting up for 1XK, 2XK (NXP - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_xk_sdio
@@ -485,7 +522,7 @@ function switch_to_nxp_xk_sdio() {
 function switch_to_nxp_ds_sdio() {
   echo ""
   echo "Setting up for 2DS (NXP - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   prepare_for_nxp_ds_sdio
@@ -496,7 +533,7 @@ function switch_to_nxp_ds_sdio() {
 function switch_to_nxp_ym_sdio() {
   echo ""
   echo "Setting up for 1YM (NXP - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_sdio
   prepare_for_nxp_ym_sdio
@@ -508,7 +545,7 @@ function switch_to_nxp_ym_sdio() {
 function switch_to_nxp_ym_pcie() {
   echo ""
   echo "Setting up for 1YM (NXP - PCIe)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx93-ea-ucom-kit-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_pcie
   prepare_for_nxp_ym_pcie
@@ -520,7 +557,7 @@ function switch_to_nxp_ym_pcie() {
 function switch_to_nxp_xl_pcie() {
   echo ""
   echo "Setting up for 1XL, 2XS (NXP - PCIe)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx93-ea-ucom-kit-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1xl_pcie
   prepare_for_nxp_xl_pcie
