@@ -442,11 +442,11 @@ function switch_to_cypress_sdio() {
   echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA (Cypress - SDIO)"
 
   if [ $cyw_module == "2EA-SDIO" ]; then
-     fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+     fw_setenv fdt_file imx93-ea-ucom-kit-2ea.dtb 2>/dev/null
      fw_setenv bt_hint cypress_2ea
      move_ko
   else
-     fw_setenv fdt_file imx93-ea-ucom-kit-2ea.dtb 2>/dev/null
+     fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
      fw_setenv bt_hint cypress
      restore_ko
   fi
@@ -461,11 +461,11 @@ function switch_to_cypress_pcie() {
   echo "Setting up for 1CX, 1XA, 2EA (Cypress - PCIe)"
 
   if [ $cyw_module == "2EA-PCIE" ]; then
-     fw_setenv fdt_file imx93-ea-ucom-kit-pcie.dtb 2>/dev/null
+     fw_setenv fdt_file imx93-ea-ucom-kit-pcie-2ea.dtb 2>/dev/null
      fw_setenv bt_hint cypress_2ea
      move_ko
   else
-     fw_setenv fdt_file imx93-ea-ucom-kit-pcie-ea.dtb 2>/dev/null
+     fw_setenv fdt_file imx93-ea-ucom-kit-pcie.dtb 2>/dev/null
      fw_setenv bt_hint cypress
      restore_ko
   fi
