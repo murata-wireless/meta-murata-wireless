@@ -61,7 +61,7 @@ function restore_ko {
      # Check for the presence of hci_uart.ko in murata_wireless
      if [ ! -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
         echo "DEBUG::restore() Not Found hci_uart.ko. Copying it to Kernel"
-        cp /usr/share/murata_wireless/hci_uart.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth
+        cp /usr/share/murata_wireless/hci_uart.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko
      fi
 }
 
