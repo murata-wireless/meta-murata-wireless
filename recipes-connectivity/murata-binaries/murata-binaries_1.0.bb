@@ -30,7 +30,7 @@ SRC_URI = " \
         file://ot-daemon.32-bit \
         file://ot-ctl.32-bit \
         file://WlanCalData_ext.conf \
-        file://test_spi.sh \
+        file://test_2el_spi.sh \
         file://mlanutl.32-bit \
         file://mlanutl.64-bit \
         file://load-fmac.sh \
@@ -280,7 +280,7 @@ do_install () {
 
 #	Copy configuration file for 2EL
 	install -m 444 ${WORKDIR}/WlanCalData_ext.conf ${D}/lib/firmware/nxp
-    install -m 755 ${WORKDIR}/test_spi.sh ${D}/usr/sbin/test_spi.sh
+    install -m 755 ${WORKDIR}/test_2el_spi.sh ${D}/usr/sbin/test_2el_spi.sh
 	install -m 755 ${WORKDIR}/load-fmac.sh ${D}/usr/share/murata_wireless/load-fmac.sh
 	install -m 755 ${WORKDIR}/load-2ea-bt.sh ${D}/usr/sbin/load-2ea-bt.sh
 }
