@@ -429,13 +429,6 @@ function prepare_for_cypress() {
      cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.clm_blob /lib/firmware/cypress/cyfmac4373-sdio.clm_blob
   fi
 
-# For 2BZ, enabling only in-band interrupt and no OOB
-  if [ $cyw_module == "2BZ" ]; then
-     fw_setenv cmd_custom "fdt list mmc0/bcrmf@1\; fdt rm mmc0/bcrmf@1 interrupt-parent\; fdt rm mmc0/bcrmf@1 interrupts\; fdt rm mmc0/bcrmf@1 interrupt-names\; fdt list mmc0/bcrmf@1"
-  else
-     fw_setenv cmd_custom
-  fi
-
   depmod -a
 
   # Disable NXP service and enable Cypress service
