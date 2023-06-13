@@ -4,6 +4,7 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
 SRC_URI:append = " file://0003-defconfig-imx8.patch \
+		   file://0004-murata-dts-imx8.patch \
 		   file://0005-murata-disable-cfg-regdb.patch \
 		   file://0006-disable-dma-hciuart-kernel-crash.patch \
 "
