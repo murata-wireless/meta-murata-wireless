@@ -59,6 +59,17 @@ function prepare_for_cypress() {
 	ln -s /lib/firmware/cypress/cyfmac4373-sdio.2BC.clm_blob /lib/firmware/cypress/cyfmac4373-sdio.clm_blob
         echo "Setting up of 2BC is complete:"
   fi
+
+
+  if [ $cyw_module == "2EA" ]; then
+     # Check for the presence of hci_uart.ko in Kernel, if it is then move/store it to /usr/share/murata_wireless dir
+     if [ -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
+        echo "DEBUG::store() Found hci_uart.ko. Moving it murata_wireless"
+        mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
+     fi
+    echo "Setting up of 2EA-SDIO is complete:"
+  fi
+
 }
 
 
@@ -72,14 +83,16 @@ function switch_to_cypress() {
 function usage() {
   echo ""
   echo "Version: $VERSION"
-  echo "Purpose: Sets corresponding NVRAM, CLM_BLOB and Firmware for the specified module (2AE / 2BC)."
+  echo "Purpose: "
+  echo "1. Sets corresponding NVRAM, CLM_BLOB and Firmware for the specified module (2AE / 2BC)."
+  echo "2. Sets bluetooth file for 2EA."
   echo ""
   echo "Usage:"
   echo "  $0  <module>"
   echo ""
   echo "Where:"
   echo "  <module> is one of :"
-  echo "     2AE, 2BC"
+  echo "     2AE, 2BC, 2EA"
   echo ""
 }
 
@@ -92,7 +105,7 @@ fi
 cyw_module=${1^^}
 
 case ${1^^} in
-  2AE|2BC)
+  2AE|2BC|2EA)
     switch_to_cypress
     ;;
   *)
