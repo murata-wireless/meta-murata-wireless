@@ -1,20 +1,16 @@
-## Summary
-# Board Name : cyw955572m2ipa1
-# SSID : 0x85f
-# All parameters were copied from cyw955572fcipa_rev2.54.txt 083121 version
-# TSSI cal value updated 
-# Updated from FCIPA Rev2.54 729445
-# Copied from cyw955572m2ipa1_rev2.56.txt
+# Type-2EA rev2.5.1 NVRAM updated 
+# update from rev2.4.3
+# for Godzilla FW
 
-NVRAMRev=$Rev: 729580 $
+NVRAMRev=$Rev:  $
 sromrev=11
-boardrev=0x1300
-boardtype=0x085f
+boardrev=0x1221
+boardtype=0x0896
 boardflags=0x00400001
 boardflags2=0x00800000
 boardflags3=0x40002100
 #boardnum=57410
-macaddr=00:90:4c:2d:80:01
+macaddr=00:90:4c:2d:82:e9
 
 #Regulatory specific
 ccode=0
@@ -33,7 +29,7 @@ agbg0=2
 agbg1=2
 aga0=2
 aga1=2
-extpagain5g=2     
+extpagain5g=2
 extpagain2g=2
 rxgains2gelnagaina0=0
 rxgains2gtrisoa0=13
@@ -63,32 +59,39 @@ rxgains5ghtrelnabypa1=0
 #RSSI related
 rssicorrnorm_c0=0,0
 rssicorrnorm_c1=1,0
-rssicorrnorm5g_c0=12,17,18,8,12,13,5,16,14,4,9,12
-rssicorrnorm5g_c1=11,17,16,8,15,12,8,16,14,6,10,12
-rssicorrnorm6g_c0=15,13,17,16,23,16,4,15,13,4,6,12
-rssicorrnorm6g_c1=14,15,14,14,16,12,6,11,12,6,6,10
+rssicorrnorm5g_c0=14,8,6,10,8,6,8,-4,6,3,-8,6
+rssicorrnorm5g_c1=13,8,6,10,8,6,10,-4,6,4,-8,6
+low_pwr_rssi_thresh_qdBm_5g=-334
+low_pwr_rssi_bias_5g_c0=0,-3,-6,0,-3,-6,0,-3,-7,0,-4,-7
+low_pwr_rssi_bias_5g_c1=0,-3,-7,0,-2,-7,0,-2,-6,0,-3,-7
+rssicorrnorm6g_c0=12,11,12,12,12,14,3,2,1,8,7,8
+rssicorrnorm6g_c1=12,10,14,10,10,14,0,0,-2,6,0,6
 rssi_cal_freq_grp_2g= 0x08,0x01,0x91,0x2a,0x23,0xb3,0xc4
 rssi_delta_5gl=-6 4 -8 -8 -6 4 -8 -8 -6 4 -8 -8 -3 6 -3 -4 -3 6 -3 -4 -3 6 -3 -4
 rssi_delta_5gml=-1 3 -1 -3 -1 3 -1 -3 -1 3 -1 -3 -1 2 0 -2 -1 2 0 -2 -1 2 0 -2
 rssi_delta_5gmu=0 3 -1 -2 0 3 -1 -2 0 3 -1 -2 0 2 0 -2 0 2 0 -2 0 2 0 -2
 rssi_delta_5gh=2 4 2 -1 2 4 2 -1 2 4 2 -1 0 0 2 -2 0 0 2 -2 0 0 2 -2
-rssi_delta_6gunii5=-6 4 -8 -8 -6 4 -8 -8 -6 4 -8 -8 -3 6 -3 -4 -3 6 -3 -4 -3 6 -3 -4
-rssi_delta_6gunii6=-1 3 -1 -3 -1 3 -1 -3 -1 3 -1 -3 -1 2 0 -2 -1 2 0 -2 -1 2 0 -2
-rssi_delta_6gunii7=0 3 -1 -2 0 3 -1 -2 0 3 -1 -2 0 2 0 -2 0 2 0 -2 0 2 0 -2
-rssi_delta_6gunii8=2 4 2 -1 2 4 2 -1 2 4 2 -1 0 0 2 -2 0 0 2 -2 0 0 2 -2
+rssi_delta_6gunii5=0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+rssi_delta_6gunii6=0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+rssi_delta_6gunii7=0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+rssi_delta_6gunii8=0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 rssi_cal_rev=1
 rxgaincal_rssical=1
 gain_cal_temp=25
 rxgain_tempcoeff2g_sub=40,40,40,40,40,40,40,40,40,40
-rxgain_tempcoeff5gl=40,40
-rxgain_tempcoeff5gml=40,40
-rxgain_tempcoeff5gmu=40,40
-rxgain_tempcoeff5gh=40,40
+rxgain_tempcoeff5gl=18,18
+rxgain_tempcoeff5gml=22,22
+rxgain_tempcoeff5gmu=22,22
+rxgain_tempcoeff5gh=20,20
 rxgain_tempcoeff2g_sub_elnaoff=40,40,40,40,40,40,40,40,40,40
-rxgain_tempcoeff5gl_elnaoff=40,40
-rxgain_tempcoeff5gml_elnaoff=40,40
-rxgain_tempcoeff5gmu_elnaoff=40,40
-rxgain_tempcoeff5gh_elnaoff=40,40
+rxgain_tempcoeff5gl_elnaoff=18,18
+rxgain_tempcoeff5gml_elnaoff=22,22
+rxgain_tempcoeff5gmu_elnaoff=22,22
+rxgain_tempcoeff5gh_elnaoff=20,20
+rxgain_tempcoeff6g_unii5=20,20
+rxgain_tempcoeff6g_unii6=20,20
+rxgain_tempcoeff6g_unii7=20,20
+rxgain_tempcoeff6g_unii8=20,20
 rssi_cal_freq_grp_2g= 0x08,0x01,0x91,0x2a,0x23,0xb3,0xc4
 rssi_delta_2gb0=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 rssi_delta_2gb1=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
@@ -99,17 +102,7 @@ rssi_delta_2gb4=0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 #Two range TSSI
 tworangetssi2g=0
 tworangetssi5g=0
-# NOTE :================================================================================
-# To run TPC with Two Range TSSI ,set  tworangetssi2g = 1 and lowpowerrange2g = 0
-# To run TPC with Single Range TSSI, set tworangetssi2g = 0
-# To run TPC please READ instructions near pa2ga0 and pa2ga1 as well
-# To generate PA params for Low Range set  tworangetssi2g = 0 and lowpowerrange2g to 1
-# To generate PA params for High Range set  tworangetssi2g = 1 and lowpowerrange2g to 1
-# ======================================================================================
-#lowpowerrange2g=0
-#lowpowerrange5g=0
 
-#Related to FW Download. Host may use this
 nocrc=1
 #FIXME:4369 otpimagesize? Check with Rama
 otpimagesize=502
@@ -129,19 +122,17 @@ bandcap=2
 fdss_level_5g=9,9
 fdss_interp_en=0
 fdss_level_2g=4,4
+
 #FIXME: fdss level for 6G made same as 5G for now
 fdss_level_6g=9,9
 
-#LPB related
-leg_preamble_boost=12,12,0
-lpb_comp=10
 
 #PAPRR Related
 paprdis=0
 paprrmcsgain2g=128,128,128,128,128,0,0,0,0,0,0,0
-paprrmcsgamma2g=600,400,550,650,700,-1,-1,-1,-1,-1,-1,-1
+paprrmcsgamma2g=600,450,600,650,700,-1,-1,-1,-1,-1,-1,-1
 paprrmcsgain5g20=128,128,128,128,128,0,0,0,0,0,0,0
-paprrmcsgamma5g20=700,400,550,650,700,-1,-1,-1,-1,-1,-1,-1
+paprrmcsgamma5g20=700,450,600,650,700,-1,-1,-1,-1,-1,-1,-1
 paprrmcsgain5g40=128,128,128,128,128,0,0,0,0,0,0,0
 paprrmcsgamma5g40=1200,450,550,600,700,-1,-1,-1,-1,-1,-1,-1
 paprrmcsgain5g80=128,128,128,128,128,0,0,0,0,0,0,0
@@ -173,35 +164,32 @@ AvVmid_c1=6,75,5,90,5,90,5,95,4,105,4,105,4,105,4,105,4,105
 #limit Tx gain index
 txidxcap2g=10
 txidxcap5g=10
+txidxcap6g=0
 
 # SINGLE RANGE TPC/TSSI
 #2G OFDM
-#pa2ga0=-106,6424,-703
-#pa2ga1=-120,6301,-702
-pa2ga0=-106,6296,-697   #shift 0.5dB up
-pa2ga1=-120,6173,-695
+pa2ga0=-108,6437,-671
+pa2ga1=-59,6202,-626
+
 #2G CCK
-#pa2ga2=-116,6672,-745
-#pa2ga3=-94,6982,-763
-pa2ga2=-116,6544,-738   #shift 0.5dB up
-pa2ga3=-94,6854,-758
+pa2ga2=-107,6780,-730
+pa2ga3=-46,6796,-718
+
 #5G High pwr
-#pa5ga0=-184,6315,-771,-177,6168,-750,-172,6299,-758,-177,6137,-744
-#pa5ga1=-175,6198,-753,-173,6265,-759,-181,5952,-733,-181,6187,-762
-pa5ga0=-192,5960,-730,-193,5862,-725,-194,5838,-720,-183,5795,-712
-pa5ga1=-182,5910,-711,-183,5930,-717,-186,6019,-736,-188,6208,-756
+pa5ga0=-191,6121,-746,-192,5694,-698,-202,5459,-676,-194,5868,-721
+pa5ga1=-200,5619,-710,-171,5426,-647,-206,5012,-629,-177,5959,-725
+
 #5G Low pwr
 pa5ga2=-239,4574,-587,-233,5017,-643,-225,5518,-705,-231,5352,-684
 pa5ga3=-229,5269,-675,-239,4366,-560,-234,4693,-603,-225,5414,-693
+
 #PA Params 6G UNII-5,6,7,8
-#pa6ga0=-150,6336,-746,-119,6732,-773,-166,6212,-767,-154,5988,-742
-#pa6ga1=-170,6398,-786,-140,6587,-774,-193,5815,-742,-122,6358,-755
-pa6ga0=-150,6080,-728,-119,6476,-759,-166,6212,-767,-154,6372,-771   # 1.0, 1.0, 0, -1.5 dB
-pa6ga1=-170,6398,-786,-140,6587,-774,-193,5815,-742,-122,6742,-778   # 0, 0, 0, -1.5 dB
+pa6ga0=-149,6280,-716,-175,6133,-743,-183,5909,-731,-212,5450,-699
+pa6ga1=-225,5510,-706,-200,5573,-681,-202,5839,-723,-229,5483,-708
 
 # Max power and offsets
-maxp2ga0=78
-maxp2ga1=78
+maxp2ga0=80
+maxp2ga1=80
 maxp5ga0=72,72,72,72
 maxp5ga1=72,72,72,72
 #Max Power on 6G UNII-5/6 and UNII-7/8
@@ -218,53 +206,58 @@ pdoffset40ma0=0x0120
 pdoffset80ma0=0xf010
 pdoffset40ma1=0x2210
 pdoffset80ma1=0x2200
-pdoffset6g20ma0=0x00fe
-pdoffset6g20ma1=0x00de
-pdoffset6g40ma0=0x0011
-pdoffset6g80ma0=0x0000
-pdoffset6g40ma1=0x0000
-pdoffset6g80ma1=0x0000
+pdoffset6g20ma0=0x10ff
+pdoffset6g20ma0_group1=0xed40
+pdoffset6g20ma1=0x3201
+pdoffset6g20ma1_group1=0xfe30
+pdoffset6g40ma0=0x35e2
+pdoffset6g40ma0_group1=0x1272
+pdoffset6g40ma1=0x4335
+pdoffset6g40ma1_group1=0x2363
+pdoffset6g80ma0=0x4112
+pdoffset6g80ma0_group1=0x1023
+pdoffset6g80ma1=0x5333
+pdoffset6g80ma1_group1=0x1112
+
 cckbw202gpo=0
 cckbw20ul2gpo=0
-mcsbw202gpo=0x86422222
-mcsbw402gpo=0x86422222
-dot11agofdmhrbw202gpo=0x2222
-ofdmlrbw202gpo=0x2222
-mcsbw205glpo=0x64222222
-mcsbw405glpo=0x65322222
-mcsbw805glpo=0x76322222
+mcsbw202gpo=0x76420000
+mcsbw402gpo=0x76420000
+dot11agofdmhrbw202gpo=0x0000
+ofdmlrbw202gpo=0x2000
+mcsbw205glpo=0x53100000
+mcsbw405glpo=0x65421000
+mcsbw805glpo=0x76321000
 mcsbw1605glpo=0
-mcsbw205gmpo=0x64222222
-mcsbw405gmpo=0x65322222
-mcsbw805gmpo=0x76322222
+mcsbw205gmpo=0x53100000
+mcsbw405gmpo=0x65421100
+mcsbw805gmpo=0x76321000
 mcsbw1605gmpo=0
-mcsbw205ghpo=0x64222222
-mcsbw405ghpo=0x65322222
-mcsbw805ghpo=0x76322222
+mcsbw205ghpo=0x53100000
+mcsbw405ghpo=0x65421100
+mcsbw805ghpo=0x76321000
 # ppr offsets for UNII-5/6 of 6GHz band
-mcsbw206glpo=0x87522222
-mcsbw406glpo=0x87522222
-mcsbw806glpo=0x87522222
+mcsbw206glpo=0x87100000
+mcsbw406glpo=0x65100000
+mcsbw806glpo=0x76310000
 # ppr offsets for UNII-7/8 of 6GHz band
-mcsbw206gmpo=0x87522222
-mcsbw406gmpo=0x98622222
-mcsbw806gmpo=0x98622222
+mcsbw206gmpo=0x98530000
+mcsbw406gmpo=0x98642100
+mcsbw806gmpo=0xA9532100
 
 powoffs2gtna0=-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3
 powoffs2gtna1=-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2,-2
 mcs1024qam2gpo=0xAAAA
-mcs1024qam5glpo=0xBABAA9
-mcs1024qam5gmpo=0xBABAA9
-mcs1024qam5ghpo=0xBABAA9
-mcs1024qam5gx1po=0xBABAA9
-mcs1024qam5gx2po=0xBABAA9
+mcs1024qam5glpo=0xCBBA99
+mcs1024qam5gmpo=0xCBBA99
+mcs1024qam5ghpo=0xCBBA99
 mcs8poexp=0
 mcs9poexp=0
 mcs10poexp=0
 # 1024QAM rates' offset for 6GHz UNII-5/6
-mcs1024qam6glpo=0xBBBBAA
+mcs1024qam6glpo=0xAABBBB
 # 1024QAM rates' offset for 6GHz UNII-7/8
-mcs1024qam6gmpo=0xBBBBAA
+mcs1024qam6gmpo=0xDDCCDD
 
 #UL-OFDMA PPR's accros RU's
 #currently programmed same PPR accross RU's
@@ -335,9 +328,8 @@ olpc_anchor5g=40
 disable_olpc_2g=0
 olpc_thresh2g=56
 olpc_anchor2g=60
-#FIXME: olpc params 6G made same as 5G for now
-olpc_thresh6g=36
-olpc_anchor6g=40
+olpc_thresh6g=44
+olpc_anchor6g=56
 
 #LTE Coex Related
 ltecxmux=0
@@ -349,26 +341,22 @@ ltecxgcigpio=0x04
 #host_wake_opt=0
 
 # SWCTRL Related
-swctrlmap_5g=0x00000000,0x00000000,0x00000000,0x00000000,0x000
-swctrlmapext_5g=0x00000000,0x00000202,0x00000000,0x000000,0x000
-fem_table_init_val=0x01100110,0x00000000
-fem_table_init_val_ext=0x00000000,0x00000000
+swctrlmap_2g=0x00000010,0x00000120,0x00000010,0x000000,0x33f						
+swctrlmapext_2g=0x00000202,0x00000000,0x00000000,0x000000,0x3f7						
+swctrlmap_5g=0x00000000,0x00000000,0x00000000,0x000000,0x000						
+swctrlmapext_5g=0x00000000,0x00000202,0x00000000,0x000000,0x000						
+fem_table_init_val=0x00000010,0x00000000						
+fem_table_init_val_ext=0x00000202,0x00000000
 
-swctrlmap_2g=0x00000110,0x00000020,0x01100110,0x000000,0x17F
-swctrlmapext_2g=0x00000202,0x00000000,0x00000000,0x000000,0x0DF
-
-clb2gslice0core0=0x230
-clb5gslice0core0=0x200
-clb2gslice0core1=0x201
+clb2gslice0core0=0x038						
+clb5gslice0core0=0x200						
+clb2gslice0core1=0x001						
 clb5gslice0core1=0x200
+
 #For TDM coex use the following
 btc_prisel_ant_mask=0x0
-clb_swctrl_smask_ant0=0x37f
+clb_swctrl_smask_ant0=0x33f
 clb_swctrl_smask_ant1=0x3f7
-# 2 Ant hyb/par following comment above
-#btc_prisel_ant_mask=0x3
-#clb_swctrl_smask_ant0=0x34f
-#clb_swctrl_smask_ant1=0x3f7
 muxenab=1
 
 #BT Coex 1:TDM
@@ -440,21 +428,21 @@ wb_calref_db_6g80=32,30,34,30,27,27,29,28
 
 #2nd LUT parameters
 wb_multipapd_en=1
-wb_PapdLutSel_idx_6g20=42,42,42,42,42,42,42,42
-wb_PapdLutSel_idx_6g40=42,42,42,42,42,42,42,42
-wb_PapdLutSel_idx_6g80=42,42,42,42,42,42,42,42
-wb_eps_index_offset_6g20=5,5,5,5,5,5,5,5
-wb_eps_index_offset_6g40=7,5,9,5,5,5,5,5
-wb_eps_index_offset_6g80=12,5,5,5,5,5,5,5
-wb_papdcalidx_6g20_lut1=10,10,10,10,10,10,10,10
-wb_papdcalidx_6g40_lut1=25,25,25,25,10,10,10,10
-wb_papdcalidx_6g80_lut1=27,28,27,28,28,28,28,28
-wb_bbmult_6g20_lut1=66,64,70,64,74,64,74,64
-wb_bbmult_6g40_lut1=76,76,68,76,80,80,80,80
-wb_bbmult_6g80_lut1=76,80,66,80,80,80,80,80
-wb_calref_db_6g20_lut1=26,26,26,26,26,26,26,26
-wb_calref_db_6g40_lut1=30,30,32,30,28,28,28,28
-wb_calref_db_6g80_lut1=32,30,34,30,30,30,30,30
+wb_PapdLutSel_idx_6g20=42,42,42,43,42,46,39,42
+wb_PapdLutSel_idx_6g40=44,42,44,42,42,43,42,45
+wb_PapdLutSel_idx_6g80=44,42,43,42,39,44,42,45
+wb_eps_index_offset_6g20=0,0,0,2,2,9,3,5
+wb_eps_index_offset_6g40=3,7,7,5,2,8,0,8
+wb_eps_index_offset_6g80=6,7,5,5,2,4,3,6
+wb_papdcalidx_6g20_lut1=10,10,10,10,30,32,30,32
+wb_papdcalidx_6g40_lut1=25,25,25,25,30,32,32,32
+wb_papdcalidx_6g80_lut1=27,28,27,28,30,10,10,32
+wb_bbmult_6g20_lut1=54,50,55,35,52,40,56,66
+wb_bbmult_6g40_lut1=28,42,32,45,70,42,50,45
+wb_bbmult_6g80_lut1=50,50,50,50,50,30,40,50
+wb_calref_db_6g20_lut1=30,26,30,30,30,30,32,28
+wb_calref_db_6g40_lut1=30,30,32,30,27,30,35,28
+wb_calref_db_6g80_lut1=28,30,30,30,30,30,32,28
 
 # 2g/5G 2nd PAPD LUT parameters applicable for -40degc
 wb_eps_offset_lut1=22,10,10,7,22,10,10,7
@@ -465,10 +453,10 @@ wb_PapdLutSel_idx_2g5g=53,52,53,52,53,52,53,52
 
 # energy detect threshold
 ed_thresh2g=-65
-ed_thresh5g=-68
+ed_thresh5g=-71
 # energy detect threshold for EU
 eu_edthresh2g=-65
-eu_edthresh5g=-68
+eu_edthresh5g=-71
 
 btldopu=0
 
@@ -482,6 +470,10 @@ rpcal5gb3=229
 #Enable LHL PS mode
 lhl_ps_mode=3
 
+#Disable FastLPO
+fastlpo_dis=1
+fastlpo_pcie_dis=1
+
 #Enable lesi and bphymrc
 lesimode=1,1,1
 bphymrc=1
@@ -489,25 +481,52 @@ bphymrc=1
 #PALDO settings 0=3.3 1=3.35 2=3.41 3=3.46 4=2.86, 5=2.97 6=3.08, 7=3.19
 #paldo3p3_voltage=0
 
-#2G lowpwr settings 0=TOT 1=setting1 2=setting2 3=settingHE(lowpwr)
-ipa2glowpwr=3
-
 #temperature throttling
 tvpm=1
 tvpm_txc_txdc=110,15
 tvpm_txc_txdc_lowlimit=1
-tvpm_txc_txdc_insert=100,0
+tvpm_txc_txdc_insert=0,0
 tvpm_monitor_period=3
 #temperature throttling, aggressive setting
 tvpm_txc_txdc_burst=130,35,5
+tvpm_txc_txdc_init_step=50
 
-##Dynamic Desense Params for 2 ant hybrid coex
-#btcdyn_flags=3
-#btcdyn_dflt_dsns_level=0
-#btcdyn_low_dsns_level=1
-#btcdyn_mid_dsns_level=2
-#btcdyn_high_dsns_level=4
-#btcdyn_default_btc_mode=5
-#btcdyn_dsns_rows=2
-#btcdyn_dsns_row1=5,-4,0,-50,-70
-#btcdyn_dsns_row0=5,12,0,-50,-65
+ppr_hitemp_offset=70,10
+#            idx 0: PPR temp thresh, default 150
+#            idx 1: PPR temp thresh hysteresis, default 15
+cckbw202gpo_ht=0x6666
+#            CCK high temp offset, 0.5dBm/step, rate(11,5.5,2,1Mbps)
+ofdmbw202gpo_ht=0x66666666
+#        2G OFDM temp offset, 0.5dBm/step, rate(54,48,36,24,18,12,9,6Mbps)
+mcsbw202gpo_ht=0x66666666
+#        2G BW20 VHT/HT temp offset, 0.5dBm/step, rate(C9,C8,M7,M6,M5,M4,M3,M2-0)
+mcsbw202gpo_1024qam_ht=0x66
+#        2G BW20 HE/VHT temp offset, 0.5dBm/step, rate(C11,C10)
+ofdmbw205gpo_ht=0x66666666
+#        5G OFDM temp offset, 0.5dBm/step, rate(54,48,36,24,18,12,9,6Mbps)
+mcsbw205gpo_ht=0x66666666
+#        5G BW20 HE/VHT/HT temp offset, 0.5dBm/step, rate(C9,C8,M7,M6,M5,M4,M3,M2-0)
+mcsbw205gpo_1024qam_ht=0x66
+#        5G BW20 HE/VHT temp offset, 0.5dBm/step, rate(C11,C10)
+mcsbw405gpo_ht=0x66666666
+#        5G BW40 HE/VHT/HT temp offset, 0.5dBm/step, rate(C9,C8,M7,M6,M5,M4,M3,M2-0)
+mcsbw405gpo_1024qam_ht=0x66
+#        5G BW40 HE/VHT temp offset, 0.5dBm/step, rate(C11,C10)
+mcsbw805gpo_ht=0x66666666
+#        5G BW80 HE/VHT/HT temp offset, 0.5dBm/step, rate(C9,C8,M7,M6,M5,M4,M3,M2-0)
+mcsbw805gpo_1024qam_ht=0x66
+#        5G BW80 HE/VHT temp offset, 0.5dBm/step, rate(C11,C10)
+ofdmbw206gpo_ht=0x66666666
+#        6G OFDM temp offset, 0.5dBm/step, rate(54,48,36,24,18,12,9,6Mbps)
+mcsbw206gpo_ht=0x66666666
+#        6G BW20 HE/VHT/HT temp offset, 0.5dBm/step, rate(C9,C8,M7,M6,M5,M4,M3,M2-0)
+mcsbw206gpo_1024qam_ht=0x66
+#        6G BW20 HE/VHT temp offset, 0.5dBm/step, rate(C11,C10)
+mcsbw406gpo_ht=0x66666666
+#        6G BW40 HE/VHT/HT temp offset, 0.5dBm/step, rate(C9,C8,M7,M6,M5,M4,M3,M2-0)
+mcsbw406gpo_1024qam_ht=0x66
+#        6G BW40 HE/VHT temp offset, 0.5dBm/step, rate(C11,C10)
+mcsbw806gpo_ht=0x66666666
+#        6G BW80 HE/VHT/HT temp offset, 0.5dBm/step, rate(C9,C8,M7,M6,M5,M4,M3,M2-0)
+mcsbw806gpo_1024qam_ht=0x66
+#        6G BW80 HE/VHT temp offset, 0.5dBm/step, rate(C11,C10)

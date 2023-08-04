@@ -14,6 +14,7 @@ SRC_URI = " \
         file://cyfmac55572-sdio.txt \
         file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
         file://load-2ea-bt.sh \
+        file://cyfmac4373.bin \
 "
 
 SRCREV_cyw-fmac-fw="de83c37edb8d65ea8e511161c9b5119e0b7a2e1f"
@@ -178,6 +179,7 @@ do_install () {
 
 #   Based on MACHINE type
     install -m 755 ${S}/set_module.sh ${D}/usr/sbin/set_module.sh
+	install -m 444 ${S}/cyfmac4373.bin ${D}/lib/firmware/cypress
 
 #	Defaults point to 2BC
     ln -sf /lib/firmware/cypress/cyfmac4373-sdio.2BC.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
