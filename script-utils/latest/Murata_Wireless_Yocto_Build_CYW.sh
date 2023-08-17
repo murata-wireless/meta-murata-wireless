@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=04272023
+VERSION=06122023
 
 
 ###################################################################################################
@@ -40,6 +40,7 @@ VERSION=04272023
 #           |              |              |    support to legacy.
 #  1.23     | 04/25/2023   |    RC        |    Updated to use correct NXP repositories.
 #  1.24     | 04/27/2023   |    JK        |    Add support for 22.04 Ubuntu.
+#  1.25     | 06/12/2023   |    RC        |    Added support for langdale.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -87,14 +88,16 @@ DROGON_FMAC_STR="drogon"
 EBIRAH_FMAC_STR="ebirah"
 FAFNIR_FMAC_STR="fafnir"
 
-LINUX_KERNEL_5_15_32=0
-LINUX_KERNEL_5_10_52=1
-LINUX_KERNEL_5_4_47=2
-LINUX_KERNEL_4_14_98=3
-LINUX_KERNEL_4_9_123=4
-LINUX_KERNEL_4_1_15=5
+LINUX_KERNEL_6_1_1=0
+LINUX_KERNEL_5_15_32=1
+LINUX_KERNEL_5_10_52=2
+LINUX_KERNEL_5_4_47=3
+LINUX_KERNEL_4_14_98=4
+LINUX_KERNEL_4_9_123=5
+LINUX_KERNEL_4_1_15=6
 
 # Linux Kernel Strings
+LINUX_KERNEL_6_1_1_STR="6.1.1"
 LINUX_KERNEL_5_15_32_STR="5.15.32"
 LINUX_KERNEL_5_10_52_STR="5.10.52"
 LINUX_KERNEL_5_4_47_STR="5.4.47"
@@ -109,6 +112,10 @@ iMXYoctoRelease=""
 YoctoBranch=""
 fmacversion=""
 linuxVersion=""
+
+# Langdale
+iMXlangdalefafnirStableReleaseTag="imx-langdale-fafnir_r1.0"
+iMXlangdalefafnirDeveloperRelease="imx-langdale-fafnir"
 
 # Kirkstone
 iMXkirkstoneebirahStableReleaseTag="imx-kirkstone-ebirah_r1.0"
@@ -181,6 +188,7 @@ iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
 iMXkrogothmothraStableReleaseTag="imx-krogoth-mothra_r1.1"
 iMXkrogothmothraDeveloperRelease="imx-krogoth-mothra"
 
+imxlangdaleYocto="6.1.1_1.0.0 GA"
 imxkirkstoneYocto="5.15.32_2.0.0 GA"
 imxhardknottYocto="5.10.52_2.1.0 GA"
 imxzeusYocto="5.4.47_2.2.0 GA"
@@ -550,17 +558,19 @@ while true; do
 	echo "|Entry|   Linux Kernel   | Yocto      | FMAC Supported                   |"
 	echo "|-----|------------------|------------|----------------------------------|"
 	if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
-		echo "|  0  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah, Fafnir                   |"
-		echo "|  1  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
-		echo "|  2  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga,Zigra              |"
-		echo "|  3  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga,Zigra,Kong,Manda   |"
-		echo "|  4  |     ${LINUX_KERNEL_4_9_123_STR}       | rocko     | Baragon,Spiga,Zigra,Kong,Manda   |"
-		echo "|  5  |     ${LINUX_KERNEL_4_1_15_STR}        | krogoth   | Baragon,Spiga,Zigra,Manda,Mothra |"
+		echo "|  0  |     ${LINUX_KERNEL_6_1_1_STR}         | langdale  | Fafnir                           |"
+		echo "|  1  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah, Fafnir                   |"
+		echo "|  2  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
+		echo "|  3  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga,Zigra              |"
+		echo "|  4  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga,Zigra,Kong,Manda   |"
+		echo "|  5  |     ${LINUX_KERNEL_4_9_123_STR}       | rocko     | Baragon,Spiga,Zigra,Kong,Manda   |"
+		echo "|  6  |     ${LINUX_KERNEL_4_1_15_STR}        | krogoth   | Baragon,Spiga,Zigra,Manda,Mothra |"
 	else
-		echo "|  0  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah, Fafnir                   |"
-		echo "|  1  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
-		echo "|  2  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga                    |"
-		echo "|  3  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga                    |"
+		echo "|  0  |     ${LINUX_KERNEL_6_1_1_STR}         | langdale  | Fafnir                           |"
+		echo "|  1  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah, Fafnir                   |"
+		echo "|  2  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
+		echo "|  3  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga                    |"
+		echo "|  4  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga                    |"
 	fi
 
 	echo "--------------------------------------------------------------------------"
@@ -592,6 +602,10 @@ while true; do
 			linuxVersion=${LINUX_KERNEL_5_15_32_STR}
 			break
 			;;
+		$LINUX_KERNEL_6_1_1)
+			linuxVersion=${LINUX_KERNEL_6_1_1_STR}
+			break
+			;;
 		*)
 			echo -e "${RED}That is not a valid choice, try again.${NC}"
 			echo $'\n'
@@ -613,6 +627,10 @@ while true; do
 			;;
 		$LINUX_KERNEL_5_15_32)
 			linuxVersion=${LINUX_KERNEL_5_15_32_STR}
+			break
+			;;
+		$LINUX_KERNEL_6_1_1)
+			linuxVersion=${LINUX_KERNEL_6_1_1_STR}
 			break
 			;;
 		*)
@@ -1126,6 +1144,38 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 			done
 			break
 			;;
+		$LINUX_KERNEL_6_1_1)
+			while true; do
+				echo     "-------------------------------------------------------------"
+				echo     "| Entry | "\""fmac"\"" version                                    |"
+				echo     "|-------|---------------------------------------------------|"
+				echo -e  "|  0.   | ${FAFNIR_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "-------------------------------------------------------------"
+				read -p "Select which entry? " FMAC_VERSION
+				case $FMAC_VERSION in
+				0)
+					# for FAFNIR
+					FMAC_VERSION=${FAFNIR_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: langdale-fafnir"
+						BRANCH_RELEASE_NAME="$iMXlangdalefafnirStableReleaseTag"
+					else
+						#echo "DEBUG:: langdale-fafnir"
+						BRANCH_RELEASE_NAME="$iMXlangdalefafnirDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxlangdaleYocto"
+					YoctoBranch="langdale"
+					fmacversion=${FAFNIR_FMAC_STR}
+					break
+					;;
+				*)
+					echo -e "${RED}That is not a valid choice, try again.${NC}"
+					echo $'\n'
+					;;
+				esac
+			done
+			break
+			;;
 		*)
 			echo -e "${RED}That is not a valid choice, try again.${NC}"
 			;;
@@ -1332,8 +1382,38 @@ else
 			done
 			break
 			;;
-
-
+		$LINUX_KERNEL_6_1_1)
+			while true; do
+				echo     "-------------------------------------------------------------"
+				echo     "| Entry | "\""fmac"\"" version                                    |"
+				echo     "|-------|---------------------------------------------------|"
+				echo -e  "|  0.   | ${FAFNIR_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "-------------------------------------------------------------"
+				read -p "Select which entry? " FMAC_VERSION
+				case $FMAC_VERSION in
+				0)
+					# for FAFNIR
+					FMAC_VERSION=${FAFNIR_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: langdale-fafnir"
+						BRANCH_RELEASE_NAME="$iMXlangdalefafnirStableReleaseTag"
+					else
+						#echo "DEBUG:: langdale-fafnir"
+						BRANCH_RELEASE_NAME="$iMXlangdalefafnirDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxlangdaleYocto"
+					YoctoBranch="langdale"
+					fmacversion=${FAFNIR_FMAC_STR}
+					break
+					;;
+				*)
+					echo -e "${RED}That is not a valid choice, try again.${NC}"
+					echo $'\n'
+					;;
+				esac
+			done
+			break
+			;;
 		*)
 			echo -e "${RED}That is not a valid choice, try again.${NC}"
 			;;
@@ -1977,6 +2057,121 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 			echo $'\n'
 			break
 			;;
+		$LINUX_KERNEL_6_1_1)
+			while true; do
+				echo " "
+				echo "${STEP_COUNT}) Select Target"
+				echo "----------------"
+				echo " "
+				echo "---------------------------------------------------------"
+				echo "| Entry  |    Target Name    | NXP i.MX EVK Part Number |"
+				echo "|--------|-------------------|--------------------------|"
+				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
+				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
+				echo "|  3     |  imx6sxsabresd    | MCIMX6SX-SDB             |"
+				echo "|  4     |  imx6qsabresd     | MCIMX6Q-SDB              |"
+				echo "|  5     |  imx6qpsabresd    | MCIMX6QP-SDB             |"
+				echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
+				echo "|  7     |  imx7dsabresd     | MCIMX7SABRE              |"
+				echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
+				echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
+				echo "|  10    |  imx8mmevk        | 8MMINILPD4-EVK           |"
+				echo "|  11    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
+				echo "|  12    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
+				echo "|  13    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
+				echo "---------------------------------------------------------"
+				echo -n "Select your entry: "
+				read TARGET_OPTION
+				case $TARGET_OPTION in
+				1)
+					TARGET_NAME=imx6ulevk
+					PART_NUMBER=MCIMX6UL-EVK
+					break
+					;;
+				2)
+					TARGET_NAME=imx6ull14x14evk
+					PART_NUMBER=MCIMX6ULL-EVK
+					break
+					;;
+				3)
+					TARGET_NAME=imx6sxsabresd
+					PART_NUMBER=MCIMX6SX-SDB
+					break
+					;;
+				4)
+					TARGET_NAME=imx6qsabresd
+					PART_NUMBER=MCIMX6Q-SDB
+					break
+					;;
+				5)
+					TARGET_NAME=imx6qpsabresd
+					PART_NUMBER=MCIMX6QP-SDB
+					break
+					;;
+				6)
+					TARGET_NAME=imx6dlsabresd
+					PART_NUMBER=MCIMX6Q-SDB
+					break
+					;;
+				7)
+					TARGET_NAME=imx7dsabresd
+					PART_NUMBER=MCIMX7SABRE
+					break
+					;;
+				8)
+					TARGET_NAME=imx7ulpevk
+					PART_NUMBER=MCIMX7ULP-EVK
+					break
+					;;
+				9)
+					TARGET_NAME=imx8mqevk
+					PART_NUMBER=MCIMX8M-EVKB
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				10)
+					TARGET_NAME=imx8mmevk
+					PART_NUMBER=8MMINILPD4-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				11)
+					TARGET_NAME=imx8mmddr4evk
+					PART_NUMBER=8MMINID4-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				12)
+					TARGET_NAME=imx8mnddr4evk
+					PART_NUMBER=8MNANOD4-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				13)
+					TARGET_NAME=imx8qxpmek
+					PART_NUMBER=MCIMX8QXP-CPU
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				*)
+					echo -e "${RED}That is not a valid choice, try again.${NC}"
+					;;
+				esac
+			done
+			echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
+			echo $'\n'
+			break
+			;;
 		*)
 			echo -e "${RED}That is not a valid choice, try again.${NC}"
 			;;
@@ -2324,6 +2519,98 @@ else
 			echo $'\n'
 			break
 			;;
+		$LINUX_KERNEL_6_1_1)
+			while true; do
+				echo " "
+				echo "${STEP_COUNT}) Select Target"
+				echo "----------------"
+				echo " "
+				echo "---------------------------------------------------------"
+				echo "| Entry  |    Target Name    | NXP i.MX EVK Part Number |"
+				echo "|--------|-------------------|--------------------------|"
+				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
+				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
+				echo "|  3     |  imx6qsabresd     | MCIMX6Q-SDB              |"
+				echo "|  4     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
+				echo "|  5     |  imx8mqevk        | MCIMX8M-EVKB             |"
+				echo "|  6     |  imx8mmevk        | 8MMINILPD4-EVK           |"
+				echo "|  7     |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
+				echo "|  8     |  imx8qxpmek       | MCIMX8QXP-CPU            |"
+				echo "|  9     |  imx8mp-lpddr4-evk| 8MPLUSLPD4-EVK           |"
+				echo "---------------------------------------------------------"
+				echo -n "Select your entry: "
+				read TARGET_OPTION
+				case $TARGET_OPTION in
+				1)
+					TARGET_NAME=imx6ulevk
+					PART_NUMBER=MCIMX6UL-EVK
+					break
+					;;
+				2)
+					TARGET_NAME=imx6ull14x14evk
+					PART_NUMBER=MCIMX6ULL-EVK
+					break
+					;;
+				3)
+					TARGET_NAME=imx6qsabresd
+					PART_NUMBER=MCIMX6Q-SDB
+					break
+					;;
+				4)
+					TARGET_NAME=imx6dlsabresd
+					PART_NUMBER=MCIMX6Q-SDB
+					break
+					;;
+				5)
+					TARGET_NAME=imx8mqevk
+					PART_NUMBER=MCIMX8M-EVKB
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				6)
+					TARGET_NAME=imx8mmevk
+					PART_NUMBER=8MMINILPD4-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				7)
+					TARGET_NAME=imx8mnddr4evk
+					PART_NUMBER=8MNANOD4-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				8)
+					TARGET_NAME=imx8qxpmek
+					PART_NUMBER=MCIMX8QXP-CPU
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				9)
+					TARGET_NAME=imx8mp-lpddr4-evk
+					PART_NUMBER=8MPLUSLPD4-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+
+				*)
+					echo -e "${RED}That is not a valid choice, try again.${NC}"
+					;;
+				esac
+			done
+			echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
+			echo $'\n'
+			break
+			;;
 		*)
 			echo -e "${RED}That is not a valid choice, try again.${NC}"
 			;;
@@ -2355,7 +2642,7 @@ if [ "$PROMPT" = "n" ] || [ "$PROMPT" = "N" ]; then
 
 	if [ "$PROMPT" = "U" ] || [ "$PROMPT" = "u" ]; then
 		# For 5.4.47 onwards, as per i.MX Yocto Project Users Guide, x11 Distro is no longer supported
-		if [ ${linuxVersion} = ${LINUX_KERNEL_5_4_47_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_10_52_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_15_32_STR} ]; then
+		if [ ${linuxVersion} = ${LINUX_KERNEL_5_4_47_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_10_52_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_15_32_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_6_1_1_STR} ]; then
 			select_supported_distros_for_5_x_onwards
 		else
 			select_previous_distros_supported
@@ -2494,7 +2781,10 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	done
 
 	# Invoke Repo Init based on Yocto Release
-	if [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ]; then
+	if [ "$iMXYoctoRelease" = "$imxlangdaleYocto" ]; then
+		#echo "DEBUG:: IMXALL-LANGDALE"
+		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-langdale -m imx-6.1.1-1.0.0.xml
+	elif [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ]; then
 		#echo "DEBUG:: IMXALL-KIRKSTONE"
 		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-kirkstone -m imx-5.15.32-2.0.0.xml
 	elif [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]; then
@@ -2521,7 +2811,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 
 	#echo "DEBUG:: Performing Setup of DISTRO and MACHINE"
 	#echo "DEBUG:: pwd = $BSP_DIR"
-	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]  || [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ]; then
+	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]  || [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ] || [ "$iMXYoctoRelease" = "$imxlangdaleYocto" ]; then
 		DISTRO=$DISTRO_NAME MACHINE=$TARGET_NAME source ./imx-setup-release.sh -b $BUILD_DIR_NAME
 	else
 		DISTRO=$DISTRO_NAME MACHINE=$TARGET_NAME source ./fsl-setup-release.sh -b $BUILD_DIR_NAME
@@ -2677,8 +2967,8 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 		fi
 	fi
 
-	# for zeus, hardknott, and kirkstone
-	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]  || [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ]; then
+	# for zeus, hardknott, kirkstone and langdale
+	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]  || [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ] || [ "$iMXYoctoRelease" = "$imxlangdaleYocto" ]; then
 		if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 			cp $LINUX_SRC $LINUX_DEST
 		fi
