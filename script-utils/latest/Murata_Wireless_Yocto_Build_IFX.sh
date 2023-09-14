@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=06122023
+VERSION=09082023
 
 
 ###################################################################################################
@@ -41,6 +41,7 @@ VERSION=06122023
 #  1.23     | 04/25/2023   |    RC        |    Updated to use correct NXP repositories.
 #  1.24     | 04/27/2023   |    JK        |    Add support for 22.04 Ubuntu.
 #  1.25     | 06/12/2023   |    RC        |    Added support for langdale.
+#  1.26     | 09/08/2023   |    RC        |    Added support for FMAC Godzilla.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -76,6 +77,7 @@ CYNDER_FMAC_INDEX="7"
 DROGON_FMAC_INDEX="8"
 EBIRAH_FMAC_INDEX="9"
 FAFNIR_FMAC_INDEX="10"
+GODZILLA_FMAC_INDEX="11"
 
 MOTHRA_FMAC_STR="mothra"
 MANDA_FMAC_STR="manda"
@@ -87,6 +89,7 @@ CYNDER_FMAC_STR="cynder"
 DROGON_FMAC_STR="drogon"
 EBIRAH_FMAC_STR="ebirah"
 FAFNIR_FMAC_STR="fafnir"
+GODZILLA_FMAC_STR="godzilla"
 
 LINUX_KERNEL_6_1_1=0
 LINUX_KERNEL_5_15_32=1
@@ -116,6 +119,8 @@ linuxVersion=""
 # Langdale
 iMXlangdalefafnirStableReleaseTag="imx-langdale-fafnir_r1.0"
 iMXlangdalefafnirDeveloperRelease="imx-langdale-fafnir"
+iMXlangdalegodzillaStableReleaseTag="imx-langdale-godzilla_r1.0"
+iMXlangdalegodzillaDeveloperRelease="imx-langdale-godzilla"
 
 # Kirkstone
 iMXkirkstoneebirahStableReleaseTag="imx-kirkstone-ebirah_r1.0"
@@ -303,9 +308,9 @@ fi
 export SCRIPT_DIR=`pwd`
 #echo "Latest folder path: $SCRIPT_DIR"
 
-# Scan through the file Murata_Wireless_Yocto_Build_CYW.sh to fetch the Revision Information
+# Scan through the file Murata_Wireless_Yocto_Build_IFX.sh to fetch the Revision Information
 COUNTER=0
-input_file_path="$SCRIPT_DIR/Murata_Wireless_Yocto_Build_CYW.sh"
+input_file_path="$SCRIPT_DIR/Murata_Wireless_Yocto_Build_IFX.sh"
 
 while IFS= read -r LATEST_VER
 do
@@ -317,7 +322,7 @@ done < "$input_file_path"
 
 cd $BSP_DIR
 
-# read first and second line of Murata_Wireless_Yocto_Build_CYW.sh script
+# read first and second line of Murata_Wireless_Yocto_Build_IFX.sh script
 IFS== read FIRST_LINE LATEST_VER <<< $LATEST_VER
 
 # Check for latest revision
@@ -336,7 +341,7 @@ else
 		echo "NOTE: Latest build script is not tested fully. Please take a backup of the previous script before replacing."
 		echo "Update to latest version using following copy command:"
 		echo " "
-		echo ""\$ "cp ./meta-murata-wireless/script-utils/latest/Murata_Wireless_Yocto_Build_CYW.sh ."
+		echo ""\$ "cp ./meta-murata-wireless/script-utils/latest/Murata_Wireless_Yocto_Build_IFX.sh ."
 		echo " "
 		echo -e "${YLW}Exiting script.....${NC}"
        		exit
@@ -558,7 +563,7 @@ while true; do
 	echo "|Entry|   Linux Kernel   | Yocto      | FMAC Supported                   |"
 	echo "|-----|------------------|------------|----------------------------------|"
 	if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
-		echo "|  0  |     ${LINUX_KERNEL_6_1_1_STR}         | langdale  | Fafnir                           |"
+		echo "|  0  |     ${LINUX_KERNEL_6_1_1_STR}         | langdale  | Fafnir, Godzilla                 |"
 		echo "|  1  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah, Fafnir                   |"
 		echo "|  2  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
 		echo "|  3  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga,Zigra              |"
@@ -566,7 +571,7 @@ while true; do
 		echo "|  5  |     ${LINUX_KERNEL_4_9_123_STR}       | rocko     | Baragon,Spiga,Zigra,Kong,Manda   |"
 		echo "|  6  |     ${LINUX_KERNEL_4_1_15_STR}        | krogoth   | Baragon,Spiga,Zigra,Manda,Mothra |"
 	else
-		echo "|  0  |     ${LINUX_KERNEL_6_1_1_STR}         | langdale  | Fafnir                           |"
+		echo "|  0  |     ${LINUX_KERNEL_6_1_1_STR}         | langdale  | Fafnir, Godzilla                 |"
 		echo "|  1  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah, Fafnir                   |"
 		echo "|  2  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
 		echo "|  3  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga                    |"
@@ -1149,7 +1154,8 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo -e  "|  0.   | ${FAFNIR_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo -e  "|  0.   | ${FAFNIR_FMAC_STR}                                            |"
+				echo -e  "|  1.   | ${GODZILLA_FMAC_STR} - ${GRN}Latest release${NC}                         |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1166,6 +1172,21 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 					iMXYoctoRelease="$imxlangdaleYocto"
 					YoctoBranch="langdale"
 					fmacversion=${FAFNIR_FMAC_STR}
+					break
+					;;
+				1)
+					# for GODZILLA
+					FMAC_VERSION=${GODZILLA_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: langdale-godzilla"
+						BRANCH_RELEASE_NAME="$iMXlangdalegodzillaStableReleaseTag"
+					else
+						#echo "DEBUG:: langdale-godzilla"
+						BRANCH_RELEASE_NAME="$iMXlangdalegodzillaDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxlangdaleYocto"
+					YoctoBranch="langdale"
+					fmacversion=${GODZILLA_FMAC_STR}
 					break
 					;;
 				*)
@@ -1387,7 +1408,8 @@ else
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo -e  "|  0.   | ${FAFNIR_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo -e  "|  0.   | ${FAFNIR_FMAC_STR}                                            |"
+				echo -e  "|  1.   | ${GODZILLA_FMAC_STR} - ${GRN}Latest release${NC}                         |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1404,6 +1426,21 @@ else
 					iMXYoctoRelease="$imxlangdaleYocto"
 					YoctoBranch="langdale"
 					fmacversion=${FAFNIR_FMAC_STR}
+					break
+					;;
+				1)
+					# for GODZILLA
+					FMAC_VERSION=${GODZILLA_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: langdale-godzilla"
+						BRANCH_RELEASE_NAME="$iMXlangdalegodzillaStableReleaseTag"
+					else
+						#echo "DEBUG:: langdale-godzilla"
+						BRANCH_RELEASE_NAME="$iMXlangdalegodzillaDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxlangdaleYocto"
+					YoctoBranch="langdale"
+					fmacversion=${GODZILLA_FMAC_STR}
 					break
 					;;
 				*)
