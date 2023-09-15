@@ -1,17 +1,17 @@
 diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index b7060bf..8e74d34 100644
+index b7060bfe3af0..bdb352429f6c 100644
 --- a/arch/arm64/boot/dts/freescale/Makefile
 +++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -66,7 +66,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb imx8mm-evk-rpmsg.dtb imx8mm-evk-rm67191
- 			  imx8mm-evk-root.dtb imx8mm-evk-inmate.dtb imx8mm-evk-revb-qca-wifi.dtb \
+@@ -67,6 +67,8 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb imx8mm-evk-rpmsg.dtb imx8mm-evk-rm67191
  			  imx8mm-evk-ecspi-slave.dtb \
  			  imx8mm-evk-pcie-ep.dtb \
--			  imx8mm-evk-usd-wifi.dtb \
-+			  imx8mm-evk-usd-wifi.dtb imx8mm-evk-usd-m2.dtb imx8mm-evk-usd-m2-oob.dtb \
+ 			  imx8mm-evk-usd-wifi.dtb \
++			  imx8mm-evk-usd-m2.dtb imx8mm-evk-usd-m2-oob.dtb \
++			  imx8mm-evk-usd-m2-2ea.dtb imx8mm-evk-usd-m2-2ea-oob.dtb\
  			  imx8mm-evk-qca-wifi.dtb \
  			  imx8mm-evk-dpdk.dtb \
  			  imx8mm-evk-rm67199.dtb imx8mm-evk-rm67191-cmd-ram.dtb imx8mm-evk-rm67199-cmd-ram.dtb \
-@@ -98,7 +98,8 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw73xx-0x.dtb
+@@ -98,7 +100,8 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw73xx-0x.dtb
  dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw7901.dtb
  dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw7902.dtb
  dtb-$(CONFIG_ARCH_MXC) += imx8mn-beacon-kit.dtb
@@ -23,7 +23,7 @@ index b7060bf..8e74d34 100644
  dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb imx8mn-evk-rm67191.dtb imx8mn-evk-rpmsg.dtb imx8mn-evk-ak5558.dtb \
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts
 new file mode 100644
-index 0000000..ac85f9f
+index 000000000000..ac85f9fd32e2
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts
 @@ -0,0 +1,36 @@
@@ -65,7 +65,7 @@ index 0000000..ac85f9f
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts
 new file mode 100644
-index 0000000..3509e02
+index 000000000000..3509e02ffb81
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts
 @@ -0,0 +1,105 @@
@@ -174,9 +174,71 @@ index 0000000..3509e02
 +		compatible = "brcm,bcm4329-fmac";
 +	};
 +};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea-oob.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea-oob.dts
+new file mode 100644
+index 000000000000..bff3cce927ae
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea-oob.dts
+@@ -0,0 +1,25 @@
++#include "imx8mm-evk-usd-m2-oob.dts"
++
++
++/* Delete clashes from included DT */
++/ {
++	/delete-node/ modem-reset;
++};
++
++&uart3 {
++	/delete-property/ resets;
++};
++
++
++/* Delete clashes from included DT */
++
++&uart3 {
++  	/* For 2EA - Bluetooth */
++  	bluetooth {
++	        compatible = "infineon,cyw55572-bt";
++	        shutdown-gpios = <&gpio5 12 GPIO_ACTIVE_HIGH>;
++	        max-speed = <3000000>;
++	        brcm,requires-autobaud-mode;
++	};
++};
++
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea.dts
+new file mode 100644
+index 000000000000..d7d784806b82
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea.dts
+@@ -0,0 +1,25 @@
++#include "imx8mm-evk-usd-m2.dts"
++
++
++/* Delete clashes from included DT */
++/ {
++	/delete-node/ modem-reset;
++};
++
++&uart3 {
++	/delete-property/ resets;
++};
++
++
++/* Delete clashes from included DT */
++
++&uart3 {
++  	/* For 2EA - Bluetooth */
++  	bluetooth {
++	        compatible = "infineon,cyw55572-bt";
++	        shutdown-gpios = <&gpio5 12 GPIO_ACTIVE_HIGH>;
++	        max-speed = <3000000>;
++	        brcm,requires-autobaud-mode;
++	};
++};
++
 diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts
 new file mode 100644
-index 0000000..d1826e7
+index 000000000000..d1826e7bc0f9
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts
 @@ -0,0 +1,35 @@
@@ -217,7 +279,7 @@ index 0000000..d1826e7
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts
 new file mode 100644
-index 0000000..c37c29c
+index 000000000000..c37c29c14531
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts
 @@ -0,0 +1,105 @@
