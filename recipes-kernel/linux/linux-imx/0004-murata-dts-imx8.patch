@@ -21,6 +21,68 @@ index b7060bfe3af0..bdb352429f6c 100644
  dtb-$(CONFIG_ARCH_MXC) += imx8mm-ab2.dtb imx8mm-ab2-m4.dtb imx8mm-ddr4-ab2.dtb imx8mm-ddr4-ab2-m4.dtb \
  			  imx8mm-ddr4-ab2-revb.dtb imx8mm-ddr4-ab2-m4-revb.dtb
  dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb imx8mn-evk-rm67191.dtb imx8mn-evk-rpmsg.dtb imx8mn-evk-ak5558.dtb \
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea-oob.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea-oob.dts
+new file mode 100644
+index 000000000000..bff3cce927ae
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea-oob.dts
+@@ -0,0 +1,25 @@
++#include "imx8mm-evk-usd-m2-oob.dts"
++
++
++/* Delete clashes from included DT */
++/ {
++	/delete-node/ modem-reset;
++};
++
++&uart3 {
++	/delete-property/ resets;
++};
++
++
++/* Delete clashes from included DT */
++
++&uart3 {
++  	/* For 2EA - Bluetooth */
++  	bluetooth {
++	        compatible = "infineon,cyw55572-bt";
++	        shutdown-gpios = <&gpio5 12 GPIO_ACTIVE_HIGH>;
++	        max-speed = <3000000>;
++	        brcm,requires-autobaud-mode;
++	};
++};
++
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts
+new file mode 100644
+index 000000000000..d7d784806b82
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts
+@@ -0,0 +1,25 @@
++#include "imx8mm-evk-usd-m2.dts"
++
++
++/* Delete clashes from included DT */
++/ {
++	/delete-node/ modem-reset;
++};
++
++&uart3 {
++	/delete-property/ resets;
++};
++
++
++/* Delete clashes from included DT */
++
++&uart3 {
++  	/* For 2EA - Bluetooth */
++  	bluetooth {
++	        compatible = "infineon,cyw55572-bt";
++	        shutdown-gpios = <&gpio5 12 GPIO_ACTIVE_HIGH>;
++	        max-speed = <3000000>;
++	        brcm,requires-autobaud-mode;
++	};
++};
++
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts
 new file mode 100644
 index 000000000000..ac85f9fd32e2
@@ -174,6 +236,68 @@ index 000000000000..3509e02ffb81
 +		compatible = "brcm,bcm4329-fmac";
 +	};
 +};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea-oob.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea-oob.dts
+new file mode 100644
+index 000000000000..895db975a4fa
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea-oob.dts
+@@ -0,0 +1,25 @@
++#include "imx8mn-evk-usd-m2-oob.dts"
++
++
++/* Delete clashes from included DT */
++/ {
++	/delete-node/ modem-reset;
++};
++
++&uart3 {
++	/delete-property/ resets;
++};
++
++
++/* Delete clashes from included DT */
++
++&uart3 {
++  	/* For 2EA - Bluetooth */
++  	bluetooth {
++	        compatible = "infineon,cyw55572-bt";
++	        shutdown-gpios = <&gpio5 12 GPIO_ACTIVE_HIGH>;
++	        max-speed = <3000000>;
++	        brcm,requires-autobaud-mode;
++	};
++};
++
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea.dts
+new file mode 100644
+index 000000000000..d72753c4829c
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea.dts
+@@ -0,0 +1,25 @@
++#include "imx8mn-evk-usd-m2.dts"
++
++
++/* Delete clashes from included DT */
++/ {
++	/delete-node/ modem-reset;
++};
++
++&uart3 {
++	/delete-property/ resets;
++};
++
++
++/* Delete clashes from included DT */
++
++&uart3 {
++  	/* For 2EA - Bluetooth */
++  	bluetooth {
++	        compatible = "infineon,cyw55572-bt";
++	        shutdown-gpios = <&gpio5 12 GPIO_ACTIVE_HIGH>;
++	        max-speed = <3000000>;
++	        brcm,requires-autobaud-mode;
++	};
++};
++
 diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts
 new file mode 100644
 index 000000000000..d1826e7bc0f9
@@ -326,127 +450,3 @@ index 000000000000..c37c29c14531
 +		compatible = "brcm,bcm4329-fmac";
 +	};
 +};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea-oob.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea-oob.dts
-new file mode 100644
-index 000000000000..bff3cce927ae
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea-oob.dts
-@@ -0,0 +1,25 @@
-+#include "imx8mm-evk-usd-m2-oob.dts"
-+
-+
-+/* Delete clashes from included DT */
-+/ {
-+	/delete-node/ modem-reset;
-+};
-+
-+&uart3 {
-+	/delete-property/ resets;
-+};
-+
-+
-+/* Delete clashes from included DT */
-+
-+&uart3 {
-+  	/* For 2EA - Bluetooth */
-+  	bluetooth {
-+	        compatible = "infineon,cyw55572-bt";
-+	        shutdown-gpios = <&gpio5 12 GPIO_ACTIVE_HIGH>;
-+	        max-speed = <3000000>;
-+	        brcm,requires-autobaud-mode;
-+	};
-+};
-+
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts
-new file mode 100644
-index 000000000000..d7d784806b82
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts
-@@ -0,0 +1,25 @@
-+#include "imx8mm-evk-usd-m2.dts"
-+
-+
-+/* Delete clashes from included DT */
-+/ {
-+	/delete-node/ modem-reset;
-+};
-+
-+&uart3 {
-+	/delete-property/ resets;
-+};
-+
-+
-+/* Delete clashes from included DT */
-+
-+&uart3 {
-+  	/* For 2EA - Bluetooth */
-+  	bluetooth {
-+	        compatible = "infineon,cyw55572-bt";
-+	        shutdown-gpios = <&gpio5 12 GPIO_ACTIVE_HIGH>;
-+	        max-speed = <3000000>;
-+	        brcm,requires-autobaud-mode;
-+	};
-+};
-+
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea-oob.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea-oob.dts
-new file mode 100644
-index 000000000000..bff3cce927ae
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea-oob.dts
-@@ -0,0 +1,25 @@
-+#include "imx8mn-evk-usd-m2-oob.dts"
-+
-+
-+/* Delete clashes from included DT */
-+/ {
-+	/delete-node/ modem-reset;
-+};
-+
-+&uart3 {
-+	/delete-property/ resets;
-+};
-+
-+
-+/* Delete clashes from included DT */
-+
-+&uart3 {
-+  	/* For 2EA - Bluetooth */
-+  	bluetooth {
-+	        compatible = "infineon,cyw55572-bt";
-+	        shutdown-gpios = <&gpio5 12 GPIO_ACTIVE_HIGH>;
-+	        max-speed = <3000000>;
-+	        brcm,requires-autobaud-mode;
-+	};
-+};
-+
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea.dts
-new file mode 100644
-index 000000000000..d7d784806b82
---- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea.dts
-@@ -0,0 +1,25 @@
-+#include "imx8mn-evk-usd-m2.dts"
-+
-+
-+/* Delete clashes from included DT */
-+/ {
-+	/delete-node/ modem-reset;
-+};
-+
-+&uart3 {
-+	/delete-property/ resets;
-+};
-+
-+
-+/* Delete clashes from included DT */
-+
-+&uart3 {
-+  	/* For 2EA - Bluetooth */
-+  	bluetooth {
-+	        compatible = "infineon,cyw55572-bt";
-+	        shutdown-gpios = <&gpio5 12 GPIO_ACTIVE_HIGH>;
-+	        max-speed = <3000000>;
-+	        brcm,requires-autobaud-mode;
-+	};
-+};
-+
