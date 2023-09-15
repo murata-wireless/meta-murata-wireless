@@ -59,6 +59,7 @@ do_install () {
 	install -d ${D}/etc/firmware/murata-master
 	install -d ${D}/usr/sbin
 	install -d ${D}/etc/udev/rules.d
+    install -d ${D}/usr/share/murata_wireless
 
 #       Copying *.HCD files to etc/firmware and etc/firmware/murata-master (using "_" before the name of the file in murata-master)
         install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd ${D}${sysconfdir}/firmware/BCM4335C0.ZP.hcd
@@ -193,7 +194,7 @@ FILES:${PN} += "${bindir}"
 FILES:${PN} += "${sbindir}"
 FILES:${PN} += "{sysconfdir}/firmware"
 FILES:${PN} += "/lib"
-
+FILES:${PN} += "usr/share/murata_wireless"
 FILES:${PN}-mfgtest = " \
 	/usr/bin/wl \
 "
