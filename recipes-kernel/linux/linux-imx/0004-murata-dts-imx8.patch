@@ -7,7 +7,7 @@ index b7060bfe3af0..bdb352429f6c 100644
  			  imx8mm-evk-pcie-ep.dtb \
  			  imx8mm-evk-usd-wifi.dtb \
 +			  imx8mm-evk-usd-m2.dtb imx8mm-evk-usd-m2-oob.dtb \
-+			  imx8mm-evk-usd-m2-2ea.dtb imx8mm-evk-usd-m2-2ea-oob.dtb \
++			  imx8mm-evk-usd-m2-2ea.dtb imx8mm-evk-usd-m2-oob-2ea.dtb \
  			  imx8mm-evk-qca-wifi.dtb \
  			  imx8mm-evk-dpdk.dtb \
  			  imx8mm-evk-rm67199.dtb imx8mm-evk-rm67191-cmd-ram.dtb imx8mm-evk-rm67199-cmd-ram.dtb \
@@ -21,11 +21,11 @@ index b7060bfe3af0..bdb352429f6c 100644
  dtb-$(CONFIG_ARCH_MXC) += imx8mm-ab2.dtb imx8mm-ab2-m4.dtb imx8mm-ddr4-ab2.dtb imx8mm-ddr4-ab2-m4.dtb \
  			  imx8mm-ddr4-ab2-revb.dtb imx8mm-ddr4-ab2-m4-revb.dtb
  dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb imx8mn-evk-rm67191.dtb imx8mn-evk-rpmsg.dtb imx8mn-evk-ak5558.dtb \
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea-oob.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea-oob.dts
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob-2ea.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob-2ea.dts
 new file mode 100644
 index 000000000000..bff3cce927ae
 --- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea-oob.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob-2ea.dts
 @@ -0,0 +1,25 @@
 +#include "imx8mm-evk-usd-m2-oob.dts"
 +
@@ -236,11 +236,11 @@ index 000000000000..3509e02ffb81
 +		compatible = "brcm,bcm4329-fmac";
 +	};
 +};
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea-oob.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea-oob.dts
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob-2ea.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob-2ea.dts
 new file mode 100644
 index 000000000000..895db975a4fa
 --- /dev/null
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea-oob.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob-2ea.dts
 @@ -0,0 +1,25 @@
 +#include "imx8mn-evk-usd-m2-oob.dts"
 +
