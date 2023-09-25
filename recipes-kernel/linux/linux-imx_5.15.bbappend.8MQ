@@ -4,7 +4,10 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
 SRC_URI:append = "  file://0003-defconfig-imx8.patch \
-		            file://0008-complete-imx8.patch \
+		            file://0004-murata-dts-imx8.patch \
+		            file://0005-murata-disable-cfg-regdb.patch \
+		            file://0006-murata-disable-cfg-regdb.patch \
+		            file://0007-bluez-update-5-10-72.patch \
 "
 
 addtask copy_defconfig_after_patch after do_patch before do_configure
