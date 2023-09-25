@@ -1,0 +1,629 @@
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index b7060bfe3af0..e6c9b95c736a 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -66,8 +66,8 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb imx8mm-evk-rpmsg.dtb imx8mm-evk-rm67191
+ 			  imx8mm-evk-root.dtb imx8mm-evk-inmate.dtb imx8mm-evk-revb-qca-wifi.dtb \
+ 			  imx8mm-evk-ecspi-slave.dtb \
+ 			  imx8mm-evk-pcie-ep.dtb \
+-			  imx8mm-evk-usd-wifi.dtb \
+-			  imx8mm-evk-qca-wifi.dtb \
++			  imx8mm-evk-usd-wifi.dtb imx8mm-evk-usd-m2.dtb \
++			  imx8mm-evk-usd-m2-oob.dtb imx8mm-evk-usd-m2-2ea.dtb \
+ 			  imx8mm-evk-dpdk.dtb \
+ 			  imx8mm-evk-rm67199.dtb imx8mm-evk-rm67191-cmd-ram.dtb imx8mm-evk-rm67199-cmd-ram.dtb \
+ 			  imx8mm-evk-lk.dtb imx8mm-evk-rpmsg-wm8524-lpv.dtb
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts
+new file mode 100644
+index 000000000000..3bc289a5e8b7
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts
+@@ -0,0 +1,24 @@
++#include "imx8mm-evk-usd-m2.dts"
++
++
++/* Delete clashes from included DT */
++/ {
++	/delete-node/ modem-reset;
++};
++
++&uart3 {
++	/delete-property/ resets;
++};
++
++
++/* Delete clashes from included DT */
++
++&uart3 {
++  	/* For 2EA - Bluetooth */
++  	bluetooth {
++	        compatible = "infineon,cyw55572-bt";
++	        shutdown-gpios = <&gpio5 12 GPIO_ACTIVE_HIGH>;
++	        max-speed = <3000000>;
++	        brcm,requires-autobaud-mode;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts
+new file mode 100644
+index 000000000000..ac85f9fd32e2
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ */
++
++#include "imx8mm-evk-usd-m2.dts"
++
++
++&pinctrl_usdhc2_gpio {
++	fsl,pins = <
++    		MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
++		MX8MM_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
++    		MX8MM_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x19  /* BT_REG_ON */
++    		MX8MM_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* Murata -- should be pull-up on this */
++    		MX8MM_IOMUXC_ECSPI2_SCLK_GPIO5_IO10 	0x1d0 /* Murata WL_HOST_WAKE -- pull-up */
++	>;
++};
++
++&usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-assert-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
++	/delete-property/ cd-gpios;
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++	pm-ignore-notify;
++	keep-power-in-suspend;
++	non-removable;
++	cap-power-off-card;
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	  	interrupt-parent = <&gpio5>;
++    		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
++    		interrupt-names = "host-wake";
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts
+new file mode 100644
+index 000000000000..3509e02ffb81
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts
+@@ -0,0 +1,105 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ */
++
++/dts-v1/;
++
++#include "imx8mm-evk.dts"
++
++/ {
++  	usdhc2_pwrseq: usdhc2_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		pinctrl-names = "default";
++		reset-gpios = <&gpio5 11 GPIO_ACTIVE_LOW>;  /* WL REG ON */
++	};
++
++	modem_reset_usd_m2: modem-reset {
++		compatible = "gpio-reset";
++		reset-gpios = <&gpio5 12 GPIO_ACTIVE_LOW>;  /* BT REG ON */
++		reset-delay-us = <1000>;
++		#reset-cells = <0>;
++	};
++};
++
++&reg_usdhc2_vmmc {
++  	regulator-always-on;
++};
++
++&uart1 {
++	/* Onboard AW-CM358SM BT */
++	status = "disabled";
++};
++
++&uart3 {
++  	resets = <&modem_reset_usd_m2>;
++};
++
++&ecspi2 {
++	status = "disabled";
++};
++
++&usdhc1 {
++	/* Disable AW-CM358SM */
++	status = "disabled";
++};
++
++
++&pinctrl_usdhc2_gpio {
++	fsl,pins = <
++    		MX8MM_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
++		MX8MM_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
++    		MX8MM_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x19  /* BT_REG_ON */
++    		MX8MM_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* Murata -- should be pull-up on this */
++	>;
++};
++
++&pinctrl_usdhc2 {
++	fsl,pins = <
++		MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x190
++		MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d0
++		MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d0
++		MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d0
++		MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d0
++		MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d0
++	>;
++};
++
++&pinctrl_usdhc2_100mhz {
++	fsl,pins = <
++		MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x194
++		MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d4
++		MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d4
++		MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d4
++		MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d4
++		MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d4
++	>;
++};
++
++&pinctrl_usdhc2_200mhz {
++	fsl,pins = <
++		MX8MM_IOMUXC_SD2_CLK_USDHC2_CLK		0x196
++		MX8MM_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d6
++		MX8MM_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d6
++		MX8MM_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d6
++		MX8MM_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d6
++		MX8MM_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d6
++	>;
++};
++
++
++&usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-assert-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
++	/delete-property/ cd-gpios;
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++	pm-ignore-notify;
++	keep-power-in-suspend;
++	non-removable;
++	cap-power-off-card;
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts
+new file mode 100644
+index 000000000000..d1826e7bc0f9
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts
+@@ -0,0 +1,35 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ */
++
++#include "imx8mn-evk-usd-m2.dts"
++
++&pinctrl_usdhc2_gpio {
++	fsl,pins = <
++    		MX8MN_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
++		MX8MN_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
++    		MX8MN_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x19  /* BT_REG_ON */
++    		MX8MN_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* Murata -- should be pull-up on this */
++    		MX8MN_IOMUXC_ECSPI2_SCLK_GPIO5_IO10 	0x1d0 /* Murata WL_HOST_WAKE -- pull-up */
++	>;
++};
++
++&usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-assert-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
++	/delete-property/ cd-gpios;
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++	pm-ignore-notify;
++	keep-power-in-suspend;
++	non-removable;
++	cap-power-off-card;
++	brcmf2: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	  	interrupt-parent = <&gpio5>;
++    		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
++    		interrupt-names = "host-wake";
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts
+new file mode 100644
+index 000000000000..c37c29c14531
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts
+@@ -0,0 +1,105 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ */
++
++/dts-v1/;
++
++#include "imx8mn-evk.dts"
++
++/ {
++  	usdhc2_pwrseq: usdhc2_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		pinctrl-names = "default";
++		reset-gpios = <&gpio5 11 GPIO_ACTIVE_LOW>;  /* WL REG ON */
++	};
++
++	modem_reset_usd_m2: modem-reset {
++		compatible = "gpio-reset";
++		reset-gpios = <&gpio5 12 GPIO_ACTIVE_LOW>;  /* BT REG ON */
++		reset-delay-us = <1000>;
++		#reset-cells = <0>;
++	};
++};
++
++&reg_usdhc2_vmmc {
++  	regulator-always-on;
++};
++
++&uart1 {
++	/* Onboard AW-CM358SM BT */
++	status = "disabled";
++};
++
++&uart3 {
++  	resets = <&modem_reset_usd_m2>;
++};
++
++&ecspi2 {
++	status = "disabled";
++};
++
++&usdhc1 {
++	/* Disable AW-CM358SM */
++	status = "disabled";
++};
++
++
++&pinctrl_usdhc2_gpio {
++	fsl,pins = <
++    		MX8MN_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
++		MX8MN_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
++    		MX8MN_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x19  /* BT_REG_ON */
++    		MX8MN_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* Murata -- should be pull-up on this */
++	>;
++};
++
++&pinctrl_usdhc2 {
++	fsl,pins = <
++		MX8MN_IOMUXC_SD2_CLK_USDHC2_CLK		0x190
++		MX8MN_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d0
++		MX8MN_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d0
++		MX8MN_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d0
++		MX8MN_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d0
++		MX8MN_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d0
++	>;
++};
++
++&pinctrl_usdhc2_100mhz {
++	fsl,pins = <
++		MX8MN_IOMUXC_SD2_CLK_USDHC2_CLK		0x194
++		MX8MN_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d4
++		MX8MN_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d4
++		MX8MN_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d4
++		MX8MN_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d4
++		MX8MN_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d4
++	>;
++};
++
++&pinctrl_usdhc2_200mhz {
++	fsl,pins = <
++		MX8MN_IOMUXC_SD2_CLK_USDHC2_CLK		0x196
++		MX8MN_IOMUXC_SD2_CMD_USDHC2_CMD		0x1d6
++		MX8MN_IOMUXC_SD2_DATA0_USDHC2_DATA0	0x1d6
++		MX8MN_IOMUXC_SD2_DATA1_USDHC2_DATA1	0x1d6
++		MX8MN_IOMUXC_SD2_DATA2_USDHC2_DATA2	0x1d6
++		MX8MN_IOMUXC_SD2_DATA3_USDHC2_DATA3	0x1d6
++	>;
++};
++
++
++&usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-assert-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
++	/delete-property/ cd-gpios;
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++	pm-ignore-notify;
++	keep-power-in-suspend;
++	non-removable;
++	cap-power-off-card;
++	brcmf2: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	};
++};
+diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
+index 74dc82cb4dde..97167f3270dd 100644
+--- a/arch/arm64/configs/imx_v8_defconfig
++++ b/arch/arm64/configs/imx_v8_defconfig
+@@ -162,15 +162,16 @@ CONFIG_BT_HIDP=y
+ CONFIG_BT_LEDS=y
+ # CONFIG_BT_DEBUGFS is not set
+ CONFIG_BT_HCIBTUSB=m
+-CONFIG_BT_HCIUART=y
++CONFIG_BT_HCIUART=m
+ CONFIG_BT_HCIUART_BCSP=y
+ CONFIG_BT_HCIUART_ATH3K=y
+ CONFIG_BT_HCIUART_LL=y
+ CONFIG_BT_HCIUART_3WIRE=y
+ CONFIG_BT_HCIUART_BCM=y
+-CONFIG_BT_HCIUART_QCA=y
++CONFIG_BT_HCIUART_QCA=n
+ CONFIG_BT_HCIVHCI=y
+-CONFIG_CFG80211=y
++CONFIG_CFG80211=m
++CONFIG_BCMDHD=n
+ CONFIG_NL80211_TESTMODE=y
+ CONFIG_CFG80211_WEXT=y
+ CONFIG_MAC80211=y
+diff --git a/drivers/bluetooth/btbcm.c b/drivers/bluetooth/btbcm.c
+index d9ceca7a7935..e5e3815bebfa 100644
+--- a/drivers/bluetooth/btbcm.c
++++ b/drivers/bluetooth/btbcm.c
+@@ -402,6 +402,13 @@ static int btbcm_read_info(struct hci_dev *hdev)
+ 	bt_dev_info(hdev, "BCM: chip id %u", skb->data[1]);
+ 	kfree_skb(skb);
+ 
++	return 0;
++}
++
++static int btbcm_print_controller_features(struct hci_dev *hdev)
++{
++	struct sk_buff *skb;
++
+ 	/* Read Controller Features */
+ 	skb = btbcm_read_controller_features(hdev);
+ 	if (IS_ERR(skb))
+@@ -476,7 +483,7 @@ static const struct bcm_subver_table bcm_usb_subver_table[] = {
+ 	{ }
+ };
+ 
+-int btbcm_initialize(struct hci_dev *hdev, bool *fw_load_done)
++int btbcm_initialize(struct hci_dev *hdev, bool *fw_load_done, bool use_autobaud_mode)
+ {
+ 	u16 subver, rev, pid, vid;
+ 	struct sk_buff *skb;
+@@ -510,9 +517,16 @@ int btbcm_initialize(struct hci_dev *hdev, bool *fw_load_done)
+ 		if (err)
+ 			return err;
+ 	}
+-	err = btbcm_print_local_name(hdev);
+-	if (err)
+-		return err;
++
++	if (!use_autobaud_mode) {
++		err = btbcm_print_controller_features(hdev);
++		if (err)
++			return err;
++
++		err = btbcm_print_local_name(hdev);
++		if (err)
++			return err;
++	}
+ 
+ 	bcm_subver_table = (hdev->bus == HCI_USB) ? bcm_usb_subver_table :
+ 						    bcm_uart_subver_table;
+@@ -585,13 +599,13 @@ int btbcm_initialize(struct hci_dev *hdev, bool *fw_load_done)
+ }
+ EXPORT_SYMBOL_GPL(btbcm_initialize);
+ 
+-int btbcm_finalize(struct hci_dev *hdev, bool *fw_load_done)
++int btbcm_finalize(struct hci_dev *hdev, bool *fw_load_done, bool use_autobaud_mode)
+ {
+ 	int err;
+ 
+ 	/* Re-initialize if necessary */
+ 	if (*fw_load_done) {
+-		err = btbcm_initialize(hdev, fw_load_done);
++		err = btbcm_initialize(hdev, fw_load_done, use_autobaud_mode);
+ 		if (err)
+ 			return err;
+ 	}
+@@ -607,15 +621,16 @@ EXPORT_SYMBOL_GPL(btbcm_finalize);
+ int btbcm_setup_patchram(struct hci_dev *hdev)
+ {
+ 	bool fw_load_done = false;
++	bool use_autobaud_mode = false;
+ 	int err;
+ 
+ 	/* Initialize */
+-	err = btbcm_initialize(hdev, &fw_load_done);
++	err = btbcm_initialize(hdev, &fw_load_done, use_autobaud_mode);
+ 	if (err)
+ 		return err;
+ 
+ 	/* Re-initialize after loading Patch */
+-	return btbcm_finalize(hdev, &fw_load_done);
++	return btbcm_finalize(hdev, &fw_load_done, use_autobaud_mode);
+ }
+ EXPORT_SYMBOL_GPL(btbcm_setup_patchram);
+ 
+diff --git a/drivers/bluetooth/btbcm.h b/drivers/bluetooth/btbcm.h
+index 8bf01565fdfc..b4cb24231a20 100644
+--- a/drivers/bluetooth/btbcm.h
++++ b/drivers/bluetooth/btbcm.h
+@@ -62,8 +62,8 @@ int btbcm_write_pcm_int_params(struct hci_dev *hdev,
+ int btbcm_setup_patchram(struct hci_dev *hdev);
+ int btbcm_setup_apple(struct hci_dev *hdev);
+ 
+-int btbcm_initialize(struct hci_dev *hdev, bool *fw_load_done);
+-int btbcm_finalize(struct hci_dev *hdev, bool *fw_load_done);
++int btbcm_initialize(struct hci_dev *hdev, bool *fw_load_done, bool use_autobaud_mode);
++int btbcm_finalize(struct hci_dev *hdev, bool *fw_load_done, bool use_autobaud_mode);
+ 
+ #else
+ 
+@@ -104,12 +104,12 @@ static inline int btbcm_setup_apple(struct hci_dev *hdev)
+ 	return 0;
+ }
+ 
+-static inline int btbcm_initialize(struct hci_dev *hdev, bool *fw_load_done)
++static inline int btbcm_initialize(struct hci_dev *hdev, bool *fw_load_done, bool use_autobaud_mode)
+ {
+ 	return 0;
+ }
+ 
+-static inline int btbcm_finalize(struct hci_dev *hdev, bool *fw_load_done)
++static inline int btbcm_finalize(struct hci_dev *hdev, bool *fw_load_done, bool use_autobaud_mode)
+ {
+ 	return 0;
+ }
+diff --git a/drivers/bluetooth/hci_bcm.c b/drivers/bluetooth/hci_bcm.c
+index 7abf99f0ee39..32543bfa112f 100644
+--- a/drivers/bluetooth/hci_bcm.c
++++ b/drivers/bluetooth/hci_bcm.c
+@@ -56,6 +56,7 @@
+ struct bcm_device_data {
+ 	bool	no_early_set_baudrate;
+ 	bool	drive_rts_on_open;
++	u32	max_autobaud_speed;
+ };
+ 
+ /**
+@@ -96,6 +97,8 @@ struct bcm_device_data {
+  *	used to disable flow control during runtime suspend and system sleep
+  * @is_suspended: whether flow control is currently disabled
+  * @no_early_set_baudrate: don't set_baudrate before setup()
++ * @use_autobaud_mode: start Bluetooth device in autobaud mode
++ * @max_autobaud_speed: max baudrate supported by device in autobaud mode
+  * @drive_rts_on_open: drive RTS signal on ->open() when platform requires it
+  * @pcm_int_params: keep the initial PCM configuration
+  */
+@@ -135,7 +138,9 @@ struct bcm_device {
+ #endif
+ 	bool			no_early_set_baudrate;
+ 	bool			drive_rts_on_open;
++	bool			use_autobaud_mode;
+ 	u8			pcm_int_params[5];
++	u32			max_autobaud_speed;
+ };
+ 
+ /* generic bcm uart resources */
+@@ -471,15 +476,20 @@ static int bcm_open(struct hci_uart *hu)
+ 
+ out:
+ 	if (bcm->dev) {
+-		if (bcm->dev->drive_rts_on_open)
++		if (bcm->dev->use_autobaud_mode)
++			hci_uart_set_flow_control(hu, false);	/* Assert BT_UART_CTS_N */
++		else if (bcm->dev->drive_rts_on_open)
+ 			hci_uart_set_flow_control(hu, true);
+ 
+-		hu->init_speed = bcm->dev->init_speed;
++		if (bcm->dev->use_autobaud_mode && bcm->dev->max_autobaud_speed)
++			hu->init_speed = min(bcm->dev->oper_speed, bcm->dev->max_autobaud_speed);
++		else
++			hu->init_speed = bcm->dev->init_speed;
+ 
+ 		/* If oper_speed is set, ldisc/serdev will set the baudrate
+ 		 * before calling setup()
+ 		 */
+-		if (!bcm->dev->no_early_set_baudrate)
++		if (!bcm->dev->no_early_set_baudrate && !bcm->dev->use_autobaud_mode)
+ 			hu->oper_speed = bcm->dev->oper_speed;
+ 
+ 		err = bcm_gpio_set_power(bcm->dev, true);
+@@ -563,6 +573,7 @@ static int bcm_setup(struct hci_uart *hu)
+ {
+ 	struct bcm_data *bcm = hu->priv;
+ 	bool fw_load_done = false;
++	bool use_autobaud_mode = (bcm->dev ? bcm->dev->use_autobaud_mode : 0);
+ 	unsigned int speed;
+ 	int err;
+ 
+@@ -571,7 +582,7 @@ static int bcm_setup(struct hci_uart *hu)
+ 	hu->hdev->set_diag = bcm_set_diag;
+ 	hu->hdev->set_bdaddr = btbcm_set_bdaddr;
+ 
+-	err = btbcm_initialize(hu->hdev, &fw_load_done);
++	err = btbcm_initialize(hu->hdev, &fw_load_done, use_autobaud_mode);
+ 	if (err)
+ 		return err;
+ 
+@@ -579,8 +590,8 @@ static int bcm_setup(struct hci_uart *hu)
+ 		return 0;
+ 
+ 	/* Init speed if any */
+-	if (hu->init_speed)
+-		speed = hu->init_speed;
++	if (bcm->dev && bcm->dev->init_speed)
++		speed = bcm->dev->init_speed;
+ 	else if (hu->proto->init_speed)
+ 		speed = hu->proto->init_speed;
+ 	else
+@@ -615,7 +626,7 @@ static int bcm_setup(struct hci_uart *hu)
+ 		btbcm_write_pcm_int_params(hu->hdev, &params);
+ 	}
+ 
+-	err = btbcm_finalize(hu->hdev, &fw_load_done);
++	err = btbcm_finalize(hu->hdev, &fw_load_done, use_autobaud_mode);
+ 	if (err)
+ 		return err;
+ 
+@@ -1169,6 +1180,8 @@ static int bcm_acpi_probe(struct bcm_device *dev)
+ 
+ static int bcm_of_probe(struct bcm_device *bdev)
+ {
++	bdev->use_autobaud_mode = device_property_read_bool(bdev->dev,
++							    "brcm,requires-autobaud-mode");
+ 	device_property_read_u32(bdev->dev, "max-speed", &bdev->oper_speed);
+ 	device_property_read_u8_array(bdev->dev, "brcm,bt-pcm-int-params",
+ 				      bdev->pcm_int_params, 5);
+@@ -1484,6 +1497,7 @@ static int bcm_serdev_probe(struct serdev_device *serdev)
+ 
+ 	data = device_get_match_data(bcmdev->dev);
+ 	if (data) {
++		bcmdev->max_autobaud_speed = data->max_autobaud_speed;
+ 		bcmdev->no_early_set_baudrate = data->no_early_set_baudrate;
+ 		bcmdev->drive_rts_on_open = data->drive_rts_on_open;
+ 	}
+@@ -1507,6 +1521,10 @@ static struct bcm_device_data bcm43438_device_data = {
+ 	.drive_rts_on_open = true,
+ };
+ 
++static struct bcm_device_data cyw55572_device_data = {
++	.max_autobaud_speed = 921600,
++};
++
+ static const struct of_device_id bcm_bluetooth_of_match[] = {
+ 	{ .compatible = "brcm,bcm20702a1" },
+ 	{ .compatible = "brcm,bcm4329-bt" },
+@@ -1517,6 +1535,7 @@ static const struct of_device_id bcm_bluetooth_of_match[] = {
+ 	{ .compatible = "brcm,bcm43438-bt", .data = &bcm43438_device_data },
+ 	{ .compatible = "brcm,bcm43540-bt", .data = &bcm4354_device_data },
+ 	{ .compatible = "brcm,bcm4335a0" },
++	{ .compatible = "infineon,cyw55572-bt", .data = &cyw55572_device_data },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(of, bcm_bluetooth_of_match);
+diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
+index ea9cd848ffc5..206f4ef5bda2 100644
+--- a/drivers/tty/serial/imx.c
++++ b/drivers/tty/serial/imx.c
+@@ -1435,8 +1435,10 @@ static int imx_uart_startup(struct uart_port *port)
+ 	imx_uart_writel(sport, ucr4 & ~UCR4_DREN, UCR4);
+ 
+ 	/* Can we enable the DMA support? */
++/*  // Disable DMA support as the Kernel crashes when we make HCI_UART as module
+ 	if (!uart_console(port) && imx_uart_dma_init(sport) == 0)
+ 		dma_is_inited = 1;
++*/
+ 
+ 	spin_lock_irqsave(&sport->port.lock, flags);
+ 	/* Reset fifo's and state machines */
