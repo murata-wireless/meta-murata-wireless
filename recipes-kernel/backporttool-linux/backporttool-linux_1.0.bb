@@ -16,7 +16,7 @@ SRC_URI =  " \
     file://0003-kernel_change_for_fmac_log_string.patch;apply=yes \
 "
 
-SRCREV = "1d605c8b97cce0b7bea0eb178a1bd0a6751554cb"
+SRCREV = "dadb79aca9840bb182bef9753f4c47f067269dd9"
 
 S = "${WORKDIR}/git"
 
