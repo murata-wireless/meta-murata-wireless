@@ -25,7 +25,7 @@ SRC_URI = "http://w1.fi/releases/wpa_supplicant-${PV}.tar.gz \
            file://wpa_supplicant.conf \
            file://wpa_supplicant.conf-sane \
            file://99_wpa_supplicant \
-    	   file://0000-murata-wpa_supplicant--patch-to-bring-baseline-to-commit-cff80b4f7d3c.patch;apply=yes \
+    	   file://0000-supplicant.patch;apply=yes \
 "
 SRC_URI[sha256sum] = "20df7ae5154b3830355f8ab4269123a87affdea59fe74fe9292a91d0d7e17b2f"
 

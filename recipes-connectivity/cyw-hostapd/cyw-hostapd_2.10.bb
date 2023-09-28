@@ -12,7 +12,7 @@ SRC_URI = " \
 	   file://init \
 	   file://hostapd.service \
 	   file://udhcpd.conf \
-	   file://0000-murata-hostapd-patch-to-bring-baseline-to-commit-cff80b4f7d3c.patch;apply=yes \
+	   file://0000-hostapd.patch;apply=yes \
 "
 
 
