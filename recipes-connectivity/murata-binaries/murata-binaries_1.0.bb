@@ -23,6 +23,7 @@ SRC_URI = " \
         file://switch_module_imx93ea-ucom.sh \
 	    file://cyfmac55572-pcie.txt \
         file://cyfmac55572-sdio.txt \
+        file://cyfmac55572-sdio-ifx-demo.txt \
 	    file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
 	    file://CYW55560A1_001.002.087.0159.0010.hcd \
 	    file://ot-daemon.64-bit \
@@ -36,6 +37,8 @@ SRC_URI = " \
         file://mlanutl.64-bit \
         file://load-fmac.sh \
         file://load-2ea-bt.sh \
+        file://hostapd_wifi6.conf \
+        file://wpa_supplicant_wifi6.conf \
 "
 
 SRCREV_nxp-linux-calibration="86290400930acaa239cbdd0d2f537de2bb9bca56"
@@ -84,6 +87,7 @@ do_install () {
     install -d ${D}/usr/sbin
     install -d ${D}/etc/udev/rules.d
     install -d ${D}/usr/share/murata_wireless
+    install -d ${D}/etc/firmware
 
     # Install /lib/firmware/nxp folder
     install -d ${D}/lib/firmware/nxp
@@ -196,6 +200,7 @@ do_install () {
 #	For 2EA 
 	install -m 444 ${WORKDIR}/cyfmac55572-pcie.txt ${D}/lib/firmware/cypress
     install -m 444 ${WORKDIR}/cyfmac55572-sdio.txt ${D}/lib/firmware/cypress
+    install -m 444 ${WORKDIR}/cyfmac55572-sdio-ifx-demo.txt ${D}/lib/firmware/cypress
 
 #   For 2BZ
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac54591-sdio.2ant.2BZ.txt ${D}/lib/firmware/cypress/cyfmac54591-sdio.txt
@@ -204,6 +209,8 @@ do_install () {
 
 	# Added Calibration configuration file for 1YM(NXP)
 #	install -m 444 ${WORKDIR}/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
+	install -m 444 ${WORKDIR}/hostapd_wifi6.conf                ${D}${sysconfdir}/firmware/hostapd_wifi6.conf
+	install -m 444 ${WORKDIR}/wpa_supplicant_wifi6.conf         ${D}${sysconfdir}/firmware/wpa_supplicant_wifi6.conf
 
 	install -d ${D}/lib/firmware/nxp
     install -d ${D}/usr/share/nxp_wireless
