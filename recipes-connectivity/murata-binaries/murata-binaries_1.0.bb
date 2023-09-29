@@ -24,6 +24,7 @@ SRC_URI = " \
 	    file://cyfmac55572-pcie.txt \
         file://cyfmac55572-sdio.txt \
 	    file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
+	    file://CYW55560A1_001.002.087.0159.0010.hcd \
 	    file://ot-daemon.64-bit \
 	    file://ot-ctl.64-bit \
         file://fw_loader_imx_lnx.64-bit \
@@ -107,7 +108,8 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}/lib/firmware/brcm/BCM4373A0.2BC.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}/lib/firmware/brcm/CYW4343A2_001.003.016.0031.0000.1YN.hcd
     install -m 444 ${WORKDIR}/CYW55560A1_001.002.087.0108.0000.sLNA.hcd ${D}/lib/firmware/brcm/CYW55560A1_001.002.087.0108.0000.sLNA.hcd
-    install -m 444 ${WORKDIR}/CYW55560A1_001.002.087.0108.0000.sLNA.hcd ${D}/lib/firmware/brcm/BCM.hcd
+    install -m 444 ${WORKDIR}/CYW55560A1_001.002.087.0159.0010.hcd ${D}/lib/firmware/brcm/CYW55560A1_001.002.087.0159.0010.hcd
+    install -m 444 ${WORKDIR}/CYW55560A1_001.002.087.0159.0010.hcd ${D}/lib/firmware/brcm/BCM.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}/lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}/lib/firmware/brcm/
 
