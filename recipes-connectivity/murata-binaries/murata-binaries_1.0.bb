@@ -24,6 +24,9 @@ SRC_URI = " \
 	    file://cyfmac55572-pcie.txt \
         file://cyfmac55572-sdio.txt \
         file://cyfmac55572-sdio-ifx-demo.txt \
+        file://cyfmac55572-sdio_v2.4.3.txt \
+        file://cyfmac55572-sdio_v2.5.1.txt \
+        file://cyfmac55572-sdio-ifx-demo.txt \
 	    file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
 	    file://CYW55560A1_001.002.087.0159.0010.hcd \
 	    file://ot-daemon.64-bit \
@@ -200,7 +203,9 @@ do_install () {
 #	For 2EA 
 	install -m 444 ${WORKDIR}/cyfmac55572-pcie.txt ${D}/lib/firmware/cypress
     install -m 444 ${WORKDIR}/cyfmac55572-sdio.txt ${D}/lib/firmware/cypress
-    install -m 444 ${WORKDIR}/cyfmac55572-sdio-ifx-demo.txt ${D}/lib/firmware/cypress
+    install -m 444 ${WORKDIR}/cyfmac55572-sdio-ifx-demo.txt ${D}/lib/firmware/cypress/murata-master
+    install -m 444 ${WORKDIR}/cyfmac55572-sdio_v2.4.3.txt ${D}/lib/firmware/cypress/murata-master
+    install -m 444 ${WORKDIR}/cyfmac55572-sdio_v2.5.1.txt ${D}/lib/firmware/cypress/murata-master
 
 #   For 2BZ
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac54591-sdio.2ant.2BZ.txt ${D}/lib/firmware/cypress/cyfmac54591-sdio.txt
