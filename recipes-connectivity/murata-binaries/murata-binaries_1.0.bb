@@ -40,8 +40,8 @@ SRC_URI = " \
         file://mlanutl.64-bit \
         file://load-fmac.sh \
         file://load-2ea-bt.sh \
-        file://hostapd_wifi6.conf \
-        file://wpa_supplicant_wifi6.conf \
+        file://hostapd-wifi6.conf \
+        file://wpa_supplicant-wifi6.conf \
 "
 
 SRCREV_nxp-linux-calibration="86290400930acaa239cbdd0d2f537de2bb9bca56"
@@ -90,7 +90,7 @@ do_install () {
     install -d ${D}/usr/sbin
     install -d ${D}/etc/udev/rules.d
     install -d ${D}/usr/share/murata_wireless
-    install -d ${D}/etc/firmware
+    install -d ${D}/etc
 
     # Install /lib/firmware/nxp folder
     install -d ${D}/lib/firmware/nxp
@@ -214,8 +214,8 @@ do_install () {
 
 	# Added Calibration configuration file for 1YM(NXP)
 #	install -m 444 ${WORKDIR}/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
-	install -m 444 ${WORKDIR}/hostapd_wifi6.conf                ${D}${sysconfdir}/firmware/hostapd_wifi6.conf
-	install -m 444 ${WORKDIR}/wpa_supplicant_wifi6.conf         ${D}${sysconfdir}/firmware/wpa_supplicant_wifi6.conf
+	install -m 444 ${WORKDIR}/hostapd-wifi6.conf                ${D}${sysconfdir}/hostapd-wifi6.conf
+	install -m 444 ${WORKDIR}/wpa_supplicant-wifi6.conf         ${D}${sysconfdir}/wpa_supplicant-wifi6.conf
 
 	install -d ${D}/lib/firmware/nxp
     install -d ${D}/usr/share/nxp_wireless
