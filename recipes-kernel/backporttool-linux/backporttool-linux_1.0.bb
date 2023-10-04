@@ -11,7 +11,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 SRC_URI =  " \
     git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=imx-langdale-godzilla \
-    file://0002-yacc-flex-in-kconf-makefile.patch;apply=yes \
+    file://0004-makefile-yacc-flex-update.patch;apply=yes \
     file://0003-kernel_change_for_fmac_log_string.patch;apply=yes \
 "
 
