@@ -1,0 +1,5492 @@
+diff --git a/src/ap/ap_config.h b/src/ap/ap_config.h
+index 49cd316..a82ca18 100644
+--- a/src/ap/ap_config.h
++++ b/src/ap/ap_config.h
+@@ -898,6 +898,8 @@ struct hostapd_bss_config {
+ 	u8 ext_capa[EXT_CAPA_MAX_LEN];
+ 
+ 	u8 rnr;
++
++	unsigned int dot11RSNAConfigPMKLifetime;
+ };
+ 
+ /**
+diff --git a/src/ap/ap_drv_ops.h b/src/ap/ap_drv_ops.h
+index 61c8f64..5bf092c 100644
+--- a/src/ap/ap_drv_ops.h
++++ b/src/ap/ap_drv_ops.h
+@@ -403,6 +403,16 @@ static inline int hostapd_drv_driver_cmd(struct hostapd_data *hapd,
+ }
+ #endif /* ANDROID */
+ 
++#ifdef CONFIG_DRIVER_BRCM_WL
++static inline int hostapd_drv_wl_cmd(struct hostapd_data *hapd,
++					 char *cmd, char *buf, size_t buf_len)
++{
++	if (!hapd->driver->wl_cmd)
++		return -1;
++	return hapd->driver->wl_cmd(hapd->drv_priv, cmd, buf, buf_len);
++}
++#endif /* CONFIG_DRIVER_BRCM_WL */
++
+ #ifdef CONFIG_TESTING_OPTIONS
+ static inline int
+ hostapd_drv_register_frame(struct hostapd_data *hapd, u16 type,
+diff --git a/src/ap/beacon.c b/src/ap/beacon.c
+index 8cd1c41..e2d7c69 100644
+--- a/src/ap/beacon.c
++++ b/src/ap/beacon.c
+@@ -1753,6 +1753,27 @@ int ieee802_11_build_ap_params(struct hostapd_data *hapd,
+ 		}
+ 	}
+ 
++	if ((hapd->iface->drv_flags2 &
++	     WPA_DRIVER_FLAGS2_4WAY_HANDSHAKE_AP_PSK) &&
++	    (params->key_mgmt_suites &
++	     (WPA_KEY_MGMT_PSK | WPA_KEY_MGMT_PSK_SHA256))) {
++		if (hapd->conf->ssid.wpa_passphrase)
++			params->passphrase = hapd->conf->ssid.wpa_passphrase;
++		if (hapd->conf->ssid.wpa_psk->psk)
++			params->psk = hapd->conf->ssid.wpa_psk->psk;
++	}
++
++#ifdef CONFIG_SAE
++	if ((hapd->iface->drv_flags2 & WPA_DRIVER_FLAGS2_SAE_OFFLOAD_AP) &&
++	    (params->key_mgmt_suites & WPA_KEY_MGMT_SAE)) {
++		params->auth_algs |= WPA_AUTH_ALG_SAE;
++		if (hapd->conf->sae_passwords)
++			params->sae_password = hapd->conf->sae_passwords->password;
++		else if (hapd->conf->ssid.wpa_passphrase)
++			params->passphrase = hapd->conf->ssid.wpa_passphrase;
++	}
++#endif /* CONFIG_SAE */
++
+ 	return 0;
+ }
+ 
+diff --git a/src/ap/hostapd.c b/src/ap/hostapd.c
+index 4b88641..464d8fa 100644
+--- a/src/ap/hostapd.c
++++ b/src/ap/hostapd.c
+@@ -3203,6 +3203,8 @@ int hostapd_remove_iface(struct hapd_interfaces *interfaces, char *buf)
+ void hostapd_new_assoc_sta(struct hostapd_data *hapd, struct sta_info *sta,
+ 			   int reassoc)
+ {
++	int key_mgmt = wpa_auth_sta_key_mgmt(sta->wpa_sm);
++
+ 	if (hapd->tkip_countermeasures) {
+ 		hostapd_drv_sta_deauth(hapd, sta->addr,
+ 				       WLAN_REASON_MICHAEL_MIC_FAILURE);
+@@ -3236,7 +3238,11 @@ void hostapd_new_assoc_sta(struct hostapd_data *hapd, struct sta_info *sta,
+ 	/* Start IEEE 802.1X authentication process for new stations */
+ 	ieee802_1x_new_station(hapd, sta);
+ 	if (reassoc) {
+-		if (sta->auth_alg != WLAN_AUTH_FT &&
++		if ((hapd->iface->drv_flags2 &
++		     WPA_DRIVER_FLAGS2_4WAY_HANDSHAKE_AP_PSK) &&
++		    wpa_key_mgmt_wpa_psk(key_mgmt))
++			wpa_auth_sta_associated(hapd->wpa_auth, sta->wpa_sm);
++		else if (sta->auth_alg != WLAN_AUTH_FT &&
+ 		    sta->auth_alg != WLAN_AUTH_FILS_SK &&
+ 		    sta->auth_alg != WLAN_AUTH_FILS_SK_PFS &&
+ 		    sta->auth_alg != WLAN_AUTH_FILS_PK &&
+diff --git a/src/ap/ieee802_11.c b/src/ap/ieee802_11.c
+index db41049..c4f7d00 100644
+--- a/src/ap/ieee802_11.c
++++ b/src/ap/ieee802_11.c
+@@ -87,6 +87,10 @@ static void handle_auth(struct hostapd_data *hapd,
+ 			const struct ieee80211_mgmt *mgmt, size_t len,
+ 			int rssi, int from_queue);
+ 
++#ifdef CONFIG_WPA3_SAE_AUTH_EARLY_SET
++static void sae_sme_send_external_auth_status(struct hostapd_data *hapd,
++                                              struct sta_info *sta, u16 status);
++#endif /* CONFIG_WPA3_SAE_AUTH_EARLY_SET */
+ 
+ u8 * hostapd_eid_multi_ap(struct hostapd_data *hapd, u8 *eid)
+ {
+@@ -677,6 +681,11 @@ static int auth_sae_send_confirm(struct hostapd_data *hapd,
+ 	if (data == NULL)
+ 		return WLAN_STATUS_UNSPECIFIED_FAILURE;
+ 
++#ifdef CONFIG_WPA3_SAE_AUTH_EARLY_SET
++	wpa_printf(MSG_DEBUG, "\nCalling sae_sme_send_external_auth_status\n");
++	sae_sme_send_external_auth_status(hapd, sta, WLAN_STATUS_SUCCESS);
++#endif /* CONFIG_WPA3_SAE_AUTH_EARLY_SET */
++
+ 	reply_res = send_auth_reply(hapd, sta, sta->addr, bssid,
+ 				    WLAN_AUTH_SAE, 2,
+ 				    WLAN_STATUS_SUCCESS, wpabuf_head(data),
+@@ -971,9 +980,12 @@ void sae_accept_sta(struct hostapd_data *hapd, struct sta_info *sta)
+ 	crypto_bignum_deinit(sta->sae->peer_commit_scalar_accepted, 0);
+ 	sta->sae->peer_commit_scalar_accepted = sta->sae->peer_commit_scalar;
+ 	sta->sae->peer_commit_scalar = NULL;
++	wpa_auth_set_pmk_life_time(hapd->wpa_auth,hapd->conf->dot11RSNAConfigPMKLifetime);
+ 	wpa_auth_pmksa_add_sae(hapd->wpa_auth, sta->addr,
+ 			       sta->sae->pmk, sta->sae->pmkid);
++#ifndef CONFIG_WPA3_SAE_AUTH_EARLY_SET
+ 	sae_sme_send_external_auth_status(hapd, sta, WLAN_STATUS_SUCCESS);
++#endif /* CONFIG_WPA3_SAE_AUTH_EARLY_SET */
+ }
+ 
+ 
+diff --git a/src/ap/pmksa_cache_auth.c b/src/ap/pmksa_cache_auth.c
+index b67b852..5084dfa 100644
+--- a/src/ap/pmksa_cache_auth.c
++++ b/src/ap/pmksa_cache_auth.c
+@@ -28,7 +28,8 @@ struct rsn_pmksa_cache {
+ 	struct rsn_pmksa_cache_entry *pmksa;
+ 	int pmksa_count;
+ 
+-	void (*free_cb)(struct rsn_pmksa_cache_entry *entry, void *ctx);
++	void (*free_cb)(struct rsn_pmksa_cache_entry *entry, void *ctx,
++			enum pmksa_free_reason reason);
+ 	void *ctx;
+ };
+ 
+@@ -49,13 +50,14 @@ static void _pmksa_cache_free_entry(struct rsn_pmksa_cache_entry *entry)
+ 
+ 
+ void pmksa_cache_free_entry(struct rsn_pmksa_cache *pmksa,
+-			    struct rsn_pmksa_cache_entry *entry)
++			    struct rsn_pmksa_cache_entry *entry,
++			    enum pmksa_free_reason reason)
+ {
+ 	struct rsn_pmksa_cache_entry *pos, *prev;
+ 	unsigned int hash;
+ 
+ 	pmksa->pmksa_count--;
+-	pmksa->free_cb(entry, pmksa->ctx);
++	pmksa->free_cb(entry, pmksa->ctx, reason);
+ 
+ 	/* unlink from hash list */
+ 	hash = PMKID_HASH(entry->pmkid);
+@@ -101,7 +103,7 @@ void pmksa_cache_auth_flush(struct rsn_pmksa_cache *pmksa)
+ 	while (pmksa->pmksa) {
+ 		wpa_printf(MSG_DEBUG, "RSN: Flush PMKSA cache entry for "
+ 			   MACSTR, MAC2STR(pmksa->pmksa->spa));
+-		pmksa_cache_free_entry(pmksa, pmksa->pmksa);
++		pmksa_cache_free_entry(pmksa, pmksa->pmksa, PMKSA_FREE);
+ 	}
+ }
+ 
+@@ -113,9 +115,10 @@ static void pmksa_cache_expire(void *eloop_ctx, void *timeout_ctx)
+ 
+ 	os_get_reltime(&now);
+ 	while (pmksa->pmksa && pmksa->pmksa->expiration <= now.sec) {
++		struct rsn_pmksa_cache_entry *entry = pmksa->pmksa;
+ 		wpa_printf(MSG_DEBUG, "RSN: expired PMKSA cache entry for "
+ 			   MACSTR, MAC2STR(pmksa->pmksa->spa));
+-		pmksa_cache_free_entry(pmksa, pmksa->pmksa);
++		pmksa_cache_free_entry(pmksa, entry, PMKSA_EXPIRE);
+ 	}
+ 
+ 	pmksa_cache_set_expiration(pmksa);
+@@ -374,14 +377,14 @@ int pmksa_cache_auth_add_entry(struct rsn_pmksa_cache *pmksa,
+ 	 */
+ 	pos = pmksa_cache_auth_get(pmksa, entry->spa, NULL);
+ 	if (pos)
+-		pmksa_cache_free_entry(pmksa, pos);
++		pmksa_cache_free_entry(pmksa, pos, PMKSA_REPLACE);
+ 
+ 	if (pmksa->pmksa_count >= pmksa_cache_max_entries && pmksa->pmksa) {
+ 		/* Remove the oldest entry to make room for the new entry */
+ 		wpa_printf(MSG_DEBUG, "RSN: removed the oldest PMKSA cache "
+ 			   "entry (for " MACSTR ") to make room for new one",
+ 			   MAC2STR(pmksa->pmksa->spa));
+-		pmksa_cache_free_entry(pmksa, pmksa->pmksa);
++		pmksa_cache_free_entry(pmksa, pmksa->pmksa, PMKSA_FREE);
+ 	}
+ 
+ 	pmksa_cache_link_entry(pmksa, entry);
+@@ -539,7 +542,8 @@ struct rsn_pmksa_cache_entry * pmksa_cache_get_okc(
+  */
+ struct rsn_pmksa_cache *
+ pmksa_cache_auth_init(void (*free_cb)(struct rsn_pmksa_cache_entry *entry,
+-				      void *ctx), void *ctx)
++				      void *ctx, enum pmksa_free_reason reason),
++		      void *ctx)
+ {
+ 	struct rsn_pmksa_cache *pmksa;
+ 
+@@ -613,7 +617,7 @@ int pmksa_cache_auth_radius_das_disconnect(struct rsn_pmksa_cache *pmksa,
+ 			found++;
+ 			prev = entry;
+ 			entry = entry->next;
+-			pmksa_cache_free_entry(pmksa, prev);
++			pmksa_cache_free_entry(pmksa, prev, PMKSA_FREE);
+ 			continue;
+ 		}
+ 		entry = entry->next;
+diff --git a/src/ap/pmksa_cache_auth.h b/src/ap/pmksa_cache_auth.h
+index 2ef2174..ed532dd 100644
+--- a/src/ap/pmksa_cache_auth.h
++++ b/src/ap/pmksa_cache_auth.h
+@@ -37,9 +37,16 @@ struct rsn_pmksa_cache_entry {
+ struct rsn_pmksa_cache;
+ struct radius_das_attrs;
+ 
++enum pmksa_free_reason {
++	PMKSA_FREE,
++	PMKSA_REPLACE,
++	PMKSA_EXPIRE,
++};
++
+ struct rsn_pmksa_cache *
+ pmksa_cache_auth_init(void (*free_cb)(struct rsn_pmksa_cache_entry *entry,
+-				      void *ctx), void *ctx);
++				      void *ctx, enum pmksa_free_reason reason),
++		      void *ctx);
+ void pmksa_cache_auth_deinit(struct rsn_pmksa_cache *pmksa);
+ struct rsn_pmksa_cache_entry *
+ pmksa_cache_auth_get(struct rsn_pmksa_cache *pmksa,
+@@ -68,7 +75,8 @@ void pmksa_cache_to_eapol_data(struct hostapd_data *hapd,
+ 			       struct rsn_pmksa_cache_entry *entry,
+ 			       struct eapol_state_machine *eapol);
+ void pmksa_cache_free_entry(struct rsn_pmksa_cache *pmksa,
+-			    struct rsn_pmksa_cache_entry *entry);
++			    struct rsn_pmksa_cache_entry *entry,
++			    enum pmksa_free_reason reason);
+ int pmksa_cache_auth_radius_das_disconnect(struct rsn_pmksa_cache *pmksa,
+ 					   struct radius_das_attrs *attr);
+ int pmksa_cache_auth_list(struct rsn_pmksa_cache *pmksa, char *buf, size_t len);
+diff --git a/src/ap/wpa_auth.c b/src/ap/wpa_auth.c
+index 6d60f26..9917c13 100644
+--- a/src/ap/wpa_auth.c
++++ b/src/ap/wpa_auth.c
+@@ -387,9 +387,19 @@ static int wpa_auth_pmksa_clear_cb(struct wpa_state_machine *sm, void *ctx)
+ 
+ 
+ static void wpa_auth_pmksa_free_cb(struct rsn_pmksa_cache_entry *entry,
+-				   void *ctx)
++				   void *ctx, enum pmksa_free_reason reason)
+ {
+ 	struct wpa_authenticator *wpa_auth = ctx;
++
++	if (reason == PMKSA_EXPIRE) {
++		/*
++		 * Once when the PMK cache entry for a STA expires in the SoftAP,
++		 * send a deauth to the STA from the SoftAP to make the STA reconnect
++		 * to the network and derive a new PMK.
++		 */
++		wpa_sta_disconnect(wpa_auth, entry->spa, WLAN_REASON_PREV_AUTH_NOT_VALID);
++	}
++
+ 	wpa_auth_for_each_sta(wpa_auth, wpa_auth_pmksa_clear_cb, entry);
+ }
+ 
+@@ -696,6 +706,22 @@ int wpa_auth_sta_associated(struct wpa_authenticator *wpa_auth,
+ 	}
+ #endif /* CONFIG_FILS */
+ 
++	if (wpa_auth->conf.psk_4way_hs_offload) {
++		wpa_auth_logger(wpa_auth, sm->addr, LOGGER_DEBUG,
++				"4-way handshake offloading for WPA/WPA2-PSK");
++		sm->wpa_ptk_state = WPA_PTK_PTKINITDONE;
++		sm->Pair = true;
++		wpa_auth_set_eapol(sm->wpa_auth, sm->addr,
++				   WPA_EAPOL_authorized, 1);
++		wpa_auth_set_eapol(sm->wpa_auth, sm->addr,
++				   WPA_EAPOL_portValid, 1);
++		wpa_auth_set_eapol(sm->wpa_auth, sm->addr,
++				   WPA_EAPOL_keyAvailable, 0);
++		wpa_auth_set_eapol(sm->wpa_auth, sm->addr,
++				   WPA_EAPOL_keyDone, 1);
++		return 0;
++	}
++
+ 	if (sm->started) {
+ 		os_memset(&sm->key_replay, 0, sizeof(sm->key_replay));
+ 		sm->ReAuthenticationRequest = true;
+@@ -4819,6 +4845,12 @@ int wpa_auth_pmksa_add_preauth(struct wpa_authenticator *wpa_auth,
+ }
+ 
+ 
++void wpa_auth_set_pmk_life_time(struct wpa_authenticator *wpa_auth, unsigned int pmk_life_time)
++{
++        wpa_auth->pmk_life_time = pmk_life_time;
++}
++
++
+ int wpa_auth_pmksa_add_sae(struct wpa_authenticator *wpa_auth, const u8 *addr,
+ 			   const u8 *pmk, const u8 *pmkid)
+ {
+@@ -4828,7 +4860,7 @@ int wpa_auth_pmksa_add_sae(struct wpa_authenticator *wpa_auth, const u8 *addr,
+ 	wpa_hexdump_key(MSG_DEBUG, "RSN: Cache PMK from SAE", pmk, PMK_LEN);
+ 	if (pmksa_cache_auth_add(wpa_auth->pmksa, pmk, PMK_LEN, pmkid,
+ 				 NULL, 0,
+-				 wpa_auth->addr, addr, 0, NULL,
++				 wpa_auth->addr, addr, wpa_auth->pmk_life_time, NULL,
+ 				 WPA_KEY_MGMT_SAE))
+ 		return 0;
+ 
+@@ -4871,7 +4903,7 @@ void wpa_auth_pmksa_remove(struct wpa_authenticator *wpa_auth,
+ 	if (pmksa) {
+ 		wpa_printf(MSG_DEBUG, "WPA: Remove PMKSA cache entry for "
+ 			   MACSTR " based on request", MAC2STR(sta_addr));
+-		pmksa_cache_free_entry(wpa_auth->pmksa, pmksa);
++		pmksa_cache_free_entry(wpa_auth->pmksa, pmksa, PMKSA_FREE);
+ 	}
+ }
+ 
+diff --git a/src/ap/wpa_auth.h b/src/ap/wpa_auth.h
+index fe47723..fb456f0 100644
+--- a/src/ap/wpa_auth.h
++++ b/src/ap/wpa_auth.h
+@@ -273,6 +273,11 @@ struct wpa_auth_config {
+ 	 * PTK derivation regardless of advertised capabilities.
+ 	 */
+ 	bool force_kdk_derivation;
++
++	int psk_4way_hs_offload;
++#ifdef CONFIG_SAE
++	int sae_offload;
++#endif /* CONFIG_SAE */
+ };
+ 
+ typedef enum {
+@@ -421,6 +426,7 @@ int wpa_auth_pmksa_add_preauth(struct wpa_authenticator *wpa_auth,
+ 			       struct eapol_state_machine *eapol);
+ int wpa_auth_pmksa_add_sae(struct wpa_authenticator *wpa_auth, const u8 *addr,
+ 			   const u8 *pmk, const u8 *pmkid);
++void wpa_auth_set_pmk_life_time(struct wpa_authenticator *wpa_auth, unsigned int pmk_life_time);
+ void wpa_auth_add_sae_pmkid(struct wpa_state_machine *sm, const u8 *pmkid);
+ int wpa_auth_pmksa_add2(struct wpa_authenticator *wpa_auth, const u8 *addr,
+ 			const u8 *pmk, size_t pmk_len, const u8 *pmkid,
+diff --git a/src/ap/wpa_auth_glue.c b/src/ap/wpa_auth_glue.c
+index 3e99215..7e3b838 100644
+--- a/src/ap/wpa_auth_glue.c
++++ b/src/ap/wpa_auth_glue.c
+@@ -1528,6 +1528,18 @@ int hostapd_setup_wpa(struct hostapd_data *hapd)
+ 	_conf.prot_range_neg =
+ 		!!(hapd->iface->drv_flags2 & WPA_DRIVER_FLAGS2_PROT_RANGE_NEG);
+ 
++	if (!hapd->conf->p2p &&
++#ifdef CONFIG_DPP
++	    (!(hapd->conf->wpa_key_mgmt & WPA_KEY_MGMT_DPP)) &&
++#endif /* CONFIG_DPP */
++	    (hapd->iface->drv_flags2 & WPA_DRIVER_FLAGS2_4WAY_HANDSHAKE_AP_PSK))
++		_conf.psk_4way_hs_offload = 1;
++
++#ifdef CONFIG_SAE
++	if (hapd->iface->drv_flags2 & WPA_DRIVER_FLAGS2_SAE_OFFLOAD_AP)
++		_conf.sae_offload = 1;
++#endif /* CONFIG_SAE */
++
+ 	hapd->wpa_auth = wpa_init(hapd->own_addr, &_conf, &cb, hapd);
+ 	if (hapd->wpa_auth == NULL) {
+ 		wpa_printf(MSG_ERROR, "WPA initialization failed.");
+diff --git a/src/ap/wpa_auth_i.h b/src/ap/wpa_auth_i.h
+index a6dc1a5..f46bdab 100644
+--- a/src/ap/wpa_auth_i.h
++++ b/src/ap/wpa_auth_i.h
+@@ -237,6 +237,7 @@ struct wpa_authenticator {
+ #ifdef CONFIG_P2P
+ 	struct bitfield *ip_pool;
+ #endif /* CONFIG_P2P */
++	unsigned int pmk_life_time;
+ };
+ 
+ 
+diff --git a/src/ap/wpa_auth_ie.c b/src/ap/wpa_auth_ie.c
+index 524922e..30de0c1 100644
+--- a/src/ap/wpa_auth_ie.c
++++ b/src/ap/wpa_auth_ie.c
+@@ -977,7 +977,9 @@ wpa_validate_wpa_ie(struct wpa_authenticator *wpa_auth,
+ 	}
+ 
+ #ifdef CONFIG_SAE
+-	if (sm->wpa_key_mgmt == WPA_KEY_MGMT_SAE && data.num_pmkid &&
++	if (!wpa_auth->conf.psk_4way_hs_offload &&
++	    !wpa_auth->conf.sae_offload &&
++	    sm->wpa_key_mgmt == WPA_KEY_MGMT_SAE && data.num_pmkid &&
+ 	    !sm->pmksa) {
+ 		wpa_auth_vlogger(wpa_auth, sm->addr, LOGGER_DEBUG,
+ 				 "No PMKSA cache entry found for SAE");
+diff --git a/src/common/brcm_wl_ioctl.h b/src/common/brcm_wl_ioctl.h
+new file mode 100644
+index 0000000..768b786
+--- /dev/null
++++ b/src/common/brcm_wl_ioctl.h
+@@ -0,0 +1,10 @@
++/*
++ * Broadcom Corporation OUI and vendor specific assignments
++ * Copyright (c) 2020, Broadcom Corporation.
++ *
++ * This software may be distributed under the terms of the BSD license.
++ * See README for more details.
++ */
++
++#include "common/brcm_wl_ioctl_defs.h"
++#include "common/brcm_wl_rspec.h"
+diff --git a/src/common/brcm_wl_ioctl_defs.h b/src/common/brcm_wl_ioctl_defs.h
+new file mode 100644
+index 0000000..1834be6
+--- /dev/null
++++ b/src/common/brcm_wl_ioctl_defs.h
+@@ -0,0 +1,15 @@
++/*
++ * Broadcom Corporation OUI and vendor specific assignments
++ * Copyright (c) 2020, Broadcom Corporation.
++ *
++ * This software may be distributed under the terms of the BSD license.
++ * See README for more details.
++ */
++
++#define WLC_IOCTL_SMLEN			256	/* "small" length ioctl buffer required */
++#define WLC_IOCTL_MEDLEN		1896	/* "med" length ioctl buffer required */
++
++/* common ioctl definitions */
++#define WLC_GET_VAR				262	/* get value of named variable */
++#define WLC_SET_VAR				263	/* set named variable to value */
++
+diff --git a/src/common/brcm_wl_rspec.h b/src/common/brcm_wl_rspec.h
+new file mode 100644
+index 0000000..d10e825
+--- /dev/null
++++ b/src/common/brcm_wl_rspec.h
+@@ -0,0 +1,104 @@
++/*
++ * Broadcom Corporation OUI and vendor specific assignments
++ * Copyright (c) 2020, Broadcom Corporation.
++ *
++ * This software may be distributed under the terms of the BSD license.
++ * See README for more details.
++ */
++
++/* Rate spec. definitions */
++#define WL_RSPEC_RATE_MASK	0x000000FF	/**< Legacy rate or MCS or MCS + NSS */
++#define WL_RSPEC_TXEXP_MASK	0x00000300	/**< Tx chain expansion beyond Nsts */
++#define WL_RSPEC_TXEXP_SHIFT	8
++#define WL_RSPEC_HE_GI_MASK	0x00000C00	/* HE GI indices */
++#define WL_RSPEC_HE_GI_SHIFT	10
++#define WL_RSPEC_BW_MASK	0x00070000	/**< Band width */
++#define WL_RSPEC_BW_SHIFT	16
++#define WL_RSPEC_ER_MASK	0x0000C000	/**< Range extension mask */
++#define WL_RSPEC_ER_SHIFT	14
++#define WL_RSPEC_ER_ENAB_MASK	0x00008000	/**< Range extension enable */
++#define WL_RSPEC_ER_ENAB_SHIFT	15
++#define WL_RSPEC_ER_TONE_MASK	0x00004000	/**< Range extension tone config */
++#define WL_RSPEC_ER_TONE_SHIFT	14
++
++#define WL_RSPEC_DCM		0x00080000	/**< Dual Carrier Modulation */
++#define WL_RSPEC_DCM_SHIFT	19
++#define WL_RSPEC_STBC		0x00100000	/**< STBC expansion, Nsts = 2 * Nss */
++#define WL_RSPEC_TXBF		0x00200000
++#define WL_RSPEC_LDPC		0x00400000
++#define WL_RSPEC_SGI		0x00800000
++#define WL_RSPEC_SHORT_PREAMBLE	0x00800000	/**< DSSS short preable - Encoding 0 */
++#define WL_RSPEC_ENCODING_MASK	0x03000000	/**< Encoding of RSPEC_RATE field */
++#define WL_RSPEC_ENCODING_SHIFT 24
++
++#define WL_RSPEC_OVERRIDE_RATE	0x40000000	/**< override rate only */
++#define WL_RSPEC_OVERRIDE_MODE	0x80000000	/**< override both rate & mode */
++
++/* ======== RSPEC_HE_GI|RSPEC_SGI fields for HE ======== */
++
++/* GI for HE */
++#define RSPEC_HE_LTF_GI(rspec)  (((rspec) & WL_RSPEC_HE_GI_MASK) >> WL_RSPEC_HE_GI_SHIFT)
++#define WL_RSPEC_HE_1x_LTF_GI_0_8us	(0x0)
++#define WL_RSPEC_HE_2x_LTF_GI_0_8us	(0x1)
++#define WL_RSPEC_HE_2x_LTF_GI_1_6us	(0x2)
++#define WL_RSPEC_HE_4x_LTF_GI_3_2us	(0x3)
++#define RSPEC_ISHEGI(rspec)	(RSPEC_HE_LTF_GI(rspec) > WL_RSPEC_HE_1x_LTF_GI_0_8us)
++#define HE_GI_TO_RSPEC(gi)	(((gi) << WL_RSPEC_HE_GI_SHIFT) & WL_RSPEC_HE_GI_MASK)
++
++/* RSPEC Macros for extracting and using HE-ER and DCM */
++#define RSPEC_HE_DCM(rspec)		(((rspec) & WL_RSPEC_DCM) >> WL_RSPEC_DCM_SHIFT)
++#define RSPEC_HE_ER(rspec)		(((rspec) & WL_RSPEC_ER_MASK) >> WL_RSPEC_ER_SHIFT)
++#define RSPEC_HE_ER_ENAB(rspec)		(((rspec) & WL_RSPEC_ER_ENAB_MASK) >> \
++					WL_RSPEC_ER_ENAB_SHIFT)
++#define RSPEC_HE_ER_TONE(rspec)		(((rspec) & WL_RSPEC_ER_TONE_MASK) >> \
++					WL_RSPEC_ER_TONE_SHIFT)
++/* ======== RSPEC_RATE field ======== */
++
++/* Encoding 0 - legacy rate */
++/* DSSS, CCK, and OFDM rates in [500kbps] units */
++#define WL_RSPEC_LEGACY_RATE_MASK	0x0000007F
++#define WLC_RATE_1M	2
++#define WLC_RATE_2M	4
++#define WLC_RATE_5M5	11
++#define WLC_RATE_11M	22
++#define WLC_RATE_6M	12
++#define WLC_RATE_9M	18
++#define WLC_RATE_12M	24
++#define WLC_RATE_18M	36
++#define WLC_RATE_24M	48
++#define WLC_RATE_36M	72
++#define WLC_RATE_48M	96
++#define WLC_RATE_54M	108
++
++/* Encoding 1 - HT MCS */
++#define WL_RSPEC_HT_MCS_MASK		0x0000007F	/**< HT MCS value mask in rspec */
++
++/* Encoding 2 - VHT MCS + NSS */
++#define WL_RSPEC_VHT_MCS_MASK		0x0000000F	/**< VHT MCS value mask in rspec */
++#define WL_RSPEC_VHT_NSS_MASK		0x000000F0	/**< VHT Nss value mask in rspec */
++#define WL_RSPEC_VHT_NSS_SHIFT		4		/**< VHT Nss value shift in rspec */
++
++/* Encoding 3 - HE MCS + NSS */
++#define WL_RSPEC_HE_MCS_MASK		0x0000000F	/**< HE MCS value mask in rspec */
++#define WL_RSPEC_HE_NSS_MASK		0x000000F0	/**< HE Nss value mask in rspec */
++#define WL_RSPEC_HE_NSS_SHIFT		4		/**< HE Nss value shift in rpsec */
++
++/* ======== RSPEC_BW field ======== */
++
++#define WL_RSPEC_BW_UNSPECIFIED	0
++#define WL_RSPEC_BW_20MHZ	0x00010000
++#define WL_RSPEC_BW_40MHZ	0x00020000
++#define WL_RSPEC_BW_80MHZ	0x00030000
++#define WL_RSPEC_BW_160MHZ	0x00040000
++#define WL_RSPEC_BW_10MHZ	0x00050000
++#define WL_RSPEC_BW_5MHZ	0x00060000
++#define WL_RSPEC_BW_2P5MHZ      0x00070000
++
++/* ======== RSPEC_ENCODING field ======== */
++
++#define WL_RSPEC_ENCODE_RATE		0x00000000	/**< Legacy rate is stored in RSPEC_RATE */
++#define WL_RSPEC_ENCODE_HT		0x01000000	/**< HT MCS is stored in RSPEC_RATE */
++#define WL_RSPEC_ENCODE_VHT		0x02000000	/**< VHT MCS and NSS are stored in RSPEC_RATE */
++#define WL_RSPEC_ENCODE_HE		0x03000000	/**< HE MCS and NSS are stored in RSPEC_RATE */
++#define WL_RSPEC_HE_NSS_UNSPECIFIED	0xF
++
+diff --git a/src/common/dpp.c b/src/common/dpp.c
+index ac6eae4..6e6e424 100644
+--- a/src/common/dpp.c
++++ b/src/common/dpp.c
+@@ -1029,10 +1029,11 @@ static int dpp_configuration_parse_helper(struct dpp_authentication *auth,
+ 		pos += 6;
+ 		end = os_strchr(pos, ' ');
+ 		conf->ssid_len = end ? (size_t) (end - pos) : os_strlen(pos);
+-		conf->ssid_len /= 2;
+-		if (conf->ssid_len > sizeof(conf->ssid) ||
+-		    hexstr2bin(pos, conf->ssid, conf->ssid_len) < 0)
++		/* Remove check for ssid in hex as we are supplying
++		 * string format in dpp_auth_init */
++		if (conf->ssid_len > sizeof(conf->ssid))
+ 			goto fail;
++		os_memcpy(conf->ssid, pos, conf->ssid_len);
+ 	} else {
+ #ifdef CONFIG_TESTING_OPTIONS
+ 		/* use a default SSID for legacy testing reasons */
+diff --git a/src/common/ifx_vendor.h b/src/common/ifx_vendor.h
+new file mode 100644
+index 0000000..2fed69c
+--- /dev/null
++++ b/src/common/ifx_vendor.h
+@@ -0,0 +1,370 @@
++/*
++ * Infineon: vendor OUI and specific assignments
++ *
++ * ©2022 Cypress Semiconductor Corporation (an Infineon company)
++ * or an affiliate of Cypress Semiconductor Corporation. All rights reserved.
++ * This software, including source code, documentation and related materials
++ * ("Software") is owned by Cypress Semiconductor Corporation or one of its
++ * affiliates ("Cypress") and is protected by and subject to
++ * worldwide patent protection (United States and foreign),
++ * United States copyright laws and international treaty provisions.
++ * Therefore, you may use this Software only as provided in the license agreement
++ * accompanying the software package from which you obtained this Software ("EULA").
++ * If no EULA applies, Cypress hereby grants you a personal, non-exclusive,
++ * non-transferable license to copy, modify, and compile the Software source code
++ * solely for use in connection with Cypress's integrated circuit products.
++ * Any reproduction, modification, translation, compilation, or representation
++ * of this Software except as specified above is prohibited without
++ * the expresswritten permission of Cypress.
++ * Disclaimer: THIS SOFTWARE IS PROVIDED AS-IS, WITH NO WARRANTY OF ANY KIND,
++ * EXPRESS OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, NONINFRINGEMENT,
++ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
++ * Cypress reserves the right to make changes to the Software without notice.
++ * Cypress does not assume any liability arising out of the application or
++ * use of the Software or any product or circuit described in the Software.
++ * Cypress does not authorize its products for use in any products where a malfunction
++ * or failure of the Cypress product may reasonably be expected to result in
++ * significant property damage, injury or death ("High Risk Product").
++ * By including Cypress's product in a High Risk Product, the manufacturer
++ * of such system or application assumes all risk of such use and in doing so
++ * agrees to indemnify Cypress against all liability.
++ */
++
++#ifndef IFX_VENDOR_H
++#define IFX_VENDOR_H
++
++/*
++ * This file is a registry of identifier assignments from the Infineon
++ * OUI 00:03:19 for purposes other than MAC address assignment. New identifiers
++ * can be assigned through normal review process for changes to the upstream
++ * hostap.git repository.
++ */
++#define OUI_IFX		0x000319
++
++/*
++ * enum ifx_nl80211_vendor_subcmds - IFX nl80211 vendor command identifiers
++ *
++ * @IFX_VENDOR_SCMD_UNSPEC: Reserved value 0
++ *
++ * @IFX_VENDOR_SCMD_FRAMEBURST: Vendor command to enable/disable Frameburst
++ *
++ * @IFX_VENDOR_SCMD_MUEDCA_OPT_ENABLE: Vendor command to enable/disable HE MU-EDCA opt
++ *
++ * @IFX_VENDOR_SCMD_LDPC_CAP: Vendor command enable/disable LDPC Capability
++ *
++ * @IFX_VENDOR_SCMD_AMSDU: Vendor command to enable/disable AMSDU on all the TID queues
++ *
++ * @IFX_VENDOR_SCMD_TWT: Vendor subcommand to configure TWT
++ *	Uses attributes defined in enum ifx_vendor_attr_twt.
++ * @IFX_VENDOR_SCMD_MBO: Vendor subcommand to configure MBO
++ *	Uses attribute IFX_VENDOR_ATTR_MBO to configure.
++ *
++ * @IFX_VENDOR_SCMD_MAX: This acts as a the tail of cmds list.
++ *      Make sure it located at the end of the list.
++ */
++enum ifx_nl80211_vendor_subcmds {
++	/*
++	 * TODO: IFX Vendor subcmd enum IDs between 1-10 are reserved
++	 * to be be filled later with BRCM Vendor subcmds that are
++	 * already used by IFX.
++	 */
++	IFX_VENDOR_SCMD_UNSPEC		= 0,
++	/* Reserved 1-5 */
++	IFX_VENDOR_SCMD_FRAMEBURST	= 6,
++	/* Reserved 7-10 */
++	IFX_VENDOR_SCMD_MUEDCA_OPT_ENABLE = 11,
++	IFX_VENDOR_SCMD_LDPC_CAP	= 12,
++	IFX_VENDOR_SCMD_AMSDU		= 13,
++	IFX_VENDOR_SCMD_TWT		= 14,
++	/* Reserved 15-17 */
++	IFX_VENDOR_SCMD_MBO		= 18,
++	IFX_VENDOR_SCMD_WNM     = 25,
++	IFX_VENDOR_SCMD_MAX
++};
++
++/*
++ * enum ifx_vendor_attr - IFX nl80211 vendor attributes
++ *
++ * @IFX_VENDOR_ATTR_UNSPEC: Reserved value 0
++ *
++ * @IFX_VENDOR_ATTR_MAX: This acts as a the tail of attrs list.
++ *      Make sure it located at the end of the list.
++ */
++enum ifx_vendor_attr {
++	/*
++	 * TODO: IFX Vendor attr enum IDs between 0-10 are reserved
++	 * to be filled later with BRCM Vendor attrs that are
++	 * already used by IFX.
++	 */
++	IFX_VENDOR_ATTR_UNSPEC		= 0,
++	/* Reserved 1-10 */
++	IFX_VENDOR_ATTR_MAX		= 11
++};
++
++enum ifx_vendor_attr_mbo {
++	IFX_VENDOR_ATTR_MBO_UNSPEC,
++	IFX_VENDOR_ATTR_MBO_CMD,
++	IFX_VENDOR_ATTR_MBO_PARAMS,
++	IFX_VENDOR_ATTR_MBO_MAX
++};
++
++/*
++ * enum ifx_vendor_attr_twt - Attributes for the TWT vendor command
++ *
++ * @IFX_VENDOR_ATTR_TWT_UNSPEC: Reserved value 0
++ *
++ * @IFX_VENDOR_ATTR_TWT_OPER: To specify the type of TWT operation
++ *	to be performed. Uses attributes defined in enum ifx_twt_oper.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAMS: Nester attributes representing the
++ *	parameters configured for TWT. These parameters are defined in
++ *	the enum ifx_vendor_attr_twt_param.
++ *
++ * @IFX_VENDOR_ATTR_TWT_MAX: This acts as a the tail of cmds list.
++ *      Make sure it located at the end of the list.
++ */
++enum ifx_vendor_attr_twt {
++	IFX_VENDOR_ATTR_TWT_UNSPEC,
++	IFX_VENDOR_ATTR_TWT_OPER,
++	IFX_VENDOR_ATTR_TWT_PARAMS,
++	IFX_VENDOR_ATTR_TWT_MAX
++};
++
++/*
++ * enum ifx_twt_oper - TWT operation to be specified using the vendor
++ * attribute IFX_VENDOR_ATTR_TWT_OPER
++ *
++ * @IFX_TWT_OPER_UNSPEC: Reserved value 0
++ *
++ * @IFX_TWT_OPER_SETUP: Setup a TWT session. Required parameters are
++ *	obtained through the nested attrs under IFX_VENDOR_ATTR_TWT_PARAMS.
++ *
++ * @IFX_TWT_OPER_TEARDOWN: Teardown the already negotiated TWT session.
++ *	Required parameters are obtained through the nested attrs under
++ *	IFX_VENDOR_ATTR_TWT_PARAMS.
++ *
++ * @IFX_TWT_OPER_MAX: This acts as a the tail of the list.
++ *      Make sure it located at the end of the list.
++ */
++enum ifx_twt_oper {
++	IFX_TWT_OPER_UNSPEC,
++	IFX_TWT_OPER_SETUP,
++	IFX_TWT_OPER_TEARDOWN,
++	IFX_TWT_OPER_MAX
++};
++
++/*
++ * enum ifx_vendor_attr_twt_param - TWT parameters
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_UNSPEC: Reserved value 0
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_NEGO_TYPE: Specifies the type of Negotiation to be
++ *	done during Setup. The four possible types are
++ *	0 - Individual TWT Negotiation
++ *	1 - Wake TBTT Negotiation
++ *	2 - Broadcast TWT in Beacon
++ *	3 - Broadcast TWT Membership Negotiation
++ *
++ *	The possible values are defined in the enum ifx_twt_param_nego_type
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_SETUP_CMD_TYPE: Specifies the type of TWT Setup frame
++ *	when sent by the TWT Requesting STA
++ *	0 - Request
++ *	1 - Suggest
++ *	2 - Demand
++ *
++ *	when sent by the TWT Responding STA.
++ *	3 - Grouping
++ *	4 - Accept
++ *	5 - Alternate
++ *	6 - Dictate
++ *	7 - Reject
++ *
++ *	The possible values are defined in the enum ifx_twt_oper_setup_cmd_type.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_DIALOG_TOKEN: Dialog Token used by the TWT Requesting STA to
++ *	identify the TWT Setup request/response transaction.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_WAKE_TIME: Target Wake Time.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_WAKE_TIME_OFFSET: Target Wake Time Offset.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_MIN_WAKE_DURATION: Nominal Minimum TWT Wake Duration.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_WAKE_INTVL_EXPONENT: TWT Wake Interval Exponent.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_WAKE_INTVL_MANTISSA: TWT Wake Interval Mantissa.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_REQUESTOR: Specify this is a TWT Requesting / Responding STA.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_TRIGGER: Specify Trigger based / Non-Trigger based TWT Session.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_IMPLICIT: Specify Implicit / Explicit TWT session.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_FLOW_TYPE: Specify Un-Announced / Announced TWT session.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_FLOW_ID: Flow ID of an iTWT session.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_BCAST_TWT_ID: Brocast TWT ID of a bTWT session.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_PROTECTION: Specifies whether Tx within SP is protected.
++ *	Set to 1 to indicate that TXOPs within the TWT SPs shall be initiated
++ *	with a NAV protection mechanism, such as (MU) RTS/CTS or CTS-to-self frame;
++ *	otherwise, it shall set it to 0.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_CHANNEL: TWT channel field which is set to 0, unless
++ * 	the HE STA sets up a subchannel selective transmission operation.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_TWT_INFO_FRAME_DISABLED: TWT Information frame RX handing
++ *	disabled / enabled.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_MIN_WAKE_DURATION_UNIT: Nominal Minimum TWT Wake Duration
++ *	Unit. 0 represents unit in "256 usecs" and 1 represents unit in "TUs".
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_TEARDOWN_ALL_TWT: Teardown all negotiated TWT sessions.
++ *
++ * @IFX_VENDOR_ATTR_TWT_PARAM_MAX: This acts as a the tail of the list.
++ *      Make sure it located at the end of the list.
++ */
++enum ifx_vendor_attr_twt_param {
++	IFX_VENDOR_ATTR_TWT_PARAM_UNSPEC,
++	IFX_VENDOR_ATTR_TWT_PARAM_NEGO_TYPE,
++	IFX_VENDOR_ATTR_TWT_PARAM_SETUP_CMD_TYPE,
++	IFX_VENDOR_ATTR_TWT_PARAM_DIALOG_TOKEN,
++	IFX_VENDOR_ATTR_TWT_PARAM_WAKE_TIME,
++	IFX_VENDOR_ATTR_TWT_PARAM_WAKE_TIME_OFFSET,
++	IFX_VENDOR_ATTR_TWT_PARAM_MIN_WAKE_DURATION,
++	IFX_VENDOR_ATTR_TWT_PARAM_WAKE_INTVL_EXPONENT,
++	IFX_VENDOR_ATTR_TWT_PARAM_WAKE_INTVL_MANTISSA,
++	IFX_VENDOR_ATTR_TWT_PARAM_REQUESTOR,
++	IFX_VENDOR_ATTR_TWT_PARAM_TRIGGER,
++	IFX_VENDOR_ATTR_TWT_PARAM_IMPLICIT,
++	IFX_VENDOR_ATTR_TWT_PARAM_FLOW_TYPE,
++	IFX_VENDOR_ATTR_TWT_PARAM_FLOW_ID,
++	IFX_VENDOR_ATTR_TWT_PARAM_BCAST_TWT_ID,
++	IFX_VENDOR_ATTR_TWT_PARAM_PROTECTION,
++	IFX_VENDOR_ATTR_TWT_PARAM_CHANNEL,
++	IFX_VENDOR_ATTR_TWT_PARAM_TWT_INFO_FRAME_DISABLED,
++	IFX_VENDOR_ATTR_TWT_PARAM_MIN_WAKE_DURATION_UNIT,
++	IFX_VENDOR_ATTR_TWT_PARAM_TEARDOWN_ALL_TWT,
++	IFX_VENDOR_ATTR_TWT_PARAM_MAX
++};
++
++enum ifx_twt_param_nego_type {
++	IFX_TWT_PARAM_NEGO_TYPE_INVALID			= -1,
++	IFX_TWT_PARAM_NEGO_TYPE_ITWT			= 0,
++	IFX_TWT_PARAM_NEGO_TYPE_WAKE_TBTT		= 1,
++	IFX_TWT_PARAM_NEGO_TYPE_BTWT_IE_BCN		= 2,
++	IFX_TWT_PARAM_NEGO_TYPE_BTWT			= 3,
++	IFX_TWT_PARAM_NEGO_TYPE_MAX			= 4
++};
++
++enum ifx_twt_oper_setup_cmd_type {
++	IFX_TWT_OPER_SETUP_CMD_TYPE_INVALID	= -1,
++	IFX_TWT_OPER_SETUP_CMD_TYPE_REQUEST	= 0,
++	IFX_TWT_OPER_SETUP_CMD_TYPE_SUGGEST	= 1,
++	IFX_TWT_OPER_SETUP_CMD_TYPE_DEMAND	= 2,
++	IFX_TWT_OPER_SETUP_CMD_TYPE_GROUPING	= 3,
++	IFX_TWT_OPER_SETUP_CMD_TYPE_ACCEPT	= 4,
++	IFX_TWT_OPER_SETUP_CMD_TYPE_ALTERNATE	= 5,
++	IFX_TWT_OPER_SETUP_CMD_TYPE_DICTATE	= 6,
++	IFX_TWT_OPER_SETUP_CMD_TYPE_REJECT	= 7,
++	IFX_TWT_OPER_SETUP_CMD_TYPE_MAX		= 8
++};
++
++enum ifx_mbo_config_cmd_type {
++	IFX_MBO_CONFIG_CMD_TYPE_INVALID		= -1,
++	//align internal definition
++	IFX_MBO_CONFIG_CMD_ADD_CHAN_PREF	= 1,
++	IFX_MBO_CONFIG_CMD_DEL_CHAN_PREF	= 2,
++	IFX_MBO_CONFIG_CMD_LIST_CHAN_PREF	= 3,
++	IFX_MBO_CONFIG_CMD_CELLULAR_DATA_CAP	= 4,
++	IFX_MBO_CONFIG_CMD_DUMP_COUNTER		= 5,
++	IFX_MBO_CONFIG_CMD_CLEAR_COUNTER	= 6,
++	IFX_MBO_CONFIG_CMD_FORCE_ASSOC		= 7,
++	IFX_MBO_CONFIG_CMD_BSSTRANS_REJ		= 8,
++	IFX_MBO_CONFIG_CMD_SEND_NOTIF		= 9,
++	IFX_MBO_CONFIG_CMD_CLR_CHAN_PREF	= 10,
++	IFX_MBO_CONFIG_CMD_NBR_INFO_CACHE	= 11,
++	IFX_MBO_CONFIG_CMD_ANQPO_SUPPORT	= 12,
++	IFX_MBO_CONFIG_CMD_DBG_EVENT_CHECK	= 13,
++	IFX_MBO_CONFIG_CMD_EVENT_MASK		= 14,
++	IFX_MBO_CONFIG_CMD_ASSOC_DISALLOWED	= 15,
++	IFX_MBO_CONFIG_CMD_CELLULAR_DATA_PREF	= 16,
++	IFX_MBO_CONFIG_CMD_TYPE_MAX		= 17
++};
++
++enum ifx_vendor_attr_mbo_param {
++	IFX_VENDOR_ATTR_MBO_PARAM_UNSPEC,
++	IFX_VENDOR_ATTR_MBO_PARAM_OPCLASS,
++	IFX_VENDOR_ATTR_MBO_PARAM_CHAN,
++	IFX_VENDOR_ATTR_MBO_PARAM_PREFERENCE,
++	IFX_VENDOR_ATTR_MBO_PARAM_REASON_CODE,
++	IFX_VENDOR_ATTR_MBO_PARAM_CELL_DATA_CAP,
++	IFX_VENDOR_ATTR_MBO_PARAM_COUNTERS,
++	IFX_VENDOR_ATTR_MBO_PARAM_ENABLE,
++	IFX_VENDOR_ATTR_MBO_PARAM_SUB_ELEM_TYPE,
++	IFX_VENDOR_ATTR_MBO_PARAM_BTQ_TRIG_START_OFFSET,
++	IFX_VENDOR_ATTR_MBO_PARAM_BTQ_TRIG_RSSI_DELTA,
++	IFX_VENDOR_ATTR_MBO_PARAM_ANQP_CELL_SUPP,
++	IFX_VENDOR_ATTR_MBO_PARAM_BIT_MASK,
++	IFX_VENDOR_ATTR_MBO_PARAM_ASSOC_DISALLOWED,
++	IFX_VENDOR_ATTR_MBO_PARAM_CELLULAR_DATA_PREF,
++	IFX_VENDOR_ATTR_MBO_PARAM_MAX
++};
++
++enum ifx_vendor_attr_wnm {
++	IFX_VENDOR_ATTR_WNM_UNSPEC,
++	IFX_VENDOR_ATTR_WNM_CMD,
++	IFX_VENDOR_ATTR_WNM_PARAMS,
++	IFX_VENDOR_ATTR_WNM_MAX
++};
++
++enum ifx_wnm_config_cmd_type {
++	IFX_WNM_CONFIG_CMD_TYPE_INVALID				= -1,
++	//align internal definition
++	IFX_WNM_CONFIG_CMD_IOV_WNM					= 1,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_MAXIDLE			= 2,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_TIMBC_OFFSET		= 3,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_BSSTRANS_URL		= 4,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_BSSTRANS_REQ		= 5,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_TFS_TCLASTYPE	= 6,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_PARP_DISCARD		= 7,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_PARP_ALLNODE		= 8,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_TIMBC_SET		= 9,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_TIMBC_STATUS		= 10,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_DMS_SET			= 11,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_DMS_TERM			= 12,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_SERVICE_TERM		= 13,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_SLEEP_INTV		= 14,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_SLEEP_MODE		= 15,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_BSSTRANS_QUERY	= 16,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_BSSTRANS_RESP	= 17,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_TCLAS_ADD		= 18,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_TCLAS_DEL		= 19,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_TCLAS_LIST		= 20,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_DMS_STATUS		= 21,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_KEEPALIVES_MAX_IDLE		= 22,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_PM_IGNORE_BCMC			= 23,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_DMS_DEPENDENCY			= 24,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_BSSTRANS_ROAMTHROTTLE	= 25,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_TFS_SET			= 26,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_TFS_TERM			= 27,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_TFS_STATUS		= 28,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_BTQ_NBR_ADD		= 29,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_BTQ_NBR_DEL		= 30,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_BTQ_NBR_LIST		= 31,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_BSSTRANS_RSSI_RATE_MAP	= 32,
++	IFX_WNM_CONFIG_CMD_IOV_WNM_KEEPALIVE_PKT_TYPE		= 33,
++	IFX_WNM_CONFIG_CMD_TYPE_MAX
++};
++
++enum ifx_vendor_attr_wnm_maxidle_param {
++	IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_UNSPEC,
++	IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_GET_INFO,
++	IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_IDLE_PERIOD,
++	IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_PROTECTION_OPT,
++	IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_MAX
++};
++
++#endif /* IFX_VENDOR_H */
+diff --git a/src/crypto/tls_openssl.c b/src/crypto/tls_openssl.c
+index c9e00b3..9e5b48a 100644
+--- a/src/crypto/tls_openssl.c
++++ b/src/crypto/tls_openssl.c
+@@ -5410,7 +5410,8 @@ static void openssl_debug_dump_certificates(SSL_CTX *ssl_ctx)
+ 
+ static void openssl_debug_dump_certificate_chains(SSL_CTX *ssl_ctx)
+ {
+-#if !defined(LIBRESSL_VERSION_NUMBER) && !defined(BORINGSSL_API_VERSION)
++#if !defined(LIBRESSL_VERSION_NUMBER) && !defined(BORINGSSL_API_VERSION) && \
++	OPENSSL_VERSION_NUMBER >= 0x10002000L
+ 	int res;
+ 
+ 	for (res = SSL_CTX_set_current_cert(ssl_ctx, SSL_CERT_SET_FIRST);
+diff --git a/src/drivers/driver.h b/src/drivers/driver.h
+index d3312a3..d75abbd 100644
+--- a/src/drivers/driver.h
++++ b/src/drivers/driver.h
+@@ -26,6 +26,9 @@
+ #include "pae/ieee802_1x_kay.h"
+ #endif /* CONFIG_MACSEC */
+ #include "utils/list.h"
++#ifdef CONFIG_DRIVER_NL80211_IFX
++#include "common/ifx_vendor.h"
++#endif /* CONFIG_DRIVER_NL80211_IFX */
+ 
+ #define HOSTAPD_CHAN_DISABLED 0x00000001
+ #define HOSTAPD_CHAN_NO_IR 0x00000002
+@@ -651,6 +654,16 @@ struct wpa_driver_scan_params {
+ 	 */
+ 	unsigned int p2p_include_6ghz:1;
+ 
++	/**
++	 * non_coloc_6ghz - Force scanning of non-PSC 6 GHz channels
++	 *
++	 * If this is set, the driver should scan non-PSC channels from the
++	 * scan request even if neighbor reports from 2.4/5 GHz APs did not
++	 * report a co-located AP on these channels. The default is to scan
++	 * non-PSC channels only if a co-located AP was reported on the channel.
++	 */
++	unsigned int non_coloc_6ghz:1;
++
+ 	/*
+ 	 * NOTE: Whenever adding new parameters here, please make sure
+ 	 * wpa_scan_clone_params() and wpa_scan_free_params() get updated with
+@@ -1014,6 +1027,14 @@ struct wpa_driver_associate_params {
+ 	 */
+ 	const u8 *psk;
+ 
++	/**
++	 * sae_password - Password for SAE authentication
++	 *
++	 * This value is made available only for WPA3-Personal (SAE) and only
++	 * for drivers that set WPA_DRIVER_FLAGS2_SAE_OFFLOAD.
++	 */
++	const char *sae_password;
++
+ 	/**
+ 	 * drop_unencrypted - Enable/disable unencrypted frame filtering
+ 	 *
+@@ -1582,6 +1603,35 @@ struct wpa_driver_ap_params {
+ 	 * Unsolicited broadcast Probe Response template length
+ 	 */
+ 	size_t unsol_bcast_probe_resp_tmpl_len;
++
++	/**
++	 * passphrase - RSN passphrase for PSK
++	 *
++	 * This value is made available only for WPA/WPA2-Personal (PSK) and
++	 * only for drivers that set WPA_DRIVER_FLAGS2_4WAY_HANDSHAKE_AP_PSK.
++	 * This is the 8..63 character ASCII passphrase, if available. Please
++	 * note that this can be %NULL if passphrase was not used to generate
++	 * the PSK. In that case, the psk field must be used to fetch the PSK.
++	 */
++	const char *passphrase;
++
++	/**
++	 * psk - RSN PSK (alternative for passphrase for PSK)
++	 *
++	 * This value is made available only for WPA/WPA2-Personal (PSK) and
++	 * only for drivers that set WPA_DRIVER_FLAGS2_4WAY_HANDSHAKE_AP_PSK.
++	 * This is the 32-octet (256-bit) PSK, if available. The driver wrapper
++	 * should be prepared to handle %NULL value as an error.
++	 */
++	const u8 *psk;
++
++	/**
++	 * sae_password - Password for SAE authentication
++	 *
++	 * This value is made available only for WPA3-Personal (SAE) and only
++	 * for drivers that set WPA_DRIVER_FLAGS2_SAE_OFFLOAD_AP.
++	 */
++	const char *sae_password;
+ };
+ 
+ struct wpa_driver_mesh_bss_params {
+@@ -1864,8 +1914,9 @@ struct wpa_driver_capa {
+ #define WPA_DRIVER_FLAGS_SET_KEYS_AFTER_ASSOC 0x00000002
+ /** Driver takes care of all DFS operations */
+ #define WPA_DRIVER_FLAGS_DFS_OFFLOAD			0x00000004
+-/** Driver takes care of RSN 4-way handshake internally; PMK is configured with
+- * struct wpa_driver_ops::set_key using key_flag = KEY_FLAG_PMK */
++/** Driver takes care of RSN 4-way handshake internally in station mode; PMK is
++ * configured with struct wpa_driver_ops::set_key using key_flag = KEY_FLAG_PMK
++ */
+ #define WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X		0x00000008
+ /** Driver is for a wired Ethernet interface */
+ #define WPA_DRIVER_FLAGS_WIRED		0x00000010
+@@ -1990,7 +2041,7 @@ struct wpa_driver_capa {
+ #define WPA_DRIVER_FLAGS_SELF_MANAGED_REGULATORY       0x0080000000000000ULL
+ /** Driver supports FTM responder functionality */
+ #define WPA_DRIVER_FLAGS_FTM_RESPONDER		0x0100000000000000ULL
+-/** Driver support 4-way handshake offload for WPA-Personal */
++/** Driver supports 4-way handshake offload for WPA-Personal in station mode */
+ #define WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_PSK	0x0200000000000000ULL
+ /** Driver supports a separate control port TX for EAPOL frames */
+ #define WPA_DRIVER_FLAGS_CONTROL_PORT		0x0400000000000000ULL
+@@ -2027,6 +2078,14 @@ struct wpa_driver_capa {
+ #define WPA_DRIVER_FLAGS2_OCV			0x0000000000000080ULL
+ /** Driver expects user space implementation of SME in AP mode */
+ #define WPA_DRIVER_FLAGS2_AP_SME		0x0000000000000100ULL
++/** Driver supports SAE authentication offload in station mode */
++#define WPA_DRIVER_FLAGS2_SAE_OFFLOAD		0x0000000000000200ULL
++/** Driver supports 4-way handshake offload for WPA-Personal in AP mode */
++#define WPA_DRIVER_FLAGS2_4WAY_HANDSHAKE_AP_PSK	0x0000000000000400ULL
++/** Driver supports SAE authentication offload in AP mode */
++#define WPA_DRIVER_FLAGS2_SAE_OFFLOAD_AP	0x0000000000000800ULL
++/** Driver supports FT / OKC fast roaming */
++#define WPA_DRIVER_FLAGS_ROAM_OFFLOAD		0x0000000000001000ULL
+ 	u64 flags2;
+ 
+ #define FULL_AP_CLIENT_STATE_SUPP(drv_flags) \
+@@ -2463,6 +2522,90 @@ struct drv_acs_params {
+ 	int edmg_enabled;
+ };
+ 
++#ifdef CONFIG_DRIVER_NL80211_IFX
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++struct drv_setup_twt_params {
++	u8 dtok;
++	u64 twt;
++	u64 twt_offset;
++	u8 min_twt;
++	u8 exponent;
++	u16 mantissa;
++	enum ifx_twt_oper_setup_cmd_type setup_cmd;
++	u8 requestor;
++	u8 trigger;
++	u8 implicit;
++	u8 flow_type;
++	u8 flow_id;
++	u8 bcast_twt_id;
++	u8 protection;
++	u8 twt_channel;
++	u8 control;
++	enum ifx_twt_param_nego_type negotiation_type;
++	u8 twt_info_frame_disabled;
++	u8 min_twt_unit;	/* true - in TUs, false - in 256us */
++};
++
++struct drv_teardown_twt_params {
++	u8 negotiation_type;
++	u8 flow_id;
++	u8 bcast_twt_id;
++	u8 teardown_all_twt;
++};
++#endif /* CONFIG_TWT_OFFLOAD_IFX */
++
++struct drv_config_mbo_params {
++	u8 cmd;
++	union {
++		struct {
++			u8 op_class;
++			u8 chan;
++			u8 pref_val;
++			u8 reason;
++		} add_chan_pref;
++		struct {
++			u8 op_class;
++			u8 chan;
++		} del_chan_pref;
++		struct {
++			u8 cap;
++		} cell_data_cap;
++		struct {
++			u8 enable;
++		} force_assoc;
++		struct {
++			u8 enable;
++			u8 reason;
++		} bsstrans_reject;
++		struct {
++			u8 type;
++		} send_notif;
++		struct {
++			u8 enable;
++			u8 t_offset;
++			u8 trig_delta;
++		} nbr_info_cache;
++		struct {
++			u8 enable;
++			u8 value;
++		} anqpo_support;
++		struct {
++			u8 disallow;
++			u8 reason;
++		} assoc_disallow;
++		struct {
++			u8 pref_value;
++		} cellular_pref;
++	} u;
++};
++
++struct drv_maxidle_wnm_params {
++	u8  get_info;
++	int period;
++	int protect;
++};
++#endif /* CONFIG_DRIVER_NL80211_IFX */
++
+ struct wpa_bss_trans_info {
+ 	u8 mbo_transition_reason;
+ 	u8 n_candidates;
+@@ -3816,6 +3959,10 @@ struct wpa_driver_ops {
+ 	int (*driver_cmd)(void *priv, char *cmd, char *buf, size_t buf_len);
+ #endif /* ANDROID */
+ 
++#ifdef CONFIG_DRIVER_BRCM_WL
++	int (*wl_cmd)(void *priv, char *cmd, char *buf, size_t buf_len);
++#endif /* CONFIG_DRIVER_BRCM_WL */
++
+ 	/**
+ 	 * vendor_cmd - Execute vendor specific command
+ 	 * @priv: Private driver interface data
+@@ -4570,6 +4717,25 @@ struct wpa_driver_ops {
+ 			      const u8 *match, size_t match_len,
+ 			      bool multicast);
+ #endif /* CONFIG_TESTING_OPTIONS */
++
++#ifdef CONFIG_DRIVER_NL80211_IFX
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++	/**
++	 * setup_twt - Setup a TWT session
++	 * @params: Setup TWT params
++	 */
++	int (*setup_twt)(void *priv, struct drv_setup_twt_params *params);
++
++	/**
++	 * teardown_twt - Teardown the already negotiated TWT session
++	 * @params: Teardown TWT params
++	 */
++	int (*teardown_twt)(void *priv, struct drv_teardown_twt_params *params); 
++#endif /* CONFIG_TWT_OFFLOAD_IFX */
++	int (*config_mbo)(void *priv, struct drv_config_mbo_params *params);
++	int (*maxidle_wnm)(void *priv, struct drv_maxidle_wnm_params *params);
++#endif /* CONFIG_DRIVER_NL80211_IFX */
++
+ };
+ 
+ /**
+diff --git a/src/drivers/driver_brcm_nl80211.h b/src/drivers/driver_brcm_nl80211.h
+new file mode 100644
+index 0000000..40a84d1
+--- /dev/null
++++ b/src/drivers/driver_brcm_nl80211.h
+@@ -0,0 +1,26 @@
++/*
++ * Broadcom Corporation OUI and vendor specific assignments
++ * Copyright (c) 2020, Broadcom Corporation.
++ *
++ * This software may be distributed under the terms of the BSD license.
++ * See README for more details.
++ */
++
++struct bcm_nlmsg_hdr {
++	uint cmd;	/* common ioctl definition */
++	int len;	/* expected return buffer length */
++	uint offset;	/* user buffer offset */
++	uint set;	/* get or set request optional */
++	uint magic;	/* magic number for verification */
++};
++
++enum bcmnl_attrs {
++	BCM_NLATTR_UNSPEC,
++
++	BCM_NLATTR_LEN,
++	BCM_NLATTR_DATA,
++
++	__BCM_NLATTR_AFTER_LAST,
++	BCM_NLATTR_MAX = __BCM_NLATTR_AFTER_LAST - 1
++};
++
+diff --git a/src/drivers/driver_brcm_wlu.c b/src/drivers/driver_brcm_wlu.c
+new file mode 100644
+index 0000000..8e568f9
+--- /dev/null
++++ b/src/drivers/driver_brcm_wlu.c
+@@ -0,0 +1,490 @@
++/*
++ * Broadcom Corporation OUI and vendor specific assignments
++ * Copyright (c) 2020, Broadcom Corporation.
++ *
++ * This software may be distributed under the terms of the BSD license.
++ * See README for more details.
++ */
++
++#include "includes.h"
++#include "common.h"
++#include "common/brcm_vendor.h"
++#include "common/brcm_wl_ioctl.h"
++#include "common/brcm_wl_ioctl_defs.h"
++#include "common/wpa_common.h"
++#include "driver_brcm_wlu_cmd.h"
++
++static cmd_func_t wl_rate;
++static cmd_func_t wl_varint;
++
++#define RATE_2G_USAGE							\
++"\tEither \"auto\", or a simple CCK/DSSS/OFDM rate value:\n"		\
++"\t1 2 5.5 11 6 9 12 18 24 36 48 54\n\n"				\
++"\tOr options to specify legacy, HT, or VHT rate:\n"			\
++"\t-r R, --rate=R        : legacy rate (CCK, DSSS, OFDM)\n"		\
++"\t-h M, --ht=M          : HT MCS index [0-23]\n"			\
++"\t-v M[xS], --vht=M[xS] : VHT MCS index M [0-9],\n"			\
++"\t                      : and optionally Nss S [1-8], eg. 5x2 is MCS=5, Nss=2\n" \
++"\t-c cM[sS]             : VHT (c notation) MCS index M [0-9],\n"			\
++"\t                      : and optionally Nss S [1-8], eg. c5s2 is MCS=5, Nss=2\n" \
++"\t-e M[xS], --he=M[xS]  : HE rate M [0-11],\n" \
++"\t-s S, --ss=S          : VHT Nss [1-8], number of spatial streams, default 1.\n" \
++"\t                      : Only used with -v/--vht when MxS format is not used\n" \
++"\t-x T, --exp=T         : Tx Expansion, number of tx chains (NTx) beyond the minimum\n" \
++"\t                      : required for the space-time-streams, exp = NTx - Nsts\n" \
++"\t--stbc                : Use STBC expansion, otherwise no STBC\n"	\
++"\t-l, --ldpc            : Use LDPC encoding, otherwise no LDPC\n"	\
++"\t-g, --sgi             : Guard interval. Different values for HT/VHT\n" \
++"\t                      : Use Short Guard Interval otherwise standard GI\n" \
++"\t-i, --hegi            : Guard interval. Different values for HE\n" \
++"\t                      : For HE, cp_ltf combination allowed values (0,1,2,3)\n" \
++"\t-b, --bandwidth       : transmit bandwidth in MHz [2.5, 5, 10, 20, 40, 80, 160] eg. -b 20\n" \
++"\t-d D, --dcm=D         : Use -d to set DCM, otherwise no DCM\n" \
++"\t                      : (only when is MCS [0, 1], NSS 1, -b 20)\n" \
++"\t-n R, --er=R          : R [106,242] HE Range extension\n" \
++"\t                      : otherwise no Rang extension and works only in 20 MHz"
++
++#define RATE_5G_6G_USAGE							\
++"\tEither \"auto\", or a simple OFDM rate value:\n"			\
++"\t6 9 12 18 24 36 48 54\n\n"						\
++"\tOr options to specify legacy OFDM, HT, or VHT rate:\n"		\
++"\t-r R, --rate=R        : legacy OFDM rate\n"				\
++"\t-h M, --ht=M          : HT MCS index [0-23]\n"			\
++"\t-v M[xS], --vht=M[xS] : VHT MCS index M [0-9],\n"			\
++"\t                      : and optionally Nss S [1-8], eg. 5x2 is MCS=5, Nss=2\n" \
++"\t-c cM[sS]             : VHT (c notation) MCS index M [0-9],\n"			\
++"\t                      : and optionally Nss S [1-8], eg. c5s2 is MCS=5, Nss=2\n" \
++"\t-e M[xS], --he=M[xS]  : HE rate M [0-11],\n"		\
++"\t-s S, --ss=S          : VHT Nss [1-8], number of spatial streams, default 1.\n" \
++"\t                      : Only used with -v/--vht when MxS format is not used\n" \
++"\t-x T, --exp=T         : Tx Expansion, number of tx chains (NTx) beyond the minimum\n" \
++"\t                      : required for the space-time-streams, exp = NTx - Nsts\n" \
++"\t--stbc                : Use STBC expansion, otherwise no STBC\n"	\
++"\t-l, --ldpc            : Use LDPC encoding, otherwise no LDPC\n"	\
++"\t-g, --sgi             : Guard interval. Different values for HT/VHT\n" \
++"\t                      : Use Short Guard Interval otherwise standard GI\n" \
++"\t-i, --hegi            : Guard interval. Different values for HE\n" \
++"\t                      : For HE cp_ltf combination allowed values (0,1,2,3)\n" \
++"\t-b, --bandwidth       : transmit bandwidth in MHz [2.5, 5, 10, 20, 40, 80, 160] eg. -b 20\n" \
++"\t-d D, --dcm=D         : Use -d to set DCM, otherwise no DCM\n" \
++"\t                      : (only when is MCS [0, 1], NSS 1, -b 20)\n" \
++"\t-n R, --er=R          : R [106,242] HE Range extension\n" \
++"\t                      : otherwise no Rang extension and works only in 20 MHz"
++
++/* If the new command needs to be part of 'wc.exe' tool used for WMM,
++ * be sure to modify wc_cmds[] array as well
++ *
++ * If you add a command, please update wlu_cmd.c cmd2cat to categorize the command.
++ */
++cmd_t wl_cmds[] = {
++	{ "2g_rate", wl_rate, WLC_GET_VAR, WLC_SET_VAR,
++	"Force a fixed rate for data frames in the 2.4G band:\n\n"
++	RATE_2G_USAGE
++	},
++	{ "2g_mrate", wl_rate, WLC_GET_VAR, WLC_SET_VAR,
++	"Force a fixed rate for mulitcast/broadcast data frames in the 2.4G band:\n\n"
++	RATE_2G_USAGE
++	},
++	{ "5g_rate", wl_rate, WLC_GET_VAR, WLC_SET_VAR,
++	"Force a fixed rate for data frames in the 5G band:\n\n"
++	RATE_5G_6G_USAGE
++	},
++	{ "5g_mrate", wl_rate, WLC_GET_VAR, WLC_SET_VAR,
++	"Force a fixed rate for mulitcast/broadcast data frames in the 5G band:\n\n"
++	RATE_5G_6G_USAGE
++	},
++	{ NULL, NULL, 0, 0, NULL }
++};
++
++cmd_t wl_varcmd = {"var", wl_varint, -1, -1, "unrecognized name, type -h for help"};
++
++/* common function to find a command */
++cmd_t *
++wlu_find_cmd(char *name)
++{
++	cmd_t *cmd = wl_cmds;
++
++	/* search cmd in cmd table */
++	for (; cmd->name; cmd++) {
++		/* stop if we find a matching name */
++		if (!os_strncasecmp(cmd->name, name, os_strlen(cmd->name))) {
++			break;
++		}
++	}
++
++	return (cmd->name != NULL) ? cmd : NULL;
++}
++
++/*
++ * Format a ratespec for output of any of the wl_rate() iovars
++ */
++char*
++wl_rate_print(char *rate_buf, size_t buf_len, u32 rspec)
++{
++	uint encode, rate, txexp, bw_val;
++	const char* stbc;
++	const char* ldpc;
++	const char* bw;
++	const char* dcm;
++	const char* er;
++	u8 valid_encding = false;
++
++	encode = (rspec & WL_RSPEC_ENCODING_MASK);
++	rate = (rspec & WL_RSPEC_RATE_MASK);
++	txexp = (rspec & WL_RSPEC_TXEXP_MASK) >> WL_RSPEC_TXEXP_SHIFT;
++	bw_val = (rspec & WL_RSPEC_BW_MASK);
++	stbc  = ((rspec & WL_RSPEC_STBC) != 0) ? " stbc" : "";
++	ldpc  = ((rspec & WL_RSPEC_LDPC) != 0) ? " ldpc" : "";
++	dcm   = ((rspec & WL_RSPEC_DCM)  != 0) ? " dcm"  : "";
++
++	if (RSPEC_HE_ER_ENAB(rspec) != 0) {
++		er = RSPEC_HE_ER_TONE(rspec) ? " er 106" : " er 242";
++	} else {
++		er = "";
++	}
++
++	if (bw_val == WL_RSPEC_BW_UNSPECIFIED) {
++		bw = "auto";
++	} else if (bw_val == WL_RSPEC_BW_20MHZ) {
++		bw = "20";
++	} else if (bw_val == WL_RSPEC_BW_40MHZ) {
++		bw = "40";
++	} else if (bw_val == WL_RSPEC_BW_80MHZ) {
++		bw = "80";
++	} else if (bw_val == WL_RSPEC_BW_160MHZ) {
++		bw = "160";
++	} else if (bw_val == WL_RSPEC_BW_10MHZ) {
++		bw = "10";
++	} else if (bw_val == WL_RSPEC_BW_5MHZ) {
++		bw = "5";
++	} else if (bw_val == WL_RSPEC_BW_2P5MHZ) {
++		bw = "2.5";
++	} else {
++		bw = "???";
++	}
++
++	if ((rspec & ~WL_RSPEC_TXEXP_MASK) == 0) { /* Ignore TxExpansion for NULL rspec check */
++		valid_encding = true;
++		os_snprintf(rate_buf, buf_len, "auto");
++	} else if (encode == WL_RSPEC_ENCODE_HE) {
++		const char* gi_ltf[] = {" 1xLTF GI 0.8us", " 2xLTF GI 0.8us",
++					" 2xLTF GI 1.6us", " 4xLTF GI 3.2us"};
++		u8 gi_int = RSPEC_HE_LTF_GI(rspec);
++		uint mcs = (rspec & WL_RSPEC_HE_MCS_MASK);
++		uint Nss = (rspec & WL_RSPEC_HE_NSS_MASK) >> WL_RSPEC_HE_NSS_SHIFT;
++
++		valid_encding = true;
++
++		os_snprintf(rate_buf, buf_len, "he mcs %d Nss %d Tx Exp %d BW %s%s%s%s%s%s",
++			    mcs, Nss, txexp, bw, stbc, ldpc, gi_ltf[gi_int], dcm, er);
++
++	} else {
++		const char* sgi;
++		sgi = ((rspec & WL_RSPEC_SGI)  != 0) ? " sgi"  : "";
++		if (encode == WL_RSPEC_ENCODE_RATE) {
++
++			valid_encding = true;
++
++			os_snprintf(rate_buf, buf_len, "rate %d%s Mbps Tx Exp %d",
++				    rate/2, (rate % 2)?".5":"", txexp);
++		} else if (encode == WL_RSPEC_ENCODE_HT) {
++
++			valid_encding = true;
++
++			os_snprintf(rate_buf, buf_len, "ht mcs %d Tx Exp %d BW %s%s%s%s",
++				    rate, txexp, bw, stbc, ldpc, sgi);
++		} else if (encode == WL_RSPEC_ENCODE_VHT) {
++			uint mcs = (rspec & WL_RSPEC_VHT_MCS_MASK);
++			uint Nss = (rspec & WL_RSPEC_VHT_NSS_MASK) >> WL_RSPEC_VHT_NSS_SHIFT;
++
++			valid_encding = true;
++
++			os_snprintf(rate_buf, buf_len, "vht mcs %d Nss %d Tx Exp %d BW %s%s%s%s",
++				    mcs, Nss, txexp, bw, stbc, ldpc, sgi);
++		}
++	}
++
++	if (!valid_encding) {
++		os_snprintf(rate_buf, buf_len, "<unknown encoding for ratespec 0x%08X>", rspec);
++	}
++
++	return rate_buf;
++}
++
++
++/* parse the -v/--vht or -c argument for the wl_rate() command.
++ * return FALSE if the arg does not look like MxS or cMsS, where M and S are single digits
++ * return TRUE if the arg does look like MxS or cMsS, setting mcsp to M, and nssp to S
++ */
++static int
++wl_parse_he_vht_spec(const char* cp, int* mcsp, int* nssp)
++{
++	char *startp, *endp;
++	char c;
++	int mcs, nss;
++	char sx;
++
++	if (cp == NULL || cp[0] == '\0') {
++		return false;
++	}
++
++	if (cp[0] == 'c') {
++		startp = (char*)cp + 1;
++		sx = 's';
++	}
++	else {
++		startp = (char*)cp;
++		sx = 'x';
++	}
++
++	mcs = (int)strtol(startp, &endp, 10);
++	/* verify MCS 0-11, and next char is 's' or 'x' */
++	/* HE MCS is 0-11, VHT MCS 0-9 and prop MCS 10-11 */
++	if (mcs < 0 || mcs > 11 || endp[0] != sx) {
++		return false;
++	}
++
++	/* grab the char after the 'x'/'s' and convert to value */
++	c = endp[1];
++	nss = 0;
++	if (isdigit((int)c)) {
++		nss = c - '0';
++	}
++
++	/* consume trailing space after digit */
++	cp = &endp[2];
++	while (isspace((int)(*cp))) {
++		cp++;
++	}
++
++	/* check for trailing garbage after digit */
++	if (cp[0] != '\0') {
++		return false;
++	}
++
++	if (nss < 1 || nss > 8) {
++		return false;
++	}
++
++	*mcsp = mcs;
++	*nssp = nss;
++
++	return true;
++}
++
++
++static int
++wl_rate(char *cmd, char *buf, u32 *buf_len, bool *get, bool *is_get_int)
++{
++	int ret = -1;
++	char *pos, *param = cmd;
++	bool auto_set = false;
++	bool legacy_set = false, ht_set = false, vht_set = false, he_set = false;
++	int rate, mcs, Nss, tx_exp, bw;
++	bool stbc, ldpc, sgi, dcm, er;
++	u8 hegi;
++
++	u32 rspec = 0;
++	int val_int = 0;
++	char *endp;
++
++	/* set default values */
++	rate = 0;
++	mcs = 0;
++	Nss = 0;
++	tx_exp = 0;
++	stbc = false;
++	ldpc = false;
++	sgi = false;
++	hegi = 0xFF;
++	bw = 0;
++	dcm = false;
++	er = false;
++
++	pos = os_strstr(cmd, "5g_rate");
++	if (pos) {
++		param = cmd + strlen("5g_rate");
++		os_memcpy(buf, cmd, strlen("5g_rate")); //Keep last byte as 0x00
++		*is_get_int = true;
++		*buf_len += strlen("5g_rate");
++
++		if (os_strncasecmp(cmd, "5g_rate ", 8) == 0) {
++			param += 1;
++			*get = false;
++			cmd += strlen("5g_rate ");
++			*buf_len += 1;
++		}
++	}
++
++	pos = os_strstr(cmd, "2g_rate");
++	if (pos) {
++		param = cmd + strlen("2g_rate");
++		os_memcpy(buf, cmd, strlen("2g_rate")); //Keep last byte as 0x00
++		*is_get_int = true;
++		*buf_len += strlen("2g_rate");
++
++		if (os_strncasecmp(cmd, "2g_rate ", 8) == 0) {
++			param += 1;
++			*get = false;
++			cmd += strlen("2g_rate ");
++			*buf_len += 1;
++		}
++	}
++
++	if (*get == true) {
++		ret = 0;
++		goto exit;
++	}
++
++	/* Option: -l or --ldpc */
++	pos = os_strstr(param, "auto");
++	if (pos) {
++		auto_set = true;
++	}
++
++	pos = os_strstr(param, "-r ");
++	if (pos) {
++		pos += 3;
++		rate = atoi(pos) * 2;
++		rspec = WL_RSPEC_ENCODE_RATE;   /* 11abg */
++		rspec |= rate;
++	}
++
++	/* Option: -e or --he */
++	pos = os_strstr(param, "-e ");
++	if (pos) {
++		char var_str[10];
++		pos += 3;
++		endp = os_strchr(pos, ' ');
++		if (endp == NULL)
++			endp = os_strchr(pos, '\0');
++		os_memcpy(var_str, pos, endp - pos);
++		var_str[endp - pos] = '\0';
++
++		val_int  = (int)strtol(var_str, &endp, 10);
++		if (*endp == '\0') {
++			mcs = val_int;
++			he_set = true;
++		} else if (wl_parse_he_vht_spec(var_str, &mcs, &Nss)) {
++			he_set = true;
++		} else {
++			wpa_printf(MSG_DEBUG, "%s: could not parse \"%s\""
++				   "as a value for %s option",
++				   "5g_rate", pos, "-e");
++			goto exit;
++		}
++
++		if (he_set) {
++			rspec = WL_RSPEC_ENCODE_HE;	/* 11ax HE */
++			if (Nss == 0) {
++				Nss = WL_RSPEC_HE_NSS_UNSPECIFIED;
++			}
++			rspec |= (Nss << WL_RSPEC_HE_NSS_SHIFT) | mcs;
++		}
++	}
++
++
++	pos = os_strstr(param, "-i ");
++	if (pos) {
++		if (!he_set) {
++			wpa_printf(MSG_DEBUG, ":use -i option only in he ");
++			goto exit;
++		}
++
++		pos += 3;
++		val_int = (int)strtol(pos, &endp, 10);
++		if (*endp == '\0') {
++			if (val_int < 4)
++			{
++				hegi = val_int;
++			}
++			else {
++				wpa_printf(MSG_DEBUG, "%s: could not parse "
++					   "\"%s\" as a value for %s option",
++					   "5g_rate", pos, "-i");
++				goto exit;
++			}
++		}
++	}
++
++	/* Option: -l or --ldpc */
++	pos = os_strstr(param, "-l");
++	if (pos) {
++		ldpc = true;
++	}
++
++	/* set the ratespec encoding type and basic rate value */
++	if (auto_set) {
++		rspec = 0;
++	} else if (legacy_set) {
++		rspec = WL_RSPEC_ENCODE_RATE;	/* 11abg */
++		rspec |= rate;
++	} else if (ht_set) {
++		rspec = WL_RSPEC_ENCODE_HT;	/* 11n HT */
++		rspec |= mcs;
++	} else if (vht_set) {
++		rspec = WL_RSPEC_ENCODE_VHT;	/* 11ac VHT */
++		if (Nss == 0) {
++			Nss = 1; /* default Nss = 1 if --ss option not given */
++		}
++		rspec |= (Nss << WL_RSPEC_VHT_NSS_SHIFT) | mcs;
++	} else if (he_set) {
++		rspec = WL_RSPEC_ENCODE_HE;	/* 11ax HE */
++		if (Nss == 0) {
++			Nss = WL_RSPEC_HE_NSS_UNSPECIFIED;
++		}
++		rspec |= (Nss << WL_RSPEC_HE_NSS_SHIFT) | mcs;
++	} else {
++		wpa_printf(MSG_ERROR,
++				"%s: Invalid rate set for %s option\n",
++				"wl", param);
++				goto exit;
++	}
++
++	/* set the other rspec fields */
++	rspec |= (tx_exp << WL_RSPEC_TXEXP_SHIFT);
++	rspec |= bw;
++	rspec |= (stbc ? WL_RSPEC_STBC : 0);
++	rspec |= (ldpc ? WL_RSPEC_LDPC : 0);
++	rspec |= (sgi  ? WL_RSPEC_SGI  : 0);
++	rspec |= ((hegi != 0xFF) ? HE_GI_TO_RSPEC(hegi) : 0);
++	rspec |= (dcm << WL_RSPEC_DCM_SHIFT);
++	rspec |= (er << WL_RSPEC_ER_SHIFT);
++
++	os_memcpy(buf + *buf_len, (char *)&rspec, sizeof(rspec));
++	*buf_len += sizeof(rspec);
++
++	ret = 0;
++exit:
++	return ret;
++}
++
++/* just issue a wl_var_setint() or a wl_var_getint() if there is a 2nd arg */
++static int
++wl_varint(char *cmd, char *buf, u32 *buf_len, bool *get, bool *is_get_int)
++{
++	return -1;
++}
++
++int wl_do_cmd(char *cmd, char *smbuf, u32 *msglen, bool *get, bool *is_get_int)
++{
++	cmd_t *wl_cmd = NULL;
++	int ret = -1;
++
++	/* search for command */
++	wl_cmd = wlu_find_cmd(cmd);
++
++	/* defaults to using the set_var and get_var commands */
++	if (!wl_cmd) {
++		wl_cmd = &wl_varcmd;
++	}
++	/* do command */
++	ret = (*wl_cmd->func)(cmd, smbuf, msglen, get, is_get_int);
++	if (ret != 0)
++		goto exit;
++
++	ret = 0;
++exit:
++	return ret;
++}
++
+diff --git a/src/drivers/driver_brcm_wlu.h b/src/drivers/driver_brcm_wlu.h
+new file mode 100644
+index 0000000..a943a08
+--- /dev/null
++++ b/src/drivers/driver_brcm_wlu.h
+@@ -0,0 +1,12 @@
++/*
++ * Broadcom Corporation OUI and vendor specific assignments
++ * Copyright (c) 2020, Broadcom Corporation.
++ *
++ * This software may be distributed under the terms of the BSD license.
++ * See README for more details.
++ */
++
++/* Format a ratespec for output of any of the wl_rate() iovars */
++char* wl_rate_print(char *rate_buf, size_t buf_len, u32 rspec);
++
++int wl_do_cmd(char *cmd, char *smbuf, u32 *msglen, bool *get, bool *is_get_int);
+diff --git a/src/drivers/driver_brcm_wlu_cmd.h b/src/drivers/driver_brcm_wlu_cmd.h
+new file mode 100644
+index 0000000..8443a62
+--- /dev/null
++++ b/src/drivers/driver_brcm_wlu_cmd.h
+@@ -0,0 +1,23 @@
++/*
++ * Broadcom Corporation OUI and vendor specific assignments
++ * Copyright (c) 2020, Broadcom Corporation.
++ *
++ * This software may be distributed under the terms of the BSD license.
++ * See README for more details.
++ */
++
++typedef struct cmd cmd_t;
++typedef int (cmd_func_t)(char *cmd, char *buf, u32 *buf_len, bool *set, bool *is_get_int);
++
++/* generic command line argument handler */
++struct cmd {
++	const char *name;
++	cmd_func_t *func;
++	int get;
++	int set;
++	const char *help;
++};
++
++/* list of command line arguments */
++extern cmd_t wl_cmds[];
++
+diff --git a/src/drivers/driver_nl80211.c b/src/drivers/driver_nl80211.c
+index aec179a..55b4d07 100644
+--- a/src/drivers/driver_nl80211.c
++++ b/src/drivers/driver_nl80211.c
+@@ -28,6 +28,11 @@
+ #include "common/qca-vendor.h"
+ #include "common/qca-vendor-attr.h"
+ #include "common/brcm_vendor.h"
++#ifdef CONFIG_DRIVER_BRCM_WL
++#include "common/brcm_wl_ioctl.h"
++#include "driver_brcm_wlu.h"
++#include "drivers/driver_brcm_nl80211.h"
++#endif /* CONFIG_DRIVER_BRCM_WL */
+ #include "common/ieee802_11_defs.h"
+ #include "common/ieee802_11_common.h"
+ #include "common/wpa_common.h"
+@@ -38,7 +43,9 @@
+ #include "radiotap_iter.h"
+ #include "rfkill.h"
+ #include "driver_nl80211.h"
+-
++#ifdef CONFIG_DRIVER_NL80211_IFX
++#include "common/ifx_vendor.h"
++#endif /* CONFIG_DRIVER_NL80211_IFX */
+ 
+ #ifndef NETLINK_CAP_ACK
+ #define NETLINK_CAP_ACK 10
+@@ -550,6 +557,7 @@ send_and_recv_msgs_connect_handle(struct wpa_driver_nl80211_data *drv,
+ struct nl_sock * get_connect_handle(struct i802_bss *bss)
+ {
+ 	if ((bss->drv->capa.flags2 & WPA_DRIVER_FLAGS2_CONTROL_PORT_RX) ||
++	    (bss->drv->capa.flags & WPA_DRIVER_FLAGS_BSS_SELECTION) ||
+ 	    bss->use_nl_connect)
+ 		return bss->nl_connect;
+ 
+@@ -3301,7 +3309,8 @@ static int wpa_driver_nl80211_set_key(struct i802_bss *bss,
+ #endif /* CONFIG_DRIVER_NL80211_QCA */
+ 
+ 	if (key_flag & KEY_FLAG_PMK) {
+-		if (drv->capa.flags & WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X)
++		if ((drv->capa.flags & WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X) ||
++			(drv->capa.flags2 & WPA_DRIVER_FLAGS_ROAM_OFFLOAD))
+ 			return nl80211_set_pmk(drv, key, key_len, addr);
+ 		/* The driver does not have any offload mechanism for PMK, so
+ 		 * there is no need to configure this key. */
+@@ -4630,8 +4639,13 @@ static int wpa_driver_nl80211_set_ap(void *priv,
+ 	ver = 0;
+ 	if (params->wpa_version & WPA_PROTO_WPA)
+ 		ver |= NL80211_WPA_VERSION_1;
+-	if (params->wpa_version & WPA_PROTO_RSN)
++	if (params->wpa_version & WPA_PROTO_RSN) {
+ 		ver |= NL80211_WPA_VERSION_2;
++#ifdef CONFIG_SAE
++		if (params->key_mgmt_suites & WPA_KEY_MGMT_SAE)
++			ver |= NL80211_WPA_VERSION_3;
++#endif /* CONFIG_SAE */
++	}
+ 	if (ver &&
+ 	    nla_put_u32(msg, NL80211_ATTR_WPA_VERSIONS, ver))
+ 		goto fail;
+@@ -4677,6 +4691,35 @@ static int wpa_driver_nl80211_set_ap(void *priv,
+ 	    nla_put_u32(msg, NL80211_ATTR_CIPHER_SUITE_GROUP, suite))
+ 		goto fail;
+ 
++	/* Add PSK in case of 4-way handshake offload */
++	if (params->psk &&
++	    (drv->capa.flags2 & WPA_DRIVER_FLAGS2_4WAY_HANDSHAKE_AP_PSK)) {
++		wpa_hexdump_key(MSG_DEBUG, "nl80211: PSK", params->psk, 32);
++		if (nla_put(msg, NL80211_ATTR_PMK, 32, params->psk))
++			goto fail;
++	}
++
++#ifdef CONFIG_SAE
++	/* Add SAE password in case of SAE authentication offload */
++	if ((params->sae_password || params->passphrase) &&
++	    (params->key_mgmt_suites & WPA_KEY_MGMT_SAE) &&
++	    (drv->capa.flags2 & WPA_DRIVER_FLAGS2_SAE_OFFLOAD_AP)) {
++		const char *password;
++		size_t pwd_len;
++
++		if (params->sae_password)
++			password = params->sae_password;
++		else
++			password = params->passphrase;
++
++		pwd_len = os_strlen(password);
++		wpa_hexdump_ascii_key(MSG_DEBUG, "nl80211: SAE password",
++				      (u8 *) password, pwd_len);
++		if (nla_put(msg, NL80211_ATTR_SAE_PASSWORD, pwd_len, password))
++			goto fail;
++	}
++#endif /* CONFIG_SAE */
++
+ 	if (params->beacon_ies) {
+ 		wpa_hexdump_buf(MSG_DEBUG, "nl80211: beacon_ies",
+ 				params->beacon_ies);
+@@ -6173,8 +6216,13 @@ static int nl80211_connect_common(struct wpa_driver_nl80211_data *drv,
+ 
+ 		if (params->wpa_proto & WPA_PROTO_WPA)
+ 			ver |= NL80211_WPA_VERSION_1;
+-		if (params->wpa_proto & WPA_PROTO_RSN)
+-			ver |= NL80211_WPA_VERSION_2;
++		if (params->wpa_proto & WPA_PROTO_RSN) {
++			if (params->key_mgmt_suite == WPA_KEY_MGMT_SAE ||
++				params->key_mgmt_suite == WPA_KEY_MGMT_FT_SAE)
++				ver |= NL80211_WPA_VERSION_3;
++			else
++				ver |= NL80211_WPA_VERSION_2;
++		}
+ 
+ 		wpa_printf(MSG_DEBUG, "  * WPA Versions 0x%x", ver);
+ 		if (nla_put_u32(msg, NL80211_ATTR_WPA_VERSIONS, ver))
+@@ -6304,6 +6352,22 @@ static int nl80211_connect_common(struct wpa_driver_nl80211_data *drv,
+ 			return -1;
+ 	}
+ 
++	/* add SAE password in case of SAE authentication offload */
++	if ((params->sae_password || params->passphrase) &&
++	    (drv->capa.flags2 & WPA_DRIVER_FLAGS2_SAE_OFFLOAD)) {
++		const char *password;
++		size_t pwd_len;
++
++		password = params->sae_password;
++		if (!password)
++			password = params->passphrase;
++		pwd_len = os_strlen(password);
++		wpa_hexdump_ascii_key(MSG_DEBUG, "  * SAE password",
++				      (u8 *) password, pwd_len);
++		if (nla_put(msg, NL80211_ATTR_SAE_PASSWORD, pwd_len, password))
++			return -1;
++	}
++
+ 	if (nla_put_flag(msg, NL80211_ATTR_CONTROL_PORT))
+ 		return -1;
+ 
+@@ -6419,6 +6483,8 @@ static int wpa_driver_nl80211_try_connect(
+ 		algs++;
+ 	if (params->auth_alg & WPA_AUTH_ALG_FT)
+ 		algs++;
++	if (params->auth_alg & WPA_AUTH_ALG_SAE)
++		algs++;
+ 	if (algs > 1) {
+ 		wpa_printf(MSG_DEBUG, "  * Leave out Auth Type for automatic "
+ 			   "selection");
+@@ -10063,6 +10129,117 @@ static bool is_cmd_with_nested_attrs(unsigned int vendor_id,
+ }
+ 
+ 
++#ifdef CONFIG_DRIVER_BRCM_WL
++static int nl80211_wl_reply_handler(struct nl_msg *msg, void *arg)
++{
++	struct nlattr *tb_msg[NL80211_ATTR_MAX + 1];
++	struct nlattr *bcmnl[BCM_NLATTR_MAX + 1];
++	struct genlmsghdr *gnlh = nlmsg_data(nlmsg_hdr(msg));
++	char *buf = arg;
++	int ret = 0;
++
++	wpa_printf(MSG_INFO, "nl80211: wl command reply handler");
++
++	nla_parse(tb_msg, NL80211_ATTR_MAX, genlmsg_attrdata(gnlh, 0),
++		  genlmsg_attrlen(gnlh, 0), NULL);
++
++	if (tb_msg[NL80211_ATTR_VENDOR_DATA]) {
++		wpa_printf(MSG_INFO, "nl80211: wl data found");
++		ret = nla_parse_nested(bcmnl, BCM_NLATTR_MAX,
++				       tb_msg[NL80211_ATTR_VENDOR_DATA], NULL);
++		if (ret != 0)
++			return NL_SKIP;
++		os_memcpy(buf, nla_data(bcmnl[BCM_NLATTR_DATA]), nla_get_u16(bcmnl[BCM_NLATTR_LEN]));
++	}
++
++	return NL_SKIP;
++}
++
++
++int nl80211_wl_command(void *priv, char *cmd, char *buf, size_t buf_len)
++{
++	struct i802_bss *bss = priv;
++	struct wpa_driver_nl80211_data *drv = bss->drv;
++	struct nl_msg *msg;
++	int ret = -1;
++	struct bcm_nlmsg_hdr *nlioc;
++	char smbuf[WLC_IOCTL_SMLEN * 2] = {0x00};
++	char outbuf[WLC_IOCTL_MEDLEN] = {0x00};
++	u32 msglen = 0;
++	bool get = true;
++
++	bool is_get_int = false;
++	u32 output_val = 0x00;
++
++	msg = nlmsg_alloc();
++	if (!msg)
++		return -ENOMEM;
++
++	ret = wl_do_cmd(cmd, smbuf, &msglen, &get, &is_get_int);
++	if (ret != 0)
++		goto exit;
++
++	/* nlmsg_alloc() can only allocate default_pagesize packet, cap
++	 * any buffer send down to 1536 bytes
++	 * DO NOT switch to nlmsg_alloc_size because Android doesn't support it
++	 */
++	if (msglen > 0x600)
++		msglen = 0x600;
++	if (get)
++		msglen = WLC_IOCTL_SMLEN;
++	else
++		msglen += sizeof(struct bcm_nlmsg_hdr);
++
++	nlioc = malloc(msglen);
++	if (nlioc == NULL) {
++		nlmsg_free(msg);
++		return -ENOMEM;
++	}
++	if (get)
++		nlioc->cmd = WLC_GET_VAR;
++	else
++		nlioc->cmd = WLC_SET_VAR;
++	nlioc->len = msglen - sizeof(struct bcm_nlmsg_hdr);
++	nlioc->offset = sizeof(struct bcm_nlmsg_hdr);
++	nlioc->set = !get;
++	nlioc->magic = 0;
++	os_memcpy(((void *)nlioc) + nlioc->offset, smbuf, msglen - nlioc->offset);
++
++	nl80211_cmd(drv, msg, 0, NL80211_CMD_VENDOR);
++	if (nl80211_set_iface_id(msg, bss) < 0) {
++		goto nla_put_failure;
++	}
++
++	NLA_PUT_U32(msg, NL80211_ATTR_VENDOR_ID, OUI_BRCM);
++	NLA_PUT_U32(msg, NL80211_ATTR_VENDOR_SUBCMD, BRCM_VENDOR_SCMD_PRIV_STR);
++	NLA_PUT(msg, NL80211_ATTR_VENDOR_DATA, msglen, nlioc);
++
++	ret = send_and_recv_msgs(drv, msg, nl80211_wl_reply_handler, outbuf, NULL, NULL);
++	msg = NULL;
++	if (ret) {
++		wpa_printf(MSG_ERROR, "nl80211: wl cmd failed: "
++		"ret=%d (%s)", ret, strerror(-ret));
++		ret = 0;
++	}
++
++	wpa_printf(MSG_DEBUG, "nl80211: wl cmd sent successfully ");
++
++	if (get == true && is_get_int == true) {
++		os_memcpy(&output_val, outbuf, sizeof(output_val));
++		wl_rate_print(buf, buf_len, output_val);
++		ret = buf_len;
++	}
++
++nla_put_failure:
++exit:
++
++	nlmsg_free(msg);
++
++	return ret;
++}
++#endif /* CONFIG_DRIVER_BRCM_WL */
++
++
+ static int nl80211_vendor_cmd(void *priv, unsigned int vendor_id,
+ 			      unsigned int subcmd, const u8 *data,
+ 			      size_t data_len, enum nested_attr nested_attr,
+@@ -12110,6 +12287,425 @@ static int testing_nl80211_register_frame(void *priv, u16 type,
+ }
+ #endif /* CONFIG_TESTING_OPTIONS */
+ 
++#ifdef CONFIG_DRIVER_NL80211_IFX
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++static int wpa_driver_nl80211_setup_twt(void *priv, struct drv_setup_twt_params *params)
++{
++	struct i802_bss *bss = priv;
++	struct wpa_driver_nl80211_data *drv = bss->drv;
++	struct nl_msg *msg = NULL;
++	struct nlattr *data, *twt_param_attrs;
++	int ret = -1;
++
++	if (!drv->ifx_twt_offload)
++		goto fail;
++
++	if (!(msg = nl80211_drv_msg(drv, 0, NL80211_CMD_VENDOR)) ||
++	    nla_put_u32(msg, NL80211_ATTR_VENDOR_ID, OUI_IFX) ||
++	    nla_put_u32(msg, NL80211_ATTR_VENDOR_SUBCMD, IFX_VENDOR_SCMD_TWT))
++		goto fail;
++
++	data = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA);
++	if (!data)
++		goto fail;
++
++	if (nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_OPER, IFX_TWT_OPER_SETUP))
++		goto fail;
++
++	twt_param_attrs = nla_nest_start(msg, IFX_VENDOR_ATTR_TWT_PARAMS);
++	if (!twt_param_attrs)
++		goto fail;
++
++	if (nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_NEGO_TYPE,
++		       params->negotiation_type) ||
++
++	    nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_SETUP_CMD_TYPE,
++		       params->setup_cmd) ||
++
++	    nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_DIALOG_TOKEN,
++		       params->dtok) ||
++
++	    (params->twt &&
++	     nla_put_u64(msg, IFX_VENDOR_ATTR_TWT_PARAM_WAKE_TIME,
++			 params->twt)) ||
++
++	    (params->twt_offset &&
++	     nla_put_u64(msg, IFX_VENDOR_ATTR_TWT_PARAM_WAKE_TIME_OFFSET,
++			 params->twt_offset)) ||
++
++	    nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_MIN_WAKE_DURATION,
++		       params->min_twt) ||
++
++	    nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_WAKE_INTVL_EXPONENT,
++		       params->exponent) ||
++
++	    nla_put_u16(msg, IFX_VENDOR_ATTR_TWT_PARAM_WAKE_INTVL_MANTISSA,
++			params->mantissa) ||
++
++	    nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_REQUESTOR,
++		       params->requestor) ||
++
++	    nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_TRIGGER,
++		       params->trigger) ||
++
++	    nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_IMPLICIT,
++		       params->implicit) ||
++
++	    nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_FLOW_TYPE,
++		       params->flow_type) ||
++
++	    (params->flow_id &&
++	     nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_FLOW_ID,
++			params->flow_id)) ||
++
++	    (params->bcast_twt_id &&
++	     nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_BCAST_TWT_ID,
++			params->bcast_twt_id)) ||
++
++	    nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_PROTECTION,
++		       params->protection) ||
++
++	    nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_CHANNEL,
++		       params->twt_channel) ||
++
++	    nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_TWT_INFO_FRAME_DISABLED,
++		       params->twt_info_frame_disabled) ||
++
++	    nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_MIN_WAKE_DURATION_UNIT,
++		       params->min_twt_unit))
++		goto fail;
++
++	nla_nest_end(msg, twt_param_attrs);
++	nla_nest_end(msg, data);
++
++	wpa_printf(MSG_DEBUG,
++		   "nl80211: TWT Setup: Neg Type: %d REQ Type: %d TWT: %lu min_twt: %d "
++		   "exponent: %d mantissa: %d requestor: %d trigger: %d implicit: %d "
++		   "flow_type: %d flow_id: %d bcast_twt_id: %d protection: %d "
++		   "twt_channel: %d twt_info_frame_disabled: %d min_twt_unit: %d",
++		   params->negotiation_type, params->setup_cmd, params->twt,
++		   params->min_twt, params->exponent, params->mantissa,
++		   params->requestor, params->trigger, params->implicit,
++		   params->flow_type, params->flow_id, params->bcast_twt_id,
++		   params->protection, params->twt_channel,
++		   params->twt_info_frame_disabled, params->min_twt_unit);
++
++	ret = send_and_recv_msgs(drv, msg, NULL, NULL, NULL, NULL);
++	if (ret < 0) {
++		wpa_printf(MSG_DEBUG,
++			   "nl80211: TWT Setup: Failed to invoke driver "
++			   "TWT setup function: %s",
++			   strerror(-ret));
++	}
++
++	return ret;
++fail:
++	nl80211_nlmsg_clear(msg);
++	nlmsg_free(msg);
++	return ret;
++}
++
++static int wpa_driver_nl80211_teardown_twt(void *priv, struct drv_teardown_twt_params *params)
++{
++	struct i802_bss *bss = priv;
++	struct wpa_driver_nl80211_data *drv = bss->drv;
++	struct nl_msg *msg = NULL;
++	struct nlattr *data, *twt_param_attrs;
++	int ret = -1;
++
++	if (!drv->ifx_twt_offload)
++		goto fail;
++
++	if (!(msg = nl80211_drv_msg(drv, 0, NL80211_CMD_VENDOR)) ||
++	    nla_put_u32(msg, NL80211_ATTR_VENDOR_ID, OUI_IFX) ||
++	    nla_put_u32(msg, NL80211_ATTR_VENDOR_SUBCMD, IFX_VENDOR_SCMD_TWT))
++		goto fail;
++
++	data = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA);
++	if (!data)
++		goto fail;
++
++	if (nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_OPER, IFX_TWT_OPER_TEARDOWN))
++		goto fail;
++
++	twt_param_attrs = nla_nest_start(msg, IFX_VENDOR_ATTR_TWT_PARAMS);
++	if (!twt_param_attrs)
++		goto fail;
++
++	if (nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_NEGO_TYPE,
++		       params->negotiation_type))
++		goto fail;
++
++	if (params->teardown_all_twt) {
++	    if (nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_TEARDOWN_ALL_TWT,
++			   params->teardown_all_twt))
++		goto fail;
++	} else if (params->flow_id &&
++		   nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_FLOW_ID,
++			      params->flow_id)) {
++		goto fail;
++	} else if (params->bcast_twt_id &&
++		   nla_put_u8(msg, IFX_VENDOR_ATTR_TWT_PARAM_BCAST_TWT_ID,
++			      params->bcast_twt_id)) {
++		goto fail;
++	}
++
++	nla_nest_end(msg, twt_param_attrs);
++	nla_nest_end(msg, data);
++
++	wpa_printf(MSG_DEBUG,
++		   "nl80211: TWT Teardown: Neg Type: %d teardown_all_twt: %d "
++		   "flow_id: %d bcast_twt_id: %d",
++		   params->negotiation_type, params->teardown_all_twt,
++		   params->flow_id, params->bcast_twt_id);
++
++	ret = send_and_recv_msgs(drv, msg, NULL, NULL, NULL, NULL);
++	if (ret) {
++		wpa_printf(MSG_DEBUG,
++			   "nl80211: TWT Teardown: Failed to invoke driver "
++			   "TWT teardown function: %s",
++			   strerror(-ret));
++	}
++
++	return ret;
++fail:
++	nl80211_nlmsg_clear(msg);
++	nlmsg_free(msg);
++	return ret;
++}
++#endif /* CONFIG_TWT_OFFLOAD_IFX */
++
++static int wpa_driver_nl80211_config_mbo(void *priv, struct drv_config_mbo_params *params)
++{
++	struct i802_bss *bss = priv;
++	struct wpa_driver_nl80211_data *drv = bss->drv;
++	struct nl_msg *msg = NULL;
++	struct nlattr *data, *mbo_param_attrs;
++	int ret = -1;
++
++	if (!drv->ifx_mbo_offload)
++		goto fail;
++
++	if (!(msg = nl80211_drv_msg(drv, 0, NL80211_CMD_VENDOR)) ||
++	    nla_put_u32(msg, NL80211_ATTR_VENDOR_ID, OUI_IFX) ||
++	    nla_put_u32(msg, NL80211_ATTR_VENDOR_SUBCMD, IFX_VENDOR_SCMD_MBO))
++		goto fail;
++
++	data = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA);
++	if (!data)
++		goto fail;
++
++	if (nla_put_u8(msg, IFX_VENDOR_ATTR_MBO_CMD, params->cmd))
++		goto fail;
++
++	switch (params->cmd) {
++	case IFX_MBO_CONFIG_CMD_ADD_CHAN_PREF:
++		mbo_param_attrs = nla_nest_start(msg, IFX_VENDOR_ATTR_MBO_PARAMS);
++		if (!mbo_param_attrs)
++			goto fail;
++
++		if (nla_put_u8(msg, IFX_VENDOR_ATTR_MBO_PARAM_OPCLASS,
++			params->u.add_chan_pref.op_class) ||
++		nla_put_u8(msg, IFX_VENDOR_ATTR_MBO_PARAM_CHAN,
++			params->u.add_chan_pref.chan) ||
++		nla_put_u8(msg, IFX_VENDOR_ATTR_MBO_PARAM_PREFERENCE,
++			params->u.add_chan_pref.pref_val) ||
++		nla_put_u8(msg, IFX_VENDOR_ATTR_MBO_PARAM_REASON_CODE,
++			params->u.add_chan_pref.reason)) {
++			wpa_printf(MSG_ERROR,
++				"nl80211: MBO config: build IFX_MBO_CONFIG_CMD_ADD_CHAN_PREF msg failed");
++			goto fail;
++		}
++		nla_nest_end(msg, mbo_param_attrs);
++		break;
++	case IFX_MBO_CONFIG_CMD_DEL_CHAN_PREF:
++		mbo_param_attrs = nla_nest_start(msg, IFX_VENDOR_ATTR_MBO_PARAMS);
++		if (!mbo_param_attrs)
++			goto fail;
++
++		if (nla_put_u8(msg, IFX_VENDOR_ATTR_MBO_PARAM_OPCLASS,
++			params->u.del_chan_pref.op_class) ||
++		nla_put_u8(msg, IFX_VENDOR_ATTR_MBO_PARAM_CHAN,
++			params->u.del_chan_pref.chan)) {
++			wpa_printf(MSG_ERROR,
++				"nl80211: MBO config: build IFX_MBO_CONFIG_CMD_DEL_CHAN_PREF msg failed");
++			goto fail;
++		}
++		nla_nest_end(msg, mbo_param_attrs);
++		break;
++	case IFX_MBO_CONFIG_CMD_CELLULAR_DATA_CAP:
++		mbo_param_attrs = nla_nest_start(msg, IFX_VENDOR_ATTR_MBO_PARAMS);
++		if (!mbo_param_attrs)
++			goto fail;
++
++		if (nla_put_u8(msg, IFX_VENDOR_ATTR_MBO_PARAM_CELL_DATA_CAP,
++			params->u.cell_data_cap.cap)) {
++			wpa_printf(MSG_ERROR,
++				"nl80211: MBO config: build IFX_MBO_CONFIG_CMD_CELLULAR_DATA_CAP msg failed");
++			goto fail;
++		}
++		nla_nest_end(msg, mbo_param_attrs);
++		break;
++	case IFX_MBO_CONFIG_CMD_FORCE_ASSOC:
++		mbo_param_attrs = nla_nest_start(msg, IFX_VENDOR_ATTR_MBO_PARAMS);
++		if (!mbo_param_attrs)
++			goto fail;
++
++		if (nla_put_u8(msg, IFX_VENDOR_ATTR_MBO_PARAM_ENABLE,
++			params->u.force_assoc.enable)) {
++			wpa_printf(MSG_ERROR,
++				"nl80211: MBO config: build IFX_MBO_CONFIG_CMD_FORCE_ASSOC msg failed");
++			goto fail;
++		}
++		nla_nest_end(msg, mbo_param_attrs);
++		break;
++	case IFX_MBO_CONFIG_CMD_BSSTRANS_REJ:
++		mbo_param_attrs = nla_nest_start(msg, IFX_VENDOR_ATTR_MBO_PARAMS);
++		if (!mbo_param_attrs)
++			goto fail;
++
++		if (nla_put_u8(msg, IFX_VENDOR_ATTR_MBO_PARAM_ENABLE,
++			params->u.bsstrans_reject.enable) ||
++		nla_put_u8(msg, IFX_VENDOR_ATTR_MBO_PARAM_REASON_CODE,
++			params->u.bsstrans_reject.reason)) {
++			wpa_printf(MSG_ERROR,
++				"nl80211: MBO config: build IFX_MBO_CONFIG_CMD_DEL_CHAN_PREF msg failed");
++			goto fail;
++		}
++		nla_nest_end(msg, mbo_param_attrs);
++		break;
++	case IFX_MBO_CONFIG_CMD_SEND_NOTIF:
++		mbo_param_attrs = nla_nest_start(msg, IFX_VENDOR_ATTR_MBO_PARAMS);
++		if (!mbo_param_attrs)
++			goto fail;
++
++		if (nla_put_u8(msg, IFX_VENDOR_ATTR_MBO_PARAM_SUB_ELEM_TYPE,
++			params->u.send_notif.type)) {
++			wpa_printf(MSG_ERROR,
++				"nl80211: MBO config: build IFX_MBO_CONFIG_CMD_FORCE_ASSOC msg failed");
++			goto fail;
++		}
++		nla_nest_end(msg, mbo_param_attrs);
++		break;
++	case IFX_MBO_CONFIG_CMD_LIST_CHAN_PREF:
++	case IFX_MBO_CONFIG_CMD_DUMP_COUNTER:
++	case IFX_MBO_CONFIG_CMD_CLEAR_COUNTER:
++		wpa_printf(MSG_DEBUG,
++			   "MBO config: cmd %d doesn't need extra attribute",
++			    params->cmd);
++		break;
++	default:
++		break;
++	}
++
++	nla_nest_end(msg, data);
++
++	ret = send_and_recv_msgs(drv, msg, NULL, NULL, NULL, NULL);
++	if (ret) {
++		wpa_printf(MSG_ERROR,
++			   "nl80211: MBO config: Failed to invoke driver "
++			   "MBO config function: %s",
++			   strerror(-ret));
++	}
++
++	return ret;
++fail:
++	nl80211_nlmsg_clear(msg);
++	nlmsg_free(msg);
++	return ret;
++}
++
++static int wpa_driver_nl80211_maxidle_wnm_reply_handler(struct nl_msg *msg, void *arg)
++{
++	struct nlattr *tb_msg[NL80211_ATTR_MAX + 1];
++	struct genlmsghdr *gnlh = nlmsg_data(nlmsg_hdr(msg));
++	char *buf = arg;
++	char *data;
++	int len;
++
++	wpa_printf(MSG_INFO, "nl80211: maxidle_wnm command reply handler");
++
++	nla_parse(tb_msg, NL80211_ATTR_MAX, genlmsg_attrdata(gnlh, 0),
++			genlmsg_attrlen(gnlh, 0), NULL);
++
++	if (tb_msg[NL80211_ATTR_VENDOR_DATA]) {
++		data = (char *)((char *)tb_msg[NL80211_ATTR_VENDOR_DATA] + GENL_HDRLEN);
++		len = nla_len(tb_msg[NL80211_ATTR_VENDOR_DATA]);
++		os_memcpy(buf, data, len);
++	}
++	return NL_SKIP;
++}
++
++static int wpa_driver_nl80211_config_maxidle_wnm(void *priv, struct drv_maxidle_wnm_params *params)
++{
++	struct i802_bss *bss = priv;
++	struct wpa_driver_nl80211_data *drv = bss->drv;
++	struct nl_msg *msg = NULL;
++	struct nlattr *data, *wnm_param_attrs;
++	int ret = -1, get_period = 0;
++
++	if (!drv->ifx_wnm_offload)
++		goto fail;
++
++	if (!(msg = nl80211_drv_msg(drv, 0, NL80211_CMD_VENDOR)) ||
++	    nla_put_u32(msg, NL80211_ATTR_VENDOR_ID, OUI_IFX) ||
++	    nla_put_u32(msg, NL80211_ATTR_VENDOR_SUBCMD, IFX_VENDOR_SCMD_WNM))
++		goto fail;
++
++	data = nla_nest_start(msg, NL80211_ATTR_VENDOR_DATA);
++	if (!data)
++		goto fail;
++
++	if (nla_put_u8(msg, IFX_VENDOR_ATTR_WNM_CMD, IFX_WNM_CONFIG_CMD_IOV_WNM_MAXIDLE))
++		goto fail;
++
++	wnm_param_attrs = nla_nest_start(msg, IFX_VENDOR_ATTR_WNM_PARAMS);
++	if (!wnm_param_attrs)
++		goto fail;
++
++	if (params->get_info) {
++		if (nla_put_u8(msg, IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_GET_INFO,
++			params->get_info)) {
++			wpa_printf(MSG_ERROR,
++				"nl80211: WNM config: build msg ATTR:%d failed",
++				IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_GET_INFO);
++			goto fail;
++		}
++	} else {
++		if (nla_put_u8(msg, IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_IDLE_PERIOD,
++			params->period) ||
++		nla_put_u8(msg, IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_PROTECTION_OPT,
++			params->protect)) {
++			wpa_printf(MSG_ERROR,
++				"nl80211: WNM config: build ATTR:%d %d failed",
++				IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_IDLE_PERIOD,
++				IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_PROTECTION_OPT);
++			goto fail;
++		}
++	}
++	nla_nest_end(msg, wnm_param_attrs);
++	nla_nest_end(msg, data);
++
++	if (params->get_info)
++		ret = send_and_recv_msgs(drv, msg, wpa_driver_nl80211_maxidle_wnm_reply_handler,
++			&get_period, NULL, NULL);
++	else
++		ret = send_and_recv_msgs(drv, msg, NULL, NULL, NULL, NULL);
++
++	if (ret)
++		wpa_printf(MSG_ERROR, "nl80211: WNM maxidle: Failed to invoke driver %s",
++			strerror(-ret));
++	else
++		if (params->get_info)
++			params->period = get_period;
++
++	return ret;
++fail:
++	nl80211_nlmsg_clear(msg);
++	nlmsg_free(msg);
++	return ret;
++}
++#endif /* CONFIG_DRIVER_NL80211_IFX */
+ 
+ const struct wpa_driver_ops wpa_driver_nl80211_ops = {
+ 	.name = "nl80211",
+@@ -12205,6 +12801,9 @@ const struct wpa_driver_ops wpa_driver_nl80211_ops = {
+ 	.driver_cmd = wpa_driver_nl80211_driver_cmd,
+ #endif /* !ANDROID_LIB_STUB */
+ #endif /* ANDROID */
++#ifdef CONFIG_DRIVER_BRCM_WL
++	.wl_cmd = nl80211_wl_command,
++#endif /* CONFIG_DRIVER_BRCM_WL */
+ 	.vendor_cmd = nl80211_vendor_cmd,
+ 	.set_qos_map = nl80211_set_qos_map,
+ 	.get_wowlan = nl80211_get_wowlan,
+@@ -12252,4 +12851,12 @@ const struct wpa_driver_ops wpa_driver_nl80211_ops = {
+ #ifdef CONFIG_TESTING_OPTIONS
+ 	.register_frame = testing_nl80211_register_frame,
+ #endif /* CONFIG_TESTING_OPTIONS */
++#ifdef CONFIG_DRIVER_NL80211_IFX
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++	.setup_twt = wpa_driver_nl80211_setup_twt,
++	.teardown_twt = wpa_driver_nl80211_teardown_twt,
++#endif /* CONFIG_TWT_OFFLOAD_IFX */
++	.config_mbo = wpa_driver_nl80211_config_mbo,
++	.maxidle_wnm = wpa_driver_nl80211_config_maxidle_wnm,
++#endif /* CONFIG_DRIVER_NL80211_IFX */
+ };
+diff --git a/src/drivers/driver_nl80211.h b/src/drivers/driver_nl80211.h
+index 80d4564..6d9945c 100644
+--- a/src/drivers/driver_nl80211.h
++++ b/src/drivers/driver_nl80211.h
+@@ -180,6 +180,11 @@ struct wpa_driver_nl80211_data {
+ 	unsigned int unsol_bcast_probe_resp:1;
+ 	unsigned int qca_do_acs:1;
+ 	unsigned int brcm_do_acs:1;
++#ifdef CONFIG_DRIVER_NL80211_IFX
++	unsigned int ifx_twt_offload:1;
++	unsigned int ifx_mbo_offload:1;
++	unsigned int ifx_wnm_offload:1;
++#endif /* CONFIG_DRIVER_NL80211_IFX */
+ 
+ 	u64 vendor_scan_cookie;
+ 	u64 remain_on_chan_cookie;
+diff --git a/src/drivers/driver_nl80211_capa.c b/src/drivers/driver_nl80211_capa.c
+index 83868b7..21b9c03 100644
+--- a/src/drivers/driver_nl80211_capa.c
++++ b/src/drivers/driver_nl80211_capa.c
+@@ -17,6 +17,9 @@
+ #include "common/qca-vendor.h"
+ #include "common/qca-vendor-attr.h"
+ #include "common/brcm_vendor.h"
++#ifdef CONFIG_DRIVER_NL80211_IFX
++#include "common/ifx_vendor.h"
++#endif /* CONFIG_DRIVER_NL80211_IFX */
+ #include "driver_nl80211.h"
+ 
+ 
+@@ -594,6 +597,22 @@ static void wiphy_info_ext_feature_flags(struct wiphy_info_data *info,
+ 			      NL80211_EXT_FEATURE_4WAY_HANDSHAKE_STA_1X))
+ 		capa->flags |= WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X;
+ 
++	if (ext_feature_isset(ext_features, len,
++			      NL80211_EXT_FEATURE_4WAY_HANDSHAKE_AP_PSK))
++		capa->flags2 |= WPA_DRIVER_FLAGS2_4WAY_HANDSHAKE_AP_PSK;
++
++	if (ext_feature_isset(ext_features, len,
++			      NL80211_EXT_FEATURE_SAE_OFFLOAD))
++		capa->flags2 |= WPA_DRIVER_FLAGS2_SAE_OFFLOAD;
++
++	if (ext_feature_isset(ext_features, len,
++			      NL80211_EXT_FEATURE_SAE_OFFLOAD_AP))
++		capa->flags2 |= WPA_DRIVER_FLAGS2_SAE_OFFLOAD_AP;
++
++	if (ext_feature_isset(ext_features, len,
++			      NL80211_EXT_FEATURE_ROAM_OFFLOAD))
++		capa->flags2 |= WPA_DRIVER_FLAGS_ROAM_OFFLOAD;
++
+ 	if (ext_feature_isset(ext_features, len,
+ 			      NL80211_EXT_FEATURE_MFP_OPTIONAL))
+ 		capa->flags |= WPA_DRIVER_FLAGS_MFP_OPTIONAL;
+@@ -1033,6 +1052,21 @@ static int wiphy_info_handler(struct nl_msg *msg, void *arg)
+ 					break;
+ 				}
+ #endif /* CONFIG_DRIVER_NL80211_BRCM */
++
++#ifdef CONFIG_DRIVER_NL80211_IFX
++			} else if (vinfo->vendor_id == OUI_IFX) {
++				switch (vinfo->subcmd) {
++				case IFX_VENDOR_SCMD_TWT:
++					drv->ifx_twt_offload = 1;
++					break;
++				case IFX_VENDOR_SCMD_MBO:
++					drv->ifx_mbo_offload = 1;
++					break;
++				case IFX_VENDOR_SCMD_WNM:
++					drv->ifx_wnm_offload = 1;
++					break;
++				}
++#endif /* CONFIG_DRIVER_NL80211_IFX */
+ 			}
+ 
+ 			wpa_printf(MSG_DEBUG, "nl80211: Supported vendor command: vendor_id=0x%x subcmd=%u",
+diff --git a/src/drivers/driver_nl80211_event.c b/src/drivers/driver_nl80211_event.c
+index 0f0a01d..d3cb8d8 100644
+--- a/src/drivers/driver_nl80211_event.c
++++ b/src/drivers/driver_nl80211_event.c
+@@ -172,6 +172,11 @@ static const char * nl80211_command_to_string(enum nl80211_commands cmd)
+ 	C2S(NL80211_CMD_UNPROT_BEACON)
+ 	C2S(NL80211_CMD_CONTROL_PORT_FRAME_TX_STATUS)
+ 	C2S(NL80211_CMD_SET_SAR_SPECS)
++	C2S(NL80211_CMD_OBSS_COLOR_COLLISION)
++	C2S(NL80211_CMD_COLOR_CHANGE_REQUEST)
++	C2S(NL80211_CMD_COLOR_CHANGE_STARTED)
++	C2S(NL80211_CMD_COLOR_CHANGE_ABORTED)
++	C2S(NL80211_CMD_COLOR_CHANGE_COMPLETED)
+ 	C2S(__NL80211_CMD_AFTER_LAST)
+ 	}
+ #undef C2S
+@@ -557,7 +562,7 @@ static void mlme_event_connect(struct wpa_driver_nl80211_data *drv,
+ 			   wpa_ssid_txt(drv->ssid, drv->ssid_len));
+ 	}
+ 
+-	if (authorized && nla_get_u8(authorized)) {
++	if (authorized && nla_get_flag(authorized)) {
+ 		event.assoc_info.authorized = 1;
+ 		wpa_printf(MSG_DEBUG, "nl80211: connection authorized");
+ 	}
+@@ -2988,7 +2993,8 @@ static void do_process_drv_event(struct i802_bss *bss, int cmd,
+ 				   tb[NL80211_ATTR_RESP_IE],
+ 				   tb[NL80211_ATTR_TIMED_OUT],
+ 				   tb[NL80211_ATTR_TIMEOUT_REASON],
+-				   NULL, NULL, NULL,
++				   tb[NL80211_ATTR_PORT_AUTHORIZED],
++				   NULL, NULL,
+ 				   tb[NL80211_ATTR_FILS_KEK],
+ 				   NULL,
+ 				   tb[NL80211_ATTR_FILS_ERP_NEXT_SEQ_NUM],
+diff --git a/src/drivers/driver_nl80211_scan.c b/src/drivers/driver_nl80211_scan.c
+index 1316084..1cd1546 100644
+--- a/src/drivers/driver_nl80211_scan.c
++++ b/src/drivers/driver_nl80211_scan.c
+@@ -203,6 +203,21 @@ nl80211_scan_common(struct i802_bss *bss, u8 cmd,
+ 				goto fail;
+ 		}
+ 		nla_nest_end(msg, ssids);
++
++		/*
++		 * If allowed, scan for 6 GHz APs that are reported by other
++		 * APs. Note that if the flag is not set and 6 GHz channels are
++		 * to be scanned, it is highly likely that non-PSC channels
++		 * would be scanned passively (due to the Probe Request frame
++		 * transmission restrictions mandated in IEEE Std 802.11ax-2021,
++		 * 26.17.2.3 (Scanning in the 6 GHz band). Passive scanning of
++		 * all non-PSC channels would take a significant amount of time.
++		 */
++		if (!params->non_coloc_6ghz) {
++			wpa_printf(MSG_DEBUG,
++				   "nl80211: Scan co-located APs on 6 GHz");
++			scan_flags |= NL80211_SCAN_FLAG_COLOCATED_6GHZ;
++		}
+ 	} else {
+ 		wpa_printf(MSG_DEBUG, "nl80211: Passive scan requested");
+ 	}
+diff --git a/src/drivers/drivers.mak b/src/drivers/drivers.mak
+index a03d4a0..a986fa3 100644
+--- a/src/drivers/drivers.mak
++++ b/src/drivers/drivers.mak
+@@ -30,6 +30,11 @@ ifdef CONFIG_DRIVER_NL80211_BRCM
+ DRV_CFLAGS += -DCONFIG_DRIVER_NL80211_BRCM
+ endif
+ 
++ifdef CONFIG_DRIVER_BRCM_WL
++DRV_CFLAGS += -DCONFIG_DRIVER_BRCM_WL
++DRV_OBJS += ../src/drivers/driver_brcm_wlu.o
++endif
++
+ ifdef CONFIG_DRIVER_MACSEC_QCA
+ DRV_CFLAGS += -DCONFIG_DRIVER_MACSEC_QCA
+ DRV_OBJS += ../src/drivers/driver_macsec_qca.o
+diff --git a/src/drivers/nl80211_copy.h b/src/drivers/nl80211_copy.h
+index f962c06..ee80ae0 100644
+--- a/src/drivers/nl80211_copy.h
++++ b/src/drivers/nl80211_copy.h
+@@ -11,7 +11,7 @@
+  * Copyright 2008 Jouni Malinen <jouni.malinen@atheros.com>
+  * Copyright 2008 Colin McCabe <colin@cozybit.com>
+  * Copyright 2015-2017	Intel Deutschland GmbH
+- * Copyright (C) 2018-2020 Intel Corporation
++ * Copyright (C) 2018-2021 Intel Corporation
+  *
+  * Permission to use, copy, modify, and/or distribute this software for any
+  * purpose with or without fee is hereby granted, provided that the above
+@@ -1185,6 +1185,21 @@
+  *	passed using %NL80211_ATTR_SAR_SPEC. %NL80211_ATTR_WIPHY is used to
+  *	specify the wiphy index to be applied to.
+  *
++ * @NL80211_CMD_OBSS_COLOR_COLLISION: This notification is sent out whenever
++ *	mac80211/drv detects a bss color collision.
++ *
++ * @NL80211_CMD_COLOR_CHANGE_REQUEST: This command is used to indicate that
++ *	userspace wants to change the BSS color.
++ *
++ * @NL80211_CMD_COLOR_CHANGE_STARTED: Notify userland, that a color change has
++ *	started
++ *
++ * @NL80211_CMD_COLOR_CHANGE_ABORTED: Notify userland, that the color change has
++ *	been aborted
++ *
++ * @NL80211_CMD_COLOR_CHANGE_COMPLETED: Notify userland that the color change
++ *	has completed
++ *
+  * @NL80211_CMD_MAX: highest used command number
+  * @__NL80211_CMD_AFTER_LAST: internal use
+  */
+@@ -1417,6 +1432,14 @@ enum nl80211_commands {
+ 
+ 	NL80211_CMD_SET_SAR_SPECS,
+ 
++	NL80211_CMD_OBSS_COLOR_COLLISION,
++
++	NL80211_CMD_COLOR_CHANGE_REQUEST,
++
++	NL80211_CMD_COLOR_CHANGE_STARTED,
++	NL80211_CMD_COLOR_CHANGE_ABORTED,
++	NL80211_CMD_COLOR_CHANGE_COMPLETED,
++
+ 	/* add new commands above here */
+ 
+ 	/* used to define NL80211_CMD_MAX below */
+@@ -2403,7 +2426,10 @@ enum nl80211_commands {
+  *	in %NL80211_CMD_CONNECT to indicate that for 802.1X authentication it
+  *	wants to use the supported offload of the 4-way handshake.
+  * @NL80211_ATTR_PMKR0_NAME: PMK-R0 Name for offloaded FT.
+- * @NL80211_ATTR_PORT_AUTHORIZED: (reserved)
++ * @NL80211_ATTR_PORT_AUTHORIZED: flag attribute used in %NL80211_CMD_ROAMED
++ *	notification indicating that that 802.1X authentication was done by
++ *	the driver or is not needed (because roaming used the Fast Transition
++ *	protocol).
+  *
+  * @NL80211_ATTR_EXTERNAL_AUTH_ACTION: Identify the requested external
+  *     authentication operation (u32 attribute with an
+@@ -2560,6 +2586,16 @@ enum nl80211_commands {
+  *	disassoc events to indicate that an immediate reconnect to the AP
+  *	is desired.
+  *
++ * @NL80211_ATTR_OBSS_COLOR_BITMAP: bitmap of the u64 BSS colors for the
++ *	%NL80211_CMD_OBSS_COLOR_COLLISION event.
++ *
++ * @NL80211_ATTR_COLOR_CHANGE_COUNT: u8 attribute specifying the number of TBTT's
++ *	until the color switch event.
++ * @NL80211_ATTR_COLOR_CHANGE_COLOR: u8 attribute specifying the color that we are
++ *	switching to
++ * @NL80211_ATTR_COLOR_CHANGE_ELEMS: Nested set of attributes containing the IE
++ *	information for the time while performing a color switch.
++ *
+  * @NUM_NL80211_ATTR: total number of nl80211_attrs available
+  * @NL80211_ATTR_MAX: highest attribute number currently defined
+  * @__NL80211_ATTR_AFTER_LAST: internal use
+@@ -3057,6 +3093,12 @@ enum nl80211_attrs {
+ 
+ 	NL80211_ATTR_DISABLE_HE,
+ 
++	NL80211_ATTR_OBSS_COLOR_BITMAP,
++
++	NL80211_ATTR_COLOR_CHANGE_COUNT,
++	NL80211_ATTR_COLOR_CHANGE_COLOR,
++	NL80211_ATTR_COLOR_CHANGE_ELEMS,
++
+ 	/* add attributes here, update the policy in nl80211.c */
+ 
+ 	__NL80211_ATTR_AFTER_LAST,
+@@ -3654,6 +3696,8 @@ enum nl80211_mpath_info {
+  *     defined
+  * @NL80211_BAND_IFTYPE_ATTR_HE_6GHZ_CAPA: HE 6GHz band capabilities (__le16),
+  *	given for all 6 GHz band channels
++ * @NL80211_BAND_IFTYPE_ATTR_VENDOR_ELEMS: vendor element capabilities that are
++ *	advertised on this band/for this iftype (binary)
+  * @__NL80211_BAND_IFTYPE_ATTR_AFTER_LAST: internal use
+  */
+ enum nl80211_band_iftype_attr {
+@@ -3665,6 +3709,7 @@ enum nl80211_band_iftype_attr {
+ 	NL80211_BAND_IFTYPE_ATTR_HE_CAP_MCS_SET,
+ 	NL80211_BAND_IFTYPE_ATTR_HE_CAP_PPE,
+ 	NL80211_BAND_IFTYPE_ATTR_HE_6GHZ_CAPA,
++	NL80211_BAND_IFTYPE_ATTR_VENDOR_ELEMS,
+ 
+ 	/* keep last */
+ 	__NL80211_BAND_IFTYPE_ATTR_AFTER_LAST,
+@@ -5950,6 +5995,9 @@ enum nl80211_feature_flags {
+  *      frame protection for all management frames exchanged during the
+  *      negotiation and range measurement procedure.
+  *
++ * @NL80211_EXT_FEATURE_BSS_COLOR: The driver supports BSS color collision
++ *	detection and change announcemnts.
++ *
+  * @NUM_NL80211_EXT_FEATURES: number of extended features.
+  * @MAX_NL80211_EXT_FEATURES: highest extended feature index.
+  */
+@@ -6014,6 +6062,8 @@ enum nl80211_ext_feature_index {
+ 	NL80211_EXT_FEATURE_SECURE_LTF,
+ 	NL80211_EXT_FEATURE_SECURE_RTT,
+ 	NL80211_EXT_FEATURE_PROT_RANGE_NEGO_AND_MEASURE,
++	NL80211_EXT_FEATURE_BSS_COLOR,
++	NL80211_EXT_FEATURE_ROAM_OFFLOAD,
+ 
+ 	/* add new features before the definition below */
+ 	NUM_NL80211_EXT_FEATURES,
+@@ -6912,6 +6962,9 @@ enum nl80211_peer_measurement_ftm_capa {
+  * @NL80211_PMSR_FTM_REQ_ATTR_LMR_FEEDBACK: negotiate for LMR feedback. Only
+  *	valid if either %NL80211_PMSR_FTM_REQ_ATTR_TRIGGER_BASED or
+  *	%NL80211_PMSR_FTM_REQ_ATTR_NON_TRIGGER_BASED is set.
++ * @NL80211_PMSR_FTM_REQ_ATTR_BSS_COLOR: optional. The BSS color of the
++ *	responder. Only valid if %NL80211_PMSR_FTM_REQ_ATTR_NON_TRIGGER_BASED
++ *	or %NL80211_PMSR_FTM_REQ_ATTR_TRIGGER_BASED is set.
+  *
+  * @NUM_NL80211_PMSR_FTM_REQ_ATTR: internal
+  * @NL80211_PMSR_FTM_REQ_ATTR_MAX: highest attribute number
+@@ -6931,6 +6984,7 @@ enum nl80211_peer_measurement_ftm_req {
+ 	NL80211_PMSR_FTM_REQ_ATTR_TRIGGER_BASED,
+ 	NL80211_PMSR_FTM_REQ_ATTR_NON_TRIGGER_BASED,
+ 	NL80211_PMSR_FTM_REQ_ATTR_LMR_FEEDBACK,
++	NL80211_PMSR_FTM_REQ_ATTR_BSS_COLOR,
+ 
+ 	/* keep last */
+ 	NUM_NL80211_PMSR_FTM_REQ_ATTR,
+diff --git a/src/eap_peer/eap_tls_common.c b/src/eap_peer/eap_tls_common.c
+index c1837db..5fb8945 100644
+--- a/src/eap_peer/eap_tls_common.c
++++ b/src/eap_peer/eap_tls_common.c
+@@ -192,18 +192,20 @@ static int eap_tls_params_from_conf(struct eap_sm *sm,
+ 		 * TLS v1.3 changes, so disable this by default for now. */
+ 		params->flags |= TLS_CONN_DISABLE_TLSv1_3;
+ 	}
++#ifndef EAP_TLSV1_3
+ 	if (data->eap_type == EAP_TYPE_TLS ||
+ 	    data->eap_type == EAP_UNAUTH_TLS_TYPE ||
+ 	    data->eap_type == EAP_WFA_UNAUTH_TLS_TYPE) {
+ 		/* While the current EAP-TLS implementation is more or less
+-		 * complete for TLS v1.3, there has been no interoperability
+-		 * testing with other implementations, so disable for by default
+-		 * for now until there has been chance to confirm that no
+-		 * significant interoperability issues show up with TLS version
+-		 * update.
++		 * complete for TLS v1.3, there has been only minimal
++		 * interoperability testing with other implementations, so
++		 * disable it by default for now until there has been chance to
++		 * confirm that no significant interoperability issues show up
++		 * with TLS version update.
+ 		 */
+ 		params->flags |= TLS_CONN_DISABLE_TLSv1_3;
+ 	}
++#endif /* EAP_TLSV1_3 */
+ 	if (phase2 && sm->use_machine_cred) {
+ 		wpa_printf(MSG_DEBUG, "TLS: using machine config options");
+ 		eap_tls_params_from_conf2m(params, config);
+diff --git a/src/rsn_supp/pmksa_cache.c b/src/rsn_supp/pmksa_cache.c
+index 0cd5159..658390d 100644
+--- a/src/rsn_supp/pmksa_cache.c
++++ b/src/rsn_supp/pmksa_cache.c
+@@ -65,7 +65,8 @@ static void pmksa_cache_expire(void *eloop_ctx, void *timeout_ctx)
+ 	os_get_reltime(&now);
+ 	while (entry && entry->expiration <= now.sec) {
+ 		if (wpa_key_mgmt_sae(entry->akmp) &&
+-		    pmksa->is_current_cb(entry, pmksa->ctx)) {
++			pmksa->is_current_cb(entry, pmksa->ctx) &&
++			!pmksa->sm->dot11RSNAConfigPMKLifetime_UserDef) {
+ 			/* Do not expire the currently used PMKSA entry for SAE
+ 			 * since there is no convenient mechanism for
+ 			 * reauthenticating during an association with SAE. The
+@@ -137,14 +138,20 @@ static void pmksa_cache_set_expiration(struct rsn_pmksa_cache *pmksa)
+ 	}
+ 	eloop_register_timeout(sec + 1, 0, pmksa_cache_expire, pmksa, NULL);
+ 
+-	entry = pmksa->sm->cur_pmksa ? pmksa->sm->cur_pmksa :
+-		pmksa_cache_get(pmksa, pmksa->sm->bssid, NULL, NULL, 0);
+-	if (entry && !wpa_key_mgmt_sae(entry->akmp)) {
+-		sec = pmksa->pmksa->reauth_time - now.sec;
+-		if (sec < 0)
+-			sec = 0;
+-		eloop_register_timeout(sec, 0, pmksa_cache_reauth, pmksa,
+-				       NULL);
++	/* If wpa suulicant do not deauthenticate when PMKSA expired.
++	 * Means PMK's lifetime is infinite. So there's not necessary
++	 * to reauth with radius server to get the new PMK.
++	 */
++	if (!pmksa->sm->suppress_deauth_no_pmksa) {
++		entry = pmksa->sm->cur_pmksa ? pmksa->sm->cur_pmksa :
++			pmksa_cache_get(pmksa, pmksa->sm->bssid, NULL, NULL, 0);
++		if (entry && !wpa_key_mgmt_sae(entry->akmp)) {
++			sec = pmksa->pmksa->reauth_time - now.sec;
++			if (sec < 0)
++				sec = 0;
++			eloop_register_timeout(sec, 0, pmksa_cache_reauth, pmksa,
++						NULL);
++		}
+ 	}
+ }
+ 
+diff --git a/src/rsn_supp/wpa.c b/src/rsn_supp/wpa.c
+index 0a2f877..ce01990 100644
+--- a/src/rsn_supp/wpa.c
++++ b/src/rsn_supp/wpa.c
+@@ -1661,6 +1661,7 @@ static void wpa_supplicant_process_3_of_4(struct wpa_sm *sm,
+ {
+ 	u16 key_info, keylen;
+ 	struct wpa_eapol_ie_parse ie;
++	struct wpa_gtk_data gd; /* Used for checking gtk length*/
+ 
+ 	wpa_sm_set_state(sm, WPA_4WAY_HANDSHAKE);
+ 	wpa_dbg(sm->ctx->msg_ctx, MSG_DEBUG, "WPA: RX message 3 of 4-Way "
+@@ -1763,6 +1764,11 @@ static void wpa_supplicant_process_3_of_4(struct wpa_sm *sm,
+ 	    wpa_supplicant_install_ptk(sm, key, KEY_FLAG_RX))
+ 		goto failed;
+ 
++	/* Checking gtk_len before sending msg 4/4. If it is greater than
++	 * 32 bytes drop it. No GTK to be set EAPOL WPA KEY */
++	if (ie.gtk && (ie.gtk_len < 2 || ie.gtk_len - 2 > sizeof(gd.gtk)))
++		goto failed;
++
+ 	if (wpa_supplicant_send_4_of_4(sm, sm->bssid, key, ver, key_info,
+ 				       &sm->ptk) < 0) {
+ 		goto failed;
+@@ -1825,8 +1831,10 @@ static void wpa_supplicant_process_3_of_4(struct wpa_sm *sm,
+ 	 * existing PMKSA entry after each 4-way handshake (i.e., new KCK/PMKID)
+ 	 * to avoid unnecessary changes of PMKID while continuing to use the
+ 	 * same PMK. */
+-	if (sm->proto == WPA_PROTO_RSN && wpa_key_mgmt_suite_b(sm->key_mgmt) &&
+-	    !sm->cur_pmksa) {
++	/* Add ft case for driver base roaming. FW needs PMK to calculate
++	 * PMK-R0name */
++	if (sm->proto == WPA_PROTO_RSN && (wpa_key_mgmt_suite_b(sm->key_mgmt) ||
++	    wpa_key_mgmt_ft(sm->key_mgmt)) && !sm->cur_pmksa) {
+ 		struct rsn_pmksa_cache_entry *sa;
+ 
+ 		sa = pmksa_cache_add(sm->pmksa, sm->pmk, sm->pmk_len, NULL,
+@@ -2898,7 +2906,9 @@ static void wpa_sm_pmksa_free_cb(struct rsn_pmksa_cache_entry *entry,
+ 	if (deauth) {
+ 		sm->pmk_len = 0;
+ 		os_memset(sm->pmk, 0, sizeof(sm->pmk));
+-		wpa_sm_deauthenticate(sm, WLAN_REASON_UNSPECIFIED);
++		if (!sm->suppress_deauth_no_pmksa) {
++			wpa_sm_deauthenticate(sm, WLAN_REASON_UNSPECIFIED);
++		}
+ 	}
+ }
+ 
+@@ -2932,6 +2942,7 @@ struct wpa_sm * wpa_sm_init(struct wpa_sm_ctx *ctx)
+ 	sm->ctx = ctx;
+ 
+ 	sm->dot11RSNAConfigPMKLifetime = 43200;
++	sm->dot11RSNAConfigPMKLifetime_UserDef = false;
+ 	sm->dot11RSNAConfigPMKReauthThreshold = 70;
+ 	sm->dot11RSNAConfigSATimeout = 60;
+ 
+@@ -3234,6 +3245,7 @@ void wpa_sm_set_config(struct wpa_sm *sm, struct rsn_supp_config *config)
+ 		}
+ #endif /* CONFIG_FILS */
+ 		sm->beacon_prot = config->beacon_prot;
++		sm->suppress_deauth_no_pmksa = config->suppress_deauth_no_pmksa;
+ 	} else {
+ 		sm->network_ctx = NULL;
+ 		sm->allowed_pairwise_cipher = 0;
+@@ -3308,8 +3320,10 @@ int wpa_sm_set_param(struct wpa_sm *sm, enum wpa_sm_conf_params param,
+ 
+ 	switch (param) {
+ 	case RSNA_PMK_LIFETIME:
+-		if (value > 0)
++		if (value > 0) {
+ 			sm->dot11RSNAConfigPMKLifetime = value;
++			sm->dot11RSNAConfigPMKLifetime_UserDef = true;
++		}
+ 		else
+ 			ret = -1;
+ 		break;
+diff --git a/src/rsn_supp/wpa.h b/src/rsn_supp/wpa.h
+index 41daaae..2cd1826 100644
+--- a/src/rsn_supp/wpa.h
++++ b/src/rsn_supp/wpa.h
+@@ -136,6 +136,7 @@ struct rsn_supp_config {
+ 	const u8 *fils_cache_id;
+ 	int beacon_prot;
+ 	bool force_kdk_derivation;
++	int suppress_deauth_no_pmksa;
+ };
+ 
+ #ifndef CONFIG_NO_WPA
+diff --git a/src/rsn_supp/wpa_i.h b/src/rsn_supp/wpa_i.h
+index 6cdce32..f3843d7 100644
+--- a/src/rsn_supp/wpa_i.h
++++ b/src/rsn_supp/wpa_i.h
+@@ -90,6 +90,7 @@ struct wpa_sm {
+ 	u8 bssid[ETH_ALEN];
+ 
+ 	unsigned int dot11RSNAConfigPMKLifetime;
++	bool dot11RSNAConfigPMKLifetime_UserDef;
+ 	unsigned int dot11RSNAConfigPMKReauthThreshold;
+ 	unsigned int dot11RSNAConfigSATimeout;
+ 
+@@ -216,6 +217,7 @@ struct wpa_sm {
+ 	struct wpabuf *dpp_z;
+ 	int dpp_pfs;
+ #endif /* CONFIG_DPP2 */
++	int suppress_deauth_no_pmksa;
+ };
+ 
+ 
+diff --git a/wpa_supplicant/Android.mk b/wpa_supplicant/Android.mk
+index 7e597f3..a54517e 100644
+--- a/wpa_supplicant/Android.mk
++++ b/wpa_supplicant/Android.mk
+@@ -255,6 +255,10 @@ NEED_DH_GROUPS_ALL=y
+ endif
+ endif
+ 
++ifdef CONFIG_WPA3_SAE_AUTH_EARLY_SET
++L_CFLAGS += -DCONFIG_WPA3_SAE_AUTH_EARLY_SET
++endif
++
+ ifdef CONFIG_DPP
+ L_CFLAGS += -DCONFIG_DPP
+ OBJS += src/common/dpp.c
+@@ -478,6 +482,9 @@ OBJS += src/eap_peer/eap_tls.c
+ endif
+ TLS_FUNCS=y
+ CONFIG_IEEE8021X_EAPOL=y
++ifdef CONFIG_EAP_TLSV1_3
++L_CFLAGS += -DEAP_TLSV1_3
++endif
+ endif
+ 
+ ifdef CONFIG_EAP_UNAUTH_TLS
+diff --git a/wpa_supplicant/Makefile b/wpa_supplicant/Makefile
+index cb66def..8978546 100644
+--- a/wpa_supplicant/Makefile
++++ b/wpa_supplicant/Makefile
+@@ -254,6 +254,10 @@ OBJS += mesh_mpm.o
+ OBJS += mesh_rsn.o
+ endif
+ 
++ifdef CONFIG_WPA3_SAE_AUTH_EARLY_SET
++CFLAGS += -DCONFIG_WPA3_SAE_AUTH_EARLY_SET
++endif
++
+ ifdef CONFIG_SAE
+ CFLAGS += -DCONFIG_SAE
+ OBJS += ../src/common/sae.o
+@@ -480,6 +484,9 @@ OBJS += ../src/eap_peer/eap_tls.o
+ endif
+ TLS_FUNCS=y
+ CONFIG_IEEE8021X_EAPOL=y
++ifdef CONFIG_EAP_TLSV1_3
++CFLAGS += -DEAP_TLSV1_3
++endif
+ endif
+ 
+ ifdef CONFIG_EAP_UNAUTH_TLS
+@@ -819,6 +826,14 @@ CFLAGS += -DCONFIG_WPS_STRICT
+ OBJS += ../src/wps/wps_validate.o
+ endif
+ 
++ifdef CONFIG_DRIVER_NL80211_IFX
++CFLAGS += -DCONFIG_DRIVER_NL80211_IFX
++endif # CONFIG_DRIVER_NL80211_IFX == y
++
++ifdef CONFIG_TWT_OFFLOAD_IFX
++CFLAGS += -DCONFIG_TWT_OFFLOAD_IFX
++endif # CONFIG_TWT_OFFLOAD_IFX == y
++
+ ifdef CONFIG_WPS_TESTING
+ CFLAGS += -DCONFIG_WPS_TESTING
+ endif
+diff --git a/wpa_supplicant/android.config b/wpa_supplicant/android.config
+index 283f8eb..3c28f80 100644
+--- a/wpa_supplicant/android.config
++++ b/wpa_supplicant/android.config
+@@ -534,6 +534,9 @@ CONFIG_WIFI_DISPLAY=y
+ # Experimental implementation of draft-harkins-owe-07.txt
+ #CONFIG_OWE=y
+ 
++# Set SAE Auth status early
++CONFIG_WPA3_SAE_AUTH_EARLY_SET=y
++
+ # Wired equivalent privacy (WEP)
+ # WEP is an obsolete cryptographic data confidentiality algorithm that is not
+ # considered secure. It should not be used for anything anymore. The
+diff --git a/wpa_supplicant/ap.c b/wpa_supplicant/ap.c
+index 6a0a69e..cade951 100644
+--- a/wpa_supplicant/ap.c
++++ b/wpa_supplicant/ap.c
+@@ -605,6 +605,8 @@ static int wpa_supplicant_conf_ap(struct wpa_supplicant *wpa_s,
+ 		bss->sae_pwe = ssid->sae_pwe;
+ 	else
+ 		bss->sae_pwe = wpa_s->conf->sae_pwe;
++
++	bss->dot11RSNAConfigPMKLifetime = wpa_s->conf->dot11RSNAConfigPMKLifetime;
+ #endif /* CONFIG_SAE */
+ 
+ 	if (wpa_s->conf->go_interworking) {
+diff --git a/wpa_supplicant/bgscan_learn.c b/wpa_supplicant/bgscan_learn.c
+index cb732f7..c872d8d 100644
+--- a/wpa_supplicant/bgscan_learn.c
++++ b/wpa_supplicant/bgscan_learn.c
+@@ -18,6 +18,9 @@
+ #include "driver_i.h"
+ #include "scan.h"
+ #include "bgscan.h"
++#include "bss.h"
++
++#define BGSCAN_LEARN_LINK_LOSS_THRESH_SECS	600
+ 
+ struct bgscan_learn_bss {
+ 	struct dl_list list;
+@@ -315,6 +318,18 @@ static void bgscan_learn_timeout(void *eloop_ctx, void *timeout_ctx)
+ }
+ 
+ 
++static void bgscan_learn_link_loss_timeout(void *eloop_ctx, void *timeout_ctx)
++{
++	struct bgscan_learn_data *data = eloop_ctx;
++	struct wpa_supplicant *wpa_s = data->wpa_s;
++
++	wpa_printf(MSG_DEBUG, "bgscan learn: Link Loss timeout");
++
++	eloop_cancel_timeout(bgscan_learn_link_loss_timeout, data, NULL);
++	wpa_supplicant_deauthenticate(wpa_s, WLAN_REASON_DEAUTH_LEAVING);
++}
++
++
+ static int bgscan_learn_get_params(struct bgscan_learn_data *data,
+ 				   const char *params)
+ {
+@@ -447,6 +462,7 @@ static void bgscan_learn_deinit(void *priv)
+ 	struct bgscan_learn_bss *bss, *n;
+ 
+ 	bgscan_learn_save(data);
++	eloop_cancel_timeout(bgscan_learn_link_loss_timeout, data, NULL);
+ 	eloop_cancel_timeout(bgscan_learn_timeout, data, NULL);
+ 	if (data->signal_threshold)
+ 		wpa_drv_signal_monitor(data->wpa_s, 0, 0);
+@@ -550,8 +566,28 @@ static int bgscan_learn_notify_scan(void *priv,
+ 
+ static void bgscan_learn_notify_beacon_loss(void *priv)
+ {
++	struct bgscan_learn_data *data = priv;
++
+ 	wpa_printf(MSG_DEBUG, "bgscan learn: beacon loss");
+-	/* TODO: speed up background scanning */
++
++	wpa_printf(MSG_DEBUG, "bgscan learn: Start Link Loss timer");
++	eloop_register_timeout(BGSCAN_LEARN_LINK_LOSS_THRESH_SECS,
++				0, bgscan_learn_link_loss_timeout, data, NULL);
++
++	wpa_printf(MSG_DEBUG, "bgscan learn: Flush all prev bss entries");
++	wpa_bss_flush(data->wpa_s);
++
++	wpa_printf(MSG_DEBUG, "bgscan learn: allow reassociation "
++			"to same lost BSS if found");
++	data->wpa_s->reassociate = 1;
++
++	wpa_printf(MSG_DEBUG, "bgscan learn: Start using short "
++		   "bgscan interval");
++	data->scan_interval = data->short_interval;
++
++	wpa_printf(MSG_DEBUG, "bgscan learn: Trigger immediate scan");
++	eloop_cancel_timeout(bgscan_learn_timeout, data, NULL);
++	eloop_register_timeout(0, 0, bgscan_learn_timeout, data, NULL);
+ }
+ 
+ 
+diff --git a/wpa_supplicant/bgscan_simple.c b/wpa_supplicant/bgscan_simple.c
+index 41a26df..bf9184e 100644
+--- a/wpa_supplicant/bgscan_simple.c
++++ b/wpa_supplicant/bgscan_simple.c
+@@ -16,6 +16,9 @@
+ #include "driver_i.h"
+ #include "scan.h"
+ #include "bgscan.h"
++#include "bss.h"
++
++#define BGSCAN_SIMPLE_LINK_LOSS_THRESH_SECS	600
+ 
+ struct bgscan_simple_data {
+ 	struct wpa_supplicant *wpa_s;
+@@ -75,6 +78,18 @@ static void bgscan_simple_timeout(void *eloop_ctx, void *timeout_ctx)
+ }
+ 
+ 
++static void bgscan_simple_link_loss_timeout(void *eloop_ctx, void *timeout_ctx)
++{
++	struct bgscan_simple_data *data = eloop_ctx;
++	struct wpa_supplicant *wpa_s = data->wpa_s;
++
++	wpa_printf(MSG_DEBUG, "bgscan simple: Link Loss timeout");
++
++	eloop_cancel_timeout(bgscan_simple_link_loss_timeout, data, NULL);
++	wpa_supplicant_deauthenticate(wpa_s, WLAN_REASON_DEAUTH_LEAVING);
++}
++
++
+ static int bgscan_simple_get_params(struct bgscan_simple_data *data,
+ 				    const char *params)
+ {
+@@ -160,6 +175,7 @@ static void * bgscan_simple_init(struct wpa_supplicant *wpa_s,
+ static void bgscan_simple_deinit(void *priv)
+ {
+ 	struct bgscan_simple_data *data = priv;
++	eloop_cancel_timeout(bgscan_simple_link_loss_timeout, data, NULL);
+ 	eloop_cancel_timeout(bgscan_simple_timeout, data, NULL);
+ 	if (data->signal_threshold)
+ 		wpa_drv_signal_monitor(data->wpa_s, 0, 0);
+@@ -191,8 +207,29 @@ static int bgscan_simple_notify_scan(void *priv,
+ 
+ static void bgscan_simple_notify_beacon_loss(void *priv)
+ {
++	struct bgscan_simple_data *data = priv;
++
+ 	wpa_printf(MSG_DEBUG, "bgscan simple: beacon loss");
+-	/* TODO: speed up background scanning */
++
++	wpa_printf(MSG_DEBUG, "bgscan simple: Start Link Loss timer");
++	eloop_register_timeout(BGSCAN_SIMPLE_LINK_LOSS_THRESH_SECS,
++				0, bgscan_simple_link_loss_timeout, data, NULL);
++
++	wpa_printf(MSG_DEBUG, "bgscan simple: Flush all prev bss entries");
++	wpa_bss_flush(data->wpa_s);
++
++	wpa_printf(MSG_DEBUG, "bgscan simple: allow reassociation "
++			"to same lost BSS if found");
++	data->wpa_s->reassociate = 1;
++
++	wpa_printf(MSG_DEBUG, "bgscan simple: Start using short "
++		   "bgscan interval");
++	data->scan_interval = data->short_interval;
++
++	wpa_printf(MSG_DEBUG, "bgscan simple: Trigger immediate scan");
++	eloop_cancel_timeout(bgscan_simple_timeout, data, NULL);
++	eloop_register_timeout(0, 0, bgscan_simple_timeout, data,
++			       NULL);
+ }
+ 
+ 
+diff --git a/wpa_supplicant/config.c b/wpa_supplicant/config.c
+index bf062b0..afb36c8 100644
+--- a/wpa_supplicant/config.c
++++ b/wpa_supplicant/config.c
+@@ -2639,6 +2639,7 @@ static const struct parse_data ssid_fields[] = {
+ 	{ INT_RANGE(beacon_prot, 0, 1) },
+ 	{ INT_RANGE(transition_disable, 0, 255) },
+ 	{ INT_RANGE(sae_pk, 0, 2) },
++	{ INT_RANGE(suppress_deauth_no_pmksa, 0, 1) },
+ };
+ 
+ #undef OFFSET
+@@ -5093,6 +5094,9 @@ static const struct global_parse_data global_fields[] = {
+ 	{ INT_RANGE(eapol_version, 1, 2), 0 },
+ #endif /* CONFIG_MACSEC */
+ 	{ INT(ap_scan), 0 },
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++	{ INT_RANGE(twt_def_algo, 0 , 2), 0 },
++#endif /* CONFIG_TWT_OFFLOAD_IFX */
+ 	{ FUNC(bgscan), CFG_CHANGED_BGSCAN },
+ #ifdef CONFIG_MESH
+ 	{ INT(user_mpm), 0 },
+diff --git a/wpa_supplicant/config.h b/wpa_supplicant/config.h
+index d22ef05..d824d9a 100644
+--- a/wpa_supplicant/config.h
++++ b/wpa_supplicant/config.h
+@@ -487,6 +487,17 @@ struct wpa_config {
+ 	 */
+ 	int ap_scan;
+ 
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++	/**
++	 * twt_def_algo - Default (Auto) TWT profile
++	 *
++	 * This provides the value of the default TWT profile to be setup
++	 * Values for this or 0-disable, 1-idle profile, 2-active profile TWT
++	 * session
++	 */
++	int twt_def_algo;
++#endif /* CONFIG_TWT_OFFLOAD_IFX */
++
+ 	/**
+ 	 * bgscan - Background scan and roaming parameters or %NULL if none
+ 	 *
+diff --git a/wpa_supplicant/config_file.c b/wpa_supplicant/config_file.c
+index 6db5010..fe38356 100644
+--- a/wpa_supplicant/config_file.c
++++ b/wpa_supplicant/config_file.c
+@@ -844,6 +844,7 @@ static void wpa_config_write_network(FILE *f, struct wpa_ssid *ssid)
+ 	INT(beacon_prot);
+ 	INT(transition_disable);
+ 	INT(sae_pk);
++	INT(suppress_deauth_no_pmksa);
+ #ifdef CONFIG_HT_OVERRIDES
+ 	INT_DEF(disable_ht, DEFAULT_DISABLE_HT);
+ 	INT_DEF(disable_ht40, DEFAULT_DISABLE_HT40);
+diff --git a/wpa_supplicant/config_ssid.h b/wpa_supplicant/config_ssid.h
+index 724534d..ad0bd2b 100644
+--- a/wpa_supplicant/config_ssid.h
++++ b/wpa_supplicant/config_ssid.h
+@@ -1177,6 +1177,13 @@ struct wpa_ssid {
+ 	 * 2 = both hunting-and-pecking loop and hash-to-element enabled
+ 	 */
+ 	int sae_pwe;
++
++	/**
++	 * suppress_deauth_no_pmksa - Whether deauth when PMKSA is empty
++	 * 0 = To deauthenticate if there is no PMKSA entry (default)
++	 * 1 = To suppress deauthenticate if there is no PMKSA entry
++	 */
++	int suppress_deauth_no_pmksa;
+ };
+ 
+ #endif /* CONFIG_SSID_H */
+diff --git a/wpa_supplicant/ctrl_iface.c b/wpa_supplicant/ctrl_iface.c
+index bcd67fc..d07fdb0 100644
+--- a/wpa_supplicant/ctrl_iface.c
++++ b/wpa_supplicant/ctrl_iface.c
+@@ -73,6 +73,7 @@ static int wpa_supplicant_global_iface_interfaces(struct wpa_global *global,
+ static int * freq_range_to_channel_list(struct wpa_supplicant *wpa_s,
+ 					char *val);
+ 
++int p2p_parse_channel_width(char *cmd, int freq, int *ht40, int *vht);
+ 
+ static int set_bssid_filter(struct wpa_supplicant *wpa_s, char *val)
+ {
+@@ -6067,6 +6068,9 @@ static int p2p_ctrl_connect(struct wpa_supplicant *wpa_s, char *cmd,
+ 	if (pos2) {
+ 		pos2 += 6;
+ 		freq = atoi(pos2);
++		
++		if (p2p_parse_channel_width(pos, freq, &ht40, &vht))
++			return -1;
+ 		if (freq <= 0)
+ 			return -1;
+ 	}
+@@ -6830,9 +6834,15 @@ static int p2p_ctrl_group_add(struct wpa_supplicant *wpa_s, char *cmd)
+ #endif /* CONFIG_ACS */
+ 
+ 	while ((token = str_token(cmd, " ", &context))) {
+-		if (sscanf(token, "freq2=%d", &freq2) == 1 ||
++		if (sscanf(token, "freq=%d", &freq) == 1 ||
++		    sscanf(token, "freq2=%d", &freq2) == 1 ||
+ 		    sscanf(token, "persistent=%d", &group_id) == 1 ||
+ 		    sscanf(token, "max_oper_chwidth=%d", &chwidth) == 1) {
++			if (freq) {
++				int res = p2p_parse_channel_width(token, freq, &ht40, &vht);
++				if (res)
++					return -1;
++			}
+ 			continue;
+ #ifdef CONFIG_ACS
+ 		} else if (os_strcmp(token, "freq=acs") == 0) {
+@@ -8296,6 +8306,23 @@ static int wpa_supplicant_driver_cmd(struct wpa_supplicant *wpa_s, char *cmd,
+ #endif /* ANDROID */
+ 
+ 
++#ifdef CONFIG_DRIVER_BRCM_WL
++static int wpa_supplicant_wl_cmd(struct wpa_supplicant *wpa_s, char *cmd,
++				     char *buf, size_t buflen)
++{
++	int ret;
++
++	ret = wpa_drv_wl_cmd(wpa_s, cmd, buf, buflen);
++	if (ret == 0) {
++		ret = os_snprintf(buf, buflen, "%s\n", "OK");
++		if (os_snprintf_error(buflen, ret))
++			ret = -1;
++	}
++	return ret;
++}
++#endif /* CONFIG_DRIVER_BRCM_WL */
++
++
+ static int wpa_supplicant_vendor_cmd(struct wpa_supplicant *wpa_s, char *cmd,
+ 				     char *buf, size_t buflen)
+ {
+@@ -8364,6 +8391,37 @@ static int wpa_supplicant_vendor_cmd(struct wpa_supplicant *wpa_s, char *cmd,
+ }
+ 
+ 
++int p2p_parse_channel_width(char *cmd, int freq, int *ht40, int *vht)
++{
++	char *context_cw = NULL;
++	u8 cw = 0;
++
++	if (str_token(cmd, "/", &context_cw))
++		cw = atoi(context_cw);
++
++	if (cw) {
++		if (cw == 20) {
++			*ht40 = *vht = 0;
++		} else if (cw == 40 && IS_5GHZ(freq)) {
++			*ht40 = 1;
++			*vht = 0;
++		} else if (cw == 80 && IS_5GHZ(freq)) {
++			*ht40 = 1;
++			*vht = 1;
++		} else {
++			wpa_printf(MSG_ERROR, "Function %s: invalid channel width %d\n",
++				   __func__, cw);
++			return -1;
++		}
++	} else {
++		/* to indicate that there is no user specified channel width */
++		*ht40 = 1;
++		*vht = 1;
++	}
++	return 0;
++}
++
++
+ static void wpa_supplicant_ctrl_iface_flush(struct wpa_supplicant *wpa_s)
+ {
+ #ifdef CONFIG_P2P
+@@ -8826,6 +8884,7 @@ static void wpas_ctrl_scan(struct wpa_supplicant *wpa_s, char *params,
+ 	unsigned int manual_scan_only_new = 0;
+ 	unsigned int scan_only = 0;
+ 	unsigned int scan_id_count = 0;
++	unsigned int manual_non_coloc_6ghz = 0;
+ 	int scan_id[MAX_SCAN_ID];
+ 	void (*scan_res_handler)(struct wpa_supplicant *wpa_s,
+ 				 struct wpa_scan_results *scan_res);
+@@ -8903,6 +8962,10 @@ static void wpas_ctrl_scan(struct wpa_supplicant *wpa_s, char *params,
+ 				os_strstr(params, "wildcard_ssid=1") != NULL;
+ 		}
+ 
++		pos = os_strstr(params, "non_coloc_6ghz=");
++		if (pos)
++			manual_non_coloc_6ghz = !!atoi(pos + 15);
++
+ 		pos = params;
+ 		while (pos && *pos != '\0') {
+ 			if (os_strncmp(pos, "ssid ", 5) == 0) {
+@@ -8972,6 +9035,7 @@ static void wpas_ctrl_scan(struct wpa_supplicant *wpa_s, char *params,
+ 		wpa_s->manual_scan_use_id = manual_scan_use_id;
+ 		wpa_s->manual_scan_only_new = manual_scan_only_new;
+ 		wpa_s->scan_id_count = scan_id_count;
++		wpa_s->manual_non_coloc_6ghz = manual_non_coloc_6ghz;
+ 		os_memcpy(wpa_s->scan_id, scan_id, scan_id_count * sizeof(int));
+ 		wpa_s->scan_res_handler = scan_res_handler;
+ 		os_free(wpa_s->manual_scan_freqs);
+@@ -8995,6 +9059,7 @@ static void wpas_ctrl_scan(struct wpa_supplicant *wpa_s, char *params,
+ 		wpa_s->manual_scan_use_id = manual_scan_use_id;
+ 		wpa_s->manual_scan_only_new = manual_scan_only_new;
+ 		wpa_s->scan_id_count = scan_id_count;
++		wpa_s->manual_non_coloc_6ghz = manual_non_coloc_6ghz;
+ 		os_memcpy(wpa_s->scan_id, scan_id, scan_id_count * sizeof(int));
+ 		wpa_s->scan_res_handler = scan_res_handler;
+ 		os_free(wpa_s->manual_scan_freqs);
+@@ -9964,6 +10029,7 @@ static int wpas_ctrl_resend_assoc(struct wpa_supplicant *wpa_s)
+ 	return -1;
+ #endif /* CONFIG_SME */
+ }
++#endif /* CONFIG_TESTING_OPTIONS */
+ 
+ 
+ static int wpas_ctrl_iface_send_twt_setup(struct wpa_supplicant *wpa_s,
+@@ -9974,12 +10040,17 @@ static int wpas_ctrl_iface_send_twt_setup(struct wpa_supplicant *wpa_s,
+ 	int mantissa = 8192;
+ 	u8 min_twt = 255;
+ 	unsigned long long twt = 0;
++	unsigned long long twt_offset = 0;
+ 	bool requestor = true;
+ 	int setup_cmd = 0;
+ 	bool trigger = true;
+ 	bool implicit = true;
+ 	bool flow_type = true;
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++	int flow_id = 0xFF;
++#else
+ 	int flow_id = 0;
++#endif /* CONFIG_TWT_OFFLOAD_IFX */
+ 	bool protection = false;
+ 	u8 twt_channel = 0;
+ 	u8 control = BIT(4); /* Control field (IEEE P802.11ax/D8.0 Figure
+@@ -10010,6 +10081,10 @@ static int wpas_ctrl_iface_send_twt_setup(struct wpa_supplicant *wpa_s,
+ 	if (tok_s)
+ 		sscanf(tok_s + os_strlen(" twt="), "%llu", &twt);
+ 
++	tok_s = os_strstr(cmd, " twt_offset=");
++	if (tok_s)
++		sscanf(tok_s + os_strlen(" twt_offset="), "%llu", &twt_offset);
++
+ 	tok_s = os_strstr(cmd, " requestor=");
+ 	if (tok_s)
+ 		requestor = atoi(tok_s + os_strlen(" requestor="));
+@@ -10042,10 +10117,18 @@ static int wpas_ctrl_iface_send_twt_setup(struct wpa_supplicant *wpa_s,
+ 	if (tok_s)
+ 		control = atoi(tok_s + os_strlen(" control="));
+ 
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++	return wpas_twt_offload_send_setup(wpa_s, dtok, exponent, mantissa,
++					   min_twt, setup_cmd, twt, twt_offset,
++					   requestor, trigger, implicit, flow_type,
++					   flow_id, protection, twt_channel,
++					   control);
++#else
+ 	return wpas_twt_send_setup(wpa_s, dtok, exponent, mantissa, min_twt,
+ 				   setup_cmd, twt, requestor, trigger, implicit,
+ 				   flow_type, flow_id, protection, twt_channel,
+ 				   control);
++#endif /* CONFIG_TWT_OFFLOAD_IFX */
+ }
+ 
+ 
+@@ -10059,11 +10142,254 @@ static int wpas_ctrl_iface_send_twt_teardown(struct wpa_supplicant *wpa_s,
+ 	if (tok_s)
+ 		flags = atoi(tok_s + os_strlen(" flags="));
+ 
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++	return wpas_twt_offload_send_teardown(wpa_s, flags);
++#else
+ 	return wpas_twt_send_teardown(wpa_s, flags);
++#endif /* CONFIG_TWT_OFFLOAD_IFX */
+ }
+ 
+-#endif /* CONFIG_TESTING_OPTIONS */
+ 
++#ifdef CONFIG_DRIVER_NL80211_IFX
++int wpas_config_offload_send_mbo_config(struct wpa_supplicant *wpa_s, u8 cmd_id,
++					u8 oper_class, u8 chan, u8 pref_val,
++					u8 reason_code, u8 enable, u8 notif_type,
++					u8 time_offset, u8 rssi_trig_delta,
++					bool enable_anqpo, bool enable_cell_pref,
++					u8 cell_pref_val, u8 cell_cap)
++{
++	struct drv_config_mbo_params params;
++	int ret = 0;
++
++	memset(&params, 0, sizeof(struct drv_config_mbo_params));
++
++	switch (cmd_id) {
++	case IFX_MBO_CONFIG_CMD_ADD_CHAN_PREF:
++		if (!oper_class || !chan ||
++		    (pref_val != 0 && pref_val != 1 && pref_val != 255) ||
++		    reason_code > 3) {
++			wpa_printf(MSG_ERROR,
++				   "MBO: incorrect parameter for add_chan_pref oper_class: %d "
++				   "chan:%d pref_val:%d reason_code:%d",
++				   oper_class, chan, pref_val, reason_code);
++			ret = -EOPNOTSUPP;
++			goto fail;
++		}
++		params.cmd = cmd_id;
++		params.u.add_chan_pref.op_class = oper_class;
++		params.u.add_chan_pref.chan = chan;
++		params.u.add_chan_pref.pref_val = pref_val;
++		params.u.add_chan_pref.reason = reason_code;
++		break;
++	case IFX_MBO_CONFIG_CMD_DEL_CHAN_PREF:
++		if (!oper_class || !chan) {
++			wpa_printf(MSG_ERROR,
++				   "MBO: incorrect parameter for del_chan_pref "
++				   "oper_class: %d chan:%d",
++				   oper_class, chan);
++			ret = -EOPNOTSUPP;
++			goto fail;
++		}
++		params.cmd = cmd_id;
++		params.u.del_chan_pref.op_class = oper_class;
++		params.u.del_chan_pref.chan = chan;
++		break;
++	case IFX_MBO_CONFIG_CMD_LIST_CHAN_PREF:
++	case IFX_MBO_CONFIG_CMD_DUMP_COUNTER:
++	case IFX_MBO_CONFIG_CMD_CLEAR_COUNTER:
++		params.cmd = cmd_id;
++		break;
++	case IFX_MBO_CONFIG_CMD_CELLULAR_DATA_CAP:
++		if (!cell_cap || cell_cap > 3) {
++			wpa_printf(MSG_ERROR,
++				   "MBO: incorrect parameter for cellular_data_cap:%d",
++				   cell_cap);
++			ret = -EOPNOTSUPP;
++			goto fail;
++		}
++		params.cmd = cmd_id;
++		params.u.cell_data_cap.cap = cell_cap;
++		break;
++	case IFX_MBO_CONFIG_CMD_FORCE_ASSOC:
++		if (enable > 1) {
++			wpa_printf(MSG_ERROR,
++				   "MBO: incorrect parameter for force_assoc:%d",
++				   enable);
++			ret = -EOPNOTSUPP;
++			goto fail;
++		}
++		params.cmd = cmd_id;
++		params.u.force_assoc.enable = enable;
++		break;
++	case IFX_MBO_CONFIG_CMD_BSSTRANS_REJ:
++		if (enable > 1 || reason_code > 6) {
++			wpa_printf(MSG_ERROR,
++				   "MBO: incorrect parameter for bsstrans reject, enable:%d, reason:%d",
++				   enable, reason_code);
++			ret = -EOPNOTSUPP;
++			goto fail;
++		}
++		params.cmd = cmd_id;
++		params.u.bsstrans_reject.enable = enable;
++		params.u.bsstrans_reject.reason = reason_code;
++		break;
++	case IFX_MBO_CONFIG_CMD_SEND_NOTIF:
++		if (notif_type != 2 && notif_type != 3) {
++			wpa_printf(MSG_ERROR,
++				   "MBO: incorrect parameter for send notifty:%d",
++				   notif_type);
++			ret = -EOPNOTSUPP;
++			goto fail;
++		}
++		params.cmd = cmd_id;
++		params.u.send_notif.type = notif_type;
++		break;
++	case IFX_MBO_CONFIG_CMD_NBR_INFO_CACHE:
++	case IFX_MBO_CONFIG_CMD_ANQPO_SUPPORT:
++	case IFX_MBO_CONFIG_CMD_CELLULAR_DATA_PREF:
++	default:
++		wpa_printf(MSG_DEBUG, "MBO: Unsupported cmd_id %d",
++			   cmd_id);
++		ret = -EOPNOTSUPP;
++		goto fail;
++	}
++
++	ret = wpa_drv_config_mbo(wpa_s, &params);
++
++fail:
++	return ret;
++}
++
++static int wpas_ctrl_iface_send_mbo_config(struct wpa_supplicant *wpa_s,
++					   const char *cmd)
++{
++	u8 oper_class = 0;
++	u8 chan = 0;
++	u8 pref_val = 0;
++	u8 reason_code = 0;
++	u8 cmd_id = 0;
++	u8 enable = 0;
++	u8 notif_type = 0;
++	u8 time_offset = 0;
++	u8 rssi_trig_delta = 0;
++	bool enable_anqpo = false;
++	bool enable_cell_pref = false;
++	u8 cell_pref_val = 0;
++	u8 cell_cap = 0;
++	const char *tok_s;
++
++	tok_s = os_strstr(cmd, " cmd_id=");
++	if (tok_s)
++		cmd_id = strtol(tok_s + os_strlen(" cmd_id="), NULL, 10);
++
++	tok_s = os_strstr(cmd, " oper_class=");
++	if (tok_s)
++		oper_class = strtol(tok_s + os_strlen(" oper_class="), NULL, 10);
++
++	tok_s = os_strstr(cmd, " pref_val=");
++	if (tok_s)
++		pref_val = strtol(tok_s + os_strlen(" pref_val="), NULL, 10);
++
++	tok_s = os_strstr(cmd, " reason_code=");
++	if (tok_s)
++		reason_code = strtol(tok_s + os_strlen(" reason_code="), NULL, 10);
++
++	tok_s = os_strstr(cmd, " chan=");
++	if (tok_s)
++		chan = strtol(tok_s + os_strlen(" chan="), NULL, 10);
++
++	tok_s = os_strstr(cmd, " cell_cap=");
++	if (tok_s)
++		cell_cap = strtol(tok_s + os_strlen(" cell_cap="), NULL, 10);
++
++	tok_s = os_strstr(cmd, " enable=");
++	if (tok_s)
++		enable = strtol(tok_s + os_strlen(" enable="), NULL, 10);
++
++	tok_s = os_strstr(cmd, " notif_type=");
++	if (tok_s)
++		notif_type = strtol(tok_s + os_strlen(" notif_type="), NULL, 10);
++
++	tok_s = os_strstr(cmd, " time_offset=");
++	if (tok_s)
++		time_offset = strtol(tok_s + os_strlen(" time_offset="), NULL, 10);
++
++	tok_s = os_strstr(cmd, " rssi_trig_delta=");
++	if (tok_s)
++		rssi_trig_delta = strtol(tok_s + os_strlen(" rssi_trig_delta="), NULL, 10);
++
++	tok_s = os_strstr(cmd, " enable_anqpo=");
++	if (tok_s)
++		enable_anqpo = strtol(tok_s + os_strlen(" enable_anqpo="), NULL, 10);
++
++	tok_s = os_strstr(cmd, " enable_cell_pref=");
++	if (tok_s)
++		enable_cell_pref = strtol(tok_s + os_strlen(" enable_cell_pref="), NULL, 10);
++
++	tok_s = os_strstr(cmd, " cell_pref_val=");
++	if (tok_s)
++		cell_pref_val = strtol(tok_s + os_strlen(" cell_pref_val="), NULL, 10);
++
++	return wpas_config_offload_send_mbo_config(wpa_s, cmd_id, oper_class,
++						   chan, pref_val, reason_code,
++						   enable, notif_type, time_offset,
++						   rssi_trig_delta, enable_anqpo,
++						   enable_cell_pref, cell_pref_val,
++						   cell_cap);
++}
++
++static int wpas_ctrl_iface_send_wnm_maxidle(struct wpa_supplicant *wpa_s,
++					     const char *cmd, char *reply, int reply_size)
++{
++	u8 params_check = 0;
++	int period = 0, option = 0, ret = 0;
++	const char *tok_s;
++	struct drv_maxidle_wnm_params params;
++	char *pos, *end;
++
++	pos = reply;
++	end = pos + reply_size;
++	os_memset(&params, 0, sizeof(struct drv_maxidle_wnm_params));
++
++	if (cmd) {
++		tok_s = os_strstr(cmd, " period=");
++		if (tok_s) {
++			period = atoi(tok_s + os_strlen(" period="));
++			params_check |= BIT(IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_IDLE_PERIOD);
++		}
++
++		tok_s = os_strstr(cmd, " option=");
++		if (tok_s) {
++			option = atoi(tok_s + os_strlen(" option="));
++			params_check |= BIT(IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_PROTECTION_OPT);
++		}
++
++		if (params_check & BIT(IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_IDLE_PERIOD) &&
++			params_check & BIT(IFX_VENDOR_ATTR_WNM_MAXIDLE_PARAM_PROTECTION_OPT)) {
++			params.period = period;
++			params.protect = option;
++			params.get_info = false;
++		} else {
++			wpa_printf(MSG_ERROR, "set wnm_maxidle parameters not full(%02x).\n",
++				params_check);
++			ret = -EINVAL;
++			goto fail;
++		}
++	} else {
++		params.get_info = true;
++		wpa_printf(MSG_DEBUG, "get wnm_maxidle parameters\n");
++	}
++	ret = wpa_drv_maxidle_wnm(wpa_s, &params);
++	if (cmd == NULL && !ret) {
++		ret = os_snprintf(pos, end - pos, "BSS Max Idle Period: %d\n", params.period);
++		if (os_snprintf_error(end - pos, ret))
++			return pos - reply;
++	}
++
++fail:
++	return ret;
++}
++#endif /* CONFIG_DRIVER_NL80211_IFX */
+ 
+ static int wpas_ctrl_vendor_elem_add(struct wpa_supplicant *wpa_s, char *cmd)
+ {
+@@ -12095,6 +12421,11 @@ char * wpa_supplicant_ctrl_iface_process(struct wpa_supplicant *wpa_s,
+ 		reply_len = wpa_supplicant_driver_cmd(wpa_s, buf + 7, reply,
+ 						      reply_size);
+ #endif /* ANDROID */
++#ifdef CONFIG_DRIVER_BRCM_WL
++	} else if (os_strncmp(buf, "WL ", 3) == 0) {
++		reply_len = wpa_supplicant_wl_cmd(wpa_s, buf + 3, reply,
++						      reply_size);
++#endif /* CONFIG_DRIVER_BRCM_WL */
+ 	} else if (os_strncmp(buf, "VENDOR ", 7) == 0) {
+ 		reply_len = wpa_supplicant_vendor_cmd(wpa_s, buf + 7, reply,
+ 						      reply_size);
+@@ -12173,19 +12504,28 @@ char * wpa_supplicant_ctrl_iface_process(struct wpa_supplicant *wpa_s,
+ 		sme_event_unprot_disconnect(
+ 			wpa_s, wpa_s->bssid, NULL,
+ 			WLAN_REASON_CLASS2_FRAME_FROM_NONAUTH_STA);
++#endif /* CONFIG_TESTING_OPTIONS */
+ 	} else if (os_strncmp(buf, "TWT_SETUP ", 10) == 0) {
+ 		if (wpas_ctrl_iface_send_twt_setup(wpa_s, buf + 9))
+ 			reply_len = -1;
+ 	} else if (os_strcmp(buf, "TWT_SETUP") == 0) {
+ 		if (wpas_ctrl_iface_send_twt_setup(wpa_s, ""))
+ 			reply_len = -1;
++#ifdef CONFIG_DRIVER_NL80211_IFX
++	} else if (os_strncmp(buf, "MBO ", 4) == 0) {
++		if (wpas_ctrl_iface_send_mbo_config(wpa_s, buf + 3))
++			reply_len = -1;
++	} else if (os_strncmp(buf, "WNM_MAXIDLE ", 12) == 0) {
++		reply_len = wpas_ctrl_iface_send_wnm_maxidle(wpa_s, buf + 11, reply, reply_size);
++	} else if (os_strcmp(buf, "WNM_MAXIDLE") == 0) {
++		reply_len = wpas_ctrl_iface_send_wnm_maxidle(wpa_s, NULL, reply, reply_size);
++#endif /* CONFIG_DRIVER_NL80211_IFX */
+ 	} else if (os_strncmp(buf, "TWT_TEARDOWN ", 13) == 0) {
+ 		if (wpas_ctrl_iface_send_twt_teardown(wpa_s, buf + 12))
+ 			reply_len = -1;
+ 	} else if (os_strcmp(buf, "TWT_TEARDOWN") == 0) {
+ 		if (wpas_ctrl_iface_send_twt_teardown(wpa_s, ""))
+ 			reply_len = -1;
+-#endif /* CONFIG_TESTING_OPTIONS */
+ 	} else if (os_strncmp(buf, "VENDOR_ELEM_ADD ", 16) == 0) {
+ 		if (wpas_ctrl_vendor_elem_add(wpa_s, buf + 16) < 0)
+ 			reply_len = -1;
+diff --git a/wpa_supplicant/defconfig b/wpa_supplicant/defconfig
+index a4719db..ab3fba3 100644
+--- a/wpa_supplicant/defconfig
++++ b/wpa_supplicant/defconfig
+@@ -101,6 +101,9 @@ CONFIG_EAP_MSCHAPV2=y
+ 
+ # EAP-TLS
+ CONFIG_EAP_TLS=y
++# Enable EAP-TLSv1.3 support by default (currently disabled unless explicitly
++# enabled in network configuration)
++#CONFIG_EAP_TLSV1_3=y
+ 
+ # EAL-PEAP
+ CONFIG_EAP_PEAP=y
+diff --git a/wpa_supplicant/defconfig_base b/wpa_supplicant/defconfig_base
+new file mode 100644
+index 0000000..59aeae6
+--- /dev/null
++++ b/wpa_supplicant/defconfig_base
+@@ -0,0 +1,653 @@
++# Example wpa_supplicant build time configuration
++#
++# This file lists the configuration options that are used when building the
++# wpa_supplicant binary. All lines starting with # are ignored. Configuration
++# option lines must be commented out complete, if they are not to be included,
++# i.e., just setting VARIABLE=n is not disabling that variable.
++#
++# This file is included in Makefile, so variables like CFLAGS and LIBS can also
++# be modified from here. In most cases, these lines should use += in order not
++# to override previous values of the variables.
++
++
++# Uncomment following two lines and fix the paths if you have installed OpenSSL
++# or GnuTLS in non-default location
++#CFLAGS += -I/usr/local/openssl/include
++#LIBS += -L/usr/local/openssl/lib
++
++# Some Red Hat versions seem to include kerberos header files from OpenSSL, but
++# the kerberos files are not in the default include path. Following line can be
++# used to fix build issues on such systems (krb5.h not found).
++#CFLAGS += -I/usr/include/kerberos
++
++# Driver interface for generic Linux wireless extensions
++# Note: WEXT is deprecated in the current Linux kernel version and no new
++# functionality is added to it. nl80211-based interface is the new
++# replacement for WEXT and its use allows wpa_supplicant to properly control
++# the driver to improve existing functionality like roaming and to support new
++# functionality.
++CONFIG_DRIVER_WEXT=y
++
++# Driver interface for Linux drivers using the nl80211 kernel interface
++CONFIG_DRIVER_NL80211=y
++
++# QCA vendor extensions to nl80211
++#CONFIG_DRIVER_NL80211_QCA=y
++
++CONFIG_DRIVER_BRCM_WL=y
++
++# driver_nl80211.c requires libnl. If you are compiling it yourself
++# you may need to point hostapd to your version of libnl.
++#
++#CFLAGS += -I$<path to libnl include files>
++#LIBS += -L$<path to libnl library files>
++
++# Use libnl v2.0 (or 3.0) libraries.
++#CONFIG_LIBNL20=y
++
++# Use libnl 3.2 libraries (if this is selected, CONFIG_LIBNL20 is ignored)
++CONFIG_LIBNL32=y
++
++
++# Driver interface for FreeBSD net80211 layer (e.g., Atheros driver)
++#CONFIG_DRIVER_BSD=y
++#CFLAGS += -I/usr/local/include
++#LIBS += -L/usr/local/lib
++#LIBS_p += -L/usr/local/lib
++#LIBS_c += -L/usr/local/lib
++
++# Driver interface for Windows NDIS
++#CONFIG_DRIVER_NDIS=y
++#CFLAGS += -I/usr/include/w32api/ddk
++#LIBS += -L/usr/local/lib
++# For native build using mingw
++#CONFIG_NATIVE_WINDOWS=y
++# Additional directories for cross-compilation on Linux host for mingw target
++#CFLAGS += -I/opt/mingw/mingw32/include/ddk
++#LIBS += -L/opt/mingw/mingw32/lib
++#CC=mingw32-gcc
++# By default, driver_ndis uses WinPcap for low-level operations. This can be
++# replaced with the following option which replaces WinPcap calls with NDISUIO.
++# However, this requires that WZC is disabled (net stop wzcsvc) before starting
++# wpa_supplicant.
++# CONFIG_USE_NDISUIO=y
++
++# Driver interface for wired Ethernet drivers
++CONFIG_DRIVER_WIRED=y
++
++# Driver interface for MACsec capable Qualcomm Atheros drivers
++#CONFIG_DRIVER_MACSEC_QCA=y
++
++# Driver interface for Linux MACsec drivers
++#CONFIG_DRIVER_MACSEC_LINUX=y
++
++# Driver interface for the Broadcom RoboSwitch family
++#CONFIG_DRIVER_ROBOSWITCH=y
++
++# Driver interface for no driver (e.g., WPS ER only)
++#CONFIG_DRIVER_NONE=y
++
++# Solaris libraries
++#LIBS += -lsocket -ldlpi -lnsl
++#LIBS_c += -lsocket
++
++# Enable IEEE 802.1X Supplicant (automatically included if any EAP method or
++# MACsec is included)
++CONFIG_IEEE8021X_EAPOL=y
++
++# EAP-MD5
++CONFIG_EAP_MD5=y
++
++# EAP-MSCHAPv2
++CONFIG_EAP_MSCHAPV2=y
++
++# EAP-TLS
++CONFIG_EAP_TLS=y
++# Enable EAP-TLSv1.3 support by default (currently disabled unless explicitly
++# enabled in network configuration)
++CONFIG_EAP_TLSV1_3=y
++
++# EAL-PEAP
++CONFIG_EAP_PEAP=y
++
++# EAP-TTLS
++CONFIG_EAP_TTLS=y
++
++# EAP-FAST
++#CONFIG_EAP_FAST=y
++
++# EAP-TEAP
++# Note: The current EAP-TEAP implementation is experimental and should not be
++# enabled for production use. The IETF RFC 7170 that defines EAP-TEAP has number
++# of conflicting statements and missing details and the implementation has
++# vendor specific workarounds for those and as such, may not interoperate with
++# any other implementation. This should not be used for anything else than
++# experimentation and interoperability testing until those issues has been
++# resolved.
++#CONFIG_EAP_TEAP=y
++
++# EAP-GTC
++CONFIG_EAP_GTC=y
++
++# EAP-OTP
++CONFIG_EAP_OTP=y
++
++# EAP-SIM (enable CONFIG_PCSC, if EAP-SIM is used)
++#CONFIG_EAP_SIM=y
++
++# Enable SIM simulator (Milenage) for EAP-SIM
++#CONFIG_SIM_SIMULATOR=y
++
++# EAP-PSK (experimental; this is _not_ needed for WPA-PSK)
++#CONFIG_EAP_PSK=y
++
++# EAP-pwd (secure authentication using only a password)
++#CONFIG_EAP_PWD=y
++
++# EAP-PAX
++#CONFIG_EAP_PAX=y
++
++# LEAP
++CONFIG_EAP_LEAP=y
++
++# EAP-AKA (enable CONFIG_PCSC, if EAP-AKA is used)
++#CONFIG_EAP_AKA=y
++
++# EAP-AKA' (enable CONFIG_PCSC, if EAP-AKA' is used).
++# This requires CONFIG_EAP_AKA to be enabled, too.
++#CONFIG_EAP_AKA_PRIME=y
++
++# Enable USIM simulator (Milenage) for EAP-AKA
++#CONFIG_USIM_SIMULATOR=y
++
++# EAP-SAKE
++#CONFIG_EAP_SAKE=y
++
++# EAP-GPSK
++#CONFIG_EAP_GPSK=y
++# Include support for optional SHA256 cipher suite in EAP-GPSK
++#CONFIG_EAP_GPSK_SHA256=y
++
++# EAP-TNC and related Trusted Network Connect support (experimental)
++#CONFIG_EAP_TNC=y
++
++# Wi-Fi Protected Setup (WPS)
++CONFIG_WPS=y
++# Enable WPS external registrar functionality
++#CONFIG_WPS_ER=y
++# Disable credentials for an open network by default when acting as a WPS
++# registrar.
++#CONFIG_WPS_REG_DISABLE_OPEN=y
++# Enable WPS support with NFC config method
++#CONFIG_WPS_NFC=y
++
++# EAP-IKEv2
++#CONFIG_EAP_IKEV2=y
++
++# EAP-EKE
++#CONFIG_EAP_EKE=y
++
++# MACsec
++#CONFIG_MACSEC=y
++
++# PKCS#12 (PFX) support (used to read private key and certificate file from
++# a file that usually has extension .p12 or .pfx)
++CONFIG_PKCS12=y
++
++# Smartcard support (i.e., private key on a smartcard), e.g., with openssl
++# engine.
++CONFIG_SMARTCARD=y
++
++# PC/SC interface for smartcards (USIM, GSM SIM)
++# Enable this if EAP-SIM or EAP-AKA is included
++#CONFIG_PCSC=y
++
++# Support HT overrides (disable HT/HT40, mask MCS rates, etc.)
++#CONFIG_HT_OVERRIDES=y
++
++# Support VHT overrides (disable VHT, mask MCS rates, etc.)
++#CONFIG_VHT_OVERRIDES=y
++
++# Development testing
++#CONFIG_EAPOL_TEST=y
++
++# Select control interface backend for external programs, e.g, wpa_cli:
++# unix = UNIX domain sockets (default for Linux/*BSD)
++# udp = UDP sockets using localhost (127.0.0.1)
++# udp6 = UDP IPv6 sockets using localhost (::1)
++# named_pipe = Windows Named Pipe (default for Windows)
++# udp-remote = UDP sockets with remote access (only for tests systems/purpose)
++# udp6-remote = UDP IPv6 sockets with remote access (only for tests purpose)
++# y = use default (backwards compatibility)
++# If this option is commented out, control interface is not included in the
++# build.
++CONFIG_CTRL_IFACE=y
++
++# Include support for GNU Readline and History Libraries in wpa_cli.
++# When building a wpa_cli binary for distribution, please note that these
++# libraries are licensed under GPL and as such, BSD license may not apply for
++# the resulting binary.
++#CONFIG_READLINE=y
++
++# Include internal line edit mode in wpa_cli. This can be used as a replacement
++# for GNU Readline to provide limited command line editing and history support.
++CONFIG_WPA_CLI_EDIT=y
++
++# Remove debugging code that is printing out debug message to stdout.
++# This can be used to reduce the size of the wpa_supplicant considerably
++# if debugging code is not needed. The size reduction can be around 35%
++# (e.g., 90 kB).
++#CONFIG_NO_STDOUT_DEBUG=y
++
++# Remove WPA support, e.g., for wired-only IEEE 802.1X supplicant, to save
++# 35-50 kB in code size.
++#CONFIG_NO_WPA=y
++
++# Remove IEEE 802.11i/WPA-Personal ASCII passphrase support
++# This option can be used to reduce code size by removing support for
++# converting ASCII passphrases into PSK. If this functionality is removed, the
++# PSK can only be configured as the 64-octet hexstring (e.g., from
++# wpa_passphrase). This saves about 0.5 kB in code size.
++#CONFIG_NO_WPA_PASSPHRASE=y
++
++# Simultaneous Authentication of Equals (SAE), WPA3-Personal
++CONFIG_SAE=y
++
++# Set SAE Auth status early
++CONFIG_WPA3_SAE_AUTH_EARLY_SET=y
++
++# Disable scan result processing (ap_scan=1) to save code size by about 1 kB.
++# This can be used if ap_scan=1 mode is never enabled.
++#CONFIG_NO_SCAN_PROCESSING=y
++
++# Select configuration backend:
++# file = text file (e.g., wpa_supplicant.conf; note: the configuration file
++#	path is given on command line, not here; this option is just used to
++#	select the backend that allows configuration files to be used)
++# winreg = Windows registry (see win_example.reg for an example)
++CONFIG_BACKEND=file
++
++# Remove configuration write functionality (i.e., to allow the configuration
++# file to be updated based on runtime configuration changes). The runtime
++# configuration can still be changed, the changes are just not going to be
++# persistent over restarts. This option can be used to reduce code size by
++# about 3.5 kB.
++#CONFIG_NO_CONFIG_WRITE=y
++
++# Remove support for configuration blobs to reduce code size by about 1.5 kB.
++#CONFIG_NO_CONFIG_BLOBS=y
++
++# Select program entry point implementation:
++# main = UNIX/POSIX like main() function (default)
++# main_winsvc = Windows service (read parameters from registry)
++# main_none = Very basic example (development use only)
++#CONFIG_MAIN=main
++
++# Select wrapper for operating system and C library specific functions
++# unix = UNIX/POSIX like systems (default)
++# win32 = Windows systems
++# none = Empty template
++#CONFIG_OS=unix
++
++# Select event loop implementation
++# eloop = select() loop (default)
++# eloop_win = Windows events and WaitForMultipleObject() loop
++#CONFIG_ELOOP=eloop
++
++# Should we use poll instead of select? Select is used by default.
++#CONFIG_ELOOP_POLL=y
++
++# Should we use epoll instead of select? Select is used by default.
++#CONFIG_ELOOP_EPOLL=y
++
++# Should we use kqueue instead of select? Select is used by default.
++#CONFIG_ELOOP_KQUEUE=y
++
++# Select layer 2 packet implementation
++# linux = Linux packet socket (default)
++# pcap = libpcap/libdnet/WinPcap
++# freebsd = FreeBSD libpcap
++# winpcap = WinPcap with receive thread
++# ndis = Windows NDISUIO (note: requires CONFIG_USE_NDISUIO=y)
++# none = Empty template
++#CONFIG_L2_PACKET=linux
++
++# Disable Linux packet socket workaround applicable for station interface
++# in a bridge for EAPOL frames. This should be uncommented only if the kernel
++# is known to not have the regression issue in packet socket behavior with
++# bridge interfaces (commit 'bridge: respect RFC2863 operational state')').
++#CONFIG_NO_LINUX_PACKET_SOCKET_WAR=y
++
++# Support Operating Channel Validation
++#CONFIG_OCV=y
++
++# Select TLS implementation
++# openssl = OpenSSL (default)
++# gnutls = GnuTLS
++# internal = Internal TLSv1 implementation (experimental)
++# linux = Linux kernel AF_ALG and internal TLSv1 implementation (experimental)
++# none = Empty template
++#CONFIG_TLS=openssl
++
++# TLS-based EAP methods require at least TLS v1.0. Newer version of TLS (v1.1)
++# can be enabled to get a stronger construction of messages when block ciphers
++# are used. It should be noted that some existing TLS v1.0 -based
++# implementation may not be compatible with TLS v1.1 message (ClientHello is
++# sent prior to negotiating which version will be used)
++#CONFIG_TLSV11=y
++
++# TLS-based EAP methods require at least TLS v1.0. Newer version of TLS (v1.2)
++# can be enabled to enable use of stronger crypto algorithms. It should be
++# noted that some existing TLS v1.0 -based implementation may not be compatible
++# with TLS v1.2 message (ClientHello is sent prior to negotiating which version
++# will be used)
++#CONFIG_TLSV12=y
++
++# Select which ciphers to use by default with OpenSSL if the user does not
++# specify them.
++#CONFIG_TLS_DEFAULT_CIPHERS="DEFAULT:!EXP:!LOW"
++
++# If CONFIG_TLS=internal is used, additional library and include paths are
++# needed for LibTomMath. Alternatively, an integrated, minimal version of
++# LibTomMath can be used. See beginning of libtommath.c for details on benefits
++# and drawbacks of this option.
++#CONFIG_INTERNAL_LIBTOMMATH=y
++#ifndef CONFIG_INTERNAL_LIBTOMMATH
++#LTM_PATH=/usr/src/libtommath-0.39
++#CFLAGS += -I$(LTM_PATH)
++#LIBS += -L$(LTM_PATH)
++#LIBS_p += -L$(LTM_PATH)
++#endif
++# At the cost of about 4 kB of additional binary size, the internal LibTomMath
++# can be configured to include faster routines for exptmod, sqr, and div to
++# speed up DH and RSA calculation considerably
++#CONFIG_INTERNAL_LIBTOMMATH_FAST=y
++
++# Include NDIS event processing through WMI into wpa_supplicant/wpasvc.
++# This is only for Windows builds and requires WMI-related header files and
++# WbemUuid.Lib from Platform SDK even when building with MinGW.
++#CONFIG_NDIS_EVENTS_INTEGRATED=y
++#PLATFORMSDKLIB="/opt/Program Files/Microsoft Platform SDK/Lib"
++
++# Add support for new DBus control interface
++# (fi.w1.wpa_supplicant1)
++#CONFIG_CTRL_IFACE_DBUS_NEW=y
++
++# Add introspection support for new DBus control interface
++#CONFIG_CTRL_IFACE_DBUS_INTRO=y
++
++# Add support for loading EAP methods dynamically as shared libraries.
++# When this option is enabled, each EAP method can be either included
++# statically (CONFIG_EAP_<method>=y) or dynamically (CONFIG_EAP_<method>=dyn).
++# Dynamic EAP methods are build as shared objects (eap_*.so) and they need to
++# be loaded in the beginning of the wpa_supplicant configuration file
++# (see load_dynamic_eap parameter in the example file) before being used in
++# the network blocks.
++#
++# Note that some shared parts of EAP methods are included in the main program
++# and in order to be able to use dynamic EAP methods using these parts, the
++# main program must have been build with the EAP method enabled (=y or =dyn).
++# This means that EAP-TLS/PEAP/TTLS/FAST cannot be added as dynamic libraries
++# unless at least one of them was included in the main build to force inclusion
++# of the shared code. Similarly, at least one of EAP-SIM/AKA must be included
++# in the main build to be able to load these methods dynamically.
++#
++# Please also note that using dynamic libraries will increase the total binary
++# size. Thus, it may not be the best option for targets that have limited
++# amount of memory/flash.
++#CONFIG_DYNAMIC_EAP_METHODS=y
++
++# IEEE Std 802.11r-2008 (Fast BSS Transition) for station mode
++CONFIG_IEEE80211R=y
++
++# Add support for writing debug log to a file (/tmp/wpa_supplicant-log-#.txt)
++CONFIG_DEBUG_FILE=y
++
++# Send debug messages to syslog instead of stdout
++#CONFIG_DEBUG_SYSLOG=y
++# Set syslog facility for debug messages
++#CONFIG_DEBUG_SYSLOG_FACILITY=LOG_DAEMON
++
++# Add support for sending all debug messages (regardless of debug verbosity)
++# to the Linux kernel tracing facility. This helps debug the entire stack by
++# making it easy to record everything happening from the driver up into the
++# same file, e.g., using trace-cmd.
++#CONFIG_DEBUG_LINUX_TRACING=y
++
++# Add support for writing debug log to Android logcat instead of standard
++# output
++#CONFIG_ANDROID_LOG=y
++
++# Enable privilege separation (see README 'Privilege separation' for details)
++#CONFIG_PRIVSEP=y
++
++# Enable mitigation against certain attacks against TKIP by delaying Michael
++# MIC error reports by a random amount of time between 0 and 60 seconds
++#CONFIG_DELAYED_MIC_ERROR_REPORT=y
++
++# Enable tracing code for developer debugging
++# This tracks use of memory allocations and other registrations and reports
++# incorrect use with a backtrace of call (or allocation) location.
++#CONFIG_WPA_TRACE=y
++# For BSD, uncomment these.
++#LIBS += -lexecinfo
++#LIBS_p += -lexecinfo
++#LIBS_c += -lexecinfo
++
++# Use libbfd to get more details for developer debugging
++# This enables use of libbfd to get more detailed symbols for the backtraces
++# generated by CONFIG_WPA_TRACE=y.
++#CONFIG_WPA_TRACE_BFD=y
++# For BSD, uncomment these.
++#LIBS += -lbfd -liberty -lz
++#LIBS_p += -lbfd -liberty -lz
++#LIBS_c += -lbfd -liberty -lz
++
++# wpa_supplicant depends on strong random number generation being available
++# from the operating system. os_get_random() function is used to fetch random
++# data when needed, e.g., for key generation. On Linux and BSD systems, this
++# works by reading /dev/urandom. It should be noted that the OS entropy pool
++# needs to be properly initialized before wpa_supplicant is started. This is
++# important especially on embedded devices that do not have a hardware random
++# number generator and may by default start up with minimal entropy available
++# for random number generation.
++#
++# As a safety net, wpa_supplicant is by default trying to internally collect
++# additional entropy for generating random data to mix in with the data fetched
++# from the OS. This by itself is not considered to be very strong, but it may
++# help in cases where the system pool is not initialized properly. However, it
++# is very strongly recommended that the system pool is initialized with enough
++# entropy either by using hardware assisted random number generator or by
++# storing state over device reboots.
++#
++# wpa_supplicant can be configured to maintain its own entropy store over
++# restarts to enhance random number generation. This is not perfect, but it is
++# much more secure than using the same sequence of random numbers after every
++# reboot. This can be enabled with -e<entropy file> command line option. The
++# specified file needs to be readable and writable by wpa_supplicant.
++#
++# If the os_get_random() is known to provide strong random data (e.g., on
++# Linux/BSD, the board in question is known to have reliable source of random
++# data from /dev/urandom), the internal wpa_supplicant random pool can be
++# disabled. This will save some in binary size and CPU use. However, this
++# should only be considered for builds that are known to be used on devices
++# that meet the requirements described above.
++#CONFIG_NO_RANDOM_POOL=y
++
++# Should we attempt to use the getrandom(2) call that provides more reliable
++# yet secure randomness source than /dev/random on Linux 3.17 and newer.
++# Requires glibc 2.25 to build, falls back to /dev/random if unavailable.
++#CONFIG_GETRANDOM=y
++
++# IEEE 802.11ac (Very High Throughput) support (mainly for AP mode)
++CONFIG_IEEE80211AC=y
++
++# IEEE 802.11ax HE support (mainly for AP mode)
++# Note: This is experimental and work in progress. The definitions are still
++# subject to change and this should not be expected to interoperate with the
++# final IEEE 802.11ax version.
++CONFIG_IEEE80211AX=y
++
++# Wireless Network Management (IEEE Std 802.11v-2011)
++# Note: This is experimental and not complete implementation.
++#CONFIG_WNM=y
++
++# Interworking (IEEE 802.11u)
++# This can be used to enable functionality to improve interworking with
++# external networks (GAS/ANQP to learn more about the networks and network
++# selection based on available credentials).
++#CONFIG_INTERWORKING=y
++
++# Hotspot 2.0
++#CONFIG_HS20=y
++
++# Enable interface matching in wpa_supplicant
++#CONFIG_MATCH_IFACE=y
++
++# Disable roaming in wpa_supplicant
++#CONFIG_NO_ROAMING=y
++
++# AP mode operations with wpa_supplicant
++# This can be used for controlling AP mode operations with wpa_supplicant. It
++# should be noted that this is mainly aimed at simple cases like
++# WPA2-Personal while more complex configurations like WPA2-Enterprise with an
++# external RADIUS server can be supported with hostapd.
++#CONFIG_AP=y
++
++# P2P (Wi-Fi Direct)
++# This can be used to enable P2P support in wpa_supplicant. See README-P2P for
++# more information on P2P operations.
++CONFIG_P2P=y
++
++# Enable TDLS support
++#CONFIG_TDLS=y
++
++# Wi-Fi Display
++# This can be used to enable Wi-Fi Display extensions for P2P using an external
++# program to control the additional information exchanges in the messages.
++#CONFIG_WIFI_DISPLAY=y
++
++# Autoscan
++# This can be used to enable automatic scan support in wpa_supplicant.
++# See wpa_supplicant.conf for more information on autoscan usage.
++#
++# Enabling directly a module will enable autoscan support.
++# For exponential module:
++#CONFIG_AUTOSCAN_EXPONENTIAL=y
++# For periodic module:
++#CONFIG_AUTOSCAN_PERIODIC=y
++
++# Password (and passphrase, etc.) backend for external storage
++# These optional mechanisms can be used to add support for storing passwords
++# and other secrets in external (to wpa_supplicant) location. This allows, for
++# example, operating system specific key storage to be used
++#
++# External password backend for testing purposes (developer use)
++#CONFIG_EXT_PASSWORD_TEST=y
++
++# Enable Fast Session Transfer (FST)
++#CONFIG_FST=y
++
++# Enable CLI commands for FST testing
++#CONFIG_FST_TEST=y
++
++# OS X builds. This is only for building eapol_test.
++#CONFIG_OSX=y
++
++# Automatic Channel Selection
++# This will allow wpa_supplicant to pick the channel automatically when channel
++# is set to "0".
++#
++# TODO: Extend parser to be able to parse "channel=acs_survey" as an alternative
++# to "channel=0". This would enable us to eventually add other ACS algorithms in
++# similar way.
++#
++# Automatic selection is currently only done through initialization, later on
++# we hope to do background checks to keep us moving to more ideal channels as
++# time goes by. ACS is currently only supported through the nl80211 driver and
++# your driver must have survey dump capability that is filled by the driver
++# during scanning.
++#
++# TODO: In analogy to hostapd be able to customize the ACS survey algorithm with
++# a newly to create wpa_supplicant.conf variable acs_num_scans.
++#
++# Supported ACS drivers:
++# * ath9k
++# * ath5k
++# * ath10k
++#
++# For more details refer to:
++# http://wireless.kernel.org/en/users/Documentation/acs
++#CONFIG_ACS=y
++
++# Support Multi Band Operation
++#CONFIG_MBO=y
++
++# Fast Initial Link Setup (FILS) (IEEE 802.11ai)
++#CONFIG_FILS=y
++# FILS shared key authentication with PFS
++#CONFIG_FILS_SK_PFS=y
++
++# Support RSN on IBSS networks
++# This is needed to be able to use mode=1 network profile with proto=RSN and
++# key_mgmt=WPA-PSK (i.e., full key management instead of WPA-None).
++#CONFIG_IBSS_RSN=y
++
++# External PMKSA cache control
++# This can be used to enable control interface commands that allow the current
++# PMKSA cache entries to be fetched and new entries to be added.
++#CONFIG_PMKSA_CACHE_EXTERNAL=y
++
++# Mesh Networking (IEEE 802.11s)
++#CONFIG_MESH=y
++
++# Background scanning modules
++# These can be used to request wpa_supplicant to perform background scanning
++# operations for roaming within an ESS (same SSID). See the bgscan parameter in
++# the wpa_supplicant.conf file for more details.
++# Periodic background scans based on signal strength
++CONFIG_BGSCAN_SIMPLE=y
++# Learn channels used by the network and try to avoid bgscans on other
++# channels (experimental)
++CONFIG_BGSCAN_LEARN=y
++
++# Opportunistic Wireless Encryption (OWE)
++# Experimental implementation of draft-harkins-owe-07.txt
++CONFIG_OWE=y
++
++# Device Provisioning Protocol (DPP)
++CONFIG_DPP=y
++
++# Wired equivalent privacy (WEP)
++# WEP is an obsolete cryptographic data confidentiality algorithm that is not
++# considered secure. It should not be used for anything anymore. The
++# functionality needed to use WEP is available in the current wpa_supplicant
++# release under this optional build parameter. This functionality is subject to
++# be completely removed in a future release.
++#CONFIG_WEP=y
++
++# Remove all TKIP functionality
++# TKIP is an old cryptographic data confidentiality algorithm that is not
++# considered secure. It should not be used anymore for anything else than a
++# backwards compatibility option as a group cipher when connecting to APs that
++# use WPA+WPA2 mixed mode. For now, the default wpa_supplicant build includes
++# support for this by default, but that functionality is subject to be removed
++# in the future.
++#CONFIG_NO_TKIP=y
++
++# Testing options
++# This can be used to enable some testing options (see also the example
++# configuration file) that are really useful only for testing clients that
++# connect to this hostapd. These options allow, for example, to drop a
++# certain percentage of probe requests or auth/(re)assoc frames.
++CONFIG_TESTING_OPTIONS=y
++
++CONFIG_SUITEB192=y
++CONFIG_SUITEB=y
++
++# Enable all IFX/Cypress changes
++CONFIG_DRIVER_NL80211_IFX=y
++
++# Offload the TWT Session management to FW
++CONFIG_TWT_OFFLOAD_IFX=y
++
+diff --git a/wpa_supplicant/driver_i.h b/wpa_supplicant/driver_i.h
+index 237f4e0..fa11f72 100644
+--- a/wpa_supplicant/driver_i.h
++++ b/wpa_supplicant/driver_i.h
+@@ -609,6 +609,16 @@ static inline int wpa_drv_driver_cmd(struct wpa_supplicant *wpa_s,
+ }
+ #endif /* ANDROID */
+ 
++#ifdef CONFIG_DRIVER_BRCM_WL
++static inline int wpa_drv_wl_cmd(struct wpa_supplicant *wpa_s,
++				     char *cmd, char *buf, size_t buf_len)
++{
++	if (!wpa_s->driver->wl_cmd)
++		return -1;
++	return wpa_s->driver->wl_cmd(wpa_s->drv_priv, cmd, buf, buf_len);
++}
++#endif /* CONFIG_DRIVER_BRCM_WL */
++
+ static inline void wpa_drv_set_rekey_info(struct wpa_supplicant *wpa_s,
+ 					  const u8 *kek, size_t kek_len,
+ 					  const u8 *kck, size_t kck_len,
+@@ -1117,4 +1127,40 @@ static inline int wpa_drv_dpp_listen(struct wpa_supplicant *wpa_s, bool enable)
+ 	return wpa_s->driver->dpp_listen(wpa_s->drv_priv, enable);
+ }
+ 
++#ifdef CONFIG_DRIVER_NL80211_IFX
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++static inline int wpa_drv_setup_twt(struct wpa_supplicant *wpa_s,
++				    struct drv_setup_twt_params *params)
++{
++	if (!wpa_s->driver->setup_twt)
++		return -1;
++	return wpa_s->driver->setup_twt(wpa_s->drv_priv, params);
++}
++
++static inline int wpa_drv_teardown_twt(struct wpa_supplicant *wpa_s,
++				       struct drv_teardown_twt_params *params)
++{
++	if (!wpa_s->driver->teardown_twt)
++		return -1;
++	return wpa_s->driver->teardown_twt(wpa_s->drv_priv, params);
++}
++#endif /* CONFIG_TWT_OFFLOAD_IFX */
++
++static inline int wpa_drv_config_mbo(struct wpa_supplicant *wpa_s,
++				       struct drv_config_mbo_params *params)
++{
++	if (!wpa_s->driver->config_mbo)
++		return -1;
++	return wpa_s->driver->config_mbo(wpa_s->drv_priv, params);
++}
++
++static inline int wpa_drv_maxidle_wnm(struct wpa_supplicant *wpa_s,
++						struct drv_maxidle_wnm_params *params)
++{
++	if (!wpa_s->driver->maxidle_wnm)
++		return -1;
++	return wpa_s->driver->maxidle_wnm(wpa_s->drv_priv, params);
++}
++#endif /* CONFIG_DRIVER_NL80211_IFX */
++
+ #endif /* DRIVER_I_H */
+diff --git a/wpa_supplicant/events.c b/wpa_supplicant/events.c
+index f55e184..b42f758 100644
+--- a/wpa_supplicant/events.c
++++ b/wpa_supplicant/events.c
+@@ -3425,8 +3425,10 @@ static void wpa_supplicant_event_assoc(struct wpa_supplicant *wpa_s,
+ 		wpa_supplicant_set_state(wpa_s, WPA_COMPLETED);
+ 		eapol_sm_notify_portValid(wpa_s->eapol, true);
+ 		eapol_sm_notify_eap_success(wpa_s->eapol, true);
+-	} else if ((wpa_s->drv_flags & WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X) &&
+-		   wpa_key_mgmt_wpa_ieee8021x(wpa_s->key_mgmt)) {
++	} else if (((wpa_s->drv_flags & WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X) &&
++		     wpa_key_mgmt_wpa_ieee8021x(wpa_s->key_mgmt)) ||
++		   ((wpa_s->drv_flags2 & WPA_DRIVER_FLAGS_ROAM_OFFLOAD) &&
++		     wpa_key_mgmt_ft(wpa_s->key_mgmt))) {
+ 		/*
+ 		 * The driver will take care of RSN 4-way handshake, so we need
+ 		 * to allow EAPOL supplicant to complete its work without
+@@ -3567,6 +3569,12 @@ static void wpa_supplicant_event_disassoc(struct wpa_supplicant *wpa_s,
+ 			" reason=%d%s",
+ 			MAC2STR(bssid), reason_code,
+ 			locally_generated ? " locally_generated=1" : "");
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++		if (locally_generated &&
++		    wpas_twt_offload_deinit_default_session(wpa_s))
++			wpa_msg(wpa_s, MSG_ERROR,
++				"Failed to cleanup all the TWT sessions including Default session");
++#endif
+ 	}
+ }
+ 
+@@ -4158,6 +4166,25 @@ static void wpas_event_disconnect(struct wpa_supplicant *wpa_s, const u8 *addr,
+ 	}
+ #endif /* CONFIG_P2P */
+ 
++#ifdef CONFIG_SAE
++	if (reason_code <= WLAN_REASON_PREV_AUTH_NOT_VALID) {
++		const u8 *bssid = wpa_s->bssid;
++
++		if (is_zero_ether_addr(bssid))
++			bssid = wpa_s->pending_bssid;
++
++		if ((!is_zero_ether_addr(bssid) ||
++			(wpa_s->wpa_state >= WPA_AUTHENTICATING)) &&
++			wpa_s->current_ssid &&
++			wpa_key_mgmt_sae(wpa_s->current_ssid->key_mgmt)) {
++			wpa_dbg(wpa_s, MSG_DEBUG, "SAE: Drop PMKSA "
++				"cache entry");
++			wpa_sm_aborted_cached(wpa_s->wpa);
++			wpa_sm_pmksa_cache_flush(wpa_s->wpa,
++				wpa_s->current_ssid);
++		}
++	}
++#endif /* CONFIG_SAE */
+ 	wpa_supplicant_event_disassoc_finish(wpa_s, reason_code,
+ 					     locally_generated);
+ }
+diff --git a/wpa_supplicant/mbo.c b/wpa_supplicant/mbo.c
+index 3df86ef..714f9ef 100644
+--- a/wpa_supplicant/mbo.c
++++ b/wpa_supplicant/mbo.c
+@@ -663,3 +663,122 @@ void mbo_parse_rx_anqp_resp(struct wpa_supplicant *wpa_s,
+ 		break;
+ 	}
+ }
++
++#ifdef CONFIG_DRIVER_NL80211_IFX
++int wpas_config_offload_send_mbo_config(struct wpa_supplicant *wpa_s, u8 cmd_id,
++					u8 oper_class, u8 chan, u8 pref_val,
++					u8 reason_code, u8 enable, u8 notif_type,
++					u8 time_offset, u8 rssi_trig_delta,
++					bool enable_anqpo, bool enable_cell_pref,
++					u8 cell_pref_val, u8 cell_cap)
++{
++	struct drv_config_mbo_params params;
++	int ret = 0;
++
++	memset(&params, 0, sizeof(struct drv_config_mbo_params));
++
++	switch (cmd_id) {
++	case IFX_MBO_CONFIG_CMD_ADD_CHAN_PREF:
++		if (!oper_class || !chan ||
++		    (pref_val != 0 && pref_val != 1 && pref_val != 255) ||
++		    reason_code > 3) {
++			wpa_printf(MSG_ERROR,
++				   "MBO: incorrect parameter for add_chan_pref oper_class: %d "
++				   "chan:%d pref_val:%d reason_code:%d",
++				   oper_class, chan, pref_val, reason_code);
++			ret = -EOPNOTSUPP;
++			goto fail;
++		}
++		params.cmd = cmd_id;
++		params.u.add_chan_pref.op_class = oper_class;
++		params.u.add_chan_pref.chan = chan;
++		params.u.add_chan_pref.pref_val = pref_val;
++		params.u.add_chan_pref.reason = reason;
++		break;
++	case IFX_MBO_CONFIG_CMD_DEL_CHAN_PREF:
++		if (!oper_class || !chan) {
++			wpa_printf(MSG_ERROR,
++				   "MBO: incorrect parameter for del_chan_pref "
++				   "oper_class: %d chan:%d",
++				   oper_class, chan);
++			ret = -EOPNOTSUPP;
++			goto fail;
++		}
++		params.cmd = cmd_id;
++		params.u.del_chan_pref.op_class = oper_class;
++		params.u.del_chan_pref.chan = chan;
++		break;
++	case IFX_MBO_CONFIG_CMD_LIST_CHAN_PREF:
++		params.cmd = cmd_id;
++		break;
++	case IFX_MBO_CONFIG_CMD_CELLULAR_DATA_CAP:
++		if (!cell_cap || cell_cap > 3) {
++			wpa_printf(MSG_ERROR,
++				   "MBO: incorrect parameter for cellular_data_cap:%d",
++				   cell_cap);
++			ret = -EOPNOTSUPP;
++			goto fail;
++		}
++		params.cmd = cmd_id;
++		params.u.cell_data_cap.cap = cell_cap;
++		break;
++	case IFX_MBO_CONFIG_CMD_DUMP_COUNTER:
++		params.cmd = cmd_id;
++		break;
++	case IFX_MBO_CONFIG_CMD_CLEAR_COUNTER:
++		params.cmd = cmd_id;
++		break;
++	case IFX_MBO_CONFIG_CMD_FORCE_ASSOC:
++		if (enable > 1) {
++			wpa_printf(MSG_ERROR,
++				   "MBO: incorrect parameter for force_assoc:%d",
++				   enable);
++			ret = -EOPNOTSUPP;
++			goto fail;
++		}
++		params.cmd = cmd_id;
++		params.u.force_assoc.enable = enable;
++		break;
++	case IFX_MBO_CONFIG_CMD_BSSTRANS_REJ:
++		if (enable > 1 || reason_code > 6) {
++			wpa_printf(MSG_ERROR,
++				   "MBO: incorrect parameter for bsstrans reject, enable:%d, reason:%d",
++				   enable, reason_code);
++			ret = -EOPNOTSUPP;
++			goto fail;
++		}
++		params.cmd = cmd_id;
++		params.u.bsstrans_reject.enable = enable;
++		params.u.bsstrans_reject.reason = reason_code;
++		break;
++	case IFX_MBO_CONFIG_CMD_SEND_NOTIF:
++		if (notif_type != 2 && notif_type != 3) {
++			wpa_printf(MSG_ERROR,
++				   "MBO: incorrect parameter for send notifty:%d",
++				   notif_type);
++			ret = -EOPNOTSUPP;
++			goto fail;
++		}
++		params.cmd = cmd_id;
++		params.u.send_notif.type = notif_type;
++		break;
++	case IFX_MBO_CONFIG_CMD_NBR_INFO_CACHE:
++		break;
++	case IFX_MBO_CONFIG_CMD_ANQPO_SUPPORT:
++		break;
++	case IFX_MBO_CONFIG_CMD_CELLULAR_DATA_PREF:
++		break;
++	default:
++		wpa_printf(MSG_DEBUG, "MBO: Unsupported cmd_id %d",
++			   cmd_id);
++		ret = -EOPNOTSUPP;
++		goto fail;
++	}
++
++	ret = wpa_drv_config_mbo(wpa_s, params);
++
++fail:
++	return ret;
++}
++#endif /* CONFIG_DRIVER_NL80211_IFX */
++
+diff --git a/wpa_supplicant/rrm.c b/wpa_supplicant/rrm.c
+index cf107eb..16e3ab3 100644
+--- a/wpa_supplicant/rrm.c
++++ b/wpa_supplicant/rrm.c
+@@ -52,6 +52,71 @@ void wpas_rrm_reset(struct wpa_supplicant *wpa_s)
+ 	wpas_clear_beacon_rep_data(wpa_s);
+ }
+ 
++/*
++ * wpas_rrm_notify_neighbor_rep - Notify received neighbor report
++ * @wpa_s: Pointer to wpa_supplicant
++ * @neighbor_rep: Pointer to neighbor report elements
++ */
++void wpas_rrm_notify_neighbor_rep(struct wpa_supplicant *wpa_s,
++				  struct wpabuf *neighbor_rep)
++{
++	size_t len;
++	const u8 *data;
++
++	/*
++	 * Neighbor Report element (IEEE Std 802.11-2016: 9.4.2.37)
++	 * Element ID[1]
++	 * Length[1]
++	 * BSSID[6]
++	 * BSSID Information[4]
++	 * Operating Class[1]
++	 * Channel Number[1]
++	 * PHY Type[1]
++	 * Optional Subelements[variable]
++	 */
++#define NR_IE_MIN_LEN (ETH_ALEN + 4 + 1 + 1 + 1)
++
++	if (wpabuf_len(neighbor_rep) == 0) {
++		wpa_msg(wpa_s, MSG_INFO, RRM_EVENT_NEIGHBOR_REP_RXED
++			"No neighbors of the associated AP");
++		goto out;
++	}
++
++	data = wpabuf_head_u8(neighbor_rep);
++	len = wpabuf_len(neighbor_rep);
++
++	while (len >= 2 + NR_IE_MIN_LEN) {
++		const u8 *nr;
++		u8 nr_len = data[1];
++		const u8 *pos = data, *end;
++
++		if ((pos[0] != WLAN_EID_NEIGHBOR_REPORT) ||
++		    (nr_len < NR_IE_MIN_LEN) ||
++		    (2U + nr_len > len)) {
++			wpa_dbg(wpa_s, MSG_DEBUG,
++				"RRM: Invalid Neighbor Report element: "
++				"id=%u len=%zu nr_len=%u",
++				data[0], len, nr_len);
++			goto out;
++		}
++
++		pos += 2;
++		end = pos + nr_len;
++		nr = pos;
++
++		wpa_msg(wpa_s, MSG_INFO, RRM_EVENT_NEIGHBOR_REP_RXED
++			"bssid=" MACSTR
++			" info=0x%x op_class=%u chan=%u phy_type=%u",
++			MAC2STR(nr), WPA_GET_LE32(nr + ETH_ALEN),
++			nr[ETH_ALEN + 4], nr[ETH_ALEN + 5], nr[ETH_ALEN + 6]);
++
++		data = end;
++		len -= 2 + nr_len;
++	}
++
++out:
++	wpabuf_free(neighbor_rep);
++}
+ 
+ /*
+  * wpas_rrm_process_neighbor_rep - Handle incoming neighbor report
+@@ -68,19 +133,17 @@ void wpas_rrm_process_neighbor_rep(struct wpa_supplicant *wpa_s,
+ 	if (report_len < 1)
+ 		return;
+ 
+-	if (report[0] != wpa_s->rrm.next_neighbor_rep_token - 1) {
+-		wpa_printf(MSG_DEBUG,
+-			   "RRM: Discarding neighbor report with token %d (expected %d)",
+-			   report[0], wpa_s->rrm.next_neighbor_rep_token - 1);
+-		return;
+-	}
+-
+-	eloop_cancel_timeout(wpas_rrm_neighbor_rep_timeout_handler, &wpa_s->rrm,
+-			     NULL);
++	if (wpa_s->rrm.notify_neighbor_rep) {
++		if (report[0] != wpa_s->rrm.next_neighbor_rep_token - 1) {
++			wpa_printf(MSG_DEBUG,
++				   "RRM: Discarding neighbor report with token "
++				   "%d (expected %d)", report[0],
++				   wpa_s->rrm.next_neighbor_rep_token - 1);
++			return;
++		}
+ 
+-	if (!wpa_s->rrm.notify_neighbor_rep) {
+-		wpa_msg(wpa_s, MSG_INFO, "RRM: Unexpected neighbor report");
+-		return;
++		eloop_cancel_timeout(wpas_rrm_neighbor_rep_timeout_handler,
++				     &wpa_s->rrm, NULL);
+ 	}
+ 
+ 	/* skipping the first byte, which is only an id (dialog token) */
+@@ -92,12 +155,15 @@ void wpas_rrm_process_neighbor_rep(struct wpa_supplicant *wpa_s,
+ 	wpabuf_put_data(neighbor_rep, report + 1, report_len - 1);
+ 	wpa_dbg(wpa_s, MSG_DEBUG, "RRM: Notifying neighbor report (token = %d)",
+ 		report[0]);
+-	wpa_s->rrm.notify_neighbor_rep(wpa_s->rrm.neighbor_rep_cb_ctx,
+-				       neighbor_rep);
+-	wpa_s->rrm.notify_neighbor_rep = NULL;
+-	wpa_s->rrm.neighbor_rep_cb_ctx = NULL;
+-}
+ 
++	if (wpa_s->rrm.notify_neighbor_rep) {
++		wpa_s->rrm.notify_neighbor_rep(wpa_s->rrm.neighbor_rep_cb_ctx,
++					       neighbor_rep);
++		wpa_s->rrm.notify_neighbor_rep = NULL;
++		wpa_s->rrm.neighbor_rep_cb_ctx = NULL;
++	} else
++		wpas_rrm_notify_neighbor_rep(wpa_s, neighbor_rep);
++}
+ 
+ #if defined(__CYGWIN__) || defined(CONFIG_NATIVE_WINDOWS)
+ /* Workaround different, undefined for Windows, error codes used here */
+diff --git a/wpa_supplicant/scan.c b/wpa_supplicant/scan.c
+index b0094ca..01a995e 100644
+--- a/wpa_supplicant/scan.c
++++ b/wpa_supplicant/scan.c
+@@ -1328,6 +1328,12 @@ ssid_list_set:
+ 		}
+ 	}
+ 
++	if (wpa_s->last_scan_req == MANUAL_SCAN_REQ &&
++	    wpa_s->manual_non_coloc_6ghz) {
++		wpa_dbg(wpa_s, MSG_DEBUG, "Collocated 6 GHz logic is disabled");
++		params.non_coloc_6ghz = 1;
++	}
++
+ 	scan_params = &params;
+ 
+ scan:
+@@ -1365,28 +1371,20 @@ scan:
+ 	    (wpa_s->p2p_in_invitation || wpa_s->p2p_in_provisioning) &&
+ 	    !is_p2p_allow_6ghz(wpa_s->global->p2p) &&
+ 	    is_6ghz_supported(wpa_s)) {
+-		int i;
+ 
+-		/* Exclude 5 GHz channels from the full scan for P2P connection
++		/* Exclude 6 GHz channels from the full scan for P2P connection
+ 		 * since the 6 GHz band is disabled for P2P uses. */
+ 		wpa_printf(MSG_DEBUG,
+ 			   "P2P: 6 GHz disabled - update the scan frequency list");
+-		for (i = 0; i < wpa_s->hw.num_modes; i++) {
+-			if (wpa_s->hw.modes[i].num_channels == 0)
+-				continue;
+-			if (wpa_s->hw.modes[i].mode == HOSTAPD_MODE_IEEE80211G)
+-				wpa_add_scan_freqs_list(
+-					wpa_s, HOSTAPD_MODE_IEEE80211G,
+-					&params, false);
+-			if (wpa_s->hw.modes[i].mode == HOSTAPD_MODE_IEEE80211A)
+-				wpa_add_scan_freqs_list(
+-					wpa_s, HOSTAPD_MODE_IEEE80211A,
+-					&params, false);
+-			if (wpa_s->hw.modes[i].mode == HOSTAPD_MODE_IEEE80211AD)
+-				wpa_add_scan_freqs_list(
+-					wpa_s, HOSTAPD_MODE_IEEE80211AD,
+-					&params, false);
+-		}
++		wpa_add_scan_freqs_list(
++			wpa_s, HOSTAPD_MODE_IEEE80211G,
++			&params, false);
++		wpa_add_scan_freqs_list(
++			wpa_s, HOSTAPD_MODE_IEEE80211A,
++			&params, false);
++		wpa_add_scan_freqs_list(
++			wpa_s, HOSTAPD_MODE_IEEE80211AD,
++			&params, false);
+ 	}
+ #endif /* CONFIG_P2P */
+ 
+@@ -2902,6 +2900,7 @@ wpa_scan_clone_params(const struct wpa_driver_scan_params *src)
+ 	params->relative_adjust_band = src->relative_adjust_band;
+ 	params->relative_adjust_rssi = src->relative_adjust_rssi;
+ 	params->p2p_include_6ghz = src->p2p_include_6ghz;
++	params->non_coloc_6ghz = src->non_coloc_6ghz;
+ 	return params;
+ 
+ failed:
+diff --git a/wpa_supplicant/twt.c b/wpa_supplicant/twt.c
+index 8ec2c85..fb0c3e3 100644
+--- a/wpa_supplicant/twt.c
++++ b/wpa_supplicant/twt.c
+@@ -9,11 +9,286 @@
+ #include "includes.h"
+ 
+ #include "utils/common.h"
++#include "config.h"
+ #include "wpa_supplicant_i.h"
+ #include "driver_i.h"
++#include "scan.h"
+ 
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++#define TWT_NONE 0
++#define TWT_IDLE 1
++#define TWT_ACTIVE 2
++#define TWT_TEARDOWN_ALL 128
+ 
+-#ifdef CONFIG_TESTING_OPTIONS
++/**
++ * wpas_twt_offload_send_setup - Send TWT Setup frame to our AP
++ * @wpa_s: Pointer to wpa_supplicant
++ * @dtok: Dialog token
++ * @exponent: Wake-interval exponent
++ * @mantissa: Wake-interval mantissa
++ * @min_twt: Minimum TWT wake duration in units of 256 usec
++ * @setup_cmd: 0 == request, 1 == suggest, etc.  Table 9-297
++ * @twt: Target Wake Time
++ * @twt_offset: Target Wake Time TSF offset
++ * @requestor: Specify this is a TWT Requesting / Responding STA
++ * @trigger: Specify Trigger based / Non-Trigger based TWT Session
++ * @implicit: Specify Implicit / Explicit TWT session
++ * @flow_type: Specify Un-Announced / Announced TWT session
++ * @flow_id: Flow ID / Broacast TWT ID to be used in the TWT session
++ * @protection: Specifies whether Tx within SP is protected by RTS & CTS
++ * @twt_channel: Set by the HE SST non-AP STA
++ * @control: Control Field in the TWT Setup Action frame
++ * Returns: 0 in case of success, negative error code otherwise
++ *
++ */
++int wpas_twt_offload_send_setup(struct wpa_supplicant *wpa_s, u8 dtok, int exponent,
++				int mantissa, u8 min_twt, int setup_cmd, u64 twt,
++				u64 twt_offset, bool requestor, bool trigger,
++				bool implicit, bool flow_type, u8 flow_id,
++				bool protection, u8 twt_channel, u8 control)
++{
++	int ret = 0;
++	struct drv_setup_twt_params params;
++	u8 negotiation_type, twt_info_frame_disabled, min_twt_unit;
++
++	params.dtok = dtok;
++	params.min_twt = min_twt;
++	params.twt = twt;
++	params.twt_offset = twt_offset;
++	params.requestor = requestor ? 1 : 0;
++	params.trigger = trigger ? 1 : 0;
++	params.implicit = implicit ? 1 : 0;
++	params.flow_type = flow_type ? 1 : 0;
++	params.protection = protection ? 1 : 0;
++	params.twt_channel = twt_channel;
++	params.flow_id = 0xFF;
++	params.bcast_twt_id = 0xFF;
++
++	/* exponent range - 0 to 31 */
++	if (exponent >= 0 && exponent <= 0x1F) {
++		params.exponent = (u8)exponent;
++	} else {
++		wpa_printf(MSG_ERROR,
++				"TWT offload: setup cmd exponent %d not supported",
++				exponent);
++		ret = -EOPNOTSUPP;
++		goto fail;
++	}
++
++	/* mantissa range - 1 to 65535 */
++	if (mantissa > 0 && mantissa <= 0xFFFF) {
++		params.mantissa = (u16)mantissa;
++	} else {
++		wpa_printf(MSG_ERROR,
++				"TWT offload: setup cmd mantissa %d not supported",
++				mantissa);
++		ret = -EOPNOTSUPP;
++		goto fail;
++	}
++
++	/* Setup Command Field - IEEE 802.11ax-2021 Table 9-297 */
++	switch(setup_cmd) {
++		case 0: params.setup_cmd = IFX_TWT_OPER_SETUP_CMD_TYPE_REQUEST;
++			break;
++		case 1: params.setup_cmd = IFX_TWT_OPER_SETUP_CMD_TYPE_SUGGEST;
++			break;
++		case 2: params.setup_cmd = IFX_TWT_OPER_SETUP_CMD_TYPE_DEMAND;
++			break;
++		case 3: params.setup_cmd = IFX_TWT_OPER_SETUP_CMD_TYPE_GROUPING;
++			break;
++		case 4: params.setup_cmd = IFX_TWT_OPER_SETUP_CMD_TYPE_ACCEPT;
++			break;
++		case 5: params.setup_cmd = IFX_TWT_OPER_SETUP_CMD_TYPE_ALTERNATE;
++			break;
++		case 6: params.setup_cmd = IFX_TWT_OPER_SETUP_CMD_TYPE_DICTATE;
++			break;
++		case 7: params.setup_cmd = IFX_TWT_OPER_SETUP_CMD_TYPE_REJECT;
++			break;
++		default:
++			wpa_printf(MSG_ERROR,
++				   "TWT offload: specified Setup cmd type not supported");
++			ret = -EOPNOTSUPP;
++			goto fail;
++	}
++
++	/* Control Field - IEEE 802.11ax-2021 Figure 9-687 */
++	params.control = control;
++							/* NDP Paging Indicator : Bit 0		 */
++							/* Responder PM Mode : Bit 1		 */
++	negotiation_type = (control & 0xc) >> 2;	/* Negotiation type : Bit 2-3		 */
++	twt_info_frame_disabled = (control & 0x10) >> 4;/* TWT Information Frame Disabled: Bit 4 */
++	min_twt_unit = (control & 0x20) >> 5;		/* Wake Duration Unit : Bit 5		 */
++							/* Reserved : Bit 6-7			 */
++
++	/* Negotiation Type Field - IEEE 802.11ax-2021 Table 9.296a */
++	switch(negotiation_type) {
++		case 0:	/* Individual TWT */
++			params.negotiation_type = IFX_TWT_PARAM_NEGO_TYPE_ITWT;
++			params.flow_id = flow_id;
++			break;
++		case 1: /* Wake TBTT Negotiation */
++			params.negotiation_type = IFX_TWT_PARAM_NEGO_TYPE_WAKE_TBTT;
++			break;
++		case 2: /* Broadcast TWT IE in Beacon */
++			params.negotiation_type = IFX_TWT_PARAM_NEGO_TYPE_BTWT_IE_BCN;
++			break;
++		case 3: /* Broadcast TWT membership */
++			params.negotiation_type = IFX_TWT_PARAM_NEGO_TYPE_BTWT;
++			params.bcast_twt_id = flow_id;
++			break;
++		default:
++			wpa_printf(MSG_ERROR,
++				   "TWT offload: specified Nego type not supported");
++			ret = -EOPNOTSUPP;
++			goto fail;
++	}
++
++	params.twt_info_frame_disabled = twt_info_frame_disabled;
++	params.min_twt_unit = min_twt_unit;		/* 1 - in TUs, 0 - in 256us */
++
++	if (wpa_drv_setup_twt(wpa_s, &params)) {
++		wpa_printf(MSG_ERROR, "TWT offload: Failed to send TWT Setup Request");
++		ret = -ECANCELED;
++		goto fail;
++	}
++
++fail:
++	return ret;
++}
++
++/**
++ * wpas_twt_offload_send_teardown - send TWT teardown request to our AP
++ * @wpa_s: pointer to wpa_supplicant
++ * @flags: the byte that goes inside the twt teardown element
++ * returns: 0 in case of success, negative error code otherwise
++ *
++ */
++int wpas_twt_offload_send_teardown(struct wpa_supplicant *wpa_s, u8 flags)
++{
++	int ret = 0;
++	struct drv_teardown_twt_params params;
++	u8 negotiation_type, flow_id, teardown_all_twt;
++
++	/* TWT Flow Field - IEEE 802.11ax-2021 Figure 9-965 */
++	flow_id = flags & 0x07;			/* Flow ID : Bit 0-2		*/
++						/* Reserved : Bit 3-4		*/
++	negotiation_type = (flags & 0x60) >> 5;	/* Negotiation type : Bit 5-6	*/
++	teardown_all_twt = (flags & 0x80) >> 7;	/* Teardown all TWT : Bit 7	*/
++
++	/* Negotiation Type Field - IEEE 802.11ax-2021 Table 9.296a */
++	switch(negotiation_type) {
++		case 0:	/* Individual TWT */
++			params.negotiation_type = IFX_TWT_PARAM_NEGO_TYPE_ITWT;
++			params.flow_id = flow_id;
++			break;
++		case 1: /* Wake TBTT Negotiation */
++			params.negotiation_type = IFX_TWT_PARAM_NEGO_TYPE_WAKE_TBTT;
++			break;
++		case 2: /* Broadcast TWT IE in Beacon */
++			params.negotiation_type = IFX_TWT_PARAM_NEGO_TYPE_BTWT_IE_BCN;
++			break;
++		case 3: /* Broadcast TWT membership */
++			params.negotiation_type = IFX_TWT_PARAM_NEGO_TYPE_BTWT;
++			params.bcast_twt_id = flow_id;
++			break;
++		default:
++			wpa_printf(MSG_ERROR,
++				   "TWT offload: specified Nego Type Not supported");
++			ret = -EOPNOTSUPP;
++			goto fail;
++	}
++
++	params.teardown_all_twt = teardown_all_twt;
++
++	if (wpa_drv_teardown_twt(wpa_s, &params)) {
++		wpa_printf(MSG_ERROR, "TWT offload: Failed to send TWT Teardown frame");
++		ret = -ECANCELED;
++		goto fail;
++	}
++
++fail:
++	return ret;
++}
++
++int wpas_twt_offload_init_default_session(struct wpa_supplicant *wpa_s)
++{
++	int exponent = 10, mantissa = 8192, setup_cmd = 2, flow_id = 0xFF, ret = 0;
++	unsigned long long twt = 0, twt_offset = 0;
++	bool requestor = true, trigger = true, implicit = true, flow_type = true,
++	     protection = false;
++	u8 dtok = 1, min_twt = 255, twt_channel = 0,
++	   control = BIT(4); /* Control field (IEEE P802.11ax/D8.0 Figure
++                              * 9-687): B4 = TWT Information Frame Disabled */
++
++	if (wpa_s->conf->twt_def_algo == TWT_NONE) {
++		wpa_printf(MSG_DEBUG, "TWT offload: Default TWT is disabled");
++		goto exit;
++	}
++
++	wpa_printf(MSG_DEBUG, "TWT offload: Init Default TWT, profile %d, freq %d",
++		   wpa_s->conf->twt_def_algo, wpa_s->assoc_freq);
++
++	if (wpa_s->conf->twt_def_algo == TWT_IDLE) {
++		/* TWT profile for Idle traffic */
++		if (IS_2P4GHZ(wpa_s->assoc_freq)) {
++			/*
++			 * 2G Band
++			 * SP=2ms and SI=614.4ms
++			 */
++			min_twt = 8;
++			mantissa = 600;
++			exponent = 10;
++		} else { /*
++			  * 5G or 6G Band
++			  * SP=512us and SI=614.4ms
++			  */
++			min_twt = 2;
++			mantissa = 600;
++			exponent = 10;
++		}
++	} else if (wpa_s->conf->twt_def_algo == TWT_ACTIVE) {
++		/*
++		 * TWT profile for Active traffic
++		 * 2G, 5G and 6G Bands
++		 * SP=8ms and SI=50ms
++		 */
++		min_twt = 31;
++		mantissa = 50000;
++		exponent = 0;
++	} else {
++		wpa_printf(MSG_ERROR, "TWT offload: Invalid Default TWT profile");
++		ret = -1;
++		goto exit;
++	}
++
++	ret = wpas_twt_offload_send_setup(wpa_s, dtok, exponent, mantissa,
++					  min_twt, setup_cmd, twt, twt_offset,
++					  requestor, trigger, implicit, flow_type,
++					  flow_id, protection, twt_channel,
++					  control);
++exit:
++	return ret;
++}
++
++int wpas_twt_offload_deinit_default_session(struct wpa_supplicant *wpa_s)
++{
++	int flags = TWT_TEARDOWN_ALL, ret = 0;
++
++	if (wpa_s->conf->twt_def_algo == TWT_NONE) {
++		goto exit;
++	}
++
++	/* Clear all TWT sessions created by STA including default */
++	wpa_printf(MSG_DEBUG,
++		   "TWT offload: De-init Default TWT, profile %d, freq %d",
++		   wpa_s->conf->twt_def_algo, wpa_s->assoc_freq);
++
++	ret = wpas_twt_offload_send_teardown(wpa_s, flags);
++exit:
++	return ret;
++}
++
++#else
+ 
+ /**
+  * wpas_twt_send_setup - Send TWT Setup frame (Request) to our AP
+@@ -139,4 +414,4 @@ int wpas_twt_send_teardown(struct wpa_supplicant *wpa_s, u8 flags)
+ 	return ret;
+ }
+ 
+-#endif /* CONFIG_TESTING_OPTIONS */
++#endif /* CONFIG_TWT_OFFLOAD_IFX */
+diff --git a/wpa_supplicant/wpa_cli.c b/wpa_supplicant/wpa_cli.c
+index 033589f..8119d08 100644
+--- a/wpa_supplicant/wpa_cli.c
++++ b/wpa_supplicant/wpa_cli.c
+@@ -2910,6 +2910,14 @@ static int wpa_cli_cmd_driver(struct wpa_ctrl *ctrl, int argc, char *argv[])
+ #endif /* ANDROID */
+ 
+ 
++#ifdef CONFIG_DRIVER_BRCM_WL
++static int wpa_cli_cmd_wl(struct wpa_ctrl *ctrl, int argc, char *argv[])
++{
++	return wpa_cli_cmd(ctrl, "WL", 1, argc, argv);
++}
++#endif /* CONFIG_DRIVER_BRCM_WL */
++
++
+ static int wpa_cli_cmd_vendor(struct wpa_ctrl *ctrl, int argc, char *argv[])
+ {
+ 	return wpa_cli_cmd(ctrl, "VENDOR", 1, argc, argv);
+@@ -2949,6 +2957,21 @@ static int wpa_cli_cmd_twt_teardown(struct wpa_ctrl *ctrl, int argc,
+ }
+ 
+ 
++#ifdef CONFIG_DRIVER_NL80211_IFX
++static int wpa_cli_cmd_mbo_config(struct wpa_ctrl *ctrl, int argc,
++				 char *argv[])
++{
++	return wpa_cli_cmd(ctrl, "MBO", 0, argc, argv);
++}
++
++static int wpa_cli_cmd_wnm_maxidle(struct wpa_ctrl *ctrl, int argc,
++					char *argv[])
++{
++	return wpa_cli_cmd(ctrl, "WNM_MAXIDLE", 0, argc, argv);
++}
++#endif /* CONFIG_DRIVER_NL80211_IFX */
++
++
+ static int wpa_cli_cmd_erp_flush(struct wpa_ctrl *ctrl, int argc, char *argv[])
+ {
+ 	return wpa_ctrl_command(ctrl, "ERP_FLUSH");
+@@ -3853,6 +3876,10 @@ static const struct wpa_cli_cmd wpa_cli_commands[] = {
+ 	{ "driver", wpa_cli_cmd_driver, NULL, cli_cmd_flag_none,
+ 	  "<command> = driver private commands" },
+ #endif /* ANDROID */
++#ifdef CONFIG_DRIVER_BRCM_WL
++	{ "wl", wpa_cli_cmd_wl, NULL, cli_cmd_flag_none,
++	  "<command> = brcm wl commands" },
++#endif /* CONFIG_DRIVER_BRCM_WL */
+ 	{ "radio_work", wpa_cli_cmd_radio_work, NULL, cli_cmd_flag_none,
+ 	  "= radio_work <show/add/done>" },
+ 	{ "vendor", wpa_cli_cmd_vendor, NULL, cli_cmd_flag_none,
+@@ -3864,12 +3891,22 @@ static const struct wpa_cli_cmd wpa_cli_commands[] = {
+ 	},
+ 	{ "twt_setup",
+ 	  wpa_cli_cmd_twt_setup, NULL, cli_cmd_flag_none,
+-	  "[dialog=<token>] [exponent=<exponent>] [mantissa=<mantissa>] [min_twt=<Min TWT>] [setup_cmd=<setup-cmd>] [twt=<u64>] [requestor=0|1] [trigger=0|1] [implicit=0|1] [flow_type=0|1] [flow_id=<3-bit-id>] [protection=0|1] [twt_channel=<twt chanel id>] [control=<control-u8>] = Send TWT Setup frame"
++	  "[dialog=<token>] [exponent=<exponent>] [mantissa=<mantissa>] [min_twt=<Min TWT>] [setup_cmd=<setup-cmd>] [twt=<u64>] [twt_offset=<u64> ][requestor=0|1] [trigger=0|1] [implicit=0|1] [flow_type=0|1] [flow_id=<3-bit-id>] [protection=0|1] [twt_channel=<twt chanel id>] [control=<control-u8>] = Send TWT Setup frame"
+ 	},
+ 	{ "twt_teardown",
+ 	  wpa_cli_cmd_twt_teardown, NULL, cli_cmd_flag_none,
++	  "[cmd_id=<value>] [oper_class=0|1|255] [pref_val=0|1|255] [reason_code=<reason-u8>] [chan=<channel id>] [cell_cap=1|2] [enable=0|1] [notif_type=2|3] = Send MBO Setup frame"
++	},
++#ifdef CONFIG_DRIVER_NL80211_IFX
++	{ "mbo",
++	  wpa_cli_cmd_mbo_config, NULL, cli_cmd_flag_none,
+ 	  "[flags=<value>] = Send TWT Teardown frame"
+ 	},
++	{ "wnm_maxidle",
++		wpa_cli_cmd_wnm_maxidle, NULL, cli_cmd_flag_none,
++		"[period=<value>] [option=<value>]"
++	},
++#endif/* CONFIG_DRIVER_NL80211_IFX */
+ 	{ "erp_flush", wpa_cli_cmd_erp_flush, NULL, cli_cmd_flag_none,
+ 	  "= flush ERP keys" },
+ 	{ "mac_rand_scan",
+diff --git a/wpa_supplicant/wpa_supplicant.c b/wpa_supplicant/wpa_supplicant.c
+index d37a994..d3d4fbc 100644
+--- a/wpa_supplicant/wpa_supplicant.c
++++ b/wpa_supplicant/wpa_supplicant.c
+@@ -1001,7 +1001,13 @@ void wpa_supplicant_set_state(struct wpa_supplicant *wpa_s,
+ 			ssid ? ssid->id : -1,
+ 			ssid && ssid->id_str ? ssid->id_str : "",
+ 			fils_hlp_sent ? " FILS_HLP_SENT" : "");
++
+ #endif /* CONFIG_CTRL_IFACE || !CONFIG_NO_STDOUT_DEBUG */
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++		if (wpas_twt_offload_init_default_session(wpa_s))
++			wpa_msg(wpa_s, MSG_ERROR,
++				"Failed to esablish a TWT session by default after Connection");
++#endif /* CONFIG_TWT_OFFLOAD_IFX */
+ 		wpas_clear_temp_disabled(wpa_s, ssid, 1);
+ 		wpa_s->consecutive_conn_failures = 0;
+ 		wpa_s->new_connection = 0;
+@@ -1537,12 +1543,16 @@ int wpa_supplicant_set_suites(struct wpa_supplicant *wpa_s,
+ 
+ 	sel = ie.key_mgmt & ssid->key_mgmt;
+ #ifdef CONFIG_SAE
+-	if (!(wpa_s->drv_flags & WPA_DRIVER_FLAGS_SAE))
++	if (!(wpa_s->drv_flags & WPA_DRIVER_FLAGS_SAE) &&
++	    !(wpa_s->drv_flags2 & WPA_DRIVER_FLAGS2_SAE_OFFLOAD))
+ 		sel &= ~(WPA_KEY_MGMT_SAE | WPA_KEY_MGMT_FT_SAE);
+ #endif /* CONFIG_SAE */
+ #ifdef CONFIG_IEEE80211R
+ 	if (!(wpa_s->drv_flags & (WPA_DRIVER_FLAGS_SME |
+-				  WPA_DRIVER_FLAGS_UPDATE_FT_IES)))
++				  WPA_DRIVER_FLAGS_UPDATE_FT_IES |
++				  WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_PSK |
++				  WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X)) &&
++		!(wpa_s->drv_flags2 & WPA_DRIVER_FLAGS_ROAM_OFFLOAD))
+ 		sel &= ~WPA_KEY_MGMT_FT;
+ #endif /* CONFIG_IEEE80211R */
+ 	wpa_dbg(wpa_s, MSG_DEBUG,
+@@ -3898,7 +3908,8 @@ static void wpas_start_assoc_cb(struct wpa_radio_work *work, int deinit)
+ 	    (params.key_mgmt_suite == WPA_KEY_MGMT_IEEE8021X ||
+ 	     params.key_mgmt_suite == WPA_KEY_MGMT_IEEE8021X_SHA256 ||
+ 	     params.key_mgmt_suite == WPA_KEY_MGMT_IEEE8021X_SUITE_B ||
+-	     params.key_mgmt_suite == WPA_KEY_MGMT_IEEE8021X_SUITE_B_192))
++	     params.key_mgmt_suite == WPA_KEY_MGMT_IEEE8021X_SUITE_B_192 ||
++	     params.key_mgmt_suite == WPA_KEY_MGMT_FT_IEEE8021X))
+ 		params.req_handshake_offload = 1;
+ 
+ 	if (wpa_s->conf->key_mgmt_offload) {
+@@ -3919,6 +3930,18 @@ static void wpas_start_assoc_cb(struct wpa_radio_work *work, int deinit)
+ 			params.psk = ssid->psk;
+ 	}
+ 
++	if ((wpa_s->drv_flags2 & WPA_DRIVER_FLAGS2_SAE_OFFLOAD) &&
++	    wpa_key_mgmt_sae(params.key_mgmt_suite)) {
++		params.auth_alg = WPA_AUTH_ALG_SAE;
++		if (ssid->sae_password)
++			params.sae_password = ssid->sae_password;
++		else if (ssid->passphrase)
++			params.passphrase = ssid->passphrase;
++
++		if (ssid->psk_set)
++			params.psk = ssid->psk;
++	}
++
+ 	params.drop_unencrypted = use_crypt;
+ 
+ 	params.mgmt_frame_protection = wpas_get_ssid_pmf(wpa_s, ssid);
+@@ -5126,7 +5149,8 @@ void wpa_supplicant_rx_eapol(void *ctx, const u8 *src_addr,
+ 	    eapol_sm_rx_eapol(wpa_s->eapol, src_addr, buf, len) > 0)
+ 		return;
+ 	wpa_drv_poll(wpa_s);
+-	if (!(wpa_s->drv_flags & WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_PSK))
++	if (!(wpa_key_mgmt_wpa_psk(wpa_s->key_mgmt) &&
++	      (wpa_s->drv_flags & WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_PSK)))
+ 		wpa_sm_rx_eapol(wpa_s->wpa, src_addr, buf, len);
+ 	else if (wpa_key_mgmt_wpa_ieee8021x(wpa_s->key_mgmt)) {
+ 		/*
+diff --git a/wpa_supplicant/wpa_supplicant_i.h b/wpa_supplicant/wpa_supplicant_i.h
+index 8bb8672..553d27d 100644
+--- a/wpa_supplicant/wpa_supplicant_i.h
++++ b/wpa_supplicant/wpa_supplicant_i.h
+@@ -883,6 +883,7 @@ struct wpa_supplicant {
+ 	unsigned int own_scan_requested:1;
+ 	unsigned int own_scan_running:1;
+ 	unsigned int clear_driver_scan_cache:1;
++	unsigned int manual_non_coloc_6ghz:1;
+ 	unsigned int manual_scan_id;
+ 	int scan_interval; /* time in sec between scans to find suitable AP */
+ 	int normal_scans; /* normal scans run before sched_scan */
+@@ -1642,12 +1643,23 @@ void add_freq(int *freqs, int *num_freqs, int freq);
+ int wpas_get_op_chan_phy(int freq, const u8 *ies, size_t ies_len,
+ 			 u8 *op_class, u8 *chan, u8 *phy_type);
+ 
++#ifdef CONFIG_TWT_OFFLOAD_IFX
++int wpas_twt_offload_send_setup(struct wpa_supplicant *wpa_s, u8 dtok, int exponent,
++				int mantissa, u8 min_twt, int setup_cmd, u64 twt,
++				u64 twt_offset, bool requestor, bool trigger,
++				bool implicit, bool flow_type, u8 flow_id,
++				bool protection, u8 twt_channel, u8 control);
++int wpas_twt_offload_send_teardown(struct wpa_supplicant *wpa_s, u8 flags);
++int wpas_twt_offload_init_default_session(struct wpa_supplicant *wpa_s);
++int wpas_twt_offload_deinit_default_session(struct wpa_supplicant *wpa_s);
++#else
+ int wpas_twt_send_setup(struct wpa_supplicant *wpa_s, u8 dtok, int exponent,
+ 			int mantissa, u8 min_twt, int setup_cmd, u64 twt,
+ 			bool requestor, bool trigger, bool implicit,
+ 			bool flow_type, u8 flow_id, bool protection,
+ 			u8 twt_channel, u8 control);
+ int wpas_twt_send_teardown(struct wpa_supplicant *wpa_s, u8 flags);
++#endif /* CONFIG_TWT_OFFLOAD_IFX */
+ 
+ void wpas_rrm_reset(struct wpa_supplicant *wpa_s);
+ void wpas_rrm_process_neighbor_rep(struct wpa_supplicant *wpa_s,
+@@ -1700,6 +1712,15 @@ void mbo_parse_rx_anqp_resp(struct wpa_supplicant *wpa_s,
+ 			    const u8 *data, size_t slen);
+ void wpas_update_mbo_connect_params(struct wpa_supplicant *wpa_s);
+ 
++#ifdef CONFIG_DRIVER_NL80211_IFX
++int wpas_config_offload_send_mbo_config(struct wpa_supplicant *wpa_s, u8 cmd_id,
++					u8 oper_class, u8 chan, u8 pref_val,
++					u8 reason_code, u8 enable, u8 notif_type,
++					u8 time_offset, u8 rssi_trig_delta,
++					bool enable_anqpo, bool enable_cell_pref,
++					u8 cell_pref_val, u8 cell_cap);
++#endif /* CONFIG_DRIVER_NL80211_IFX */
++
+ /* op_classes.c */
+ enum chan_allowed {
+ 	NOT_ALLOWED, NO_IR, RADAR, ALLOWED
+diff --git a/wpa_supplicant/wpas_glue.c b/wpa_supplicant/wpas_glue.c
+index 17fc05b..88cbc8f 100644
+--- a/wpa_supplicant/wpas_glue.c
++++ b/wpa_supplicant/wpas_glue.c
+@@ -12,6 +12,7 @@
+ #include "eapol_supp/eapol_supp_sm.h"
+ #include "eap_peer/eap.h"
+ #include "rsn_supp/wpa.h"
++#include "rsn_supp/wpa_i.h"
+ #include "eloop.h"
+ #include "config.h"
+ #include "l2_packet/l2_packet.h"
+@@ -285,6 +286,7 @@ static void wpa_supplicant_eapol_cb(struct eapol_sm *eapol,
+ 				    void *ctx)
+ {
+ 	struct wpa_supplicant *wpa_s = ctx;
++	struct wpa_sm *sm = wpa_s->wpa;
+ 	int res, pmk_len;
+ 	u8 pmk[PMK_LEN];
+ 
+@@ -309,7 +311,8 @@ static void wpa_supplicant_eapol_cb(struct eapol_sm *eapol,
+ 	}
+ 
+ 	if (result != EAPOL_SUPP_RESULT_SUCCESS ||
+-	    !(wpa_s->drv_flags & WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X))
++	    (!(wpa_s->drv_flags & WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X) &&
++	     !(wpa_s->drv_flags2 & WPA_DRIVER_FLAGS_ROAM_OFFLOAD)))
+ 		return;
+ 
+ 	if (!wpa_key_mgmt_wpa_ieee8021x(wpa_s->key_mgmt))
+@@ -319,35 +322,47 @@ static void wpa_supplicant_eapol_cb(struct eapol_sm *eapol,
+ 		   "handshake");
+ 
+ 	pmk_len = PMK_LEN;
+-	if (wpa_key_mgmt_ft(wpa_s->key_mgmt)) {
++	if (sm->cur_pmksa &&
++		wpa_s->drv_flags & WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X) {
++		pmk_len = sm->pmk_len;
++		os_memcpy(pmk, sm->pmk, pmk_len);
++	} else {
++		if (wpa_key_mgmt_ft(wpa_s->key_mgmt)) {
+ #ifdef CONFIG_IEEE80211R
+-		u8 buf[2 * PMK_LEN];
+-		wpa_printf(MSG_DEBUG, "RSN: Use FT XXKey as PMK for "
+-			   "driver-based 4-way hs and FT");
+-		res = eapol_sm_get_key(eapol, buf, 2 * PMK_LEN);
+-		if (res == 0) {
+-			os_memcpy(pmk, buf + PMK_LEN, PMK_LEN);
+-			os_memset(buf, 0, sizeof(buf));
+-		}
++			u8 buf[2 * PMK_LEN];
++			wpa_printf(MSG_DEBUG, "RSN: Use FT XXKey as PMK for "
++				   "driver-based 4-way hs and FT");
++			res = eapol_sm_get_key(eapol, buf, 2 * PMK_LEN);
++			if (res == 0) {
++				os_memcpy(pmk, buf + PMK_LEN, PMK_LEN);
++				os_memset(buf, 0, sizeof(buf));
++			}
+ #else /* CONFIG_IEEE80211R */
+-		res = -1;
++			res = -1;
+ #endif /* CONFIG_IEEE80211R */
+-	} else {
+-		res = eapol_sm_get_key(eapol, pmk, PMK_LEN);
++		} else {
++			res = eapol_sm_get_key(eapol, pmk, PMK_LEN);
++			if (res) {
++				/*
++				 * EAP-LEAP is an exception from other EAP
++				 * methods: it uses only 16-byte PMK.
++				 */
++				res = eapol_sm_get_key(eapol, pmk, 16);
++				pmk_len = 16;
++			}
++		}
++
+ 		if (res) {
+-			/*
+-			 * EAP-LEAP is an exception from other EAP methods: it
+-			 * uses only 16-byte PMK.
+-			 */
+-			res = eapol_sm_get_key(eapol, pmk, 16);
+-			pmk_len = 16;
++			wpa_printf(MSG_DEBUG, "Failed to get PMK from EAPOL "
++				   "state machines");
++			return;
+ 		}
+-	}
+ 
+-	if (res) {
+-		wpa_printf(MSG_DEBUG, "Failed to get PMK from EAPOL state "
+-			   "machines");
+-		return;
++		sm->pmk_len = pmk_len;
++		os_memcpy(sm->pmk, pmk, pmk_len);
++		pmksa_cache_add(sm->pmksa, pmk, pmk_len, NULL, NULL, 0,
++				sm->bssid, sm->own_addr,
++				sm->network_ctx, sm->key_mgmt, NULL);
+ 	}
+ 
+ 	wpa_hexdump_key(MSG_DEBUG, "RSN: Configure PMK for driver-based 4-way "
+@@ -1489,6 +1504,8 @@ void wpa_supplicant_rsn_supp_set_config(struct wpa_supplicant *wpa_s,
+ 		conf.force_kdk_derivation = wpa_s->conf->force_kdk_derivation;
+ #endif /* CONFIG_TESTING_OPTIONS */
+ #endif /* CONFIG_PASN */
++		conf.beacon_prot = ssid->beacon_prot;
++		conf.suppress_deauth_no_pmksa = ssid->suppress_deauth_no_pmksa;
+ 	}
+ 	wpa_sm_set_config(wpa_s->wpa, ssid ? &conf : NULL);
+ }

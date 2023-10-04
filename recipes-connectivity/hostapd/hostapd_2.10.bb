@@ -12,41 +12,7 @@ SRC_URI = " \
 	   file://init \
 	   file://hostapd.service \
 	   file://udhcpd.conf \
-	   file://0003-nl80211-Report-connection-authorized-in-EVENT_ASSOC.patch;apply=yes \
-	   file://0005-OpenSSL-Fix-build-with-OpenSSL-1.0.1.patch;apply=yes \
-	   file://0006-nl80211-Check-SAE-authentication-offload-support.patch;apply=yes \
-	   file://0007-SAE-Pass-SAE-password-on-connect-for-SAE-authenticat.murata.patch;apply=yes \
-	   file://0008-nl80211-Support-4-way-handshake-offload-for-WPA-WPA2.patch;apply=yes \
-	   file://0009-AP-Support-4-way-handshake-offload-for-WPA-WPA2-PSK.patch;apply=yes \
-	   file://0010-nl80211-Support-SAE-authentication-offload-in-AP-mod.patch;apply=yes \
-	   file://0011-SAE-Support-SAE-authentication-offload-in-AP-mode.patch;apply=yes \
-	   file://0013-non-upstream-defconfig_base-Add-Infineon-default-con.patch;apply=yes \
-	   file://0014-CVE_2019_9501-Fix-to-check-Invalid-GTK-IE-length-in-.patch;apply=yes \
-	   file://0015-Add-CONFIG_WPA3_SAE_AUTH_EARLY_SET-flags-and-codes.murata.patch;apply=yes \
-	   file://0016-SAE-Set-the-right-WPA-Versions-for-FT-SAE-key-manage.patch;apply=yes \
-	   file://0017-wpa_supplicant-Support-WPA_KEY_MGMT_FT-for-eapol-off.murata.patch;apply=yes \
-	   file://0018-wpa_supplicant-suppress-deauth-for-PMKSA-caching-dis.murata.patch;apply=yes \
-	   file://0019-Fix-for-PMK-expiration-issue-through-supplicant.murata.patch;apply=yes \
-	   file://0021-Avoid-deauthenticating-STA-if-the-reason-for-freeing.patch;apply=yes \
-	   file://0022-wpa_supplicant-support-bgscan.patch;apply=yes \
-	   file://0023-non-upstream-wl-cmd-create-interface-to-support-driv.murata.patch;apply=yes \
-	   file://0024-non-upstream-wl-cmd-create-wl_do_cmd-as-an-entry-doi.patch;apply=yes \
-	   file://0025-non-upstream-wl-cmd-create-ops-table-to-do-wl-comman.patch;apply=yes \
-	   file://0026-non-upstream-wl-cmd-add-more-compile-flag.murata.patch;apply=yes \
-	   file://0027-Fix-dpp-config-parameter-setting.patch;apply=yes \
-	   file://0028-DPP-Resolving-failure-of-dpp-configurator-exchange-f.patch;apply=yes \
-	   file://0029-Enabling-SUITEB192-and-SUITEB-compile-options.patch;apply=yes \
-	   file://0030-DPP-Enabling-CLI_EDIT-option-for-enrollee-plus-respo.patch;apply=yes \
-	   file://0032-non-upstream-SAE-disconnect-after-PMKSA-cache-expire.patch;apply=yes \
-	   file://0034-wpa_supplicant-Set-PMKSA-to-driver-while-key-mgmt-is.patch;apply=yes \
-	   file://0035-nl80211-Set-NL80211_SCAN_FLAG_COLOCATED_6GHZ-in-scan.murata.patch;apply=yes \
-	   file://0037-Enabling-OWE-in-wpa_supplicant.patch;apply=yes \
-	   file://0039-FT-Sync-nl80211-ext-feature-index.patch;apply=yes \
-	   file://0040-nl80211-Introduce-a-vendor-header-for-vendor-NL-ifac.patch;apply=yes \
-	   file://0041-add-support-to-offload-TWT-setup-request-handling-to.murata.patch;apply=yes \
-	   file://0042-add-support-to-offload-TWT-Teardown-request-handling.murata.patch;apply=yes \
-	   file://0043-Add-support-to-configure-TWT-of-a-session-using-offs.murata.patch;apply=yes \
-	   file://0048-Fix-associating-failed-when-PMK-lifetime-is-set-to-1.patch;apply=yes \
+	   file://0000-hostapd.patch;apply=yes \
 "
 
 
@@ -65,7 +31,7 @@ SYSTEMD_SERVICE:${PN} = "hostapd.service"
 SYSTEMD_AUTO_ENABLE:${PN} = "disable"
 
 do_configure:append() {
-    install -m 0644 ${WORKDIR}/defconfig ${B}/.config
+    install -m 0644 ${WORKDIR}/defconfig_base ${B}/.config
 }
 
 do_compile() {
