@@ -36,6 +36,23 @@ function current() {
 }
 
 
+function move_ko() {
+     # Check for the presence of hci_uart.ko in Kernel, if it is then move/store it to /usr/share/murata_wireless dir
+     if [ -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
+        echo "DEBUG::store() Found hci_uart.ko. Moving it murata_wireless"
+        mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
+     fi
+}
+
+function restore_ko {
+     # Check for the presence of hci_uart.ko in murata_wireless
+     if [ ! -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
+        echo "DEBUG::restore() Not Found hci_uart.ko. Copying it to Kernel"
+        cp /usr/share/murata_wireless/hci_uart.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko
+     fi
+}
+
+
 function prepare_for_cypress() {
 #  echo "IFX module : $cyw_module"
 
@@ -60,16 +77,13 @@ function prepare_for_cypress() {
         echo "Setting up of 2BC is complete:"
   fi
 
-
   if [ $cyw_module == "2EA" ]; then
      # Check for the presence of hci_uart.ko in Kernel, if it is then move/store it to /usr/share/murata_wireless dir
-     if [ -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
-        echo "DEBUG::store() Found hci_uart.ko. Moving it murata_wireless"
-        mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
-     fi
-    echo "Setting up of 2EA-SDIO is complete:"
+     move_ko
+     echo "Setting up of 2EA-SDIO is complete:"
+  else
+     restore_ko
   fi
-
 }
 
 
