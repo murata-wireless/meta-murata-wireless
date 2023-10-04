@@ -13,7 +13,7 @@ SRC_URI = " \
 	   file://hostapd.service \
 	   file://udhcpd.conf \
 	   file://defconfig_base \
-	   file://0000-hostapdd.patch;apply=yes \
+	   file://0000-hostapd.patch;apply=yes \
 "
 
 
