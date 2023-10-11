@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=04282023
+VERSION=06122023
 
 
 ###################################################################################################
@@ -40,6 +40,7 @@ VERSION=04282023
 #  1.22     | 03/16/2023   |    RC        |    Added support for 5.15.32.
 #  1.23     | 04/25/2023   |    RC        |    Updated to use correct NXP repositories.
 #  1.24     | 04/28/2023   |    JK        |    Updated to support 22.04.
+#  1.25     | 06/12/2023   |    RC        |    Added support for Linux 6.1.1.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -62,11 +63,13 @@ CWD=""
 LINUX_KERNEL_5_10_52=0
 LINUX_KERNEL_5_10_72=1
 LINUX_KERNEL_5_15_32=2
+LINUX_KERNEL_6_1_1=3
 
 # Linux Kernel Strings
 LINUX_KERNEL_5_10_52_STR="5.10.52"
 LINUX_KERNEL_5_10_72_STR="5.10.72"
 LINUX_KERNEL_5_15_32_STR="5.15.32"
+LINUX_KERNEL_6_1_1_STR="6.1.1"
 
 DISTRO_NAME=fsl-imx-fb
 IMAGE_NAME=core-image-base
@@ -84,9 +87,13 @@ iMXhardknott72DeveloperRelease="imx-hardknott-5-10-72"
 iMXkirkstoneStableReleaseTag="imx-kirkstone-5-15-32_r1.0"
 iMXkirkstoneDeveloperRelease="imx-kirkstone-5-15-32"
 
+iMXlangdaleStableReleaseTag="imx-langdale-6-1-1_r1.0"
+iMXlangdaleDeveloperRelease="imx-langdale-6-1-1"
+
 imxhardknottYocto52="5.10.52_2.1.0 GA"
 imxhardknottYocto72="5.10.72_2.2.0"
 imxkirkstone="5.15.32_2.0.0"
+imxlangdale="6.1.1_1.0.0"
 
 
 #--------------------------------------------------------------------------------------------------
@@ -130,7 +137,7 @@ else
 	exit
 fi
 
-# Get Ubuntu release version; make sure it is either 20.04, 18.04, 16.04, 14.04 or 12.04.
+# Get Ubuntu release version; make sure it is either 22.04, 20.04, 18.04, 16.04, 14.04 or 12.04.
 Ubuntu_Release=$(lsb_release -r -s)
 if [ $Ubuntu_Release == "22.04" ] || [ $Ubuntu_Release == "20.04" ] || [ $Ubuntu_Release == "18.04" ] || [ $Ubuntu_Release == "16.04" ] || [ $Ubuntu_Release == "14.04" ] || [ $Ubuntu_Release == "12.04" ]; then
 	echo -e "Murata: Verified Ubuntu Release:${NC}     " ${GRN}$Ubuntu_Release${NC}
@@ -405,6 +412,7 @@ while true; do
 	echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
 	echo "|  1  |     ${LINUX_KERNEL_5_10_72_STR}       | hardknott | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
 	echo "|  2  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
+	echo "|  3  |     ${LINUX_KERNEL_6_1_1_STR}         | langdale  | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
 	echo "---------------------------------------------------------------------------"
 	read -p "Select which entry? " LINUX_KERNEL
 
@@ -419,6 +427,10 @@ while true; do
 		;;
 	$LINUX_KERNEL_5_15_32)
 		linuxVersion=${LINUX_KERNEL_5_15_32_STR}
+		break
+		;;
+	$LINUX_KERNEL_6_1_1)
+		linuxVersion=${LINUX_KERNEL_6_1_1_STR}
 		break
 		;;
 	*)
@@ -463,6 +475,17 @@ $LINUX_KERNEL_5_15_32)
 	fi
 	iMXYoctoRelease="$imxkirkstone"
 	YoctoBranch="kirkstone"
+	;;
+$LINUX_KERNEL_6_1_1)
+	if [ "$BRANCH_TAG_OPTION" = "y" ] ; then
+		#echo "DEBUG:: langdale release"
+		BRANCH_RELEASE_NAME="$iMXlangdaleStableReleaseTag"
+	else
+		#echo "DEBUG:: langdale developer"
+		BRANCH_RELEASE_NAME="$iMXlangdaleDeveloperRelease"
+	fi
+	iMXYoctoRelease="$imxlangdale"
+	YoctoBranch="langdale"
 	;;
 *)
 	echo -e "${RED}NXP support is not avilable in this kernel.${NC}"
@@ -762,6 +785,103 @@ while true; do
 		echo $'\n'
 		break
 		;;
+	$LINUX_KERNEL_6_1_1)
+		while true; do
+			echo " "
+			echo "${STEP_COUNT}) Select Target"
+			echo "----------------"
+			echo " "
+			echo "------------------------------------------------------------"
+			echo "| Entry  |    Target Name       | NXP i.MX EVK Part Number |"
+			echo "|--------|----------------------|--------------------------|"
+			echo "|  1     |  imx6ulevk           | MCIMX6UL-EVK             |"
+			echo "|  2     |  imx6ull14x14evk     | MCIMX6ULL-EVK            |"
+			echo "|  3     |  imx8mqevk           | MCIMX8M-EVKB             |"
+			echo "|  4     |  imx8mmevk           | 8MMINILPD4-EVK           |"
+			echo "|  5     |  imx8mmddr4evk       | 8MMINID4-EVK             |"
+			echo "|  6     |  imx8mnddr4evk       | 8MNANOD4-EVK             |"
+			echo "|  7     |  imx8qxpmek          | MCIMX8QXP-CPU            |"
+			echo "|  8     |  imx8dxl-lpddr4-evk  | MCIMX8DXL-EVK            |"
+			echo "|  9     |  imx8mp-lpddr4-evk   | 8MPLUSLPD4-EVK           |"
+			echo "------------------------------------------------------------"
+			echo -n "Select your entry: "
+			read TARGET_OPTION
+			case $TARGET_OPTION in
+			1)
+				TARGET_NAME=imx6ulevk
+				PART_NUMBER=MCIMX6UL-EVK
+				break
+				;;
+			2)
+				TARGET_NAME=imx6ull14x14evk
+				PART_NUMBER=MCIMX6ULL-EVK
+				break
+				;;
+			3)
+				TARGET_NAME=imx8mqevk
+				PART_NUMBER=MCIMX8M-EVKB
+				LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			4)
+				TARGET_NAME=imx8mmevk
+				PART_NUMBER=8MMINILPD4-EVK
+				LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			5)
+				TARGET_NAME=imx8mmddr4evk
+				PART_NUMBER=8MMINID4-EVK
+				LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			6)
+				TARGET_NAME=imx8mnddr4evk
+				PART_NUMBER=8MNANOD4-EVK
+				LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			7)
+				TARGET_NAME=imx8qxpmek
+				PART_NUMBER=MCIMX8QXP-CPU
+				LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			8)
+				TARGET_NAME=imx8dxl-lpddr4-evk
+				PART_NUMBER=MCIMX8DXL-EVK
+				LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			9)
+				TARGET_NAME=imx8mp-lpddr4-evk
+				PART_NUMBER=8MPLUSLPD4-EVK
+				LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+				LINUX_DEST=linux-imx_%.bbappend
+				DISTRO_NAME=fsl-imx-wayland
+				break
+				;;
+			*)
+				echo -e "${RED}That is not a valid choice, try again.${NC}"
+				;;
+			esac
+		done
+		echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
+		echo $'\n'
+		break
+		;;
 	*)
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
 		;;
@@ -933,6 +1053,9 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	elif [ "$iMXYoctoRelease" = "$imxkirkstone" ]; then
 		#echo "DEBUG:: IMXALL-KIRKSTONE"
 		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-kirkstone -m imx-5.15.32-2.0.0.xml
+	elif [ "$iMXYoctoRelease" = "$imxlangdale" ]; then
+		#echo "DEBUG:: IMXALL-LANGDALE"
+		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-langdale -m imx-6.1.1-1.0.0.xml
 	fi
 
 	#echo "DEBUG:: Performing repo sync......."
