@@ -166,6 +166,7 @@ else
 	echo " "
 	echo -e "${RED}Murata: Skipping repo tool installation"
 	echo -e "Exiting script.....${NC}"
+	exit
 fi
 
 # Ubuntu Distro and Version verified. Now add necessary commands.
