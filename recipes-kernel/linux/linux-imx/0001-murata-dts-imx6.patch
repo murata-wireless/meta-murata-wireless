@@ -1,8 +1,8 @@
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi.dts
-index 4613799a97c7..92afaf9ac315 100644
+index 4613799a97c7..97e002a38270 100644
 --- a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi.dts
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi.dts
-@@ -8,3 +8,9 @@
+@@ -8,3 +8,8 @@
 
  #include "imx6ul-14x14-evk.dts"
  #include "imx6ul-evk-btwifi.dtsi"
@@ -11,10 +11,8 @@ index 4613799a97c7..92afaf9ac315 100644
 +       pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
 +       no-1-8-v;
 +};
-+
-
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi.dts
-index 8a0a85d2e197..83526e192d15 100644
+index 8a0a85d2e197..1281810c67bd 100644
 --- a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi.dts
 +++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi.dts
 @@ -8,3 +8,8 @@

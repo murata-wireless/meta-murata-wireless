@@ -1,8 +1,8 @@
 diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
-index 2e98cdaa1fbc..84c5cb917196 100644
+index 849f86f35f02..625eebbd3bae 100644
 --- a/arch/arm64/configs/imx_v8_defconfig
 +++ b/arch/arm64/configs/imx_v8_defconfig
-@@ -1017,6 +1017,8 @@ CONFIG_NLS_ISO8859_1=y
+@@ -1041,6 +1041,8 @@ CONFIG_NLS_ISO8859_1=y
  CONFIG_TRUSTED_KEYS=m
  # CONFIG_TRUSTED_KEYS_TPM is not set
  # CONFIG_TRUSTED_KEYS_TEE is not set
