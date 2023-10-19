@@ -2,10 +2,10 @@ diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi.dts b/arch/arm/boot/dts/i
 index 4613799a97c7..97e002a38270 100644
 --- a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi.dts
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi.dts
-@@ -8,3 +8,8 @@
-
- #include "imx6ul-14x14-evk.dts"
- #include "imx6ul-evk-btwifi.dtsi"
+@@ -11,3 +11,8 @@
+        model = "Freescale i.MX6 UltraLite 14x14 EVK Board";
+        compatible = "fsl,imx6ul-14x14-evk", "fsl,imx6ul";
+ };
 +
 +&usdhc1 {
 +       pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */

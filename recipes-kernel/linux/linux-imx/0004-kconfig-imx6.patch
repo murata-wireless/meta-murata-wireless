@@ -2,7 +2,7 @@ diff --git a/net/wireless/Kconfig b/net/wireless/Kconfig
 index f620acd2a0f5..3c8ce5a1175b 100644
 --- a/net/wireless/Kconfig
 +++ b/net/wireless/Kconfig
-@@ -91,7 +91,7 @@ config CFG80211_CERTIFICATION_ONUS
+@@ -91,7 +91,7 @@
 
  config CFG80211_REQUIRE_SIGNED_REGDB
         bool "require regdb signature" if CFG80211_CERTIFICATION_ONUS
@@ -11,7 +11,7 @@ index f620acd2a0f5..3c8ce5a1175b 100644
         select SYSTEM_DATA_VERIFICATION
         help
           Require that in addition to the "regulatory.db" file a
-@@ -101,7 +101,7 @@ config CFG80211_REQUIRE_SIGNED_REGDB
+@@ -101,7 +101,7 @@
 
  config CFG80211_USE_KERNEL_REGDB_KEYS
         bool "allow regdb keys shipped with the kernel" if CFG80211_CERTIFICATION_ONUS
