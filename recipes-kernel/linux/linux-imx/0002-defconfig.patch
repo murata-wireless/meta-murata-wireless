@@ -1,8 +1,8 @@
 diff --git a/arch/arm/configs/imx_v7_defconfig b/arch/arm/configs/imx_v7_defconfig
-index 87c777f33baa..5c6958303c26 100644
+index 6de304968919..04776d71efc9 100644
 --- a/arch/arm/configs/imx_v7_defconfig
 +++ b/arch/arm/configs/imx_v7_defconfig
-@@ -61,6 +61,8 @@
+@@ -62,6 +62,8 @@ CONFIG_NET=y
  CONFIG_PACKET=y
  CONFIG_UNIX=y
  CONFIG_TLS=y
