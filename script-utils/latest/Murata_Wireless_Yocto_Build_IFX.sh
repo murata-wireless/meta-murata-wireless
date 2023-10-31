@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=09082023
+VERSION=10312023
 
 
 ###################################################################################################
@@ -41,7 +41,9 @@ VERSION=09082023
 #  1.23     | 04/25/2023   |    RC        |    Updated to use correct NXP repositories.
 #  1.24     | 04/27/2023   |    JK        |    Add support for 22.04 Ubuntu.
 #  1.25     | 06/12/2023   |    RC        |    Added support for langdale.
-#  1.26     | 09/08/2023   |    RC        |    Added support for FMAC Godzilla.
+#  1.26     | 09/08/2023   |    RC        |    Added support for FMAC Godzilla in 6.1.1.
+#  1.27     | 10/10/2023   |    RC        |    Added support for FMAC Godzilla in 5.15.32.
+#  1.28     | 10/31/2023   |    RC        |    Fixed supported machine names of different kernels.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -119,19 +121,24 @@ linuxVersion=""
 # Langdale
 iMXlangdalefafnirStableReleaseTag="imx-langdale-fafnir_r1.0"
 iMXlangdalefafnirDeveloperRelease="imx-langdale-fafnir"
+
 iMXlangdalegodzillaStableReleaseTag="imx-langdale-godzilla_r1.0"
 iMXlangdalegodzillaDeveloperRelease="imx-langdale-godzilla"
 
 # Kirkstone
 iMXkirkstoneebirahStableReleaseTag="imx-kirkstone-ebirah_r1.0"
 iMXkirkstoneebirahDeveloperRelease="imx-kirkstone-ebirah"
+
 iMXkirkstonefafnirStableReleaseTag="imx-kirkstone-fafnir_r1.0"
 iMXkirkstonefafnirDeveloperRelease="imx-kirkstone-fafnir"
 
+iMXkirkstonegodzillaStableReleaseTag="imx-kirkstone-godzilla_r1.0"
+iMXkirkstonegodzillaDeveloperRelease="imx-kirkstone-godzilla"
 
 # Hardknott
 iMXhardknottcynderStableReleaseTag="imx-hardknott-cynder_r1.0"
 iMXhardknottcynderDeveloperRelease="imx-hardknott-cynder"
+
 iMXhardknottdrogonStableReleaseTag="imx-hardknott-drogon_r1.0"
 iMXhardknottdrogonDeveloperRelease="imx-hardknott-drogon"
 
@@ -564,7 +571,7 @@ while true; do
 	echo "|-----|------------------|------------|----------------------------------|"
 	if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 		echo "|  0  |     ${LINUX_KERNEL_6_1_1_STR}         | langdale  | Fafnir, Godzilla                 |"
-		echo "|  1  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah, Fafnir                   |"
+		echo "|  1  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah, Fafnir, Godzilla         |"
 		echo "|  2  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
 		echo "|  3  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga,Zigra              |"
 		echo "|  4  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga,Zigra,Kong,Manda   |"
@@ -572,7 +579,7 @@ while true; do
 		echo "|  6  |     ${LINUX_KERNEL_4_1_15_STR}        | krogoth   | Baragon,Spiga,Zigra,Manda,Mothra |"
 	else
 		echo "|  0  |     ${LINUX_KERNEL_6_1_1_STR}         | langdale  | Fafnir, Godzilla                 |"
-		echo "|  1  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah, Fafnir                   |"
+		echo "|  1  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone | Ebirah, Fafnir, Godzilla         |"
 		echo "|  2  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott | Cynder,Drogon                    |"
 		echo "|  3  |     ${LINUX_KERNEL_5_4_47_STR}        | zeus      | Baragon,Spiga                    |"
 		echo "|  4  |     ${LINUX_KERNEL_4_14_98_STR}       | sumo      | Baragon,Spiga                    |"
@@ -1107,7 +1114,8 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
 				echo     "|  0.   | ${EBIRAH_FMAC_STR}                                            |"
-				echo -e  "|  1.   | ${FAFNIR_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "|  1.   | ${FAFNIR_FMAC_STR}                                            |"
+				echo -e  "|  2.   | ${GODZILLA_FMAC_STR} - ${GRN}Latest release${NC}                         |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1141,6 +1149,21 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 					fmacversion=${FAFNIR_FMAC_STR}
 					break
 					;;
+				2)
+					# for GODZILLA
+					FMAC_VERSION=${GODZILLA_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: kirkstone-godzilla"
+						BRANCH_RELEASE_NAME="$iMXkirkstonegodzillaStableReleaseTag"
+					else
+						#echo "DEBUG:: kirkstone-godzilla"
+						BRANCH_RELEASE_NAME="$iMXkirkstonegodzillaDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxkirkstoneYocto"
+					YoctoBranch="kirkstone"
+					fmacversion=${GODZILLA_FMAC_STR}
+					break
+					;;
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					echo $'\n'
@@ -1154,7 +1177,7 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo -e  "|  0.   | ${FAFNIR_FMAC_STR}                                            |"
+				echo     "|  0.   | ${FAFNIR_FMAC_STR}                                            |"
 				echo -e  "|  1.   | ${GODZILLA_FMAC_STR} - ${GRN}Latest release${NC}                         |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
@@ -1361,7 +1384,8 @@ else
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
 				echo     "|  0.   | ${EBIRAH_FMAC_STR}                                            |"
-				echo -e  "|  1.   | ${FAFNIR_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "|  1.   | ${FAFNIR_FMAC_STR}                                            |"
+				echo -e  "|  2.   | ${GODZILLA_FMAC_STR} - ${GRN}Latest release${NC}                         |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1393,6 +1417,21 @@ else
 					iMXYoctoRelease="$imxkirkstoneYocto"
 					YoctoBranch="kirkstone"
 					fmacversion=${FAFNIR_FMAC_STR}
+					break
+					;;
+				2)
+					# for GODZILLA
+					FMAC_VERSION=${GODZILLA_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: kirkstone-godzilla"
+						BRANCH_RELEASE_NAME="$iMXkirkstonegodzillaStableReleaseTag"
+					else
+						#echo "DEBUG:: kirkstone-godzilla"
+						BRANCH_RELEASE_NAME="$iMXkirkstonegodzillaDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxkirkstoneYocto"
+					YoctoBranch="kirkstone"
+					fmacversion=${GODZILLA_FMAC_STR}
 					break
 					;;
 				*)
@@ -1476,7 +1515,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 				echo "|  3     |  imx6sxsabresd    | MCIMX6SX-SDB              |"
 				echo "|  4     |  imx6qsabresd     | MCIMX6Q-SDB               |"
 				echo "|  5     |  imx6qpsabresd    | MCIMX6QP-SDB              |"
-				echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB               |"
+				echo "|  6     |  imx6dlsabresd    | MCIMX6DL-SDP              |"
 				echo "|  7     |  imx7dsabresd     | MCIMX7SABRE               |"
 				echo "----------------------------------------------------------"
 				echo -n "Select your entry: "
@@ -1509,7 +1548,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					;;
 				6)
 					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
+					PART_NUMBER=MCIMX6DL-SDP
 					break
 					;;
 				7)
@@ -1541,13 +1580,12 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 				echo "|  3     |  imx6sxsabresd    | MCIMX6SX-SDB             |"
 				echo "|  4     |  imx6qsabresd     | MCIMX6Q-SDB              |"
 				echo "|  5     |  imx6qpsabresd    | MCIMX6QP-SDB             |"
-				echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
+				echo "|  6     |  imx6dlsabresd    | MCIMX6DL-SDP             |"
 				echo "|  7     |  imx7dsabresd     | MCIMX7SABRE              |"
 				echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
 				echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 				echo "|  10    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 				echo "|  11    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-				echo "|  12    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
 				echo "---------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
@@ -1580,7 +1618,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					;;
 				6)
 					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
+					PART_NUMBER=MCIMX6DL-SDP
 					break
 					;;
 				7)
@@ -1614,14 +1652,6 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					LINUX_DEST=linux-imx_4.9.123.bbappend
 					TARGET_NAME=imx8mmevk
 					PART_NUMBER=8MMINILPD4-EVK
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				12)
-					LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
-					LINUX_DEST=linux-imx_4.9.123.bbappend
-					TARGET_NAME=imx8mmddr4evk
-					PART_NUMBER=8MMINID4-EVK
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
@@ -1648,14 +1678,13 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 				echo "|  3     |  imx6sxsabresd    | MCIMX6SX-SDB             |"
 				echo "|  4     |  imx6qsabresd     | MCIMX6Q-SDB              |"
 				echo "|  5     |  imx6qpsabresd    | MCIMX6QP-SDB             |"
-				echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
+				echo "|  6     |  imx6dlsabresd    | MCIMX6DL-SDP             |"
 				echo "|  7     |  imx7dsabresd     | MCIMX7SABRE              |"
 				echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
 				echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 				echo "|  10    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 				echo "|  11    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-				echo "|  12    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
-				echo "|  13    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
+				echo "|  12    |  imx8mnevk        | 8MNANOD4-EVK             |"
 				echo "---------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
@@ -1688,7 +1717,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					;;
 				6)
 					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
+					PART_NUMBER=MCIMX6DL-SDP
 					break
 					;;
 				7)
@@ -1726,15 +1755,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				12)
-					TARGET_NAME=imx8mmddr4evk
-					PART_NUMBER=8MMINID4-EVK
-					LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
-					LINUX_DEST=linux-imx_4.14.98.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				13)
-					TARGET_NAME=imx8mnddr4evk
+					TARGET_NAME=imx8mnevk
 					PART_NUMBER=8MNANOD4-EVK
 					LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
 					LINUX_DEST=linux-imx_4.14.98.bbappend
@@ -1763,14 +1784,13 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 				echo "|  3     |  imx6sxsabresd    | MCIMX6SX-SDB             |"
 				echo "|  4     |  imx6qsabresd     | MCIMX6Q-SDB              |"
 				echo "|  5     |  imx6qpsabresd    | MCIMX6QP-SDB             |"
-				echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
+				echo "|  6     |  imx6dlsabresd    | MCIMX6DL-SDP             |"
 				echo "|  7     |  imx7dsabresd     | MCIMX7SABRE              |"
 				echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
 				echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
 				echo "|  10    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-				echo "|  11    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
-				echo "|  12    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
-				echo "|  13    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
+				echo "|  11    |  imx8mnevk        | 8MNANOD4-EVK             |"
+				echo "|  12    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 				echo "---------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
@@ -1802,7 +1822,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					;;
 				6)
 					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
+					PART_NUMBER=MCIMX6DL-SDP
 					break
 					;;
 				7)
@@ -1832,22 +1852,14 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				11)
-					TARGET_NAME=imx8mmddr4evk
-					PART_NUMBER=8MMINID4-EVK
-					LINUX_SRC=linux-imx_5.4.bbappend.8MQ
-					LINUX_DEST=linux-imx_5.4.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				12)
-					TARGET_NAME=imx8mnddr4evk
+					TARGET_NAME=imx8mnevk
 					PART_NUMBER=8MNANOD4-EVK
 					LINUX_SRC=linux-imx_5.4.bbappend.8MQ
 					LINUX_DEST=linux-imx_5.4.bbappend
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-				13)
+				12)
 					TARGET_NAME=imx8qxpmek
 					PART_NUMBER=MCIMX8QXP-CPU
 					LINUX_SRC=linux-imx_5.4.bbappend.8MQ
@@ -1870,23 +1882,23 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 				echo "${STEP_COUNT}) Select Target"
 				echo "----------------"
 				echo " "
-				echo "---------------------------------------------------------"
-				echo "| Entry  |    Target Name    | NXP i.MX EVK Part Number |"
-				echo "|--------|-------------------|--------------------------|"
-				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
-				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
-				echo "|  3     |  imx6sxsabresd    | MCIMX6SX-SDB             |"
-				echo "|  4     |  imx6qsabresd     | MCIMX6Q-SDB              |"
-				echo "|  5     |  imx6qpsabresd    | MCIMX6QP-SDB             |"
-				echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
-				echo "|  7     |  imx7dsabresd     | MCIMX7SABRE              |"
-				echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
-				echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
-				echo "|  10    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-				echo "|  11    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
-				echo "|  12    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
-				echo "|  13    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
-				echo "---------------------------------------------------------"
+				echo "-----------------------------------------------------------"
+				echo "| Entry  |    Target Name      | NXP i.MX EVK Part Number |"
+				echo "|--------|---------------------|--------------------------|"
+				echo "|  1     |  imx6ulevk          | MCIMX6UL-EVK             |"
+				echo "|  2     |  imx6ull14x14evk    | MCIMX6ULL-EVK            |"
+				echo "|  3     |  imx6sxsabresd      | MCIMX6SX-SDB             |"
+				echo "|  4     |  imx6qsabresd       | MCIMX6Q-SDB              |"
+				echo "|  5     |  imx6qpsabresd      | MCIMX6QP-SDB             |"
+				echo "|  6     |  imx6dlsabresd      | MCIMX6DL-SDP             |"
+				echo "|  7     |  imx7dsabresd       | MCIMX7SABRE              |"
+				echo "|  8     |  imx7ulpevk         | MCIMX7ULP-EVK            |"
+				echo "|  9     |  imx8mqevk          | MCIMX8M-EVKB             |"
+				echo "|  10    |  imx8mm-lpddr4-evk  | 8MMINILPD4-EVK           |"
+				echo "|  11    |  imx8mm-ddr4-evk    | 8MMINID4-EVK             |"
+				echo "|  12    |  imx8mn-ddr4-evk    | 8MNANOD4-EVK             |"
+				echo "|  13    |  imx8qxpc0mek       | MCIMX8QXP-CPU            |"
+				echo "-----------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
 				case $TARGET_OPTION in
@@ -1917,7 +1929,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					;;
 				6)
 					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
+					PART_NUMBER=MCIMX6DL-SDP
 					break
 					;;
 				7)
@@ -1939,7 +1951,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				10)
-					TARGET_NAME=imx8mmevk
+					TARGET_NAME=imx8mm-lpddr4-evk
 					PART_NUMBER=8MMINILPD4-EVK
 					LINUX_SRC=linux-imx_5.10.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -1947,7 +1959,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				11)
-					TARGET_NAME=imx8mmddr4evk
+					TARGET_NAME=imx8mm-ddr4-evk
 					PART_NUMBER=8MMINID4-EVK
 					LINUX_SRC=linux-imx_5.10.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -1955,7 +1967,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				12)
-					TARGET_NAME=imx8mnddr4evk
+					TARGET_NAME=imx8mn-ddr4-evk
 					PART_NUMBER=8MNANOD4-EVK
 					LINUX_SRC=linux-imx_5.10.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -1963,7 +1975,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				13)
-					TARGET_NAME=imx8qxpmek
+					TARGET_NAME=imx8qxpc0mek
 					PART_NUMBER=MCIMX8QXP-CPU
 					LINUX_SRC=linux-imx_5.10.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -1985,23 +1997,24 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 				echo "${STEP_COUNT}) Select Target"
 				echo "----------------"
 				echo " "
-				echo "---------------------------------------------------------"
-				echo "| Entry  |    Target Name    | NXP i.MX EVK Part Number |"
-				echo "|--------|-------------------|--------------------------|"
-				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
-				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
-				echo "|  3     |  imx6sxsabresd    | MCIMX6SX-SDB             |"
-				echo "|  4     |  imx6qsabresd     | MCIMX6Q-SDB              |"
-				echo "|  5     |  imx6qpsabresd    | MCIMX6QP-SDB             |"
-				echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
-				echo "|  7     |  imx7dsabresd     | MCIMX7SABRE              |"
-				echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
-				echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
-				echo "|  10    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-				echo "|  11    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
-				echo "|  12    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
-				echo "|  13    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
-				echo "---------------------------------------------------------"
+				echo "-----------------------------------------------------------"
+				echo "| Entry  |    Target Name      | NXP i.MX EVK Part Number |"
+				echo "|--------|---------------------|--------------------------|"
+				echo "|  1     |  imx6ulevk          | MCIMX6UL-EVK             |"
+				echo "|  2     |  imx6ull14x14evk    | MCIMX6ULL-EVK            |"
+				echo "|  3     |  imx6sxsabresd      | MCIMX6SX-SDB             |"
+				echo "|  4     |  imx6qsabresd       | MCIMX6Q-SDB              |"
+				echo "|  5     |  imx6qpsabresd      | MCIMX6QP-SDB             |"
+				echo "|  6     |  imx6dlsabresd      | MCIMX6DL-SDP             |"
+				echo "|  7     |  imx7dsabresd       | MCIMX7SABRE              |"
+				echo "|  8     |  imx7ulpevk         | MCIMX7ULP-EVK            |"
+				echo "|  9     |  imx8mqevk          | MCIMX8M-EVKB             |"
+				echo "|  10    |  imx8mm-lpddr4-evk  | 8MMINILPD4-EVK           |"
+				echo "|  11    |  imx8mm-ddr4-evk    | 8MMINID4-EVK             |"
+				echo "|  12    |  imx8mn-ddr4-evk    | 8MNANOD4-EVK             |"
+				echo "|  13    |  imx8qxpc0mek       | MCIMX8QXP-CPU            |"
+				echo "|  14    |  imx8mp-lpddr4-evk  | 8MPLUSLPD4-EVK           |"
+				echo "-----------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
 				case $TARGET_OPTION in
@@ -2032,7 +2045,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					;;
 				6)
 					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
+					PART_NUMBER=MCIMX6DL-SDP
 					break
 					;;
 				7)
@@ -2054,7 +2067,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				10)
-					TARGET_NAME=imx8mmevk
+					TARGET_NAME=imx8mm-lpddr4-evk
 					PART_NUMBER=8MMINILPD4-EVK
 					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2062,7 +2075,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				11)
-					TARGET_NAME=imx8mmddr4evk
+					TARGET_NAME=imx8mm-ddr4-evk
 					PART_NUMBER=8MMINID4-EVK
 					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2070,7 +2083,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				12)
-					TARGET_NAME=imx8mnddr4evk
+					TARGET_NAME=imx8mn-ddr4-evk
 					PART_NUMBER=8MNANOD4-EVK
 					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2078,8 +2091,16 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				13)
-					TARGET_NAME=imx8qxpmek
+					TARGET_NAME=imx8qxpc0mek
 					PART_NUMBER=MCIMX8QXP-CPU
+					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				14)
+					TARGET_NAME=imx8mp-lpddr4-evk
+					PART_NUMBER=8MPLUSLPD4-EVK
 					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
 					DISTRO_NAME=fsl-imx-wayland
@@ -2100,23 +2121,24 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 				echo "${STEP_COUNT}) Select Target"
 				echo "----------------"
 				echo " "
-				echo "---------------------------------------------------------"
-				echo "| Entry  |    Target Name    | NXP i.MX EVK Part Number |"
-				echo "|--------|-------------------|--------------------------|"
-				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
-				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
-				echo "|  3     |  imx6sxsabresd    | MCIMX6SX-SDB             |"
-				echo "|  4     |  imx6qsabresd     | MCIMX6Q-SDB              |"
-				echo "|  5     |  imx6qpsabresd    | MCIMX6QP-SDB             |"
-				echo "|  6     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
-				echo "|  7     |  imx7dsabresd     | MCIMX7SABRE              |"
-				echo "|  8     |  imx7ulpevk       | MCIMX7ULP-EVK            |"
-				echo "|  9     |  imx8mqevk        | MCIMX8M-EVKB             |"
-				echo "|  10    |  imx8mmevk        | 8MMINILPD4-EVK           |"
-				echo "|  11    |  imx8mmddr4evk    | 8MMINID4-EVK             |"
-				echo "|  12    |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
-				echo "|  13    |  imx8qxpmek       | MCIMX8QXP-CPU            |"
-				echo "---------------------------------------------------------"
+				echo "-----------------------------------------------------------"
+				echo "| Entry  |    Target Name      | NXP i.MX EVK Part Number |"
+				echo "|--------|---------------------|--------------------------|"
+				echo "|  1     |  imx6ulevk          | MCIMX6UL-EVK             |"
+				echo "|  2     |  imx6ull14x14evk    | MCIMX6ULL-EVK            |"
+				echo "|  3     |  imx6sxsabresd      | MCIMX6SX-SDB             |"
+				echo "|  4     |  imx6qsabresd       | MCIMX6Q-SDB              |"
+				echo "|  5     |  imx6qpsabresd      | MCIMX6QP-SDB             |"
+				echo "|  6     |  imx6dlsabresd      | MCIMX6DL-SDP             |"
+				echo "|  7     |  imx7dsabresd       | MCIMX7SABRE              |"
+				echo "|  8     |  imx7ulpevk         | MCIMX7ULP-EVK            |"
+				echo "|  9     |  imx8mqevk          | MCIMX8M-EVKB             |"
+				echo "|  10    |  imx8mm-lpddr4-evk  | 8MMINILPD4-EVK           |"
+				echo "|  11    |  imx8mm-ddr4-evk    | 8MMINID4-EVK             |"
+				echo "|  12    |  imx8mn-ddr4-evk    | 8MNANOD4-EVK             |"
+				echo "|  13    |  imx8qxpc0mek       | MCIMX8QXP-CPU            |"
+				echo "|  14    |  imx8mp-lpddr4-evk  | 8MPLUSLPD4-EVK           |"
+				echo "-----------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
 				case $TARGET_OPTION in
@@ -2147,7 +2169,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					;;
 				6)
 					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
+					PART_NUMBER=MCIMX6DL-SDP
 					break
 					;;
 				7)
@@ -2169,7 +2191,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				10)
-					TARGET_NAME=imx8mmevk
+					TARGET_NAME=imx8mm-lpddr4-evk
 					PART_NUMBER=8MMINILPD4-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2177,7 +2199,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				11)
-					TARGET_NAME=imx8mmddr4evk
+					TARGET_NAME=imx8mm-ddr4-evk
 					PART_NUMBER=8MMINID4-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2185,7 +2207,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				12)
-					TARGET_NAME=imx8mnddr4evk
+					TARGET_NAME=imx8mn-ddr4-evk
 					PART_NUMBER=8MNANOD4-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2193,8 +2215,16 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				13)
-					TARGET_NAME=imx8qxpmek
+					TARGET_NAME=imx8qxpc0mek
 					PART_NUMBER=MCIMX8QXP-CPU
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				14)
+					TARGET_NAME=imx8mp-lpddr4-evk
+					PART_NUMBER=8MPLUSLPD4-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
 					DISTRO_NAME=fsl-imx-wayland
@@ -2229,11 +2259,11 @@ else
 				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
 				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
 				echo "|  3     |  imx6qsabresd     | MCIMX6Q-SDB              |"
-				echo "|  4     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
+				echo "|  4     |  imx6dlsabresd    | MCIMX6DL-SDP             |"
 				echo "|  5     |  imx8mqevk        | MCIMX8M-EVKB             |"
 				echo "|  6     |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 				echo "|  7     |  imx8mmevk        | 8MMINILPD4-EVK           |"
-				echo "|  8     |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
+				echo "|  8     |  imx8mnevk        | 8MNANOD4-EVK             |"
 				echo "---------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
@@ -2256,7 +2286,7 @@ else
 
 				4)
 					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
+					PART_NUMBER=MCIMX6DL-SDP
 					break
 					;;
 				5)
@@ -2284,7 +2314,7 @@ else
 					break
 					;;
 				8)
-					TARGET_NAME=imx8mnddr4evk
+					TARGET_NAME=imx8mnevk
 					PART_NUMBER=8MNANOD4-EVK
 					LINUX_SRC=linux-imx_4.14.98.bbappend.8MQ
 					LINUX_DEST=linux-imx_4.14.98.bbappend
@@ -2311,10 +2341,10 @@ else
 				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
 				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
 				echo "|  3     |  imx6qsabresd     | MCIMX6Q-SDB              |"
-				echo "|  4     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
+				echo "|  4     |  imx6dlsabresd    | MCIMX6DL-SDP             |"
 				echo "|  5     |  imx8mqevk        | MCIMX8M-EVKB             |"
 				echo "|  6     |  imx8mmevk        | 8MMINILPD4-EVK           |"
-				echo "|  7     |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
+				echo "|  7     |  imx8mnevk        | 8MNANOD4-EVK             |"
 				echo "|  8     |  imx8qxpmek       | MCIMX8QXP-CPU            |"
 				echo "---------------------------------------------------------"
 				echo -n "Select your entry: "
@@ -2337,7 +2367,7 @@ else
 					;;
 				4)
 					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
+					PART_NUMBER=MCIMX6DL-SDP
 					break
 					;;
 				5)
@@ -2357,7 +2387,7 @@ else
 					break
 					;;
 				7)
-					TARGET_NAME=imx8mnddr4evk
+					TARGET_NAME=imx8mnevk
 					PART_NUMBER=8MNANOD4-EVK
 					LINUX_SRC=linux-imx_5.4.bbappend.8MQ
 					LINUX_DEST=linux-imx_5.4.bbappend
@@ -2387,18 +2417,18 @@ else
 				echo "${STEP_COUNT}) Select Target"
 				echo "----------------"
 				echo " "
-				echo "---------------------------------------------------------"
-				echo "| Entry  |    Target Name    | NXP i.MX EVK Part Number |"
-				echo "|--------|-------------------|--------------------------|"
-				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
-				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
-				echo "|  3     |  imx6qsabresd     | MCIMX6Q-SDB              |"
-				echo "|  4     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
-				echo "|  5     |  imx8mqevk        | MCIMX8M-EVKB             |"
-				echo "|  6     |  imx8mmevk        | 8MMINILPD4-EVK           |"
-				echo "|  7     |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
-				echo "|  8     |  imx8qxpmek       | MCIMX8QXP-CPU            |"
-				echo "---------------------------------------------------------"
+				echo "-----------------------------------------------------------"
+				echo "| Entry  |    Target Name      | NXP i.MX EVK Part Number |"
+				echo "|--------|---------------------|--------------------------|"
+				echo "|  1     |  imx6ulevk          | MCIMX6UL-EVK             |"
+				echo "|  2     |  imx6ull14x14evk    | MCIMX6ULL-EVK            |"
+				echo "|  3     |  imx6qsabresd       | MCIMX6Q-SDB              |"
+				echo "|  4     |  imx6dlsabresd      | MCIMX6DL-SDP             |"
+				echo "|  5     |  imx8mqevk          | MCIMX8M-EVKB             |"
+				echo "|  6     |  imx8mm-lpddr4-evk  | 8MMINILPD4-EVK           |"
+				echo "|  7     |  imx8mn-ddr4-evk    | 8MNANOD4-EVK             |"
+				echo "|  8     |  imx8qxpc0mek       | MCIMX8QXP-CPU            |"
+				echo "-----------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
 				case $TARGET_OPTION in
@@ -2419,7 +2449,7 @@ else
 					;;
 				4)
 					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
+					PART_NUMBER=MCIMX6DL-SDP
 					break
 					;;
 				5)
@@ -2431,7 +2461,7 @@ else
 					break
 					;;
 				6)
-					TARGET_NAME=imx8mmevk
+					TARGET_NAME=imx8mm-lpddr4-evk
 					PART_NUMBER=8MMINILPD4-EVK
 					LINUX_SRC=linux-imx_5.10.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2439,7 +2469,7 @@ else
 					break
 					;;
 				7)
-					TARGET_NAME=imx8mnddr4evk
+					TARGET_NAME=imx8mn-ddr4-evk
 					PART_NUMBER=8MNANOD4-EVK
 					LINUX_SRC=linux-imx_5.10.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2447,7 +2477,7 @@ else
 					break
 					;;
 				8)
-					TARGET_NAME=imx8qxpmek
+					TARGET_NAME=imx8qxpc0mek
 					PART_NUMBER=MCIMX8QXP-CPU
 					LINUX_SRC=linux-imx_5.10.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2470,19 +2500,19 @@ else
 				echo "${STEP_COUNT}) Select Target"
 				echo "----------------"
 				echo " "
-				echo "---------------------------------------------------------"
-				echo "| Entry  |    Target Name    | NXP i.MX EVK Part Number |"
-				echo "|--------|-------------------|--------------------------|"
-				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
-				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
-				echo "|  3     |  imx6qsabresd     | MCIMX6Q-SDB              |"
-				echo "|  4     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
-				echo "|  5     |  imx8mqevk        | MCIMX8M-EVKB             |"
-				echo "|  6     |  imx8mmevk        | 8MMINILPD4-EVK           |"
-				echo "|  7     |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
-				echo "|  8     |  imx8qxpmek       | MCIMX8QXP-CPU            |"
-				echo "|  9     |  imx8mp-lpddr4-evk| 8MPLUSLPD4-EVK           |"
-				echo "---------------------------------------------------------"
+				echo "-----------------------------------------------------------"
+				echo "| Entry  |    Target Name      | NXP i.MX EVK Part Number |"
+				echo "|--------|---------------------|--------------------------|"
+				echo "|  1     |  imx6ulevk          | MCIMX6UL-EVK             |"
+				echo "|  2     |  imx6ull14x14evk    | MCIMX6ULL-EVK            |"
+				echo "|  3     |  imx6qsabresd       | MCIMX6Q-SDB              |"
+				echo "|  4     |  imx6dlsabresd      | MCIMX6DL-SDP             |"
+				echo "|  5     |  imx8mqevk          | MCIMX8M-EVKB             |"
+				echo "|  6     |  imx8mm-lpddr4-evk  | 8MMINILPD4-EVK           |"
+				echo "|  7     |  imx8mn-ddr4-evk    | 8MNANOD4-EVK             |"
+				echo "|  8     |  imx8qxpc0mek       | MCIMX8QXP-CPU            |"
+				echo "|  9     |  imx8mp-lpddr4-evk  | 8MPLUSLPD4-EVK           |"
+				echo "-----------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
 				case $TARGET_OPTION in
@@ -2503,7 +2533,7 @@ else
 					;;
 				4)
 					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
+					PART_NUMBER=MCIMX6DL-SDP
 					break
 					;;
 				5)
@@ -2515,7 +2545,7 @@ else
 					break
 					;;
 				6)
-					TARGET_NAME=imx8mmevk
+					TARGET_NAME=imx8mm-lpddr4-evk
 					PART_NUMBER=8MMINILPD4-EVK
 					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2523,7 +2553,7 @@ else
 					break
 					;;
 				7)
-					TARGET_NAME=imx8mnddr4evk
+					TARGET_NAME=imx8mn-ddr4-evk
 					PART_NUMBER=8MNANOD4-EVK
 					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2531,7 +2561,7 @@ else
 					break
 					;;
 				8)
-					TARGET_NAME=imx8qxpmek
+					TARGET_NAME=imx8qxpc0mek
 					PART_NUMBER=MCIMX8QXP-CPU
 					LINUX_SRC=linux-imx_5.15.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2546,7 +2576,6 @@ else
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					;;
@@ -2562,19 +2591,19 @@ else
 				echo "${STEP_COUNT}) Select Target"
 				echo "----------------"
 				echo " "
-				echo "---------------------------------------------------------"
-				echo "| Entry  |    Target Name    | NXP i.MX EVK Part Number |"
-				echo "|--------|-------------------|--------------------------|"
-				echo "|  1     |  imx6ulevk        | MCIMX6UL-EVK             |"
-				echo "|  2     |  imx6ull14x14evk  | MCIMX6ULL-EVK            |"
-				echo "|  3     |  imx6qsabresd     | MCIMX6Q-SDB              |"
-				echo "|  4     |  imx6dlsabresd    | MCIMX6Q-SDB              |"
-				echo "|  5     |  imx8mqevk        | MCIMX8M-EVKB             |"
-				echo "|  6     |  imx8mmevk        | 8MMINILPD4-EVK           |"
-				echo "|  7     |  imx8mnddr4evk    | 8MNANOD4-EVK             |"
-				echo "|  8     |  imx8qxpmek       | MCIMX8QXP-CPU            |"
-				echo "|  9     |  imx8mp-lpddr4-evk| 8MPLUSLPD4-EVK           |"
-				echo "---------------------------------------------------------"
+				echo "-----------------------------------------------------------"
+				echo "| Entry  |    Target Name      | NXP i.MX EVK Part Number |"
+				echo "|--------|---------------------|--------------------------|"
+				echo "|  1     |  imx6ulevk          | MCIMX6UL-EVK             |"
+				echo "|  2     |  imx6ull14x14evk    | MCIMX6ULL-EVK            |"
+				echo "|  3     |  imx6qsabresd       | MCIMX6Q-SDB              |"
+				echo "|  4     |  imx6dlsabresd      | MCIMX6DL-SDP             |"
+				echo "|  5     |  imx8mqevk          | MCIMX8M-EVKB             |"
+				echo "|  6     |  imx8mm-lpddr4-evk  | 8MMINILPD4-EVK           |"
+				echo "|  7     |  imx8mn-ddr4-evk    | 8MNANOD4-EVK             |"
+				echo "|  8     |  imx8qxpc0mek       | MCIMX8QXP-CPU            |"
+				echo "|  9     |  imx8mp-lpddr4-evk  | 8MPLUSLPD4-EVK           |"
+				echo "-----------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
 				case $TARGET_OPTION in
@@ -2595,7 +2624,7 @@ else
 					;;
 				4)
 					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6Q-SDB
+					PART_NUMBER=MCIMX6DL-SDP
 					break
 					;;
 				5)
@@ -2607,7 +2636,7 @@ else
 					break
 					;;
 				6)
-					TARGET_NAME=imx8mmevk
+					TARGET_NAME=imx8mm-lpddr4-evk
 					PART_NUMBER=8MMINILPD4-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2615,7 +2644,7 @@ else
 					break
 					;;
 				7)
-					TARGET_NAME=imx8mnddr4evk
+					TARGET_NAME=imx8mn-ddr4-evk
 					PART_NUMBER=8MNANOD4-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2623,7 +2652,7 @@ else
 					break
 					;;
 				8)
-					TARGET_NAME=imx8qxpmek
+					TARGET_NAME=imx8qxpc0mek
 					PART_NUMBER=MCIMX8QXP-CPU
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
 					LINUX_DEST=linux-imx_%.bbappend
@@ -2638,7 +2667,6 @@ else
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					;;
