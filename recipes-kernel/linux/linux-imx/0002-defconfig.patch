@@ -1,13 +1,10 @@
 diff --git a/arch/arm/configs/imx_v7_defconfig b/arch/arm/configs/imx_v7_defconfig
-index 6de304968919..04776d71efc9 100644
+index 87c777f33baa..b7e7d302b134 100644
 --- a/arch/arm/configs/imx_v7_defconfig
 +++ b/arch/arm/configs/imx_v7_defconfig
-@@ -62,6 +62,8 @@ CONFIG_NET=y
- CONFIG_PACKET=y
- CONFIG_UNIX=y
- CONFIG_TLS=y
+@@ -594,3 +594,5 @@ CONFIG_CRYPTO_SM3_GENERIC=m
+ CONFIG_CRYPTO_SM4_GENERIC=m
+ CONFIG_CRYPTO_ARIA=m
+ CONFIG_CRYPTO_POLYVAL_ARM64_CE=m
 +CONFIG_CFG80211_REQUIRE_SIGNED_REGDB=n
 +CONFIG_CFG80211_USE_KERNEL_REGDB_KEYS=n
- CONFIG_TLS_DEVICE=y
- CONFIG_INET=y
- CONFIG_IP_MULTICAST=y
