@@ -1,10 +1,13 @@
 diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
-index 849f86f35f02..1a4329417a88 100644
+index 2e98cdaa1fbc..84c5cb917196 100644
 --- a/arch/arm64/configs/imx_v8_defconfig
 +++ b/arch/arm64/configs/imx_v8_defconfig
-@@ -1121,3 +1121,5 @@ CONFIG_CORESIGHT_STM=m
- CONFIG_CORESIGHT_CPU_DEBUG=m
- CONFIG_CORESIGHT_CTI=m
- CONFIG_MEMTEST=y
+@@ -1017,6 +1017,8 @@ CONFIG_NLS_ISO8859_1=y
+ CONFIG_TRUSTED_KEYS=m
+ # CONFIG_TRUSTED_KEYS_TPM is not set
+ # CONFIG_TRUSTED_KEYS_TEE is not set
 +CONFIG_CFG80211_REQUIRE_SIGNED_REGDB=n
 +CONFIG_CFG80211_USE_KERNEL_REGDB_KEYS=n
+ CONFIG_SECURITY=y
+ CONFIG_CRYPTO_USER=y
+ CONFIG_CRYPTO_TEST=m
