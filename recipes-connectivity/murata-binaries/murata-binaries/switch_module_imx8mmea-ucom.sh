@@ -153,8 +153,17 @@ function clean_up() {
   fi
 }
 
+function prepare_for_nxp_bt() {
+  UNAME=$(uname -r)
+  FILE="/lib/modules/${UNAME}/kernel/drivers/bluetooth/btnxpuart.ko"
+  if [ -f "${FILE}" ]; then
+    mv "${FILE}" /usr/share/murata_wireless/
+  fi
+}
+
 function prepare_for_nxp_sdio() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -186,6 +195,7 @@ EOT
 
 function prepare_for_nxp_xk_sdio() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -217,6 +227,7 @@ EOT
 
 function prepare_for_nxp_ds_sdio() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -248,6 +259,7 @@ EOT
 
 function prepare_for_nxp_ym_sdio() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -281,6 +293,7 @@ EOT
 
 function prepare_for_nxp_ym_pcie() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -313,6 +326,7 @@ EOT
 
 function prepare_for_nxp_xl_sdio() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -345,6 +359,7 @@ EOT
 
 function prepare_for_nxp_xl_pcie() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -378,6 +393,7 @@ EOT
 
 function prepare_for_nxp_el_sdio() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -447,10 +463,12 @@ function switch_to_cypress_sdio() {
   if [ $cyw_module == "2EA-SDIO" ]; then
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-2ea.dtb 2>/dev/null
      fw_setenv bt_hint cypress_2ea
+     fw_setenv cmd_custom
      move_ko
   else
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
      fw_setenv bt_hint cypress
+     fw_setenv cmd_custom
      restore_ko
   fi
 
@@ -466,10 +484,12 @@ function switch_to_cypress_pcie() {
   if [ $cyw_module == "2EA-PCIE" ]; then
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-pcie-2ea.dtb 2>/dev/null
      fw_setenv bt_hint cypress_2ea
+     fw_setenv cmd_custom
      move_ko
   else
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-pcie.dtb 2>/dev/null
      fw_setenv bt_hint cypress
+     fw_setenv cmd_custom
      restore_ko
   fi
 
@@ -484,6 +504,7 @@ function switch_to_nxp_sdio() {
   restore_ko
   fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_sdio
   echo "Setup complete."
   echo ""
@@ -495,6 +516,7 @@ function switch_to_nxp_xl_sdio() {
   restore_ko
   fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_xl_sdio
   echo "Setup complete."
   echo ""
@@ -506,6 +528,7 @@ function switch_to_nxp_el_sdio() {
   restore_ko
   fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_el_sdio
   echo "Setup complete."
   echo ""
@@ -517,6 +540,7 @@ function switch_to_nxp_xk_sdio() {
   restore_ko
   fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_xk_sdio
   echo "Setup complete."
   echo ""
@@ -528,6 +552,7 @@ function switch_to_nxp_ds_sdio() {
   restore_ko
   fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_ds_sdio
   echo "Setup complete."
   echo ""
@@ -539,6 +564,7 @@ function switch_to_nxp_ym_sdio() {
   restore_ko
   fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_sdio
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8997-bt"
   prepare_for_nxp_ym_sdio
   echo "Setup complete."
   echo ""
@@ -551,6 +577,7 @@ function switch_to_nxp_ym_pcie() {
   restore_ko
   fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_pcie
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8997-bt"
   prepare_for_nxp_ym_pcie
   echo "Setup complete."
   echo ""
@@ -563,6 +590,7 @@ function switch_to_nxp_xl_pcie() {
   restore_ko
   fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1xl_pcie
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_xl_pcie
   echo "Setup complete."
   echo ""
