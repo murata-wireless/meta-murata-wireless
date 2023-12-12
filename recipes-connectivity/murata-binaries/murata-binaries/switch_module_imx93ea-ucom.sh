@@ -119,7 +119,7 @@ function clean_up() {
   fi
 
   # check for the existence of folder, "crda"
-  if [  -d "/usr/lib/crda" ]; then
+  if [ -d "/usr/lib/crda" ]; then
     rm -rf /usr/lib/crda
   fi
 
@@ -421,7 +421,13 @@ function prepare_for_cypress() {
   ln -s /usr/sbin/hostapd.cyw /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.cyw /usr/sbin/hostapd_cli
 
-#  echo "IFX module : $cyw_module"
+# echo "IFX module : $cyw_module"
+# Copy the files back to /lib/firmaware/cypress files(NVRAM, CLM_BLOB and FW) from /usr/share/murata_wireless/cypress
+  if [ -d "/usr/share/murata_wireless/cypress" ]; then
+    if [ ! -z "$(ls -A /usr/share/murata_wireless/cypress)" ]; then
+      cp -r /usr/share/murata_wireless/cypress/* /lib/firmware/cypress/
+    fi
+  fi
 
   if [ $cyw_module == "2AE" ]; then
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
@@ -439,6 +445,20 @@ function prepare_for_cypress() {
 
   # Disable NXP service and enable Cypress service
   handle_services false true
+}
+
+function prepare_for_cypress_ae_usb() {
+  mkdir -p /usr/share/murata_wireless/cypress
+  mv /lib/firmware/cypress/* /usr/share/murata_wireless/cypress/
+  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2AE.bin /lib/firmware/cypress/cyfmac4373.bin
+  cp /usr/share/murata_wireless/cypress/cyfmac4373-sdio.2AE.clm_blob /lib/firmware/cypress/cyfmac4373.clm_blob
+}
+
+function prepare_for_cypress_bc_usb() {
+  mkdir -p /usr/share/murata_wireless/cypress
+  mv /lib/firmware/cypress/* /usr/share/murata_wireless/cypress/
+  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2BC.bin /lib/firmware/cypress/cyfmac4373.bin
+  cp /usr/share/murata_wireless/cypress/cyfmac4373-sdio.2BC.clm_blob /lib/firmware/cypress/cyfmac4373.clm_blob
 }
 
 function off() {
@@ -463,6 +483,36 @@ function switch_to_cypress_sdio() {
   fi
 
   prepare_for_cypress
+  echo "Setup complete."
+  echo ""
+}
+
+function switch_to_cypress_ae_usb() {
+  echo ""
+  echo "Setting up for 2AE (Cypress - USB)"
+
+  fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+  fw_setenv bt_hint cypress
+  fw_setenv cmd_custom
+  restore_ko
+
+  prepare_for_cypress
+  prepare_for_cypress_ae_usb
+  echo "Setup complete."
+  echo ""
+}
+
+function switch_to_cypress_bc_usb() {
+  echo ""
+  echo "Setting up for 2BC (Cypress - USB)"
+
+  fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+  fw_setenv bt_hint cypress
+  fw_setenv cmd_custom
+  restore_ko
+
+  prepare_for_cypress
+  prepare_for_cypress_bc_usb
   echo "Setup complete."
   echo ""
 }
