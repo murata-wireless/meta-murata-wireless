@@ -648,7 +648,7 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 2BC, 1XA, 2BZ, 2EA-SDIO, 2EA-PCIe"
+  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2EA-SDIO, 2EA-PCIe"
   echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2DS, CURRENT or OFF"
   echo ""
 }
@@ -667,6 +667,12 @@ case ${1^^} in
     ;;
   CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ)
     switch_to_cypress_sdio
+    ;;
+  AE-USB|2AE-USB)
+    switch_to_cypress_ae_usb
+    ;;
+  BC-USB|2BC-USB)
+    switch_to_cypress_bc_usb
     ;;
   ZM|1ZM)
     switch_to_nxp_sdio
