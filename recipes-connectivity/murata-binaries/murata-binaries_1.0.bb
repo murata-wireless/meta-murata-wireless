@@ -45,6 +45,7 @@ SRC_URI = " \
         file://wpa_supplicant-wifi6.conf \
         file://chip-tool \
         file://chip-tool-web \
+        file://brcm_patchram_plus_usb_64bit \
 "
 
 SRCREV_nxp-linux-calibration="86290400930acaa239cbdd0d2f537de2bb9bca56"
@@ -306,6 +307,7 @@ do_install () {
 	install -m 755 ${WORKDIR}/chip-tool ${D}/usr/sbin/chip-tool
 	install -m 755 ${WORKDIR}/chip-tool-web ${D}/usr/sbin/chip-tool-web
 	install -m 755 ${WORKDIR}/connectedhomeip/credentials/production/paa-root-certs/* ${D}/usr/share/murata_wireless
+	install -m 755 ${WORKDIR}/brcm_patchram_plus_usb_64bit ${D}/usr/sbin/brcm_patchram_plus_usb_64bit
 }
 
 PACKAGES =+ "${PN}-mfgtest"

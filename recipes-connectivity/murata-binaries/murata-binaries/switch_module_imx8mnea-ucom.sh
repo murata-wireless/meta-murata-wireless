@@ -432,12 +432,16 @@ function prepare_for_cypress() {
   ln -s /usr/sbin/hostapd_cli.cyw /usr/sbin/hostapd_cli
 
 # echo "IFX module : $cyw_module"
-# Copy the files back to /lib/firmaware/cypress files(NVRAM, CLM_BLOB and FW) from /usr/share/murata_wireless/cypress
-  if [ -d "/usr/share/murata_wireless/cypress" ]; then
-    if [ ! -z "$(ls -A /usr/share/murata_wireless/cypress)" ]; then
-      cp -r /usr/share/murata_wireless/cypress/* /lib/firmware/cypress/
-    fi
+
+  #check for the presence of /usr/share/murata_wireless/cypress
+  #If there isn't cypress folder, then create one and take a backup
+  if [ ! -d "/usr/share/murata_wireless/cypress" ]; then
+     mkdir -p /usr/share/murata_wireless/cypress
+     cp -rfp /lib/firmware/cypress/* /usr/share/murata_wireless/cypress/
   fi
+
+  # By default copy all the files back to /lib/firmware/cypress
+  cp -rfp /usr/share/murata_wireless/cypress/* /lib/firmware/cypress
 
   if [ $cyw_module == "2AE" ]; then
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
@@ -458,15 +462,13 @@ function prepare_for_cypress() {
 }
 
 function prepare_for_cypress_ae_usb() {
-  mkdir -p /usr/share/murata_wireless/cypress
-  mv /lib/firmware/cypress/* /usr/share/murata_wireless/cypress/
+  rm -rf /lib/firmware/cypress/*
   cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2AE.bin /lib/firmware/cypress/cyfmac4373.bin
   cp /usr/share/murata_wireless/cypress/cyfmac4373-sdio.2AE.clm_blob /lib/firmware/cypress/cyfmac4373.clm_blob
 }
 
 function prepare_for_cypress_bc_usb() {
-  mkdir -p /usr/share/murata_wireless/cypress
-  mv /lib/firmware/cypress/* /usr/share/murata_wireless/cypress/
+  rm -rf /lib/firmware/cypress/*
   cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2BC.bin /lib/firmware/cypress/cyfmac4373.bin
   cp /usr/share/murata_wireless/cypress/cyfmac4373-sdio.2BC.clm_blob /lib/firmware/cypress/cyfmac4373.clm_blob
 }
