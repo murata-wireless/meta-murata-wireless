@@ -6,7 +6,7 @@ index 6bbf6f2..c5aa684 100644
  	strsep(&ptr, "\n");
  
  	/* Print fw version info */
-+	brcmf_info("Murata Customized Version: imx-langdale-godzilla_r3.0\n");
++	brcmf_info("Murata Customized Version: imx-mickledore-godzilla_r3.0\n");
  	brcmf_info("Firmware: %s %s\n", ri->chipname, buf);
  
  	/* locate firmware version number for ethtool */
