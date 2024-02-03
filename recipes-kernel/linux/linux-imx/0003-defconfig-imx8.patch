@@ -1,8 +1,15 @@
 diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
-index 849f86f35f02..c8e1dea6e902 100644
+index 849f86f35f02..4aacc8957459 100644
 --- a/arch/arm64/configs/imx_v8_defconfig
 +++ b/arch/arm64/configs/imx_v8_defconfig
-@@ -176,10 +176,11 @@ CONFIG_BT_HCIUART_ATH3K=y
+@@ -170,16 +170,17 @@ CONFIG_BT_HIDP=y
+ CONFIG_BT_LEDS=y
+ # CONFIG_BT_DEBUGFS is not set
+ CONFIG_BT_HCIBTUSB=m
+-CONFIG_BT_HCIUART=y
++CONFIG_BT_HCIUART=m
+ CONFIG_BT_HCIUART_BCSP=y
+ CONFIG_BT_HCIUART_ATH3K=y
  CONFIG_BT_HCIUART_LL=y
  CONFIG_BT_HCIUART_3WIRE=y
  CONFIG_BT_HCIUART_BCM=y
