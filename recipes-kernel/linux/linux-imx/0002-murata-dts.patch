@@ -1,11 +1,11 @@
 diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index d831c883ad68..71422853c108 100644
+index 30408b4b2a4e..5f7fc16209d4 100644
 --- a/arch/arm/boot/dts/Makefile
 +++ b/arch/arm/boot/dts/Makefile
-@@ -749,6 +749,11 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+@@ -748,6 +748,11 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+ 	imx6ul-14x14-evk-csi.dtb \
  	imx6ul-14x14-evk-emmc.dtb \
  	imx6ul-14x14-evk-btwifi.dtb \
- 	imx6ul-14x14-evk-btwifi-sdio3_0.dtb \
 +	imx6ul-14x14-evk-btwifi-oob.dtb \
 +	imx6ul-14x14-evk-btwifi-m2.dtb \
 +	imx6ul-14x14-evk-btwifi-m2-oob.dtb \
@@ -14,10 +14,10 @@ index d831c883ad68..71422853c108 100644
  	imx6ul-14x14-evk-ecspi-slave.dtb \
  	imx6ul-14x14-evk-ecspi.dtb \
  	imx6ul-14x14-evk-gpmi-weim.dtb \
-@@ -781,6 +786,11 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+@@ -778,6 +783,11 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+ 	imx6ull-14x14-evk.dtb \
  	imx6ull-14x14-evk-emmc.dtb \
  	imx6ull-14x14-evk-btwifi.dtb \
- 	imx6ull-14x14-evk-btwifi-sdio3_0.dtb \
 +	imx6ull-14x14-evk-btwifi-oob.dtb \
 +	imx6ull-14x14-evk-btwifi-m2.dtb \
 +	imx6ull-14x14-evk-btwifi-m2-oob.dtb \
@@ -99,7 +99,7 @@ index 000000000000..90e0045fa2e4
 +#include "imx6ul-14x14-evk-btwifi.dts"
 +#include "imx6ul-evk-btwifi-oob.dtsi"
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi b/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
-index f8b4c523980a..4d4fe2aad3a5 100644
+index c79e8092814e..ecbf80f897a0 100644
 --- a/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
 @@ -186,6 +186,18 @@ &fec1 {
@@ -210,11 +210,11 @@ index 000000000000..e1f16574a24e
 +	interrupt-names = "host-wake";
 +};
 diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-index 76f68cd20b8e..b3dfefec7fae 100644
+index dd0639ae1f65..8857c542b7e5 100644
 --- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
 +++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-@@ -14,6 +14,13 @@
-  */
+@@ -10,6 +10,13 @@
+ 
  
  / {
 +	modem_reset: modem-reset {
@@ -227,7 +227,7 @@ index 76f68cd20b8e..b3dfefec7fae 100644
  	usdhc1_pwrseq: usdhc1_pwrseq {
  		pinctrl-names = "default";
  		pinctrl-0 = <&pinctrl_wifi>;
-@@ -34,6 +41,10 @@ &reg_sd1_vmmc {
+@@ -80,12 +87,19 @@ &reg_sd1_vmmc {
  	regulator-always-on;
  };
  
@@ -235,18 +235,22 @@ index 76f68cd20b8e..b3dfefec7fae 100644
 +	resets = <&modem_reset>;
 +};
 +
++
  &usdhc1 {
  	#address-cells = <1>;
  	#size-cells = <0>;
-@@ -41,8 +52,16 @@ &usdhc1 {
- 	pinctrl-0 = <&pinctrl_usdhc1>;
- 	no-1-8-v;
+ 	fsl,sdio-async-interrupt-enabled;
  	non-removable;
 +	pm-ignore-notify;
  	mmc-pwrseq = <&usdhc1_pwrseq>;
 +	cap-power-off-card;
-+	/delete-property/ wakeup-source;
+ 
+ 	/* Here config the vsel pad as an normal gpio, and use
+ 	 * the vqmmc(gpio-regulator) method to do the IO voltage switch.
+@@ -108,6 +122,11 @@ &usdhc1 {
+ 	vqmmc-supply = <&reg_nvcc_sd_sel>;
  	/delete-property/ enable-sdio-wakeup;
+ 	/delete-property/ cd-gpios;
 +
 +	brcmf: bcrmf@1 {
 +		reg = <1>;
