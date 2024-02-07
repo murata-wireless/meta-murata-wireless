@@ -33,36 +33,3 @@ index 87c777f33baa..2d4e0d30fe84 100644
 +CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE=y
 +CONFIG_X509_CERTIFICATE_PARSER=y
 +CONFIG_PKCS7_MESSAGE_PARSER=y
-diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
-index c8e1dea6e902..a623eef050f8 100644
---- a/arch/arm64/configs/imx_v8_defconfig
-+++ b/arch/arm64/configs/imx_v8_defconfig
-@@ -1122,7 +1122,7 @@ CONFIG_CORESIGHT_STM=m
- CONFIG_CORESIGHT_CPU_DEBUG=m
- CONFIG_CORESIGHT_CTI=m
- CONFIG_MEMTEST=y
--+CONFIG_ASYMMETRIC_KEY_TYPE=y
--+CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE=y
--+CONFIG_X509_CERTIFICATE_PARSER=y
--+CONFIG_PKCS7_MESSAGE_PARSER=y
-+CONFIG_ASYMMETRIC_KEY_TYPE=y
-+CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE=y
-+CONFIG_X509_CERTIFICATE_PARSER=y
-+CONFIG_PKCS7_MESSAGE_PARSER=y
-diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index ecde2a605417..e6c9c08bfbf2 100644
---- a/drivers/tty/serial/imx.c
-+++ b/drivers/tty/serial/imx.c
-@@ -1449,10 +1449,10 @@ static int imx_uart_startup(struct uart_port *port)
- 	imx_uart_writel(sport, ucr4 & ~UCR4_DREN, UCR4);
- 
- 	/* Can we enable the DMA support? */
--+/*  // Disable DMA support as the Kernel crashes when we make HCI_UART as module
-+/*  // Disable DMA support as the Kernel crashes when we make HCI_UART as module
-  	if (!uart_console(port) && imx_uart_dma_init(sport) == 0)
-  		dma_is_inited = 1;
--+*/
-+*/
- 
- 	spin_lock_irqsave(&sport->port.lock, flags);
- 	/* Reset fifo's and state machines */
