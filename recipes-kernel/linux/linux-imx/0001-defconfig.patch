@@ -1,5 +1,5 @@
 diff --git a/arch/arm/configs/imx_v7_defconfig b/arch/arm/configs/imx_v7_defconfig
-index 87c777f33baa..2d4e0d30fe84 100644
+index 87c777f33baa..0fc3cd06733a 100644
 --- a/arch/arm/configs/imx_v7_defconfig
 +++ b/arch/arm/configs/imx_v7_defconfig
 @@ -78,7 +78,7 @@ CONFIG_BT_BNEP_MC_FILTER=y
@@ -25,6 +25,15 @@ index 87c777f33baa..2d4e0d30fe84 100644
  CONFIG_NL80211_TESTMODE=y
  CONFIG_CFG80211_WEXT=y
  CONFIG_MAC80211=y
+@@ -102,7 +105,7 @@ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ # CONFIG_STANDALONE is not set
+ CONFIG_FW_LOADER_USER_HELPER=y
+-CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
++CONFIG_FW_LOADER_USER_HELPER_FALLBACK=n
+ CONFIG_IMX_WEIM=y
+ CONFIG_CONNECTOR=y
+ CONFIG_MTD=y
 @@ -594,3 +597,7 @@ CONFIG_CRYPTO_SM3_GENERIC=m
  CONFIG_CRYPTO_SM4_GENERIC=m
  CONFIG_CRYPTO_ARIA=m
