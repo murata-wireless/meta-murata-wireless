@@ -16,7 +16,8 @@ SRC_URI = " \
         file://cyfmac55572-sdio_v2.4.3.txt \
         file://cyfmac55572-sdio_v2.5.1.txt \
         file://CYW55560A1_001.002.087.0159.0010_wlcsp_iPA_sLNA_ANT0_Murata_Type2EA_FCC_max.hcd \
-        file://load-2ea-bt.sh \
+        file://load-bluetooth.sh \
+        file://set-bluetooth.sh \
         file://cyfmac4373.bin \
         file://hostapd-wifi6.conf \
         file://wpa_supplicant-wifi6.conf \
@@ -195,7 +196,8 @@ do_install () {
     ln -sf /lib/firmware/cypress/cyfmac4373-sdio.2BC.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.clm_blob
 
 #   For loading 2EA@BT
-	install -m 755 ${WORKDIR}/load-2ea-bt.sh ${D}/usr/sbin/load-2ea-bt.sh
+	install -m 755 ${WORKDIR}/load-bluetooth.sh ${D}/usr/sbin/load-bluetooth.sh
+	install -m 755 ${WORKDIR}/set-bluetooth.sh ${D}/usr/sbin/set-bluetooth.sh
 }
 
 PACKAGES =+ "${PN}-mfgtest"
