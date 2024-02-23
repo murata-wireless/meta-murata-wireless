@@ -443,17 +443,47 @@ function prepare_for_cypress() {
   # By default copy all the files back to /lib/firmware/cypress
   cp -rfp /usr/share/murata_wireless/cypress/* /lib/firmware/cypress
 
-  if [ $cyw_module == "2AE" ]; then
+  # Starting from 6.1.x, "hciattach" is deprecated and will use "btbcm.ko and hci_uart.ko"
+  # It needs <module.hcd> to be renamed as "BCM.hcd" and placed in /lib/firmware/brcm
+
+  case $cyw_module in
+  CX|1CX)
+     cp /lib/firmware/brcm/BCM4356A2_001.003.015.0112.0410.1CX.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  DX|1DX)
+     cp /lib/firmware/brcm/BCM43430A1_001.002.009.0159.0528.1DX.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  LV|1LV)
+     cp /lib/firmware/brcm/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  MW|1MW)
+     cp /lib/firmware/brcm/CBCM4345C0_003.001.025.0187.0366.1MW.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  YN|1YN)
+     cp /lib/firmware/brcm/CYW4343A2_001.003.016.0031.0000.1YN.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  2AE|AE)
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.clm_blob /lib/firmware/cypress/cyfmac4373-sdio.clm_blob
-  fi
-
-  if [ $cyw_module == "2BC" ]; then
+     cp /lib/firmware/brcm/BCM4373A0.2AE.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  2BC|BC)
      cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
      cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
      cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.clm_blob /lib/firmware/cypress/cyfmac4373-sdio.clm_blob
-  fi
+     cp /lib/firmware/brcm/BCM4373A0.2BC.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  XA|1XA)
+     cp /lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  BZ|2BZ)
+     cp /lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  2EA-SDIO|2EA-PCIE)
+     cp /lib/firmware/brcm/CYW55560A1_001.002.087.0159.0010.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  esac
 
   depmod -a
 
@@ -568,7 +598,7 @@ function switch_to_nxp_xl_sdio() {
   restore_ko
   fw_setenv fdt_file imx8mn-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
-  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt; fdt set serial0/bluetooth fw-init-baudrate  <115200>"
   prepare_for_nxp_xl_sdio
   echo "Setup complete."
   echo ""
