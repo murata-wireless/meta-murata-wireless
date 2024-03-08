@@ -447,7 +447,7 @@ function prepare_for_cypress() {
      cp /lib/firmware/brcm/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   MW|1MW)
-     cp /lib/firmware/brcm/CBCM4345C0_003.001.025.0187.0366.1MW.hcd /lib/firmware/brcm/BCM.hcd
+     cp /lib/firmware/brcm/BCM4345C0_003.001.025.0187.0366.1MW.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   YN|1YN)
      cp /lib/firmware/brcm/CYW4343A2_001.003.016.0031.0000.1YN.hcd /lib/firmware/brcm/BCM.hcd
