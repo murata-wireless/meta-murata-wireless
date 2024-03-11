@@ -374,7 +374,7 @@ CONFIG_WPA_CLI_EDIT=y
 
 # Opportunistic Wireless Encryption (OWE)
 # Experimental implementation of draft-harkins-owe-07.txt
-#CONFIG_OWE=y
+CONFIG_OWE=y
 
 # Airtime policy support
 #CONFIG_AIRTIME_POLICY=y
@@ -406,3 +406,4 @@ CONFIG_WPA3_SAE_AUTH_EARLY_SET=y
 
 # Device Provisioning Protocol (DPP)
 CONFIG_DPP=y
+CONFIG_DPP2=y

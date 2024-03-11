@@ -1,3 +1,21 @@
+diff --git a/src/ap/ap_config.c b/src/ap/ap_config.c
+index 86b6e09..a7fd850 100644
+--- a/src/ap/ap_config.c
++++ b/src/ap/ap_config.c
+@@ -1432,6 +1432,13 @@ static int hostapd_config_check_bss(struct hostapd_bss_config *bss,
+ 	}
+ #endif /* CONFIG_FILS */
+ 
++	if (full_config && (bss->ieee80211w == 2) &&
++	    (bss->wpa_key_mgmt == (WPA_KEY_MGMT_PSK_SHA256 | WPA_KEY_MGMT_PSK))) {
++		wpa_printf(MSG_ERROR,
++			   "Cannot set ieee80211w=2 along with with the selected wpa_key_mgmt");
++		return -1;
++	}
++
+ 	return 0;
+ }
+ 
 diff --git a/src/ap/ap_config.h b/src/ap/ap_config.h
 index 49cd316..a82ca18 100644
 --- a/src/ap/ap_config.h
@@ -64,6 +82,97 @@ index 8cd1c41..e2d7c69 100644
  	return 0;
  }
  
+diff --git a/src/ap/drv_callbacks.c b/src/ap/drv_callbacks.c
+index a50e6f2..989ba73 100644
+--- a/src/ap/drv_callbacks.c
++++ b/src/ap/drv_callbacks.c
+@@ -648,13 +648,12 @@ skip_wpa_check:
+ #endif /* CONFIG_OWE */
+ 
+ #ifdef CONFIG_DPP2
+-		dpp_pfs_free(sta->dpp_pfs);
+-		sta->dpp_pfs = NULL;
++	if ((hapd->conf->wpa_key_mgmt & WPA_KEY_MGMT_DPP) &&
++	    hapd->conf->dpp_netaccesskey && sta->wpa_sm &&
++	    wpa_auth_sta_key_mgmt(sta->wpa_sm) == WPA_KEY_MGMT_DPP &&
++	    elems.owe_dh) {
+ 
+-		if ((hapd->conf->wpa_key_mgmt & WPA_KEY_MGMT_DPP) &&
+-		    hapd->conf->dpp_netaccesskey && sta->wpa_sm &&
+-		    wpa_auth_sta_key_mgmt(sta->wpa_sm) == WPA_KEY_MGMT_DPP &&
+-		    elems.owe_dh) {
++		if (!sta->dpp_pfs) {
+ 			sta->dpp_pfs = dpp_pfs_init(
+ 				wpabuf_head(hapd->conf->dpp_netaccesskey),
+ 				wpabuf_len(hapd->conf->dpp_netaccesskey));
+@@ -664,19 +663,20 @@ skip_wpa_check:
+ 				/* Try to continue without PFS */
+ 				goto pfs_fail;
+ 			}
++		}
+ 
+-			if (dpp_pfs_process(sta->dpp_pfs, elems.owe_dh,
+-					    elems.owe_dh_len) < 0) {
+-				dpp_pfs_free(sta->dpp_pfs);
+-				sta->dpp_pfs = NULL;
+-				reason = WLAN_REASON_UNSPECIFIED;
+-				goto fail;
+-			}
++		if (dpp_pfs_process(sta->dpp_pfs, elems.owe_dh,
++				    elems.owe_dh_len) < 0) {
++			dpp_pfs_free(sta->dpp_pfs);
++			sta->dpp_pfs = NULL;
++			reason = WLAN_REASON_UNSPECIFIED;
++			goto fail;
+ 		}
++	}
+ 
+-		wpa_auth_set_dpp_z(sta->wpa_sm, sta->dpp_pfs ?
+-				   sta->dpp_pfs->secret : NULL);
+-	pfs_fail:
++	wpa_auth_set_dpp_z(sta->wpa_sm, sta->dpp_pfs ?
++		sta->dpp_pfs->secret : NULL);
++pfs_fail:
+ #endif /* CONFIG_DPP2 */
+ 
+ 	if (elems.rrm_enabled &&
+@@ -1792,8 +1792,9 @@ static int hostapd_notif_update_dh_ie(struct hostapd_data *hapd,
+ 		wpa_printf(MSG_DEBUG, "OWE: Peer unknown");
+ 		return -1;
+ 	}
+-	if (!(hapd->conf->wpa_key_mgmt & WPA_KEY_MGMT_OWE)) {
+-		wpa_printf(MSG_DEBUG, "OWE: No OWE AKM configured");
++	if (!(hapd->conf->wpa_key_mgmt & WPA_KEY_MGMT_OWE) &&
++		!(hapd->conf->wpa_key_mgmt & WPA_KEY_MGMT_DPP)) {
++		wpa_printf(MSG_DEBUG, "OWE/DPP: No OWE/DPP AKM configured");
+ 		status = WLAN_STATUS_AKMP_NOT_VALID;
+ 		goto err;
+ 	}
+@@ -1828,9 +1829,21 @@ static int hostapd_notif_update_dh_ie(struct hostapd_data *hapd,
+ 	}
+ 	sta->flags &= ~(WLAN_STA_WPS | WLAN_STA_MAYBE_WPS | WLAN_STA_WPS2);
+ 
+-	status = owe_process_rsn_ie(hapd, sta, elems.rsn_ie,
+-				    elems.rsn_ie_len, elems.owe_dh,
+-				    elems.owe_dh_len);
++#ifdef CONFIG_DPP2
++	if (hapd->conf->wpa_key_mgmt & WPA_KEY_MGMT_DPP) {
++		if (hapd->conf->dpp_netaccesskey && elems.owe_dh)
++			status = dpp_process_rsn_ie(hapd, sta, elems.rsn_ie,
++					    elems.rsn_ie_len, elems.owe_dh,
++					    elems.owe_dh_len);
++		else
++			status = WLAN_STATUS_UNSPECIFIED_FAILURE;
++	} else
++#endif /* CONFIG_DPP2 */
++	{
++		status = owe_process_rsn_ie(hapd, sta, elems.rsn_ie,
++					    elems.rsn_ie_len, elems.owe_dh,
++					    elems.owe_dh_len);
++	}
+ 	if (status != WLAN_STATUS_SUCCESS)
+ 		ap_free_sta(hapd, sta);
+ 
 diff --git a/src/ap/hostapd.c b/src/ap/hostapd.c
 index 4b88641..464d8fa 100644
 --- a/src/ap/hostapd.c
@@ -91,7 +200,7 @@ index 4b88641..464d8fa 100644
  		    sta->auth_alg != WLAN_AUTH_FILS_SK_PFS &&
  		    sta->auth_alg != WLAN_AUTH_FILS_PK &&
 diff --git a/src/ap/ieee802_11.c b/src/ap/ieee802_11.c
-index db41049..c4f7d00 100644
+index db41049..5648153 100644
 --- a/src/ap/ieee802_11.c
 +++ b/src/ap/ieee802_11.c
 @@ -87,6 +87,10 @@ static void handle_auth(struct hostapd_data *hapd,
@@ -130,6 +239,105 @@ index db41049..c4f7d00 100644
  }
  
  
+@@ -4336,9 +4348,10 @@ u16 owe_validate_request(struct hostapd_data *hapd, const u8 *peer,
+ 		wpa_hexdump(MSG_DEBUG, "RSNE", rsn_ie, rsn_ie_len);
+ 		return wpa_res_to_status_code(res);
+ 	}
+-	if (!(data.key_mgmt & WPA_KEY_MGMT_OWE)) {
++	if (!(data.key_mgmt & WPA_KEY_MGMT_OWE) &&
++		!(data.key_mgmt & WPA_KEY_MGMT_DPP)) {
+ 		wpa_printf(MSG_DEBUG,
+-			   "OWE: Unexpected key mgmt 0x%x from " MACSTR,
++			   "OWE/DPP: Unexpected key mgmt 0x%x from " MACSTR,
+ 			   (unsigned int) data.key_mgmt, MAC2STR(peer));
+ 		return WLAN_STATUS_AKMP_NOT_VALID;
+ 	}
+@@ -4432,6 +4445,71 @@ end:
+ 
+ #endif /* CONFIG_OWE */
+ 
++#ifdef CONFIG_DPP2
++u16 dpp_process_rsn_ie(struct hostapd_data *hapd,
++		       struct sta_info *sta,
++		       const u8 *rsn_ie, size_t rsn_ie_len,
++		       const u8 *owe_dh, size_t owe_dh_len)
++{
++	u16 status = WLAN_STATUS_SUCCESS;
++	u8 *owe_buf, ie[256 * 2];
++	size_t ie_len = 0;
++	enum wpa_validate_result res;
++
++	if (!rsn_ie || rsn_ie_len < 2) {
++		wpa_printf(MSG_DEBUG, "DPP: No RSNE in (Re)AssocReq");
++		status = WLAN_STATUS_INVALID_IE;
++		goto end;
++	}
++
++	if (!sta->wpa_sm)
++		sta->wpa_sm = wpa_auth_sta_init(hapd->wpa_auth,	sta->addr,
++						NULL);
++	if (!sta->wpa_sm) {
++		wpa_printf(MSG_WARNING,
++			   "DPP: Failed to initialize WPA state machine");
++		status = WLAN_STATUS_UNSPECIFIED_FAILURE;
++		goto end;
++	}
++	rsn_ie -= 2;
++	rsn_ie_len += 2;
++	res = wpa_validate_wpa_ie(hapd->wpa_auth, sta->wpa_sm,
++				  hapd->iface->freq, rsn_ie, rsn_ie_len,
++				  NULL, 0, NULL, 0, owe_dh, owe_dh_len);
++	status = wpa_res_to_status_code(res);
++	if (status != WLAN_STATUS_SUCCESS)
++		goto end;
++
++	owe_buf = wpa_auth_write_assoc_resp_owe(sta->wpa_sm, ie, sizeof(ie),
++						NULL, 0);
++	if (!owe_buf) {
++		status = WLAN_STATUS_UNSPECIFIED_FAILURE;
++		goto end;
++	}
++
++	dpp_pfs_free(sta->dpp_pfs);
++	sta->dpp_pfs = NULL;
++	sta->dpp_pfs = dpp_pfs_init(
++		wpabuf_head(hapd->conf->dpp_netaccesskey),
++		wpabuf_len(hapd->conf->dpp_netaccesskey));
++
++	if (!sta->dpp_pfs) {
++		wpa_printf(MSG_DEBUG, "DPP: Could not initialize PFS");
++		status = WLAN_STATUS_UNSPECIFIED_FAILURE;
++	} else {
++		os_memcpy(owe_buf, wpabuf_head(sta->dpp_pfs->ie), wpabuf_len(sta->dpp_pfs->ie));
++		ie_len = owe_buf - ie + wpabuf_len(sta->dpp_pfs->ie);
++	}
++end:
++	wpa_printf(MSG_DEBUG, "DPP: Update status %d, ie len %d for peer "
++			      MACSTR, status, (unsigned int) ie_len,
++			      MAC2STR(sta->addr));
++	hostapd_drv_update_dh_ie(hapd, sta->addr, status,
++				 status == WLAN_STATUS_SUCCESS ? ie : NULL,
++				 ie_len);
++	return status;
++}
++#endif /* CONFIG_DPP2 */
+ 
+ static bool check_sa_query(struct hostapd_data *hapd, struct sta_info *sta,
+ 			   int reassoc)
+diff --git a/src/ap/ieee802_11.h b/src/ap/ieee802_11.h
+index c59ad5e..3042b6b 100644
+--- a/src/ap/ieee802_11.h
++++ b/src/ap/ieee802_11.h
+@@ -171,6 +171,9 @@ u8 * owe_assoc_req_process(struct hostapd_data *hapd, struct sta_info *sta,
+ u16 owe_process_rsn_ie(struct hostapd_data *hapd, struct sta_info *sta,
+ 		       const u8 *rsn_ie, size_t rsn_ie_len,
+ 		       const u8 *owe_dh, size_t owe_dh_len);
++u16 dpp_process_rsn_ie(struct hostapd_data *hapd, struct sta_info *sta,
++		       const u8 *rsn_ie, size_t rsn_ie_len,
++		       const u8 *owe_dh, size_t owe_dh_len);
+ u16 owe_validate_request(struct hostapd_data *hapd, const u8 *peer,
+ 			 const u8 *rsn_ie, size_t rsn_ie_len,
+ 			 const u8 *owe_dh, size_t owe_dh_len);
 diff --git a/src/ap/pmksa_cache_auth.c b/src/ap/pmksa_cache_auth.c
 index b67b852..5084dfa 100644
 --- a/src/ap/pmksa_cache_auth.c
@@ -960,7 +1168,7 @@ index c9e00b3..9e5b48a 100644
  
  	for (res = SSL_CTX_set_current_cert(ssl_ctx, SSL_CERT_SET_FIRST);
 diff --git a/src/drivers/driver.h b/src/drivers/driver.h
-index d3312a3..d75abbd 100644
+index d3312a3..9ebb4b0 100644
 --- a/src/drivers/driver.h
 +++ b/src/drivers/driver.h
 @@ -26,6 +26,9 @@
@@ -1205,6 +1413,19 @@ index d3312a3..d75abbd 100644
  };
  
  /**
+@@ -5380,6 +5546,12 @@ union wpa_event_data {
+ 		 * fils_pmkid - PMKID used or generated in FILS authentication
+ 		 */
+ 		const u8 *fils_pmkid;
++
++		/**
++		 * roam_indication - Indicate it's a roam event
++		 */
++		bool roam_indication;
++
+ 	} assoc_info;
+ 
+ 	/**
 diff --git a/src/drivers/driver_brcm_nl80211.h b/src/drivers/driver_brcm_nl80211.h
 new file mode 100644
 index 0000000..40a84d1
@@ -2567,7 +2788,7 @@ index 83868b7..21b9c03 100644
  
  			wpa_printf(MSG_DEBUG, "nl80211: Supported vendor command: vendor_id=0x%x subcmd=%u",
 diff --git a/src/drivers/driver_nl80211_event.c b/src/drivers/driver_nl80211_event.c
-index 0f0a01d..d3cb8d8 100644
+index 0f0a01d..6ff7479 100644
 --- a/src/drivers/driver_nl80211_event.c
 +++ b/src/drivers/driver_nl80211_event.c
 @@ -172,6 +172,11 @@ static const char * nl80211_command_to_string(enum nl80211_commands cmd)
@@ -2582,7 +2803,15 @@ index 0f0a01d..d3cb8d8 100644
  	C2S(__NL80211_CMD_AFTER_LAST)
  	}
  #undef C2S
-@@ -557,7 +562,7 @@ static void mlme_event_connect(struct wpa_driver_nl80211_data *drv,
+@@ -537,6 +542,7 @@ static void mlme_event_connect(struct wpa_driver_nl80211_data *drv,
+ 					   wpa_ssid_txt(drv->ssid,
+ 							drv->ssid_len));
+ 			}
++			event.assoc_info.roam_indication = 1;
+ 		}
+ 	}
+ 	if (resp_ie) {
+@@ -557,7 +563,7 @@ static void mlme_event_connect(struct wpa_driver_nl80211_data *drv,
  			   wpa_ssid_txt(drv->ssid, drv->ssid_len));
  	}
  
@@ -2591,7 +2820,7 @@ index 0f0a01d..d3cb8d8 100644
  		event.assoc_info.authorized = 1;
  		wpa_printf(MSG_DEBUG, "nl80211: connection authorized");
  	}
-@@ -2988,7 +2993,8 @@ static void do_process_drv_event(struct i802_bss *bss, int cmd,
+@@ -2988,7 +2994,8 @@ static void do_process_drv_event(struct i802_bss *bss, int cmd,
  				   tb[NL80211_ATTR_RESP_IE],
  				   tb[NL80211_ATTR_TIMED_OUT],
  				   tb[NL80211_ATTR_TIMEOUT_REASON],
@@ -3063,7 +3292,7 @@ index 6a0a69e..cade951 100644
  
  	if (wpa_s->conf->go_interworking) {
 diff --git a/wpa_supplicant/bgscan_learn.c b/wpa_supplicant/bgscan_learn.c
-index cb732f7..c872d8d 100644
+index cb732f7..8e35b6a 100644
 --- a/wpa_supplicant/bgscan_learn.c
 +++ b/wpa_supplicant/bgscan_learn.c
 @@ -18,6 +18,9 @@
@@ -3076,7 +3305,15 @@ index cb732f7..c872d8d 100644
  
  struct bgscan_learn_bss {
  	struct dl_list list;
-@@ -315,6 +318,18 @@ static void bgscan_learn_timeout(void *eloop_ctx, void *timeout_ctx)
+@@ -39,6 +42,7 @@ struct bgscan_learn_data {
+ 	struct dl_list bss;
+ 	int *supp_freqs;
+ 	int probe_idx;
++	int link_loss_thresh_secs;
+ };
+ 
+ 
+@@ -315,6 +319,18 @@ static void bgscan_learn_timeout(void *eloop_ctx, void *timeout_ctx)
  }
  
  
@@ -3095,7 +3332,36 @@ index cb732f7..c872d8d 100644
  static int bgscan_learn_get_params(struct bgscan_learn_data *data,
  				   const char *params)
  {
-@@ -447,6 +462,7 @@ static void bgscan_learn_deinit(void *priv)
+@@ -335,6 +351,12 @@ static int bgscan_learn_get_params(struct bgscan_learn_data *data,
+ 	}
+ 	pos++;
+ 	data->long_interval = atoi(pos);
++	pos = os_strchr(pos, ':');
++	if (pos) {
++		pos++;
++		data->link_loss_thresh_secs = atoi(pos);
++	}
++
+ 	pos = os_strchr(pos, ':');
+ 	if (pos) {
+ 		pos++;
+@@ -405,10 +427,13 @@ static void * bgscan_learn_init(struct wpa_supplicant *wpa_s,
+ 		return NULL;
+ 	}
+ 
++	if (data->link_loss_thresh_secs <= 0 || data->link_loss_thresh_secs >= 600)
++		data->link_loss_thresh_secs = 600;
++
+ 	wpa_printf(MSG_DEBUG, "bgscan learn: Signal strength threshold %d  "
+-		   "Short bgscan interval %d  Long bgscan interval %d",
++		   "Short bgscan interval %d  Long bgscan interval %d Link Lost threshold secs %d",
+ 		   data->signal_threshold, data->short_interval,
+-		   data->long_interval);
++		   data->long_interval, data->link_loss_thresh_secs);
+ 
+ 	if (data->signal_threshold &&
+ 	    wpa_drv_signal_monitor(wpa_s, data->signal_threshold, 4) < 0) {
+@@ -447,6 +472,7 @@ static void bgscan_learn_deinit(void *priv)
  	struct bgscan_learn_bss *bss, *n;
  
  	bgscan_learn_save(data);
@@ -3103,7 +3369,7 @@ index cb732f7..c872d8d 100644
  	eloop_cancel_timeout(bgscan_learn_timeout, data, NULL);
  	if (data->signal_threshold)
  		wpa_drv_signal_monitor(data->wpa_s, 0, 0);
-@@ -550,8 +566,28 @@ static int bgscan_learn_notify_scan(void *priv,
+@@ -550,8 +576,28 @@ static int bgscan_learn_notify_scan(void *priv,
  
  static void bgscan_learn_notify_beacon_loss(void *priv)
  {
@@ -3113,7 +3379,7 @@ index cb732f7..c872d8d 100644
 -	/* TODO: speed up background scanning */
 +
 +	wpa_printf(MSG_DEBUG, "bgscan learn: Start Link Loss timer");
-+	eloop_register_timeout(BGSCAN_LEARN_LINK_LOSS_THRESH_SECS,
++	eloop_register_timeout(data->link_loss_thresh_secs,
 +				0, bgscan_learn_link_loss_timeout, data, NULL);
 +
 +	wpa_printf(MSG_DEBUG, "bgscan learn: Flush all prev bss entries");
@@ -3134,7 +3400,7 @@ index cb732f7..c872d8d 100644
  
  
 diff --git a/wpa_supplicant/bgscan_simple.c b/wpa_supplicant/bgscan_simple.c
-index 41a26df..bf9184e 100644
+index 41a26df..24e9f86 100644
 --- a/wpa_supplicant/bgscan_simple.c
 +++ b/wpa_supplicant/bgscan_simple.c
 @@ -16,6 +16,9 @@
@@ -3147,7 +3413,15 @@ index 41a26df..bf9184e 100644
  
  struct bgscan_simple_data {
  	struct wpa_supplicant *wpa_s;
-@@ -75,6 +78,18 @@ static void bgscan_simple_timeout(void *eloop_ctx, void *timeout_ctx)
+@@ -27,6 +30,7 @@ struct bgscan_simple_data {
+ 	int short_interval; /* use if signal < threshold */
+ 	int long_interval; /* use if signal > threshold */
+ 	struct os_reltime last_bgscan;
++	int link_loss_thresh_secs;
+ };
+ 
+ 
+@@ -75,6 +79,18 @@ static void bgscan_simple_timeout(void *eloop_ctx, void *timeout_ctx)
  }
  
  
@@ -3166,7 +3440,36 @@ index 41a26df..bf9184e 100644
  static int bgscan_simple_get_params(struct bgscan_simple_data *data,
  				    const char *params)
  {
-@@ -160,6 +175,7 @@ static void * bgscan_simple_init(struct wpa_supplicant *wpa_s,
+@@ -96,6 +112,12 @@ static int bgscan_simple_get_params(struct bgscan_simple_data *data,
+ 	pos++;
+ 	data->long_interval = atoi(pos);
+ 
++	pos = os_strchr(pos, ':');
++	if (pos) {
++		pos++;
++		data->link_loss_thresh_secs = atoi(pos);
++	}
++
+ 	return 0;
+ }
+ 
+@@ -120,10 +142,13 @@ static void * bgscan_simple_init(struct wpa_supplicant *wpa_s,
+ 	if (data->long_interval <= 0)
+ 		data->long_interval = 30;
+ 
++	if (data->link_loss_thresh_secs <= 0 || data->link_loss_thresh_secs >= 600)
++		data->link_loss_thresh_secs = 600;
++
+ 	wpa_printf(MSG_DEBUG, "bgscan simple: Signal strength threshold %d  "
+-		   "Short bgscan interval %d  Long bgscan interval %d",
++		   "Short bgscan interval %d  Long bgscan interval %d Link Lost threshold secs %d",
+ 		   data->signal_threshold, data->short_interval,
+-		   data->long_interval);
++		   data->long_interval, data->link_loss_thresh_secs);
+ 
+ 	if (data->signal_threshold &&
+ 	    wpa_drv_signal_monitor(wpa_s, data->signal_threshold, 4) < 0) {
+@@ -160,6 +185,7 @@ static void * bgscan_simple_init(struct wpa_supplicant *wpa_s,
  static void bgscan_simple_deinit(void *priv)
  {
  	struct bgscan_simple_data *data = priv;
@@ -3174,7 +3477,7 @@ index 41a26df..bf9184e 100644
  	eloop_cancel_timeout(bgscan_simple_timeout, data, NULL);
  	if (data->signal_threshold)
  		wpa_drv_signal_monitor(data->wpa_s, 0, 0);
-@@ -191,8 +207,29 @@ static int bgscan_simple_notify_scan(void *priv,
+@@ -191,8 +217,29 @@ static int bgscan_simple_notify_scan(void *priv,
  
  static void bgscan_simple_notify_beacon_loss(void *priv)
  {
@@ -3184,7 +3487,7 @@ index 41a26df..bf9184e 100644
 -	/* TODO: speed up background scanning */
 +
 +	wpa_printf(MSG_DEBUG, "bgscan simple: Start Link Loss timer");
-+	eloop_register_timeout(BGSCAN_SIMPLE_LINK_LOSS_THRESH_SECS,
++	eloop_register_timeout(data->link_loss_thresh_secs,
 +				0, bgscan_simple_link_loss_timeout, data, NULL);
 +
 +	wpa_printf(MSG_DEBUG, "bgscan simple: Flush all prev bss entries");
@@ -3785,10 +4088,10 @@ index a4719db..ab3fba3 100644
  CONFIG_EAP_PEAP=y
 diff --git a/wpa_supplicant/defconfig_base b/wpa_supplicant/defconfig_base
 new file mode 100644
-index 0000000..59aeae6
+index 0000000..f34011d
 --- /dev/null
 +++ b/wpa_supplicant/defconfig_base
-@@ -0,0 +1,653 @@
+@@ -0,0 +1,654 @@
 +# Example wpa_supplicant build time configuration
 +#
 +# This file lists the configuration options that are used when building the
@@ -4408,6 +4711,7 @@ index 0000000..59aeae6
 +
 +# Device Provisioning Protocol (DPP)
 +CONFIG_DPP=y
++CONFIG_DPP2=y
 +
 +# Wired equivalent privacy (WEP)
 +# WEP is an obsolete cryptographic data confidentiality algorithm that is not
@@ -4505,23 +4809,36 @@ index 237f4e0..fa11f72 100644
 +
  #endif /* DRIVER_I_H */
 diff --git a/wpa_supplicant/events.c b/wpa_supplicant/events.c
-index f55e184..b42f758 100644
+index f55e184..9abd197 100644
 --- a/wpa_supplicant/events.c
 +++ b/wpa_supplicant/events.c
-@@ -3425,8 +3425,10 @@ static void wpa_supplicant_event_assoc(struct wpa_supplicant *wpa_s,
+@@ -3326,6 +3326,15 @@ static void wpa_supplicant_event_assoc(struct wpa_supplicant *wpa_s,
+ 				wpa_s, WLAN_REASON_DEAUTH_LEAVING);
+ 			return;
+ 		}
++
++		if (data && data->assoc_info.roam_indication) {
++			if (wpa_s->current_ssid->psk_set) {
++				wpa_hexdump_key(MSG_MSGDUMP, "reset PMK from config",
++						wpa_s->current_ssid->psk, PMK_LEN);
++				wpa_sm_set_pmk(wpa_s->wpa, wpa_s->current_ssid->psk, PMK_LEN, NULL,
++				       NULL);
++			}
++		}
+ 	}
+ 
+ 	if (!(wpa_s->drv_flags & WPA_DRIVER_FLAGS_SME) &&
+@@ -3425,7 +3434,8 @@ static void wpa_supplicant_event_assoc(struct wpa_supplicant *wpa_s,
  		wpa_supplicant_set_state(wpa_s, WPA_COMPLETED);
  		eapol_sm_notify_portValid(wpa_s->eapol, true);
  		eapol_sm_notify_eap_success(wpa_s->eapol, true);
 -	} else if ((wpa_s->drv_flags & WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X) &&
--		   wpa_key_mgmt_wpa_ieee8021x(wpa_s->key_mgmt)) {
-+	} else if (((wpa_s->drv_flags & WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X) &&
-+		     wpa_key_mgmt_wpa_ieee8021x(wpa_s->key_mgmt)) ||
-+		   ((wpa_s->drv_flags2 & WPA_DRIVER_FLAGS_ROAM_OFFLOAD) &&
-+		     wpa_key_mgmt_ft(wpa_s->key_mgmt))) {
++	} else if (((wpa_s->drv_flags & WPA_DRIVER_FLAGS_4WAY_HANDSHAKE_8021X) ||
++			(wpa_s->drv_flags2 & WPA_DRIVER_FLAGS_ROAM_OFFLOAD)) &&
+ 		   wpa_key_mgmt_wpa_ieee8021x(wpa_s->key_mgmt)) {
  		/*
  		 * The driver will take care of RSN 4-way handshake, so we need
- 		 * to allow EAPOL supplicant to complete its work without
-@@ -3567,6 +3569,12 @@ static void wpa_supplicant_event_disassoc(struct wpa_supplicant *wpa_s,
+@@ -3567,6 +3577,12 @@ static void wpa_supplicant_event_disassoc(struct wpa_supplicant *wpa_s,
  			" reason=%d%s",
  			MAC2STR(bssid), reason_code,
  			locally_generated ? " locally_generated=1" : "");
@@ -4534,7 +4851,7 @@ index f55e184..b42f758 100644
  	}
  }
  
-@@ -4158,6 +4166,25 @@ static void wpas_event_disconnect(struct wpa_supplicant *wpa_s, const u8 *addr,
+@@ -4158,6 +4174,25 @@ static void wpas_event_disconnect(struct wpa_supplicant *wpa_s, const u8 *addr,
  	}
  #endif /* CONFIG_P2P */
  
