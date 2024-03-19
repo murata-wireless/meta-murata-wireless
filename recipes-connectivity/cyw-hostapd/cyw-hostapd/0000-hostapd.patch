@@ -1,620 +1,20 @@
-diff --git a/.gitignore b/.gitignore
-new file mode 100644
-index 0000000..b064303
---- /dev/null
-+++ b/.gitignore
-@@ -0,0 +1,8 @@
-+*.pyc
-+*~
-+tests/hwsim/logs
-+tests/remote/logs
-+wpaspy/build
-+**/parallel-vm.log
-+tags
-+build/
-diff --git a/Android.mk b/Android.mk
-new file mode 100644
-index 0000000..bd7a409
---- /dev/null
-+++ b/Android.mk
-@@ -0,0 +1,10 @@
-+LOCAL_PATH:= $(call my-dir)
-+
-+ifneq ($(filter VER_0_8_X VER_2_1_DEVEL,$(WPA_SUPPLICANT_VERSION)),)
-+# The order of the 2 Android.mks does matter!
-+# TODO: Clean up the Android.mks, reset all the temporary variables at the
-+# end of each Android.mk, so that one Android.mk doesn't depend on variables
-+# set up in the other Android.mk.
-+include $(LOCAL_PATH)/hostapd/Android.mk \
-+        $(LOCAL_PATH)/wpa_supplicant/Android.mk
-+endif
-diff --git a/build_release b/build_release
-new file mode 100755
-index 0000000..3aa9bf3
---- /dev/null
-+++ b/build_release
-@@ -0,0 +1,47 @@
-+#!/bin/sh
-+
-+set -e
-+
-+if [ -z "$1" ]; then
-+    echo "build_release <version>"
-+    exit 1
-+fi
-+
-+TMP=tmp.build_release
-+RELDIR=`pwd`/Release
-+VER=$1
-+NOW=`date +%Y-%m-%d`
-+
-+echo "Version: $VER - $NOW"
-+
-+DATEw=`head -n 3 wpa_supplicant/ChangeLog | tail -n 1 | sed "s/ .*//"`
-+DATEh=`head -n 3 hostapd/ChangeLog | tail -n 1 | sed "s/ .*//"`
-+
-+if [ "$DATEw" != "$NOW" -o "$DATEh" != "$NOW" ]; then
-+    echo "NOTE! Date mismatch in ChangeLog: wpa_supplicant $DATEw hostapd $DATEh != $NOW"
-+fi
-+
-+if [ -r $TMP ]; then
-+    echo "Temporary directory '$TMP' exists. Remove it before running this."
-+    exit 1
-+fi
-+
-+mkdir $TMP
-+mkdir -p $RELDIR
-+
-+git archive --format=tar --prefix=wpa-$VER/ HEAD \
-+	README COPYING CONTRIBUTIONS src wpa_supplicant hostapd hs20 |
-+	gzip > $RELDIR/wpa-$VER.tar.gz
-+git archive --format=tar --prefix=hostapd-$VER/ HEAD \
-+	README COPYING CONTRIBUTIONS src hostapd |
-+	gzip > $RELDIR/hostapd-$VER.tar.gz
-+git archive --format=tar --prefix=wpa_supplicant-$VER/ HEAD \
-+	README COPYING CONTRIBUTIONS src wpa_supplicant hs20/client |
-+	tar --directory=$TMP -xf -
-+
-+cd $TMP
-+make -C wpa_supplicant-$VER/wpa_supplicant/doc/docbook man
-+rm -f wpa_supplicant-$VER/wpa_supplicant/doc/docbook/manpage.{links,refs}
-+tar czf $RELDIR/wpa_supplicant-$VER.tar.gz wpa_supplicant-$VER
-+cd ..
-+rm -r $TMP
-diff --git a/hostapd/Android.mk b/hostapd/Android.mk
-index bf26e41..997e9a4 100644
---- a/hostapd/Android.mk
-+++ b/hostapd/Android.mk
-@@ -264,6 +264,10 @@ NEED_HMAC_SHA256_KDF=y
- NEED_DRAGONFLY=y
- endif
+diff --git a/src/ap/ap_config.c b/src/ap/ap_config.c
+index 86b6e09..a7fd850 100644
+--- a/src/ap/ap_config.c
++++ b/src/ap/ap_config.c
+@@ -1432,6 +1432,13 @@ static int hostapd_config_check_bss(struct hostapd_bss_config *bss,
+ 	}
+ #endif /* CONFIG_FILS */
  
-+ifdef CONFIG_WPA3_SAE_AUTH_EARLY_SET
-+L_CFLAGS += -DCONFIG_WPA3_SAE_AUTH_EARLY_SET
-+endif
-+
- ifdef CONFIG_OWE
- L_CFLAGS += -DCONFIG_OWE
- NEED_ECC=y
-diff --git a/hostapd/Makefile b/hostapd/Makefile
-index e37c13b..c65a512 100644
---- a/hostapd/Makefile
-+++ b/hostapd/Makefile
-@@ -290,6 +290,10 @@ CFLAGS += -DCONFIG_ETH_P_OUI
- OBJS += ../src/ap/eth_p_oui.o
- endif
- 
-+ifdef CONFIG_WPA3_SAE_AUTH_EARLY_SET
-+CFLAGS += -DCONFIG_WPA3_SAE_AUTH_EARLY_SET
-+endif
-+
- ifdef CONFIG_SAE
- CFLAGS += -DCONFIG_SAE
- OBJS += ../src/common/sae.o
-diff --git a/hostapd/android.config b/hostapd/android.config
-index c8b3afa..3664f17 100644
---- a/hostapd/android.config
-+++ b/hostapd/android.config
-@@ -212,3 +212,6 @@ CONFIG_NO_RANDOM_POOL=y
- # release under this optional build parameter. This functionality is subject to
- # be completely removed in a future release.
- CONFIG_WEP=y
-+
-+# Set SAE Auth status early
-+CONFIG_WPA3_SAE_AUTH_EARLY_SET=y
-diff --git a/hostapd/config_file.c b/hostapd/config_file.c
-index b14728d..3864993 100644
---- a/hostapd/config_file.c
-+++ b/hostapd/config_file.c
-@@ -3671,6 +3671,8 @@ static int hostapd_config_fill(struct hostapd_config *conf,
- 		bss->max_listen_interval = atoi(pos);
- 	} else if (os_strcmp(buf, "disable_pmksa_caching") == 0) {
- 		bss->disable_pmksa_caching = atoi(pos);
-+	} else if (os_strcmp(buf, "dot11RSNAConfigPMKLifetime") == 0) {
-+		bss->dot11RSNAConfigPMKLifetime = atoi(pos);
- 	} else if (os_strcmp(buf, "okc") == 0) {
- 		bss->okc = atoi(pos);
- #ifdef CONFIG_WPS
-diff --git a/hostapd/ctrl_iface.c b/hostapd/ctrl_iface.c
-index 86adf18..ec1a2d1 100644
---- a/hostapd/ctrl_iface.c
-+++ b/hostapd/ctrl_iface.c
-@@ -3499,6 +3499,21 @@ static int hostapd_ctrl_iface_driver_cmd(struct hostapd_data *hapd, char *cmd,
- }
- #endif /* ANDROID */
- 
-+#ifdef CONFIG_DRIVER_BRCM_WL
-+static int hostapd_ctrl_iface_wl_cmd(struct hostapd_data *hapd, char *cmd,
-+					 char *buf, size_t buflen)
-+{
-+	int ret;
-+
-+	ret = hostapd_drv_wl_cmd(hapd, cmd, buf, buflen);
-+	if (ret == 0) {
-+		ret = os_snprintf(buf, buflen, "%s\n", "OK");
-+		if (os_snprintf_error(buflen, ret))
-+			ret = -1;
++	if (full_config && (bss->ieee80211w == 2) &&
++	    (bss->wpa_key_mgmt == (WPA_KEY_MGMT_PSK_SHA256 | WPA_KEY_MGMT_PSK))) {
++		wpa_printf(MSG_ERROR,
++			   "Cannot set ieee80211w=2 along with with the selected wpa_key_mgmt");
++		return -1;
 +	}
-+	return ret;
-+}
-+#endif /* CONFIG_DRIVER_BRCM_WL */
- 
- static int hostapd_ctrl_iface_receive_process(struct hostapd_data *hapd,
- 					      char *buf, char *reply,
-@@ -4016,6 +4031,11 @@ static int hostapd_ctrl_iface_receive_process(struct hostapd_data *hapd,
- 		reply_len = hostapd_ctrl_iface_driver_cmd(hapd, buf + 7, reply,
- 							  reply_size);
- #endif /* ANDROID */
-+#ifdef CONFIG_DRIVER_BRCM_WL
-+	} else if (os_strncmp(buf, "WL ", 3) == 0) {
-+		reply_len = hostapd_ctrl_iface_wl_cmd(hapd, buf + 3, reply,
-+							  reply_size);
-+#endif /* CONFIG_DRIVER_BRCM_WL */
- 	} else {
- 		os_memcpy(reply, "UNKNOWN COMMAND\n", 16);
- 		reply_len = 16;
-diff --git a/hostapd/defconfig_base b/hostapd/defconfig_base
-new file mode 100644
-index 0000000..16e8c64
---- /dev/null
-+++ b/hostapd/defconfig_base
-@@ -0,0 +1,408 @@
-+# Example hostapd build time configuration
-+#
-+# This file lists the configuration options that are used when building the
-+# hostapd binary. All lines starting with # are ignored. Configuration option
-+# lines must be commented out complete, if they are not to be included, i.e.,
-+# just setting VARIABLE=n is not disabling that variable.
-+#
-+# This file is included in Makefile, so variables like CFLAGS and LIBS can also
-+# be modified from here. In most cass, these lines should use += in order not
-+# to override previous values of the variables.
 +
-+# Driver interface for Host AP driver
-+CONFIG_DRIVER_HOSTAP=y
-+
-+# Driver interface for wired authenticator
-+#CONFIG_DRIVER_WIRED=y
-+
-+# Driver interface for drivers using the nl80211 kernel interface
-+CONFIG_DRIVER_NL80211=y
-+
-+# QCA vendor extensions to nl80211
-+#CONFIG_DRIVER_NL80211_QCA=y
-+
-+CONFIG_DRIVER_BRCM_WL=y
-+
-+# driver_nl80211.c requires libnl. If you are compiling it yourself
-+# you may need to point hostapd to your version of libnl.
-+#
-+#CFLAGS += -I$<path to libnl include files>
-+#LIBS += -L$<path to libnl library files>
-+
-+# Use libnl v2.0 (or 3.0) libraries.
-+#CONFIG_LIBNL20=y
-+
-+# Use libnl 3.2 libraries (if this is selected, CONFIG_LIBNL20 is ignored)
-+CONFIG_LIBNL32=y
-+
-+
-+# Driver interface for FreeBSD net80211 layer (e.g., Atheros driver)
-+#CONFIG_DRIVER_BSD=y
-+#CFLAGS += -I/usr/local/include
-+#LIBS += -L/usr/local/lib
-+#LIBS_p += -L/usr/local/lib
-+#LIBS_c += -L/usr/local/lib
-+
-+# Driver interface for no driver (e.g., RADIUS server only)
-+#CONFIG_DRIVER_NONE=y
-+
-+# WPA2/IEEE 802.11i RSN pre-authentication
-+CONFIG_RSN_PREAUTH=y
-+
-+# Support Operating Channel Validation
-+#CONFIG_OCV=y
-+
-+# Integrated EAP server
-+CONFIG_EAP=y
-+
-+# EAP Re-authentication Protocol (ERP) in integrated EAP server
-+CONFIG_ERP=y
-+
-+# EAP-MD5 for the integrated EAP server
-+CONFIG_EAP_MD5=y
-+
-+# EAP-TLS for the integrated EAP server
-+CONFIG_EAP_TLS=y
-+
-+# EAP-MSCHAPv2 for the integrated EAP server
-+CONFIG_EAP_MSCHAPV2=y
-+
-+# EAP-PEAP for the integrated EAP server
-+CONFIG_EAP_PEAP=y
-+
-+# EAP-GTC for the integrated EAP server
-+CONFIG_EAP_GTC=y
-+
-+# EAP-TTLS for the integrated EAP server
-+CONFIG_EAP_TTLS=y
-+
-+# EAP-SIM for the integrated EAP server
-+#CONFIG_EAP_SIM=y
-+
-+# EAP-AKA for the integrated EAP server
-+#CONFIG_EAP_AKA=y
-+
-+# EAP-AKA' for the integrated EAP server
-+# This requires CONFIG_EAP_AKA to be enabled, too.
-+#CONFIG_EAP_AKA_PRIME=y
-+
-+# EAP-PAX for the integrated EAP server
-+#CONFIG_EAP_PAX=y
-+
-+# EAP-PSK for the integrated EAP server (this is _not_ needed for WPA-PSK)
-+#CONFIG_EAP_PSK=y
-+
-+# EAP-pwd for the integrated EAP server (secure authentication with a password)
-+#CONFIG_EAP_PWD=y
-+
-+# EAP-SAKE for the integrated EAP server
-+#CONFIG_EAP_SAKE=y
-+
-+# EAP-GPSK for the integrated EAP server
-+#CONFIG_EAP_GPSK=y
-+# Include support for optional SHA256 cipher suite in EAP-GPSK
-+#CONFIG_EAP_GPSK_SHA256=y
-+
-+# EAP-FAST for the integrated EAP server
-+#CONFIG_EAP_FAST=y
-+
-+# EAP-TEAP for the integrated EAP server
-+# Note: The current EAP-TEAP implementation is experimental and should not be
-+# enabled for production use. The IETF RFC 7170 that defines EAP-TEAP has number
-+# of conflicting statements and missing details and the implementation has
-+# vendor specific workarounds for those and as such, may not interoperate with
-+# any other implementation. This should not be used for anything else than
-+# experimentation and interoperability testing until those issues has been
-+# resolved.
-+#CONFIG_EAP_TEAP=y
-+
-+# Wi-Fi Protected Setup (WPS)
-+CONFIG_WPS=y
-+# Enable UPnP support for external WPS Registrars
-+#CONFIG_WPS_UPNP=y
-+# Enable WPS support with NFC config method
-+#CONFIG_WPS_NFC=y
-+
-+# EAP-IKEv2
-+#CONFIG_EAP_IKEV2=y
-+
-+# Trusted Network Connect (EAP-TNC)
-+#CONFIG_EAP_TNC=y
-+
-+# EAP-EKE for the integrated EAP server
-+#CONFIG_EAP_EKE=y
-+
-+# PKCS#12 (PFX) support (used to read private key and certificate file from
-+# a file that usually has extension .p12 or .pfx)
-+CONFIG_PKCS12=y
-+
-+# RADIUS authentication server. This provides access to the integrated EAP
-+# server from external hosts using RADIUS.
-+#CONFIG_RADIUS_SERVER=y
-+
-+# Build IPv6 support for RADIUS operations
-+CONFIG_IPV6=y
-+
-+# IEEE Std 802.11r-2008 (Fast BSS Transition)
-+CONFIG_IEEE80211R=y
-+
-+# Use the hostapd's IEEE 802.11 authentication (ACL), but without
-+# the IEEE 802.11 Management capability (e.g., FreeBSD/net80211)
-+#CONFIG_DRIVER_RADIUS_ACL=y
-+
-+# Wireless Network Management (IEEE Std 802.11v-2011)
-+# Note: This is experimental and not complete implementation.
-+#CONFIG_WNM=y
-+
-+# IEEE 802.11ac (Very High Throughput) support
-+CONFIG_IEEE80211AC=y
-+
-+# IEEE 802.11ax HE support
-+# Note: This is experimental and work in progress. The definitions are still
-+# subject to change and this should not be expected to interoperate with the
-+# final IEEE 802.11ax version.
-+CONFIG_IEEE80211AX=y
-+
-+# Remove debugging code that is printing out debug messages to stdout.
-+# This can be used to reduce the size of the hostapd considerably if debugging
-+# code is not needed.
-+#CONFIG_NO_STDOUT_DEBUG=y
-+
-+# Add support for writing debug log to a file: -f /tmp/hostapd.log
-+# Disabled by default.
-+CONFIG_DEBUG_FILE=y
-+
-+# Send debug messages to syslog instead of stdout
-+#CONFIG_DEBUG_SYSLOG=y
-+
-+# Add support for sending all debug messages (regardless of debug verbosity)
-+# to the Linux kernel tracing facility. This helps debug the entire stack by
-+# making it easy to record everything happening from the driver up into the
-+# same file, e.g., using trace-cmd.
-+#CONFIG_DEBUG_LINUX_TRACING=y
-+
-+# Remove support for RADIUS accounting
-+#CONFIG_NO_ACCOUNTING=y
-+
-+# Remove support for RADIUS
-+#CONFIG_NO_RADIUS=y
-+
-+# Remove support for VLANs
-+#CONFIG_NO_VLAN=y
-+
-+# Enable support for fully dynamic VLANs. This enables hostapd to
-+# automatically create bridge and VLAN interfaces if necessary.
-+#CONFIG_FULL_DYNAMIC_VLAN=y
-+
-+# Use netlink-based kernel API for VLAN operations instead of ioctl()
-+# Note: This requires libnl 3.1 or newer.
-+#CONFIG_VLAN_NETLINK=y
-+
-+# Remove support for dumping internal state through control interface commands
-+# This can be used to reduce binary size at the cost of disabling a debugging
-+# option.
-+#CONFIG_NO_DUMP_STATE=y
-+
-+# Enable tracing code for developer debugging
-+# This tracks use of memory allocations and other registrations and reports
-+# incorrect use with a backtrace of call (or allocation) location.
-+#CONFIG_WPA_TRACE=y
-+# For BSD, comment out these.
-+#LIBS += -lexecinfo
-+#LIBS_p += -lexecinfo
-+#LIBS_c += -lexecinfo
-+
-+# Use libbfd to get more details for developer debugging
-+# This enables use of libbfd to get more detailed symbols for the backtraces
-+# generated by CONFIG_WPA_TRACE=y.
-+#CONFIG_WPA_TRACE_BFD=y
-+# For BSD, comment out these.
-+#LIBS += -lbfd -liberty -lz
-+#LIBS_p += -lbfd -liberty -lz
-+#LIBS_c += -lbfd -liberty -lz
-+
-+# hostapd depends on strong random number generation being available from the
-+# operating system. os_get_random() function is used to fetch random data when
-+# needed, e.g., for key generation. On Linux and BSD systems, this works by
-+# reading /dev/urandom. It should be noted that the OS entropy pool needs to be
-+# properly initialized before hostapd is started. This is important especially
-+# on embedded devices that do not have a hardware random number generator and
-+# may by default start up with minimal entropy available for random number
-+# generation.
-+#
-+# As a safety net, hostapd is by default trying to internally collect
-+# additional entropy for generating random data to mix in with the data
-+# fetched from the OS. This by itself is not considered to be very strong, but
-+# it may help in cases where the system pool is not initialized properly.
-+# However, it is very strongly recommended that the system pool is initialized
-+# with enough entropy either by using hardware assisted random number
-+# generator or by storing state over device reboots.
-+#
-+# hostapd can be configured to maintain its own entropy store over restarts to
-+# enhance random number generation. This is not perfect, but it is much more
-+# secure than using the same sequence of random numbers after every reboot.
-+# This can be enabled with -e<entropy file> command line option. The specified
-+# file needs to be readable and writable by hostapd.
-+#
-+# If the os_get_random() is known to provide strong random data (e.g., on
-+# Linux/BSD, the board in question is known to have reliable source of random
-+# data from /dev/urandom), the internal hostapd random pool can be disabled.
-+# This will save some in binary size and CPU use. However, this should only be
-+# considered for builds that are known to be used on devices that meet the
-+# requirements described above.
-+#CONFIG_NO_RANDOM_POOL=y
-+
-+# Should we attempt to use the getrandom(2) call that provides more reliable
-+# yet secure randomness source than /dev/random on Linux 3.17 and newer.
-+# Requires glibc 2.25 to build, falls back to /dev/random if unavailable.
-+#CONFIG_GETRANDOM=y
-+
-+# Should we use poll instead of select? Select is used by default.
-+#CONFIG_ELOOP_POLL=y
-+
-+# Should we use epoll instead of select? Select is used by default.
-+#CONFIG_ELOOP_EPOLL=y
-+
-+# Should we use kqueue instead of select? Select is used by default.
-+#CONFIG_ELOOP_KQUEUE=y
-+
-+# Select TLS implementation
-+# openssl = OpenSSL (default)
-+# gnutls = GnuTLS
-+# internal = Internal TLSv1 implementation (experimental)
-+# linux = Linux kernel AF_ALG and internal TLSv1 implementation (experimental)
-+# none = Empty template
-+CONFIG_TLS=openssl
-+CONFIG_TLS_ADD_DL=y
-+
-+# TLS-based EAP methods require at least TLS v1.0. Newer version of TLS (v1.1)
-+# can be enabled to get a stronger construction of messages when block ciphers
-+# are used.
-+#CONFIG_TLSV11=y
-+
-+# TLS-based EAP methods require at least TLS v1.0. Newer version of TLS (v1.2)
-+# can be enabled to enable use of stronger crypto algorithms.
-+#CONFIG_TLSV12=y
-+
-+# Select which ciphers to use by default with OpenSSL if the user does not
-+# specify them.
-+#CONFIG_TLS_DEFAULT_CIPHERS="DEFAULT:!EXP:!LOW"
-+
-+# If CONFIG_TLS=internal is used, additional library and include paths are
-+# needed for LibTomMath. Alternatively, an integrated, minimal version of
-+# LibTomMath can be used. See beginning of libtommath.c for details on benefits
-+# and drawbacks of this option.
-+#CONFIG_INTERNAL_LIBTOMMATH=y
-+#ifndef CONFIG_INTERNAL_LIBTOMMATH
-+#LTM_PATH=/usr/src/libtommath-0.39
-+#CFLAGS += -I$(LTM_PATH)
-+#LIBS += -L$(LTM_PATH)
-+#LIBS_p += -L$(LTM_PATH)
-+#endif
-+# At the cost of about 4 kB of additional binary size, the internal LibTomMath
-+# can be configured to include faster routines for exptmod, sqr, and div to
-+# speed up DH and RSA calculation considerably
-+#CONFIG_INTERNAL_LIBTOMMATH_FAST=y
-+
-+# Interworking (IEEE 802.11u)
-+# This can be used to enable functionality to improve interworking with
-+# external networks.
-+CONFIG_INTERWORKING=y
-+
-+# Hotspot 2.0
-+#CONFIG_HS20=y
-+
-+# Enable SQLite database support in hlr_auc_gw, EAP-SIM DB, and eap_user_file
-+#CONFIG_SQLITE=y
-+
-+# Enable Fast Session Transfer (FST)
-+#CONFIG_FST=y
-+
-+# Enable CLI commands for FST testing
-+#CONFIG_FST_TEST=y
-+
-+# Testing options
-+# This can be used to enable some testing options (see also the example
-+# configuration file) that are really useful only for testing clients that
-+# connect to this hostapd. These options allow, for example, to drop a
-+# certain percentage of probe requests or auth/(re)assoc frames.
-+CONFIG_TESTING_OPTIONS=y
-+
-+# Automatic Channel Selection
-+# This will allow hostapd to pick the channel automatically when channel is set
-+# to "acs_survey" or "0". Eventually, other ACS algorithms can be added in
-+# similar way.
-+#
-+# Automatic selection is currently only done through initialization, later on
-+# we hope to do background checks to keep us moving to more ideal channels as
-+# time goes by. ACS is currently only supported through the nl80211 driver and
-+# your driver must have survey dump capability that is filled by the driver
-+# during scanning.
-+#
-+# You can customize the ACS survey algorithm with the hostapd.conf variable
-+# acs_num_scans.
-+#
-+# Supported ACS drivers:
-+# * ath9k
-+# * ath5k
-+# * ath10k
-+#
-+# For more details refer to:
-+# http://wireless.kernel.org/en/users/Documentation/acs
-+#
-+#CONFIG_ACS=y
-+
-+# Multiband Operation support
-+# These extensions facilitate efficient use of multiple frequency bands
-+# available to the AP and the devices that may associate with it.
-+#CONFIG_MBO=y
-+
-+# Client Taxonomy
-+# Has the AP retain the Probe Request and (Re)Association Request frames from
-+# a client, from which a signature can be produced which can identify the model
-+# of client device like "Nexus 6P" or "iPhone 5s".
-+#CONFIG_TAXONOMY=y
-+
-+# Fast Initial Link Setup (FILS) (IEEE 802.11ai)
-+#CONFIG_FILS=y
-+# FILS shared key authentication with PFS
-+#CONFIG_FILS_SK_PFS=y
-+
-+# Include internal line edit mode in hostapd_cli. This can be used to provide
-+# limited command line editing and history support.
-+CONFIG_WPA_CLI_EDIT=y
-+
-+# Opportunistic Wireless Encryption (OWE)
-+# Experimental implementation of draft-harkins-owe-07.txt
-+#CONFIG_OWE=y
-+
-+# Airtime policy support
-+#CONFIG_AIRTIME_POLICY=y
-+
-+# Override default value for the wpa_disable_eapol_key_retries configuration
-+# parameter. See that parameter in hostapd.conf for more details.
-+#CFLAGS += -DDEFAULT_WPA_DISABLE_EAPOL_KEY_RETRIES=1
-+
-+# Wired equivalent privacy (WEP)
-+# WEP is an obsolete cryptographic data confidentiality algorithm that is not
-+# considered secure. It should not be used for anything anymore. The
-+# functionality needed to use WEP is available in the current hostapd
-+# release under this optional build parameter. This functionality is subject to
-+# be completely removed in a future release.
-+#CONFIG_WEP=y
-+
-+# Remove all TKIP functionality
-+# TKIP is an old cryptographic data confidentiality algorithm that is not
-+# considered secure. It should not be used anymore. For now, the default hostapd
-+# build includes this to allow mixed mode WPA+WPA2 networks to be enabled, but
-+# that functionality is subject to be removed in the future.
-+#CONFIG_NO_TKIP=y
-+
-+# Simultaneous Authentication of Equals (SAE), WPA3-Personal
-+CONFIG_SAE=y
-+
-+# Set SAE Auth status early
-+CONFIG_WPA3_SAE_AUTH_EARLY_SET=y
-+
-+# Device Provisioning Protocol (DPP)
-+CONFIG_DPP=y
-diff --git a/hostapd/hostapd_cli.c b/hostapd/hostapd_cli.c
-index 2609121..9ab2342 100644
---- a/hostapd/hostapd_cli.c
-+++ b/hostapd/hostapd_cli.c
-@@ -1549,6 +1549,13 @@ static int hostapd_cli_cmd_driver(struct wpa_ctrl *ctrl, int argc, char *argv[])
- #endif /* ANDROID */
- 
- 
-+#ifdef CONFIG_DRIVER_BRCM_WL
-+static int hostapd_cli_cmd_wl(struct wpa_ctrl *ctrl, int argc, char *argv[])
-+{
-+	return hostapd_cli_cmd(ctrl, "WL", 1, argc, argv);
-+}
-+#endif /* CONFIG_DRIVER_BRCM_WL */
-+
- struct hostapd_cli_cmd {
- 	const char *cmd;
- 	int (*handler)(struct wpa_ctrl *ctrl, int argc, char *argv[]);
-@@ -1744,6 +1751,10 @@ static const struct hostapd_cli_cmd hostapd_cli_commands[] = {
- 	{ "driver", hostapd_cli_cmd_driver, NULL,
- 	  "<driver sub command> [<hex formatted data>] = send driver command data" },
- #endif /* ANDROID */
-+#ifdef CONFIG_DRIVER_BRCM_WL
-+	{ "wl", hostapd_cli_cmd_wl, NULL,
-+	  "<driver sub command> [<hex formatted data>] = send brcm wl command data" },
-+#endif /* CONFIG_DRIVER_BRCM_WL */
- 	{ NULL, NULL, NULL, NULL }
- };
+ 	return 0;
+ }
  
 diff --git a/src/ap/ap_config.h b/src/ap/ap_config.h
 index 49cd316..a82ca18 100644
@@ -682,6 +82,97 @@ index 8cd1c41..e2d7c69 100644
  	return 0;
  }
  
+diff --git a/src/ap/drv_callbacks.c b/src/ap/drv_callbacks.c
+index a50e6f2..989ba73 100644
+--- a/src/ap/drv_callbacks.c
++++ b/src/ap/drv_callbacks.c
+@@ -648,13 +648,12 @@ skip_wpa_check:
+ #endif /* CONFIG_OWE */
+ 
+ #ifdef CONFIG_DPP2
+-		dpp_pfs_free(sta->dpp_pfs);
+-		sta->dpp_pfs = NULL;
++	if ((hapd->conf->wpa_key_mgmt & WPA_KEY_MGMT_DPP) &&
++	    hapd->conf->dpp_netaccesskey && sta->wpa_sm &&
++	    wpa_auth_sta_key_mgmt(sta->wpa_sm) == WPA_KEY_MGMT_DPP &&
++	    elems.owe_dh) {
+ 
+-		if ((hapd->conf->wpa_key_mgmt & WPA_KEY_MGMT_DPP) &&
+-		    hapd->conf->dpp_netaccesskey && sta->wpa_sm &&
+-		    wpa_auth_sta_key_mgmt(sta->wpa_sm) == WPA_KEY_MGMT_DPP &&
+-		    elems.owe_dh) {
++		if (!sta->dpp_pfs) {
+ 			sta->dpp_pfs = dpp_pfs_init(
+ 				wpabuf_head(hapd->conf->dpp_netaccesskey),
+ 				wpabuf_len(hapd->conf->dpp_netaccesskey));
+@@ -664,19 +663,20 @@ skip_wpa_check:
+ 				/* Try to continue without PFS */
+ 				goto pfs_fail;
+ 			}
++		}
+ 
+-			if (dpp_pfs_process(sta->dpp_pfs, elems.owe_dh,
+-					    elems.owe_dh_len) < 0) {
+-				dpp_pfs_free(sta->dpp_pfs);
+-				sta->dpp_pfs = NULL;
+-				reason = WLAN_REASON_UNSPECIFIED;
+-				goto fail;
+-			}
++		if (dpp_pfs_process(sta->dpp_pfs, elems.owe_dh,
++				    elems.owe_dh_len) < 0) {
++			dpp_pfs_free(sta->dpp_pfs);
++			sta->dpp_pfs = NULL;
++			reason = WLAN_REASON_UNSPECIFIED;
++			goto fail;
+ 		}
++	}
+ 
+-		wpa_auth_set_dpp_z(sta->wpa_sm, sta->dpp_pfs ?
+-				   sta->dpp_pfs->secret : NULL);
+-	pfs_fail:
++	wpa_auth_set_dpp_z(sta->wpa_sm, sta->dpp_pfs ?
++		sta->dpp_pfs->secret : NULL);
++pfs_fail:
+ #endif /* CONFIG_DPP2 */
+ 
+ 	if (elems.rrm_enabled &&
+@@ -1792,8 +1792,9 @@ static int hostapd_notif_update_dh_ie(struct hostapd_data *hapd,
+ 		wpa_printf(MSG_DEBUG, "OWE: Peer unknown");
+ 		return -1;
+ 	}
+-	if (!(hapd->conf->wpa_key_mgmt & WPA_KEY_MGMT_OWE)) {
+-		wpa_printf(MSG_DEBUG, "OWE: No OWE AKM configured");
++	if (!(hapd->conf->wpa_key_mgmt & WPA_KEY_MGMT_OWE) &&
++		!(hapd->conf->wpa_key_mgmt & WPA_KEY_MGMT_DPP)) {
++		wpa_printf(MSG_DEBUG, "OWE/DPP: No OWE/DPP AKM configured");
+ 		status = WLAN_STATUS_AKMP_NOT_VALID;
+ 		goto err;
+ 	}
+@@ -1828,9 +1829,21 @@ static int hostapd_notif_update_dh_ie(struct hostapd_data *hapd,
+ 	}
+ 	sta->flags &= ~(WLAN_STA_WPS | WLAN_STA_MAYBE_WPS | WLAN_STA_WPS2);
+ 
+-	status = owe_process_rsn_ie(hapd, sta, elems.rsn_ie,
+-				    elems.rsn_ie_len, elems.owe_dh,
+-				    elems.owe_dh_len);
++#ifdef CONFIG_DPP2
++	if (hapd->conf->wpa_key_mgmt & WPA_KEY_MGMT_DPP) {
++		if (hapd->conf->dpp_netaccesskey && elems.owe_dh)
++			status = dpp_process_rsn_ie(hapd, sta, elems.rsn_ie,
++					    elems.rsn_ie_len, elems.owe_dh,
++					    elems.owe_dh_len);
++		else
++			status = WLAN_STATUS_UNSPECIFIED_FAILURE;
++	} else
++#endif /* CONFIG_DPP2 */
++	{
++		status = owe_process_rsn_ie(hapd, sta, elems.rsn_ie,
++					    elems.rsn_ie_len, elems.owe_dh,
++					    elems.owe_dh_len);
++	}
+ 	if (status != WLAN_STATUS_SUCCESS)
+ 		ap_free_sta(hapd, sta);
+ 
 diff --git a/src/ap/hostapd.c b/src/ap/hostapd.c
 index 4b88641..464d8fa 100644
 --- a/src/ap/hostapd.c
@@ -709,7 +200,7 @@ index 4b88641..464d8fa 100644
  		    sta->auth_alg != WLAN_AUTH_FILS_SK_PFS &&
  		    sta->auth_alg != WLAN_AUTH_FILS_PK &&
 diff --git a/src/ap/ieee802_11.c b/src/ap/ieee802_11.c
-index db41049..c4f7d00 100644
+index db41049..5648153 100644
 --- a/src/ap/ieee802_11.c
 +++ b/src/ap/ieee802_11.c
 @@ -87,6 +87,10 @@ static void handle_auth(struct hostapd_data *hapd,
@@ -748,6 +239,105 @@ index db41049..c4f7d00 100644
  }
  
  
+@@ -4336,9 +4348,10 @@ u16 owe_validate_request(struct hostapd_data *hapd, const u8 *peer,
+ 		wpa_hexdump(MSG_DEBUG, "RSNE", rsn_ie, rsn_ie_len);
+ 		return wpa_res_to_status_code(res);
+ 	}
+-	if (!(data.key_mgmt & WPA_KEY_MGMT_OWE)) {
++	if (!(data.key_mgmt & WPA_KEY_MGMT_OWE) &&
++		!(data.key_mgmt & WPA_KEY_MGMT_DPP)) {
+ 		wpa_printf(MSG_DEBUG,
+-			   "OWE: Unexpected key mgmt 0x%x from " MACSTR,
++			   "OWE/DPP: Unexpected key mgmt 0x%x from " MACSTR,
+ 			   (unsigned int) data.key_mgmt, MAC2STR(peer));
+ 		return WLAN_STATUS_AKMP_NOT_VALID;
+ 	}
+@@ -4432,6 +4445,71 @@ end:
+ 
+ #endif /* CONFIG_OWE */
+ 
++#ifdef CONFIG_DPP2
++u16 dpp_process_rsn_ie(struct hostapd_data *hapd,
++		       struct sta_info *sta,
++		       const u8 *rsn_ie, size_t rsn_ie_len,
++		       const u8 *owe_dh, size_t owe_dh_len)
++{
++	u16 status = WLAN_STATUS_SUCCESS;
++	u8 *owe_buf, ie[256 * 2];
++	size_t ie_len = 0;
++	enum wpa_validate_result res;
++
++	if (!rsn_ie || rsn_ie_len < 2) {
++		wpa_printf(MSG_DEBUG, "DPP: No RSNE in (Re)AssocReq");
++		status = WLAN_STATUS_INVALID_IE;
++		goto end;
++	}
++
++	if (!sta->wpa_sm)
++		sta->wpa_sm = wpa_auth_sta_init(hapd->wpa_auth,	sta->addr,
++						NULL);
++	if (!sta->wpa_sm) {
++		wpa_printf(MSG_WARNING,
++			   "DPP: Failed to initialize WPA state machine");
++		status = WLAN_STATUS_UNSPECIFIED_FAILURE;
++		goto end;
++	}
++	rsn_ie -= 2;
++	rsn_ie_len += 2;
++	res = wpa_validate_wpa_ie(hapd->wpa_auth, sta->wpa_sm,
++				  hapd->iface->freq, rsn_ie, rsn_ie_len,
++				  NULL, 0, NULL, 0, owe_dh, owe_dh_len);
++	status = wpa_res_to_status_code(res);
++	if (status != WLAN_STATUS_SUCCESS)
++		goto end;
++
++	owe_buf = wpa_auth_write_assoc_resp_owe(sta->wpa_sm, ie, sizeof(ie),
++						NULL, 0);
++	if (!owe_buf) {
++		status = WLAN_STATUS_UNSPECIFIED_FAILURE;
++		goto end;
++	}
++
++	dpp_pfs_free(sta->dpp_pfs);
++	sta->dpp_pfs = NULL;
++	sta->dpp_pfs = dpp_pfs_init(
++		wpabuf_head(hapd->conf->dpp_netaccesskey),
++		wpabuf_len(hapd->conf->dpp_netaccesskey));
++
++	if (!sta->dpp_pfs) {
++		wpa_printf(MSG_DEBUG, "DPP: Could not initialize PFS");
++		status = WLAN_STATUS_UNSPECIFIED_FAILURE;
++	} else {
++		os_memcpy(owe_buf, wpabuf_head(sta->dpp_pfs->ie), wpabuf_len(sta->dpp_pfs->ie));
++		ie_len = owe_buf - ie + wpabuf_len(sta->dpp_pfs->ie);
++	}
++end:
++	wpa_printf(MSG_DEBUG, "DPP: Update status %d, ie len %d for peer "
++			      MACSTR, status, (unsigned int) ie_len,
++			      MAC2STR(sta->addr));
++	hostapd_drv_update_dh_ie(hapd, sta->addr, status,
++				 status == WLAN_STATUS_SUCCESS ? ie : NULL,
++				 ie_len);
++	return status;
++}
++#endif /* CONFIG_DPP2 */
+ 
+ static bool check_sa_query(struct hostapd_data *hapd, struct sta_info *sta,
+ 			   int reassoc)
+diff --git a/src/ap/ieee802_11.h b/src/ap/ieee802_11.h
+index c59ad5e..3042b6b 100644
+--- a/src/ap/ieee802_11.h
++++ b/src/ap/ieee802_11.h
+@@ -171,6 +171,9 @@ u8 * owe_assoc_req_process(struct hostapd_data *hapd, struct sta_info *sta,
+ u16 owe_process_rsn_ie(struct hostapd_data *hapd, struct sta_info *sta,
+ 		       const u8 *rsn_ie, size_t rsn_ie_len,
+ 		       const u8 *owe_dh, size_t owe_dh_len);
++u16 dpp_process_rsn_ie(struct hostapd_data *hapd, struct sta_info *sta,
++		       const u8 *rsn_ie, size_t rsn_ie_len,
++		       const u8 *owe_dh, size_t owe_dh_len);
+ u16 owe_validate_request(struct hostapd_data *hapd, const u8 *peer,
+ 			 const u8 *rsn_ie, size_t rsn_ie_len,
+ 			 const u8 *owe_dh, size_t owe_dh_len);
 diff --git a/src/ap/pmksa_cache_auth.c b/src/ap/pmksa_cache_auth.c
 index b67b852..5084dfa 100644
 --- a/src/ap/pmksa_cache_auth.c
@@ -1578,7 +1168,7 @@ index c9e00b3..9e5b48a 100644
  
  	for (res = SSL_CTX_set_current_cert(ssl_ctx, SSL_CERT_SET_FIRST);
 diff --git a/src/drivers/driver.h b/src/drivers/driver.h
-index d3312a3..d75abbd 100644
+index d3312a3..9ebb4b0 100644
 --- a/src/drivers/driver.h
 +++ b/src/drivers/driver.h
 @@ -26,6 +26,9 @@
@@ -1823,6 +1413,19 @@ index d3312a3..d75abbd 100644
  };
  
  /**
+@@ -5380,6 +5546,12 @@ union wpa_event_data {
+ 		 * fils_pmkid - PMKID used or generated in FILS authentication
+ 		 */
+ 		const u8 *fils_pmkid;
++
++		/**
++		 * roam_indication - Indicate it's a roam event
++		 */
++		bool roam_indication;
++
+ 	} assoc_info;
+ 
+ 	/**
 diff --git a/src/drivers/driver_brcm_nl80211.h b/src/drivers/driver_brcm_nl80211.h
 new file mode 100644
 index 0000000..40a84d1
@@ -3185,7 +2788,7 @@ index 83868b7..21b9c03 100644
  
  			wpa_printf(MSG_DEBUG, "nl80211: Supported vendor command: vendor_id=0x%x subcmd=%u",
 diff --git a/src/drivers/driver_nl80211_event.c b/src/drivers/driver_nl80211_event.c
-index 0f0a01d..d3cb8d8 100644
+index 0f0a01d..6ff7479 100644
 --- a/src/drivers/driver_nl80211_event.c
 +++ b/src/drivers/driver_nl80211_event.c
 @@ -172,6 +172,11 @@ static const char * nl80211_command_to_string(enum nl80211_commands cmd)
@@ -3200,7 +2803,15 @@ index 0f0a01d..d3cb8d8 100644
  	C2S(__NL80211_CMD_AFTER_LAST)
  	}
  #undef C2S
-@@ -557,7 +562,7 @@ static void mlme_event_connect(struct wpa_driver_nl80211_data *drv,
+@@ -537,6 +542,7 @@ static void mlme_event_connect(struct wpa_driver_nl80211_data *drv,
+ 					   wpa_ssid_txt(drv->ssid,
+ 							drv->ssid_len));
+ 			}
++			event.assoc_info.roam_indication = 1;
+ 		}
+ 	}
+ 	if (resp_ie) {
+@@ -557,7 +563,7 @@ static void mlme_event_connect(struct wpa_driver_nl80211_data *drv,
  			   wpa_ssid_txt(drv->ssid, drv->ssid_len));
  	}
  
@@ -3209,7 +2820,7 @@ index 0f0a01d..d3cb8d8 100644
  		event.assoc_info.authorized = 1;
  		wpa_printf(MSG_DEBUG, "nl80211: connection authorized");
  	}
-@@ -2988,7 +2993,8 @@ static void do_process_drv_event(struct i802_bss *bss, int cmd,
+@@ -2988,7 +2994,8 @@ static void do_process_drv_event(struct i802_bss *bss, int cmd,
  				   tb[NL80211_ATTR_RESP_IE],
  				   tb[NL80211_ATTR_TIMED_OUT],
  				   tb[NL80211_ATTR_TIMEOUT_REASON],

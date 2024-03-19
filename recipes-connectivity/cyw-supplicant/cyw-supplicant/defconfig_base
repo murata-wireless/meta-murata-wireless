@@ -617,6 +617,7 @@ CONFIG_OWE=y
 
 # Device Provisioning Protocol (DPP)
 CONFIG_DPP=y
+CONFIG_DPP2=y
 
 # Wired equivalent privacy (WEP)
 # WEP is an obsolete cryptographic data confidentiality algorithm that is not
