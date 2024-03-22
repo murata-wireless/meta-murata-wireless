@@ -116,12 +116,11 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW4350C0.1BB.hcd ${D}/lib/firmware/brcm/BCM4350C0.1BB.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4356A2_001.003.015.0112.0410.1CX.hcd ${D}/lib/firmware/brcm/BCM4356A2_001.003.015.0112.0410.1CX.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd ${D}/lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd
-    install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}/lib/firmware/brcm/BCM4373A0.2AE.hcd
-    install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}/lib/firmware/brcm/BCM4373A0.2BC.hcd
+    install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4373A0_001.001.025.0103.0155.FCC.CE.2AE.hcd ${D}/lib/firmware/brcm/BCM4373A0.2AE.hcd
+    install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4373A0_001.001.025.0103.0155.FCC.CE.2AE.hcd ${D}/lib/firmware/brcm/BCM4373A0.2BC.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}/lib/firmware/brcm/CYW4343A2_001.003.016.0031.0000.1YN.hcd
-    install -m 444 ${WORKDIR}/CYW55560A1_001.002.087.0108.0000.sLNA.hcd ${D}/lib/firmware/brcm/CYW55560A1_001.002.087.0108.0000.sLNA.hcd
-    install -m 444 ${WORKDIR}/CYW55560A1_001.002.087.0159.0010.hcd ${D}/lib/firmware/brcm/CYW55560A1_001.002.087.0159.0010.hcd
-    install -m 444 ${WORKDIR}/CYW55560A1_001.002.087.0159.0010.hcd ${D}/lib/firmware/brcm/BCM.hcd
+    install -m 444 ${WORKDIR}/CYW55560A1_001.002.087.0159.0010_wlcsp_iPA_sLNA_ANT0_Murata_Type2EA_FCC_max.hcd ${D}/lib/firmware/brcm/CYW55560A1_001.002.087.0159.0010_wlcsp_iPA_sLNA_ANT0_Murata_Type2EA_FCC_max.hcd
+    install -m 444 ${WORKDIR}/CYW55560A1_001.002.087.0159.0010_wlcsp_iPA_sLNA_ANT0_Murata_Type2EA_FCC_max.hcd ${D}/lib/firmware/brcm/BCM.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}/lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}/lib/firmware/brcm/
 
@@ -135,17 +134,16 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4356A2_001.003.015.0112.0410.1CX.hcd   ${D}/lib/firmware/brcm/murata-master/_BCM4356A2_001.003.015.0112.0410.1CX.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0274.1XA.dAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0274.1XA.dAnt.hcd
-    install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4373A0.2AE.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4373A0.2AE.hcd
-    install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4373A0.2BC.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4373A0.2BC.hcd
+    install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4373A0_001.001.025.0103.0155.FCC.CE.2AE.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4373A0.2AE.hcd
+    install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4373A0_001.001.025.0103.0155.FCC.CE.2AE.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4373A0.2BC.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}/lib/firmware/brcm/murata-master/_CYW4343A2_001.003.016.0031.0000.1YN.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd
 
 #	Temporary from MMW
-	install -m 444 ${WORKDIR}/CYW55560A1_001.002.087.0108.0000.sLNA.hcd ${D}/lib/firmware/brcm/murata-master/_CYW55560A1_001.002.087.0108.0000.sLNA.hcd
-	install -m 444 ${WORKDIR}/CYW55560A1_001.002.087.0108.0000.sLNA.hcd ${D}/lib/firmware/brcm/murata-master/_BCM.hcd
+	install -m 444 ${WORKDIR}/CYW55560A1_001.002.087.0159.0010_wlcsp_iPA_sLNA_ANT0_Murata_Type2EA_FCC_max.hcd ${D}/lib/firmware/brcm/murata-master/_CYW55560A1_001.002.087.0159.0010_wlcsp_iPA_sLNA_ANT0_Murata_Type2EA_FCC_max.hcd
+	install -m 444 ${WORKDIR}/CYW55560A1_001.002.087.0159.0010_wlcsp_iPA_sLNA_ANT0_Murata_Type2EA_FCC_max.hcd ${D}/lib/firmware/brcm/murata-master/_BCM.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}/lib/firmware/brcm/murata-master
-
 
 #   Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
 	install -m 444 ${WORKDIR}/cyw-fmac-fw/*.bin ${D}/lib/firmware/cypress
