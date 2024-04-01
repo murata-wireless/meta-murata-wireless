@@ -8,7 +8,7 @@ SRC_URI = " \
 	file://switch_module.sh \
 "
 
-SRCREV_nxp-linux-calibration="3cb54692a1ea35df8a18899351916ac7d3260059"
+SRCREV_nxp-linux-calibration="d83b136407b4534ed362a37084f490aee19a5e2e"
 
 SRCREV_default = "${AUTOREV}"
 
@@ -46,9 +46,12 @@ do_install () {
         install -d ${D}/lib/firmware/nxp/murata
         install -d ${D}/lib/firmware/nxp/murata/files
 	install -d ${D}/lib/firmware/nxp/murata/files/1XK
+	install -d ${D}/lib/firmware/nxp/murata/files/1XL
         install -d ${D}/lib/firmware/nxp/murata/files/1ZM
         install -d ${D}/lib/firmware/nxp/murata/files/1YM
         install -d ${D}/lib/firmware/nxp/murata/files/2DS
+        install -d ${D}/lib/firmware/nxp/murata/files/2DL
+        install -d ${D}/lib/firmware/nxp/murata/files/2EL
         install -d ${D}/lib/firmware/nxp/murata/files/32_bit
         install -d ${D}/lib/firmware/nxp/murata/files/64_bit
 
@@ -57,9 +60,12 @@ do_install () {
 
 #	Install nxp linux calibration files
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1XK/* ${D}/lib/firmware/nxp/murata/files/1XK
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/1XL/* ${D}/lib/firmware/nxp/murata/files/1XL
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1YM/* ${D}/lib/firmware/nxp/murata/files/1YM
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1ZM/* ${D}/lib/firmware/nxp/murata/files/1ZM
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DS/* ${D}/lib/firmware/nxp/murata/files/2DS
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DL/* ${D}/lib/firmware/nxp/murata/files/2DL
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/2EL/* ${D}/lib/firmware/nxp/murata/files/2EL
 
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/lib/firmware/nxp/murata/files
         install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/lib/firmware/nxp/murata/files
