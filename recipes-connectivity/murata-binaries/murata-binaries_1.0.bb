@@ -4,11 +4,11 @@ LICENSE = "BSD"
 LIC_FILES_CHKSUM = "file://${S}/nxp-linux-calibration/LICENSE;md5=ffa10f40b98be2c2bc9608f56827ed23"
 
 SRC_URI = " \
-	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-6-1-1;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
+	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
 	file://switch_module.sh \
 "
 
-SRCREV_nxp-linux-calibration="6103e224be638f5b421c323993f29bb6c0ada44a"
+SRCREV_nxp-linux-calibration="d83b136407b4534ed362a37084f490aee19a5e2e"
 
 SRCREV_default = "${AUTOREV}"
 
@@ -46,6 +46,7 @@ do_install () {
         install -d ${D}/lib/firmware/nxp/murata
         install -d ${D}/lib/firmware/nxp/murata/files
 	install -d ${D}/lib/firmware/nxp/murata/files/1XK
+	install -d ${D}/lib/firmware/nxp/murata/files/1XL
         install -d ${D}/lib/firmware/nxp/murata/files/1ZM
         install -d ${D}/lib/firmware/nxp/murata/files/1YM
         install -d ${D}/lib/firmware/nxp/murata/files/2DS
@@ -59,6 +60,7 @@ do_install () {
 
 #	Install nxp linux calibration files
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1XK/* ${D}/lib/firmware/nxp/murata/files/1XK
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/1XL/* ${D}/lib/firmware/nxp/murata/files/1XL
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1YM/* ${D}/lib/firmware/nxp/murata/files/1YM
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1ZM/* ${D}/lib/firmware/nxp/murata/files/1ZM
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DS/* ${D}/lib/firmware/nxp/murata/files/2DS
@@ -82,7 +84,6 @@ FILES:${PN} += "/lib"
 FILES:${PN} += "{sysconfdir}/firmware/nxp"
 FILES:${PN} += "{sysconfdir}/firmware/nxp/murata"
 FILES:${PN} += "{sysconfdir}/firmware/nxp/murata/files"
-FILES:${PN} += "{sysconfdir}/firmware/nxp/murata/1XK"
 #FILES:${PN} += "/usr/sbin/wpa_supplicant"
 
 INSANE_SKIP:${PN} += "build-deps"
