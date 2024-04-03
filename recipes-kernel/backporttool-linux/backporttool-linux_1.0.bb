@@ -14,6 +14,7 @@ SRC_URI =  " \
     file://0001-backports-pkg-for-6.1.1.patch;apply=yes \
     file://0002-yacc-flex-in-kconf-makefile.patch;apply=yes \
     file://0003-kernel_change_for_fmac_log_string.patch;apply=yes \
+    file://0004-revert-Get-CLM-blob-via-standard-firmware.patch;apply=yes \
 "
 
 SRCREV = "dadb79aca9840bb182bef9753f4c47f067269dd9"
