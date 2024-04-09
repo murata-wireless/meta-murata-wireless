@@ -29,7 +29,7 @@ SRC_URI = " \
         file://cyfmac55572-sdio_v2.5.1.txt \
         file://cyfmac55572-sdio-ifx-demo.txt \
 	    file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
-	    file://CYW55560A1_001.002.087.0159.0010.hcd \
+	    file://CYW55560A1_001.002.087.0159.0010_wlcsp_iPA_sLNA_ANT0_Murata_Type2EA_FCC_max.hcd \
 	    file://ot-daemon.64-bit \
 	    file://ot-ctl.64-bit \
         file://fw_loader_imx_lnx.64-bit \
