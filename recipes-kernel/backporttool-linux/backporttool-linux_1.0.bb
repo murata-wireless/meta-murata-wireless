@@ -14,6 +14,7 @@ SRC_URI =  " \
     file://0001-backports-pkg-for-6.1.1.patch;apply=yes \
     file://0002-yacc-flex-in-kconf-makefile.patch;apply=yes \
     file://0003-kernel_change_for_fmac_log_string.patch;apply=yes \
+    file://revert.patch;apply=yes \
 "
 
 SRCREV = "d23cd1725e9cd3b1d0518f47a2cae4bcd8c62c92"
