@@ -1,5 +1,5 @@
 SUMMARY = "Murata Binaries"
-LICENSE = "BSD"
+LICENSE = "GPL-2.0-only"
 
 LIC_FILES_CHKSUM = "file://${S}/nxp-linux-calibration/LICENSE;md5=ffa10f40b98be2c2bc9608f56827ed23"
 
@@ -41,44 +41,44 @@ do_install () {
 	install -d ${D}/usr/sbin
 	install -d ${D}/etc/udev/rules.d
 
-        # Install /lib/firmware/nxp folder
-        install -d ${D}/lib/firmware/nxp
-        install -d ${D}/lib/firmware/nxp/murata
-        install -d ${D}/lib/firmware/nxp/murata/files
-	install -d ${D}/lib/firmware/nxp/murata/files/1XK
-        install -d ${D}/lib/firmware/nxp/murata/files/1ZM
-        install -d ${D}/lib/firmware/nxp/murata/files/1YM
-        install -d ${D}/lib/firmware/nxp/murata/files/2DS
-        install -d ${D}/lib/firmware/nxp/murata/files/2DL
-        install -d ${D}/lib/firmware/nxp/murata/files/2EL
-        install -d ${D}/lib/firmware/nxp/murata/files/32_bit
-        install -d ${D}/lib/firmware/nxp/murata/files/64_bit
+        # Install /${base_libdir}/firmware/nxp folder
+        install -d ${D}/${base_libdir}/firmware/nxp
+        install -d ${D}/${base_libdir}/firmware/nxp/murata
+        install -d ${D}/${base_libdir}/firmware/nxp/murata/files
+	install -d ${D}/${base_libdir}/firmware/nxp/murata/files/1XK
+        install -d ${D}/${base_libdir}/firmware/nxp/murata/files/1ZM
+        install -d ${D}/${base_libdir}/firmware/nxp/murata/files/1YM
+        install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2DS
+        install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2DL
+        install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2EL
+        install -d ${D}/${base_libdir}/firmware/nxp/murata/files/32_bit
+        install -d ${D}/${base_libdir}/firmware/nxp/murata/files/64_bit
 
 #	Based on MACHINE type
 	install -m 755 ${S}/switch_module.sh ${D}/usr/sbin/switch_module.sh
 
 #	Install nxp linux calibration files
-	install -m 444 ${S}/nxp-linux-calibration/murata/files/1XK/* ${D}/lib/firmware/nxp/murata/files/1XK
-	install -m 444 ${S}/nxp-linux-calibration/murata/files/1YM/* ${D}/lib/firmware/nxp/murata/files/1YM
-	install -m 444 ${S}/nxp-linux-calibration/murata/files/1ZM/* ${D}/lib/firmware/nxp/murata/files/1ZM
-	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DS/* ${D}/lib/firmware/nxp/murata/files/2DS
-	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DL/* ${D}/lib/firmware/nxp/murata/files/2DL
-	install -m 444 ${S}/nxp-linux-calibration/murata/files/2EL/* ${D}/lib/firmware/nxp/murata/files/2EL
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/1XK/* ${D}/${base_libdir}/firmware/nxp/murata/files/1XK
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/1YM/* ${D}/${base_libdir}/firmware/nxp/murata/files/1YM
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/1ZM/* ${D}/${base_libdir}/firmware/nxp/murata/files/1ZM
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DS/* ${D}/${base_libdir}/firmware/nxp/murata/files/2DS
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DL/* ${D}/${base_libdir}/firmware/nxp/murata/files/2DL
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/2EL/* ${D}/${base_libdir}/firmware/nxp/murata/files/2EL
 
-	install -m 444 ${S}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/lib/firmware/nxp/murata/files
-        install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/lib/firmware/nxp/murata/files
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/${base_libdir}/firmware/nxp/murata/files
+        install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/${base_libdir}/firmware/nxp/murata/files
         install -m 755 ${S}/nxp-linux-calibration/murata/switch_regions.sh ${D}/usr/sbin/switch_regions.sh
-        install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/lib/firmware/nxp/murata/README.txt
+        install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/${base_libdir}/firmware/nxp/murata/README.txt
 }
 
 PACKAGES =+ "${PN}-mfgtest"
 
-FILES:${PN} += "/lib/firmware"
-FILES:${PN} += "/lib/firmware/*"
+FILES:${PN} += "${base_libdir}/firmware"
+FILES:${PN} += "${base_libdir}/firmware/*"
 FILES:${PN} += "${bindir}"
 FILES:${PN} += "${sbindir}"
 FILES:${PN} += "{sysconfdir}/firmware"
-FILES:${PN} += "/lib"
+FILES:${PN} += "${base_libdir}"
 FILES:${PN} += "{sysconfdir}/firmware/nxp"
 FILES:${PN} += "{sysconfdir}/firmware/nxp/murata"
 FILES:${PN} += "{sysconfdir}/firmware/nxp/murata/files"

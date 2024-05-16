@@ -372,7 +372,7 @@ function select_build_image_name {
 
 # For i.MX8 series, make the default image type to fsl-image-validation-imx
 function select_default_image {
-	if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ] || [ "$TARGET_NAME" = "imx8dxl-lpddr4-evk" ] || [ "$TARGET_NAME" = "imx8mp-lpddr4-evk" ]; then
+	if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qxpmek" ] || [ "$TARGET_NAME" = "imx8qxpc0mek" ] || [ "$TARGET_NAME" = "imx8mmevk" ] || [ "$TARGET_NAME" = "imx8mm-lpddr4-evk" ] || [ "$TARGET_NAME" = "imx8mmddr4evk" ] || [ "$TARGET_NAME" = "imx8mm-ddr4-evk" ] || [ "$TARGET_NAME" = "imx8mnddr4evk" ] || [ "$TARGET_NAME" = "imx8mn-ddr4-evk" ] || [ "$TARGET_NAME" = "imx8dxl-lpddr4-evk" ] || [ "$TARGET_NAME" = "imx8dxlb0-lpddr4-evk" ] || [ "$TARGET_NAME" = "imx8mp-lpddr4-evk" ]; then
 		IMAGE_NAME=fsl-image-validation-imx
 	fi
 }
@@ -1032,19 +1032,19 @@ while true; do
 			echo "${STEP_COUNT}) Select Target"
 			echo "----------------"
 			echo " "
-			echo "------------------------------------------------------------"
-			echo "| Entry  |    Target Name       | NXP i.MX EVK Part Number |"
-			echo "|--------|----------------------|--------------------------|"
-			echo "|  1     |  imx6ulevk           | MCIMX6UL-EVK             |"
-			echo "|  2     |  imx6ull14x14evk     | MCIMX6ULL-EVK            |"
-			echo "|  3     |  imx8mqevk           | MCIMX8M-EVKB             |"
-			echo "|  4     |  imx8mmevk           | 8MMINILPD4-EVK           |"
-			echo "|  5     |  imx8mmddr4evk       | 8MMINID4-EVK             |"
-			echo "|  6     |  imx8mnddr4evk       | 8MNANOD4-EVK             |"
-			echo "|  7     |  imx8qxpmek          | MCIMX8QXP-CPU            |"
-			echo "|  8     |  imx8dxl-lpddr4-evk  | MCIMX8DXL-EVK            |"
-			echo "|  9     |  imx8mp-lpddr4-evk   | 8MPLUSLPD4-EVK           |"
-			echo "------------------------------------------------------------"
+			echo "-------------------------------------------------------------"
+			echo "| Entry  |    Target Name        | NXP i.MX EVK Part Number |"
+			echo "|--------|-----------------------|--------------------------|"
+			echo "|  1     |  imx6ulevk            | MCIMX6UL-EVK             |"
+			echo "|  2     |  imx6ull14x14evk      | MCIMX6ULL-EVK            |"
+			echo "|  3     |  imx8mqevk            | MCIMX8M-EVKB             |"
+			echo "|  4     |  imx8mm-lpddr4-evk    | 8MMINILPD4-EVK           |"
+			echo "|  5     |  imx8mm-ddr4-evk      | 8MMINID4-EVK             |"
+			echo "|  6     |  imx8mn-ddr4-evk      | 8MNANOD4-EVK             |"
+			echo "|  7     |  imx8qxpc0mek         | MCIMX8QXP-CPU            |"
+			echo "|  8     |  imx8dxlb0-lpddr4-evk | MCIMX8DXL-EVK            |"
+			echo "|  9     |  imx8mp-lpddr4-evk    | 8MPLUSLPD4-EVK           |"
+			echo "-------------------------------------------------------------"
 			echo -n "Select your entry: "
 			read TARGET_OPTION
 			case $TARGET_OPTION in
@@ -1067,7 +1067,7 @@ while true; do
 				break
 				;;
 			4)
-				TARGET_NAME=imx8mmevk
+				TARGET_NAME=imx8mm-lpddr4-evk
 				PART_NUMBER=8MMINILPD4-EVK
 				LINUX_SRC=linux-imx_6.1.bbappend.8MQ
 				LINUX_DEST=linux-imx_%.bbappend
@@ -1075,7 +1075,7 @@ while true; do
 				break
 				;;
 			5)
-				TARGET_NAME=imx8mmddr4evk
+				TARGET_NAME=imx8mm-ddr4-evk
 				PART_NUMBER=8MMINID4-EVK
 				LINUX_SRC=linux-imx_6.1.bbappend.8MQ
 				LINUX_DEST=linux-imx_%.bbappend
@@ -1083,7 +1083,7 @@ while true; do
 				break
 				;;
 			6)
-				TARGET_NAME=imx8mnddr4evk
+				TARGET_NAME=imx8mn-ddr4-evk
 				PART_NUMBER=8MNANOD4-EVK
 				LINUX_SRC=linux-imx_6.1.bbappend.8MQ
 				LINUX_DEST=linux-imx_%.bbappend
@@ -1091,7 +1091,7 @@ while true; do
 				break
 				;;
 			7)
-				TARGET_NAME=imx8qxpmek
+				TARGET_NAME=imx8qxpc0mek
 				PART_NUMBER=MCIMX8QXP-CPU
 				LINUX_SRC=linux-imx_6.1.bbappend.8MQ
 				LINUX_DEST=linux-imx_%.bbappend
@@ -1099,7 +1099,7 @@ while true; do
 				break
 				;;
 			8)
-				TARGET_NAME=imx8dxl-lpddr4-evk
+				TARGET_NAME=imx8dxlb0-lpddr4-evk
 				PART_NUMBER=MCIMX8DXL-EVK
 				LINUX_SRC=linux-imx_6.1.bbappend.8MQ
 				LINUX_DEST=linux-imx_%.bbappend
