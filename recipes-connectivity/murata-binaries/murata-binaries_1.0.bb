@@ -1,7 +1,7 @@
 SUMMARY = "Murata Binaries"
 LICENSE = "GPL-2.0-only"
 
-LIC_FILES_CHKSUM = "file://../../LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a4263"
+LIC_FILES_CHKSUM = "file://${S}/nxp-linux-calibration/LICENSE;md5=ffa10f40b98be2c2bc9608f56827ed23"
 
 SRC_URI = " \
 	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-6-6-3;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
