@@ -1,14 +1,14 @@
 SUMMARY = "Murata Binaries"
 LICENSE = "GPL-2.0-only"
 
-LIC_FILES_CHKSUM = "file://${S}/nxp-linux-calibration/LICENSE;md5=fe8c2c6e418360f6fe356199b3b5016c375965eb"
+LIC_FILES_CHKSUM = "file://${S}/nxp-linux-calibration/LICENSE;md5=ffa10f40b98be2c2bc9608f56827ed23"
 
 SRC_URI = " \
 	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-6-6-3;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
 	file://switch_module.sh \
 "
 
-SRCREV_nxp-linux-calibration="17a3a029e7122a0c846756e15c8bc4e12323cce0"
+SRCREV_nxp-linux-calibration="fe8c2c6e418360f6fe356199b3b5016c375965eb"
 
 SRCREV_default = "${AUTOREV}"
 
