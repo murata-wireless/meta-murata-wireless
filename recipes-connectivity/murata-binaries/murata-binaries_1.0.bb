@@ -4,7 +4,7 @@ LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
 SRC_URI = " \
-        git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-6-1-1;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
+        git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=godzilla;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=master;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=kirkstone-fafnir;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
@@ -48,7 +48,7 @@ SRC_URI = " \
         file://brcm_patchram_plus_usb_64bit \
 "
 
-SRCREV_nxp-linux-calibration="86290400930acaa239cbdd0d2f537de2bb9bca56"
+SRCREV_nxp-linux-calibration="81c0300733f1fe1559463906c922d4755574889d"
 SRCREV_cyw-fmac-fw="2d87fbe7494b5b7c80758d45bd9f74f904e662a6"
 SRCREV_cyw-fmac-nvram="9b7d93eb3e13b2d2ed8ce3a01338ceb54151b77a"
 SRCREV_cyw-bt-patch="32af98f8bc8a8e123b4c428af0035d74e85ae4bb"
@@ -106,6 +106,8 @@ do_install () {
     install -d ${D}/lib/firmware/nxp/murata/files/1YM
     install -d ${D}/lib/firmware/nxp/murata/files/2DS
     install -d ${D}/lib/firmware/nxp/murata/files/1XL
+    install -d ${D}/lib/firmware/nxp/murata/files/2EL
+    install -d ${D}/lib/firmware/nxp/murata/files/2DL
 
 #   Copying *.HCD files to etc/firmware and etc/firmware/murata-master (using "_" before the name of the file in murata-master)
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW4335C0.ZP.hcd ${D}/lib/firmware/brcm/BCM4335C0.ZP.hcd
@@ -290,6 +292,8 @@ do_install () {
 	install -m 444 ${WORKDIR}/nxp-linux-calibration/murata/files/1ZM/* ${D}/lib/firmware/nxp/murata/files/1ZM
 	install -m 444 ${WORKDIR}/nxp-linux-calibration/murata/files/2DS/* ${D}/lib/firmware/nxp/murata/files/2DS
 	install -m 444 ${WORKDIR}/nxp-linux-calibration/murata/files/1XL/* ${D}/lib/firmware/nxp/murata/files/1XL
+	install -m 444 ${WORKDIR}/nxp-linux-calibration/murata/files/2EL/* ${D}/lib/firmware/nxp/murata/files/2EL
+	install -m 444 ${WORKDIR}/nxp-linux-calibration/murata/files/2DL/* ${D}/lib/firmware/nxp/murata/files/2DL
 
 
 	install -m 444 ${WORKDIR}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/lib/firmware/nxp/murata/files
