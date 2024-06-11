@@ -4,11 +4,11 @@ LICENSE = "BSD"
 LIC_FILES_CHKSUM = "file://${S}/nxp-linux-calibration/LICENSE;md5=ffa10f40b98be2c2bc9608f56827ed23"
 
 SRC_URI = " \
-	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
+	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-6-1-1;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
 	file://switch_module.sh \
 "
 
-SRCREV_nxp-linux-calibration="d83b136407b4534ed362a37084f490aee19a5e2e"
+SRCREV_nxp-linux-calibration="81c92a99a0a2a41d88c814e32165119e7e633e52"
 
 SRCREV_default = "${AUTOREV}"
 
