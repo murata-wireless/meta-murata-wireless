@@ -20,3 +20,4 @@ index f620acd2a0f5..3c8ce5a1175b 100644
  	depends on CFG80211_REQUIRE_SIGNED_REGDB
  	help
  	  Allow the regulatory database to be signed by one of the keys for
+
