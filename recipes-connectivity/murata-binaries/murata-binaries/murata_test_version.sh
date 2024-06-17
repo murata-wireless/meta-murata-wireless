@@ -2,7 +2,11 @@
 
 # Murata Test version
 
-VERSION="0.2"
+# Fixed 2GF and 1LV
+
+VERSION="0.3"
 
 echo "Murata Test Version: ${VERSION}"
+
+
 
