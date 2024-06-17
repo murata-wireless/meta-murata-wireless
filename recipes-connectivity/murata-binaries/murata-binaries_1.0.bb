@@ -20,6 +20,7 @@ SRC_URI = " \
         file://set-bluetooth.sh \
         file://hostapd-wifi6.conf \
         file://wpa_supplicant-wifi6.conf \
+        file://murata_test_version.sh \
 "
 
 SRCREV_cyw-fmac-fw="bb7dd1f60e5babec0f06e41884986068a0cf7cda"
@@ -193,6 +194,7 @@ do_install () {
 
 #   Based on MACHINE type
     install -m 755 ${S}/set_module.sh ${D}/usr/sbin/set_module.sh
+    install -m 755 ${S}/murata_test_version.sh ${D}/usr/sbin/murata_test_version.sh
 
 
 #	Defaults point to 2BC
