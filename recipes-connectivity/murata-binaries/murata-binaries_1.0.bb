@@ -21,6 +21,7 @@ SRC_URI = " \
         file://hostapd-wifi6.conf \
         file://wpa_supplicant-wifi6.conf \
         file://murata_test_version.sh \
+        file://cyfmac4373-sdio_master_oob.txt \
 "
 
 SRCREV_cyw-fmac-fw="d6cd8b50b5f71ca3ba26fd88177676a688aac85b"
@@ -195,6 +196,7 @@ do_install () {
 #   Based on MACHINE type
     install -m 755 ${S}/set_module.sh ${D}/usr/sbin/set_module.sh
     install -m 755 ${S}/murata_test_version.sh ${D}/usr/sbin/murata_test_version.sh
+    install -m 755 ${S}/cyfmac4373-sdio_master_oob.txt ${D}/lib/firmware/cypress/murata-master/cyfmac4373-sdio_master_oob.txt
 
 
 #	Defaults point to 2BC
