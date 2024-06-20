@@ -1,5 +1,5 @@
 Title: README-IFX.txt
-Date:  October 31st, 2023
+Date:  June 20th, 2024
 
 Description: 
 ============
@@ -34,11 +34,17 @@ $./Murata_Wireless_Yocto_Build_IFX.sh
 --------------------------------------------------------------------------------------
 | Kernel release | Yocto code name  |  FMAC code name |  Release information         |
 |----------------|------------------|-----------------|------------------------------|
+| 6.1.36_2.1.0   | Mickeldore       |  Godzilla       |  imx-mickledore-godzilla_r1.0|
+|                |                  |  Hedorah        |  imx-mickledore-hedorah_r1.0 |
+|                |                  |  Indrik         |  imx-mickledore-indrik_r1.0  |
+|----------------|------------------|-----------------|------------------------------|
 | 6.1.1_1.0.0    | Langdale         |  Fafnir         |  imx-langdale-fafnir_r1.0    |
 |                |                  |  Godzilla       |  imx-langdale-godzilla_r1.0  |
 |----------------|------------------|-----------------|------------------------------|
 | 5.15.32_2.0.0  | Kirkstone        |  Ebirah         |  imx-kirkstone-ebirah_r1.0   |
 |                |                  |  Fafnir         |  imx-kirkstone-fafnir_r1.0   |
+|                |                  |  Godzilla       |  imx-kirkstone-godzilla_r1.0 |
+|                |                  |  Indrik         |  imx-kirkstone-indrik_r1.0   |
 |----------------|------------------|-----------------|------------------------------|
 | 5.10.52_2.1.0  | Hardknott        |  Drogon         |  imx-hardknott-drogon_r1.0   |
 |                |                  |  Cynder         |  imx-hardknott-cynder_r1.0   |
