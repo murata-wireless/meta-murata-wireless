@@ -23,6 +23,9 @@ CONFIG_DRIVER_NL80211=y
 
 CONFIG_DRIVER_BRCM_WL=y
 
+# IFX vendor extensions to nl80211
+CONFIG_DRIVER_NL80211_IFX=y
+
 # driver_nl80211.c requires libnl. If you are compiling it yourself
 # you may need to point hostapd to your version of libnl.
 #
@@ -158,10 +161,23 @@ CONFIG_IEEE80211R=y
 CONFIG_IEEE80211AC=y
 
 # IEEE 802.11ax HE support
+CONFIG_IEEE80211AX=y
+
+# IEEE 802.11be EHT support
+# CONFIG_IEEE80211AX is mandatory for setting CONFIG_IEEE80211BE.
 # Note: This is experimental and work in progress. The definitions are still
 # subject to change and this should not be expected to interoperate with the
-# final IEEE 802.11ax version.
-CONFIG_IEEE80211AX=y
+# final IEEE 802.11be version.
+#CONFIG_IEEE80211BE=y
+
+# Simultaneous Authentication of Equals (SAE), WPA3-Personal
+CONFIG_SAE=y
+
+# SAE Public Key, WPA3-Personal
+#CONFIG_SAE_PK=y
+
+# Set SAE Auth status early
+CONFIG_WPA3_SAE_AUTH_EARLY_SET=y
 
 # Remove debugging code that is printing out debug messages to stdout.
 # This can be used to reduce the size of the hostapd considerably if debugging
@@ -326,7 +342,8 @@ CONFIG_INTERWORKING=y
 # configuration file) that are really useful only for testing clients that
 # connect to this hostapd. These options allow, for example, to drop a
 # certain percentage of probe requests or auth/(re)assoc frames.
-CONFIG_TESTING_OPTIONS=y
+#
+#CONFIG_TESTING_OPTIONS=y
 
 # Automatic Channel Selection
 # This will allow hostapd to pick the channel automatically when channel is set
@@ -348,9 +365,9 @@ CONFIG_TESTING_OPTIONS=y
 # * ath10k
 #
 # For more details refer to:
-# http://wireless.kernel.org/en/users/Documentation/acs
+# https://wireless.wiki.kernel.org/en/users/documentation/acs
 #
-#CONFIG_ACS=y
+CONFIG_ACS=y
 
 # Multiband Operation support
 # These extensions facilitate efficient use of multiple frequency bands
@@ -398,12 +415,16 @@ CONFIG_OWE=y
 # that functionality is subject to be removed in the future.
 #CONFIG_NO_TKIP=y
 
-# Simultaneous Authentication of Equals (SAE), WPA3-Personal
-CONFIG_SAE=y
+# Pre-Association Security Negotiation (PASN)
+# Experimental implementation based on IEEE P802.11z/D2.6 and the protocol
+# design is still subject to change. As such, this should not yet be enabled in
+# production use.
+#CONFIG_PASN=y
 
-# Set SAE Auth status early
-CONFIG_WPA3_SAE_AUTH_EARLY_SET=y
-
-# Device Provisioning Protocol (DPP)
+# Device Provisioning Protocol (DPP) (also known as Wi-Fi Easy Connect)
 CONFIG_DPP=y
+# DPP version 2 support
 CONFIG_DPP2=y
+# DPP version 3 support (experimental and still changing; do not enable for
+# production use)
+CONFIG_DPP3=y
