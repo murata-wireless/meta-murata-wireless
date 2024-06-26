@@ -443,6 +443,13 @@ function prepare_for_cypress() {
   # By default copy all the files back to /lib/firmware/cypress
   cp -rfp /usr/share/murata_wireless/cypress/* /lib/firmware/cypress
 
+  # For 2GF, enabling only in-band interrupt and no OOB
+  if [ $cyw_module == "2GF" ]; then
+     fw_setenv cmd_custom "fdt list mmc0/bcrmf@1\; fdt rm mmc0/bcrmf@1 interrupt-parent\; fdt rm mmc0/bcrmf@1 interrupts\; fdt rm mmc0/bcrmf@1 interrupt-names\; fdt list mmc0/bcrmf@1"
+  else
+     fw_setenv cmd_custom
+  fi
+
   # Starting from 6.1.x, "hciattach" is deprecated and will use "btbcm.ko and hci_uart.ko"
   # It needs <module.hcd> to be renamed as "BCM.hcd" and placed in /lib/firmware/brcm
 
@@ -481,7 +488,7 @@ function prepare_for_cypress() {
      cp /lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   2EA-SDIO|2EA-PCIE)
-     cp /lib/firmware/brcm/CYW55560A1_001.002.087.0159.0010.hcd /lib/firmware/brcm/BCM.hcd
+     cp /lib/firmware/brcm/CYW55560A1_001.002.087.0159.0010_wlcsp_iPA_sLNA_ANT0_Murata_Type2EA_FCC_max.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   esac
 
@@ -688,7 +695,7 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2EA-SDIO, 2EA-PCIe"
+  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2EA-SDIO, 2EA-PCIe, 2GF"
   echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2DS, CURRENT or OFF"
   echo ""
 }
@@ -705,7 +712,7 @@ case ${1^^} in
   CYW-PCIE|CX|1CX|XA|1XA|2EA-PCIE)
     switch_to_cypress_pcie
     ;;
-  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ)
+  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ|2GF)
     switch_to_cypress_sdio
     ;;
   AE-USB|2AE-USB)
