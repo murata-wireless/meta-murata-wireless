@@ -42,9 +42,7 @@ SRC_URI = " \
         file://load-2ea-bt.sh \
         file://hostapd-wifi6.conf \
         file://wpa_supplicant-wifi6.conf \
-        file://chip-tool \
-        file://chip-tool-web \
-        file://brcm_patchram_plus_usb_64bit \
+        file://murata_test_version.sh \
         file://cyfmac4373-sdio_master_oob.txt \
 "
 
@@ -313,6 +311,7 @@ do_install () {
 	install -m 755 ${WORKDIR}/connectedhomeip/credentials/production/paa-root-certs/* ${D}/usr/share/murata_wireless
 	install -m 755 ${WORKDIR}/brcm_patchram_plus_usb_64bit ${D}/usr/sbin/brcm_patchram_plus_usb_64bit
     install -m 755 ${S}/cyfmac4373-sdio_master_oob.txt ${D}/lib/firmware/cypress/murata-master/cyfmac4373-sdio_master_oob.txt
+    install -m 755 ${S}/murata_test_version.sh ${D}/usr/sbin/murata_test_version.sh
 }
 
 PACKAGES =+ "${PN}-mfgtest"
