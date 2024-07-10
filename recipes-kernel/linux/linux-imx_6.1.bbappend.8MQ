@@ -3,13 +3,14 @@
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
-SRC_URI:append = " file://0003-defconfig-imx8.patch \
-                   file://0004-kconfig.patch \
+SRC_URI:append = " file://murata.hex \
 "
 
 addtask copy_defconfig_after_patch after do_patch before do_configure
 do_copy_defconfig_after_patch () {
     # copy latest imx_v8_defconfig to use
+    echo "WORKDIR : {WORKDIR}"
     cp ${S}/arch/arm64/configs/imx_v8_defconfig ${B}/.config
     cp ${S}/arch/arm64/configs/imx_v8_defconfig ${B}/../defconfig
+    cp ${WORKDIR}/murata.hex  ${S}/net/wireless/certs
 }
