@@ -1,15 +1,14 @@
 SUMMARY = "Murata Binaries"
 LICENSE = "BSD"
 
-LIC_FILES_CHKSUM = "file://${S}/nxp-linux-calibration/LICENSE;md5=b234ee4d69f5fce4486a80fdaf4a4263"
+LIC_FILES_CHKSUM = "file://${S}/nxp-linux-calibration/LICENSE;md5=ffa10f40b98be2c2bc9608f56827ed23"
 
 SRC_URI = " \
-	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-5-10-72;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
+	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
 	file://switch_module.sh \
-	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 "
 
-SRCREV_nxp-linux-calibration="55f8bce3085a7b973f770d3eba8a5a0a8b51cb11"
+SRCREV_nxp-linux-calibration="a6fa4a2b68692fb9da3b8b4caf303640941036a2"
 
 SRCREV_default = "${AUTOREV}"
 
@@ -32,9 +31,6 @@ do_compile () {
         pwd
 }
 
-PACKAGES_prepend = "murata-binaries-wlarm "
-FILES_murata-binaries-wlarm = "${bindir}/wlarm"
-
 DO_INSTALL_64BIT_BINARIES = "no"
 DO_INSTALL_64BIT_BINARIES_mx6 = "no"
 DO_INSTALL_64BIT_BINARIES_mx7 = "no"
@@ -49,10 +45,13 @@ do_install () {
         install -d ${D}/lib/firmware/nxp
         install -d ${D}/lib/firmware/nxp/murata
         install -d ${D}/lib/firmware/nxp/murata/files
-	install -d ${D}/lib/firmware/nxp/murata/files/1XK
+	    install -d ${D}/lib/firmware/nxp/murata/files/1XK
+        install -d ${D}/lib/firmware/nxp/murata/files/1XL
         install -d ${D}/lib/firmware/nxp/murata/files/1ZM
         install -d ${D}/lib/firmware/nxp/murata/files/1YM
         install -d ${D}/lib/firmware/nxp/murata/files/2DS
+        install -d ${D}/lib/firmware/nxp/murata/files/2DL
+        install -d ${D}/lib/firmware/nxp/murata/files/2EL
         install -d ${D}/lib/firmware/nxp/murata/files/32_bit
         install -d ${D}/lib/firmware/nxp/murata/files/64_bit
 
@@ -61,24 +60,17 @@ do_install () {
 
 #	Install nxp linux calibration files
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1XK/* ${D}/lib/firmware/nxp/murata/files/1XK
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/1XL/* ${D}/lib/firmware/nxp/murata/files/1XL
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1YM/* ${D}/lib/firmware/nxp/murata/files/1YM
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/1ZM/* ${D}/lib/firmware/nxp/murata/files/1ZM
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DS/* ${D}/lib/firmware/nxp/murata/files/2DS
-        #       Copying wl tool binary based on 32-bit/64-bit arch to /usr/sbin
-        if [ ${TARGET_ARCH} = "aarch64" ]; then
-		install -m 755 ${S}/nxp-linux-calibration/murata/files/64_bit/* ${D}/lib/firmware/nxp/murata/files/64_bit
-	else
-		install -m 755 ${S}/nxp-linux-calibration/murata/files/32_bit/* ${D}/lib/firmware/nxp/murata/files/32_bit
-	fi
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/2DL/* ${D}/lib/firmware/nxp/murata/files/2DL
+	install -m 444 ${S}/nxp-linux-calibration/murata/files/2EL/* ${D}/lib/firmware/nxp/murata/files/2EL
 
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/lib/firmware/nxp/murata/files
-        install -m 444 ${S}/nxp-linux-calibration/murata/files/regulatory.rules ${D}/lib/firmware/nxp/murata/files
         install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/lib/firmware/nxp/murata/files
         install -m 755 ${S}/nxp-linux-calibration/murata/switch_regions.sh ${D}/usr/sbin/switch_regions.sh
         install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/lib/firmware/nxp/murata/README.txt
-
-#	Copy 1XK Dedicated Bluetooth Antenna configuration file
-	install -m 755 ${S}/WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf ${D}/lib/firmware/nxp/
 }
 
 PACKAGES =+ "${PN}-mfgtest"
