@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=06202024
+VERSION=07092024
 
 
 ###################################################################################################
@@ -43,8 +43,8 @@ VERSION=06202024
 #  1.25     | 06/12/2023   |    RC        |    Added support for Linux 6.1.1.
 #  1.26     | 10/13/2023   |    RC        |    Added support for Linux 6.1.36.
 #  1.27     | 05/09/2024   |    RC        |    Added support for Linux 6.6.3.
-#  1.28     | 06/13/2024   |    RC        |    Added support for i.MX93 and i.MX8ULP.
-#  1.29     | 06/20/2024   |    RC        |    Added variations of i.MX93 and i.MX8ULP EVKs.
+#  1.28     | 06/20/2024   |    RC        |    Added support for i.MX93 and i.MX8ULP.
+#  1.29     | 07/09/2024   |    RC        |    Added support for new regulatory mechanism.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -86,22 +86,22 @@ iMXYoctoRelease=""
 YoctoBranch=""
 linuxVersion=""
 
-iMXhardknott52StableReleaseTag="imx-hardknott-5-10-52_r1.0"
+iMXhardknott52StableReleaseTag="imx-hardknott-5-10-52_r1.1"
 iMXhardknott52DeveloperRelease="imx-hardknott-5-10-52"
 
-iMXhardknott72StableReleaseTag="imx-hardknott-5-10-72_r1.0"
+iMXhardknott72StableReleaseTag="imx-hardknott-5-10-72_r1.1"
 iMXhardknott72DeveloperRelease="imx-hardknott-5-10-72"
 
-iMXkirkstoneStableReleaseTag="imx-kirkstone-5-15-32_r1.0"
+iMXkirkstoneStableReleaseTag="imx-kirkstone-5-15-32_r1.1"
 iMXkirkstoneDeveloperRelease="imx-kirkstone-5-15-32"
 
-iMXlangdaleStableReleaseTag="imx-langdale-6-1-1_r1.0"
+iMXlangdaleStableReleaseTag="imx-langdale-6-1-1_r1.1"
 iMXlangdaleDeveloperRelease="imx-langdale-6-1-1"
 
-iMXmickledoreStableReleaseTag="imx-mickledore-6-1-36_r1.0"
+iMXmickledoreStableReleaseTag="imx-mickledore-6-1-36_r1.1"
 iMXmickledoreDeveloperRelease="imx-mickledore-6-1-36"
 
-iMXnanbieldStableReleaseTag="imx-nanbield-6-6-3_r1.0"
+iMXnanbieldStableReleaseTag="imx-nanbield-6-6-3_r1.1"
 iMXnanbieldDeveloperRelease="imx-nanbield-6-6-3"
 
 imxhardknottYocto52="5.10.52_2.1.0 GA"
@@ -426,12 +426,12 @@ while true; do
 	echo "----------------------------------------------------------------------------"
 	echo "|Entry|   Linux Kernel    | Yocto      | Modules supported                 |"
 	echo "|-----|-------------------|------------|------------------------------------"
-	echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott  | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
-	echo "|  1  |     ${LINUX_KERNEL_5_10_72_STR}       | hardknott  | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
-	echo "|  2  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone  | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
-	echo "|  3  |     ${LINUX_KERNEL_6_1_1_STR}         | langdale   | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
-	echo "|  4  |     ${LINUX_KERNEL_6_1_36_STR}        | mickledore | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
-	echo "|  5  |     ${LINUX_KERNEL_6_6_3_STR}         | nanbield   | 1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 1XL |"
+	echo "|  0  |     ${LINUX_KERNEL_5_10_52_STR}       | hardknott  | 1ZM, 1YM, 1XK, 1XL, 2DS           |"
+	echo "|  1  |     ${LINUX_KERNEL_5_10_72_STR}       | hardknott  | 1ZM, 1YM, 1XK, 1XL, 2DS           |"
+	echo "|  2  |     ${LINUX_KERNEL_5_15_32_STR}       | kirkstone  | 1ZM, 1YM, 1XK, 1XL, 2DS, 2EL, 2DL |"
+	echo "|  3  |     ${LINUX_KERNEL_6_1_1_STR}         | langdale   | 1ZM, 1YM, 1XK, 1XL, 2DS, 2EL, 2DL |"
+	echo "|  4  |     ${LINUX_KERNEL_6_1_36_STR}        | mickledore | 1ZM, 1YM, 1XK, 1XL, 2DS, 2EL, 2DL |"
+	echo "|  5  |     ${LINUX_KERNEL_6_6_3_STR}         | nanbield   | 1ZM, 1YM, 1XK, 1XL, 2DS, 2EL, 2DL |"
 	echo "----------------------------------------------------------------------------"
 	read -p "Select which entry? " LINUX_KERNEL
 
@@ -540,6 +540,119 @@ $LINUX_KERNEL_6_6_3)
 	echo -e "${RED}NXP support is not avilable in this kernel.${NC}"
 	exit
 esac
+
+while true; do
+	case $LINUX_KERNEL in
+	$LINUX_KERNEL_5_10_52|$LINUX_KERNEL_5_10_72)
+		while true; do
+			echo " "
+			echo "${STEP_COUNT}) Select Module"
+			echo "----------------"
+			echo " "
+			echo "--------------------------"
+			echo "| Entry  |  Module Name  |"
+			echo "|--------|----------------"
+			echo "|  1     |  1ZM          |"
+			echo "|  2     |  1YM          |"
+			echo "|  3     |  1XK          |"
+			echo "|  4     |  1XL          |"
+			echo "|  5     |  2DS          |"
+			echo "--------------------------"
+			echo -n "Select your entry: "
+			read MODULE_OPTION
+			case $MODULE_OPTION in
+			1)
+				MODULE_NAME=1ZM
+				break
+				;;
+			2)
+				MODULE_NAME=1YM
+				break
+				;;
+			3)
+				MODULE_NAME=1XK
+				break
+				;;
+			4)
+				MODULE_NAME=1XL
+				break
+				;;
+			5)
+				MODULE_NAME=2DS
+				break
+				;;
+			*)
+				echo -e "${RED}That is not a valid choice, try again.${NC}"
+				;;
+			esac
+		done
+		echo -e "${GRN}Selected module: $MODULE_NAME ${NC}"
+		echo $'\n'
+		break
+		;;
+	$LINUX_KERNEL_5_15_32|$LINUX_KERNEL_6_1_1|$LINUX_KERNEL_6_1_36|$LINUX_KERNEL_6_6_3)
+		while true; do
+			echo " "
+			echo "${STEP_COUNT}) Select Module"
+			echo "----------------"
+			echo " "
+			echo "--------------------------"
+			echo "| Entry  |  Module Name  |"
+			echo "|--------|----------------"
+			echo "|  1     |  1ZM          |"
+			echo "|  2     |  1YM          |"
+			echo "|  3     |  1XK          |"
+			echo "|  4     |  1XL          |"
+			echo "|  5     |  2DS          |"
+			echo "|  6     |  2EL          |"
+			echo "|  7     |  2DL          |"
+			echo "--------------------------"
+			echo -n "Select your entry: "
+			read MODULE_OPTION
+			case $MODULE_OPTION in
+			1)
+				MODULE_NAME=1ZM
+				break
+				;;
+			2)
+				MODULE_NAME=1YM
+				break
+				;;
+			3)
+				MODULE_NAME=1XK
+				break
+				;;
+			4)
+				MODULE_NAME=1XL
+				break
+				;;
+			5)
+				MODULE_NAME=2DS
+				break
+				;;
+			6)
+				MODULE_NAME=2EL
+				break
+				;;
+			7)
+				MODULE_NAME=2DL
+				break
+				;;
+			*)
+				echo -e "${RED}That is not a valid choice, try again.${NC}"
+				;;
+			esac
+		done
+		echo -e "${GRN}Selected module: $MODULE_NAME ${NC}"
+		echo $'\n'
+		break
+		;;
+	*)
+		echo -e "${RED}That is not a valid choice, try again.${NC}"
+		;;
+	esac
+done
+(( STEP_COUNT += 1 ))
 
 while true; do
 	case $LINUX_KERNEL in
@@ -1397,6 +1510,7 @@ echo " "
 echo -e "i.MX Yocto Release              : ${GRN}$iMXYoctoRelease${NC}"
 echo -e "Yocto branch                    : ${GRN}$YoctoBranch${NC}"
 echo -e "Target                          : ${GRN}$TARGET_NAME${NC}"
+echo -e "Module                          : ${GRN}$MODULE_NAME${NC}"
 echo -e "NXP i.MX EVK Part Number        : ${GRN}$PART_NUMBER${NC}"
 echo -e "meta-murata-wireless Release Tag: ${GRN}$BRANCH_RELEASE_NAME${NC}"
 echo -e "DISTRO                          : ${GRN}$DISTRO_NAME${NC}"
@@ -1513,6 +1627,10 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	cd meta-murata-wireless
 
 	git checkout $BRANCH_RELEASE_NAME
+
+	cd $BSP_DIR/sources
+	git clone https://github.com/murata-wireless/nxp-linux-calibration.git
+
 	cd $BSP_DIR
 	echo "Build Image"
 	chmod 777 sources/meta-murata-wireless/add-murata-layer-script/add-murata-wireless.sh
@@ -1522,6 +1640,8 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 		cp $LINUX_SRC $LINUX_DEST
 	fi
+
+	cp $BSP_DIR/sources/nxp-linux-calibration/murata/files/$MODULE_NAME/murata.hex $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/linux/linux-imx
 
 	cd $BUILD_DIR
 
