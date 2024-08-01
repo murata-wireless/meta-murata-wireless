@@ -31,6 +31,7 @@ SRCREV_cyw-fmac-utils-imx32="fcdd231e9bb23db3c93c10e5dff43a1182f220c5"
 SRCREV_cyw-fmac-utils-imx64="52cc4cc6be8629781014505aa276b67e18cf6e8d"
 
 SRCREV_default = "${AUTOREV}"
+SRCREV_FORMAT = "muratabinaries"
 
 S = "${WORKDIR}"
 B = "${WORKDIR}"
