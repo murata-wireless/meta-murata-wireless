@@ -7,6 +7,7 @@ SRC_URI:append = " file://0001-indrik-fmac-6-6-3.patch \
 		   file://0001-defconfig.patch \
 		   file://0002-murata-dts.patch \
 		   file://0006-disable-dma-hciuart-kernel-crash.patch \
+		   file://0007-kernel_change_for_fmac_log_string.patch \
 "
 
 
