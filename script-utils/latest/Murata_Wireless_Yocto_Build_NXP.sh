@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=07092024
+VERSION=08012024
 
 
 ###################################################################################################
@@ -45,6 +45,7 @@ VERSION=07092024
 #  1.27     | 05/09/2024   |    RC        |    Added support for Linux 6.6.3.
 #  1.28     | 06/20/2024   |    RC        |    Added support for i.MX93 and i.MX8ULP.
 #  1.29     | 07/09/2024   |    RC        |    Added support for new regulatory mechanism.
+#  1.30     | 08/01/2024   |    RC        |    Added support for Linux 6.6.23.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -70,6 +71,7 @@ LINUX_KERNEL_5_15_32=2
 LINUX_KERNEL_6_1_1=3
 LINUX_KERNEL_6_1_36=4
 LINUX_KERNEL_6_6_3=5
+LINUX_KERNEL_6_6_23=6
 
 # Linux Kernel Strings
 LINUX_KERNEL_5_10_52_STR="5.10.52"
@@ -78,6 +80,7 @@ LINUX_KERNEL_5_15_32_STR="5.15.32"
 LINUX_KERNEL_6_1_1_STR="6.1.1"
 LINUX_KERNEL_6_1_36_STR="6.1.36"
 LINUX_KERNEL_6_6_3_STR="6.6.3"
+LINUX_KERNEL_6_6_23_STR="6.6.23"
 
 DISTRO_NAME=fsl-imx-fb
 IMAGE_NAME=core-image-base
@@ -104,12 +107,16 @@ iMXmickledoreDeveloperRelease="imx-mickledore-6-1-36"
 iMXnanbieldStableReleaseTag="imx-nanbield-6-6-3_r1.1"
 iMXnanbieldDeveloperRelease="imx-nanbield-6-6-3"
 
+iMXscarthgapStableReleaseTag="imx-scarthgap-6-6-23_r1.1"
+iMXscarthgapDeveloperRelease="imx-scarthgap-6-6-23"
+
 imxhardknottYocto52="5.10.52_2.1.0 GA"
 imxhardknottYocto72="5.10.72_2.2.0"
 imxkirkstone="5.15.32_2.0.0"
 imxlangdale="6.1.1_1.0.0"
 imxmickledore="6.1.36_2.1.0"
 imxnanbield="6.6.3_1.0.0"
+imxscarthgap="6.6.23_2.0.0"
 
 
 #--------------------------------------------------------------------------------------------------
@@ -432,6 +439,7 @@ while true; do
 	echo "|  3  |     ${LINUX_KERNEL_6_1_1_STR}         | langdale   | 1ZM, 1YM, 1XK, 1XL, 2DS, 2EL, 2DL |"
 	echo "|  4  |     ${LINUX_KERNEL_6_1_36_STR}        | mickledore | 1ZM, 1YM, 1XK, 1XL, 2DS, 2EL, 2DL |"
 	echo "|  5  |     ${LINUX_KERNEL_6_6_3_STR}         | nanbield   | 1ZM, 1YM, 1XK, 1XL, 2DS, 2EL, 2DL |"
+	echo "|  6  |     ${LINUX_KERNEL_6_6_23_STR}        | scarthgap  | 1ZM, 1YM, 1XK, 1XL, 2DS, 2EL, 2DL |"
 	echo "----------------------------------------------------------------------------"
 	read -p "Select which entry? " LINUX_KERNEL
 
@@ -458,6 +466,10 @@ while true; do
 		;;
 	$LINUX_KERNEL_6_6_3)
 		linuxVersion=${LINUX_KERNEL_6_6_3_STR}
+		break
+		;;
+	$LINUX_KERNEL_6_6_23)
+		linuxVersion=${LINUX_KERNEL_6_6_23_STR}
 		break
 		;;
 	*)
@@ -536,6 +548,17 @@ $LINUX_KERNEL_6_6_3)
 	iMXYoctoRelease="$imxnanbield"
 	YoctoBranch="nanbield"
 	;;
+$LINUX_KERNEL_6_6_23)
+	if [ "$BRANCH_TAG_OPTION" = "y" ] ; then
+		#echo "DEBUG:: scarthgap release"
+		BRANCH_RELEASE_NAME="$iMXscarthgapStableReleaseTag"
+	else
+		#echo "DEBUG:: scarthgap developer"
+		BRANCH_RELEASE_NAME="$iMXscarthgapDeveloperRelease"
+	fi
+	iMXYoctoRelease="$imxscarthgap"
+	YoctoBranch="scarthgap"
+	;;
 *)
 	echo -e "${RED}NXP support is not avilable in this kernel.${NC}"
 	exit
@@ -590,7 +613,7 @@ while true; do
 		echo $'\n'
 		break
 		;;
-	$LINUX_KERNEL_5_15_32|$LINUX_KERNEL_6_1_1|$LINUX_KERNEL_6_1_36|$LINUX_KERNEL_6_6_3)
+	$LINUX_KERNEL_5_15_32|$LINUX_KERNEL_6_1_1|$LINUX_KERNEL_6_1_36|$LINUX_KERNEL_6_6_3|$LINUX_KERNEL_6_6_23)
 		while true; do
 			echo " "
 			echo "${STEP_COUNT}) Select Module"
@@ -1249,7 +1272,7 @@ while true; do
 		echo $'\n'
 		break
 		;;
-	$LINUX_KERNEL_6_6_3)
+	$LINUX_KERNEL_6_6_3|$LINUX_KERNEL_6_6_23)
 		while true; do
 			echo " "
 			echo "${STEP_COUNT}) Select Target"
@@ -1590,6 +1613,9 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	elif [ "$iMXYoctoRelease" = "$imxnanbield" ]; then
 		#echo "DEBUG:: IMXALL-NANBIELD"
 		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-nanbield -m imx-6.6.3-1.0.0.xml
+	elif [ "$iMXYoctoRelease" = "$imxscarthgap" ]; then
+		#echo "DEBUG:: IMXALL-SCARTHGAP"
+		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-scarthgap -m imx-6.6.23-2.0.0.xml
 	fi
 
 	#echo "DEBUG:: Performing repo sync......."
