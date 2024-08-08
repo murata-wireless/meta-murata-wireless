@@ -97,7 +97,7 @@ index 000000000000..90e0045fa2e4
 +#include "imx6ul-evk-btwifi-oob.dtsi"
 diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsi
 new file mode 100644
-index 000000000000..8279ef540968
+index 000000000000..951bce362425
 --- /dev/null
 +++ b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsi
 @@ -0,0 +1,30 @@
@@ -126,14 +126,14 @@ index 000000000000..8279ef540968
 +	status = "disabled";
 +};
 +
-+//&brcmf {
-+//	interrupt-parent = <&gpio2>;
-+//	interrupts = <15 IRQ_TYPE_LEVEL_LOW>;
-+//	interrupt-names = "host-wake";
-+//};
++&brcmf {
++	interrupt-parent = <&gpio2>;
++	interrupts = <15 IRQ_TYPE_LEVEL_LOW>;
++	interrupt-names = "host-wake";
++};
 diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsi
 new file mode 100644
-index 000000000000..a56fab4b21c2
+index 000000000000..e1f16574a24e
 --- /dev/null
 +++ b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsi
 @@ -0,0 +1,30 @@
@@ -162,11 +162,79 @@ index 000000000000..a56fab4b21c2
 +	status = "disabled";
 +};
 +
-+//&brcmf {
-+//	interrupt-parent = <&gpio2>;
-+//	interrupts = <15 IRQ_TYPE_LEVEL_LOW>;  /* M.2 WL_HOST_WAKE is active low */
-+//	interrupt-names = "host-wake";
-+//};
++&brcmf {
++	interrupt-parent = <&gpio2>;
++	interrupts = <15 IRQ_TYPE_LEVEL_LOW>;  /* M.2 WL_HOST_WAKE is active low */
++	interrupt-names = "host-wake";
++};
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi.dtsi
+index dd0639ae1f65..82d4755c7815 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi.dtsi
+@@ -10,6 +10,13 @@
+ 
+ 
+ / {
++	modem_reset: modem-reset {
++		compatible = "gpio-reset";
++		reset-gpios = <&gpio_spi 4 GPIO_ACTIVE_LOW>;
++		reset-delay-us = <1000>;
++		#reset-cells = <0>;
++	};
++
+ 	usdhc1_pwrseq: usdhc1_pwrseq {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pinctrl_wifi>;
+@@ -80,34 +87,27 @@ &reg_sd1_vmmc {
+ 	regulator-always-on;
+ };
+ 
++&uart2 {
++	resets = <&modem_reset>;
++};
++
+ &usdhc1 {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
+-	fsl,sdio-async-interrupt-enabled;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usdhc1>;
++	no-1-8-v;
+ 	non-removable;
++	pm-ignore-notify;
+ 	mmc-pwrseq = <&usdhc1_pwrseq>;
+-
+-	/* Here config the vsel pad as an normal gpio, and use
+-	 * the vqmmc(gpio-regulator) method to do the IO voltage switch.
+-	 * set gpio to low level select 3.3v, and high level select 1.8v
+-	 * If not, when config this pin as vsel specific function,
+-	 * though work normal when sdio boot up and in SDIO 3.0 mode,
+-	 * but will meet issue after system resume back from mem
+-	 * mode, because after system suspend in mem mode, usdhc
+-	 * will lost power, so when resume back, all register
+-	 * return to default state, need driver to re-config.
+-	 * But for sdio wifi device, we config this device with
+-	 * flag keep-power-in-suspend, so sdio wifi do nothing
+-	 * during system PM, only mark re-tuning flag. When
+-	 * system resume back, the original vsel bit lost, which
+-	 * means the IO voltage change to 3.3v, but sdio wifi still
+-	 * in SDIO3.0 mode, expect the IO voltage in 1.8v, IO
+-	 * voltage mismatch happened, data transfer in this time
+-	 * will meet CRC/Timeout issue.
+-	 */
+-	vqmmc-supply = <&reg_nvcc_sd_sel>;
++	cap-power-off-card;
++	/delete-property/ wakeup-source;
+ 	/delete-property/ enable-sdio-wakeup;
+-	/delete-property/ cd-gpios;
++
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	};
+ };
+ 
+ &gpio_spi {
 diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts
 new file mode 100644
 index 000000000000..8da2a49ef54a
