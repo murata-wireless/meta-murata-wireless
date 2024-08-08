@@ -1,52 +1,46 @@
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 30408b4b2a4e..5f7fc16209d4 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -748,6 +748,11 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+diff --git a/arch/arm/boot/dts/nxp/imx/Makefile b/arch/arm/boot/dts/nxp/imx/Makefile
+index 12e091dc4c4c..c8003586a2ef 100644
+--- a/arch/arm/boot/dts/nxp/imx/Makefile
++++ b/arch/arm/boot/dts/nxp/imx/Makefile
+@@ -339,6 +339,8 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
  	imx6ul-14x14-evk-csi.dtb \
  	imx6ul-14x14-evk-emmc.dtb \
  	imx6ul-14x14-evk-btwifi.dtb \
-+	imx6ul-14x14-evk-btwifi-oob.dtb \
 +	imx6ul-14x14-evk-btwifi-m2.dtb \
-+	imx6ul-14x14-evk-btwifi-m2-oob.dtb \
 +	imx6ul-14x14-evk-btwifi-m2-uhs.dtb \
-+	imx6ul-14x14-evk-btwifi-m2-oob-uhs.dtb \
  	imx6ul-14x14-evk-ecspi-slave.dtb \
  	imx6ul-14x14-evk-ecspi.dtb \
  	imx6ul-14x14-evk-gpmi-weim.dtb \
-@@ -778,6 +783,11 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+@@ -369,6 +371,8 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
  	imx6ull-14x14-evk.dtb \
  	imx6ull-14x14-evk-emmc.dtb \
  	imx6ull-14x14-evk-btwifi.dtb \
-+	imx6ull-14x14-evk-btwifi-oob.dtb \
 +	imx6ull-14x14-evk-btwifi-m2.dtb \
-+	imx6ull-14x14-evk-btwifi-m2-oob.dtb \
 +	imx6ull-14x14-evk-btwifi-m2-uhs.dtb \
-+	imx6ull-14x14-evk-btwifi-m2-oob-uhs.dtb \
  	imx6ull-14x14-evk-gpmi-weim.dtb \
  	imx6ull-9x9-evk.dtb \
  	imx6ull-9x9-evk-ldo.dtb \
-diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-uhs.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-uhs.dts
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob-uhs.dts b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob-uhs.dts
 new file mode 100644
 index 000000000000..06168803818e
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob-uhs.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob-uhs.dts
 @@ -0,0 +1,2 @@
 +#include "imx6ul-14x14-evk-btwifi-m2-uhs.dts"
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
-diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob.dts
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob.dts
 new file mode 100644
 index 000000000000..5826e965c2da
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-oob.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob.dts
 @@ -0,0 +1,2 @@
 +#include "imx6ul-14x14-evk-btwifi-m2.dts"
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
-diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-uhs.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-uhs.dts
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-uhs.dts b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-uhs.dts
 new file mode 100644
 index 000000000000..4d1687487ce1
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2-uhs.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-uhs.dts
 @@ -0,0 +1,10 @@
 +#include "imx6ul-14x14-evk-btwifi-m2.dts"
 +
@@ -58,11 +52,11 @@ index 000000000000..4d1687487ce1
 +	max-frequency = <132000000>; /* Murata - 6ULL MAX with Adapter; 6UL = 100 MHz MAX */
 +	/delete-property/ no-1-8-v;
 +};
-diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2.dts
 new file mode 100644
 index 000000000000..ec58eb2e4705
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-m2.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2.dts
 @@ -0,0 +1,18 @@
 +#include "imx6ul-14x14-evk-btwifi.dts"
 +
@@ -82,11 +76,11 @@ index 000000000000..ec58eb2e4705
 +	pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
 +	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
 +};
-diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-oob.dts b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-oob.dts
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-oob.dtsx b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-oob.dtsx
 new file mode 100644
 index 000000000000..90e0045fa2e4
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-14x14-evk-btwifi-oob.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-oob.dtsx
 @@ -0,0 +1,10 @@
 +/*
 + * Copyright (C) 2017 NXP
@@ -98,61 +92,11 @@ index 000000000000..90e0045fa2e4
 +
 +#include "imx6ul-14x14-evk-btwifi.dts"
 +#include "imx6ul-evk-btwifi-oob.dtsi"
-diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi b/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
-index c79e8092814e..e1b90199dab9 100644
---- a/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
-+++ b/arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
-@@ -186,6 +186,18 @@ &fec1 {
- 	phy-handle = <&ethphy0>;
- 	phy-supply = <&reg_peri_3v3>;
- 	status = "okay";
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		ethphy0: ethernet-phy@2 {
-+			compatible = "ethernet-phy-ieee802.3-c22";
-+			reg = <2>;
-+			micrel,led-mode = <1>;
-+			clocks = <&clks IMX6UL_CLK_ENET_REF>;
-+			clock-names = "rmii-ref";
-+		};
-+	};
- };
- 
- &fec2 {
-@@ -200,15 +212,6 @@ mdio {
- 		#address-cells = <1>;
- 		#size-cells = <0>;
- 
--		ethphy0: ethernet-phy@2 {
--			compatible = "ethernet-phy-id0022.1560";
--			reg = <2>;
--			micrel,led-mode = <1>;
--			clocks = <&clks IMX6UL_CLK_ENET_REF>;
--			clock-names = "rmii-ref";
--
--		};
--
- 		ethphy1: ethernet-phy@1 {
- 			compatible = "ethernet-phy-id0022.1560";
- 			reg = <1>;
-@@ -392,10 +395,6 @@ &uart2 {
- 	/* fsl,dte-mode; */
- 	/* pinctrl-0 = <&pinctrl_uart2dte>; */
- 	status = "okay";
--
--	bluetooth {
--		compatible = "nxp,88w8987-bt";
--	};
- };
- 
- &usbotg1 {
-diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi-m2-oob.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi-m2-oob.dtsi
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsix b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsix
 new file mode 100644
 index 000000000000..951bce362425
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-evk-btwifi-m2-oob.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsix
 @@ -0,0 +1,30 @@
 +/*
 + * Copyright (C) 2017 NXP
@@ -184,11 +128,11 @@ index 000000000000..951bce362425
 +	interrupts = <15 IRQ_TYPE_LEVEL_LOW>;
 +	interrupt-names = "host-wake";
 +};
-diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi-oob.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi-oob.dtsi
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsix b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsix
 new file mode 100644
 index 000000000000..e1f16574a24e
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-evk-btwifi-oob.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsix
 @@ -0,0 +1,30 @@
 +/*
 + * Copyright 2017-2019 NXP
@@ -220,157 +164,11 @@ index 000000000000..e1f16574a24e
 +	interrupts = <15 IRQ_TYPE_LEVEL_LOW>;  /* M.2 WL_HOST_WAKE is active low */
 +	interrupt-names = "host-wake";
 +};
-diff --git a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-index dd0639ae1f65..b3dfefec7fae 100644
---- a/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-+++ b/arch/arm/boot/dts/imx6ul-evk-btwifi.dtsi
-@@ -1,32 +1,32 @@
--// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
- /*
-- * Copyright 2021-2023 NXP
-+ * Copyright (C) 2015 Freescale Semiconductor, Inc.
-+ * Copyright 2019 NXP
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-  */
- 
- /*
-- * NOTE: This DTS file is written for the wifi chips that supporting 1.8V
-- * SDIO3.0, and also 3.3V SDIO2.0
-+ * NOTE: This DTS file is written for plugging in Murata Wi-Fi/BT EVK into Slot
-+ * SD1 and using Murata i.MX InterConnect Ver 2.0 Adapter. Bluetooth UART &
-+ * control signals are connected via ribbon cable (J1701 connector).
-  */
- 
--
- / {
-+	modem_reset: modem-reset {
-+		compatible = "gpio-reset";
-+		reset-gpios = <&gpio_spi 4 GPIO_ACTIVE_LOW>;
-+		reset-delay-us = <1000>;
-+		#reset-cells = <0>;
-+	};
-+
- 	usdhc1_pwrseq: usdhc1_pwrseq {
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pinctrl_wifi>;
- 		compatible = "mmc-pwrseq-simple";
- 		reset-gpios = <&gpio5 1 GPIO_ACTIVE_LOW>;
- 	};
--
--
--	reg_nvcc_sd_sel: regulator-nvcc-sd-vsel {
--		compatible = "regulator-gpio";
--		regulator-name = "NVCC SD VSEL";
--		regulator-min-microvolt = <1800000>;
--		regulator-max-microvolt = <3300000>;
--		gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>;
--		gpios-states = <1>;
--		states = <3300000 0>, <1800000 1>;
--	};
- };
- 
- &iomuxc {
-@@ -37,77 +37,31 @@ MX6UL_PAD_SNVS_TAMPER1__GPIO5_IO01 0x03029
- 	};
- };
- 
--&pinctrl_usdhc1 {
--	fsl,pins = <
--		MX6UL_PAD_SD1_CMD__USDHC1_CMD		0x17059
--		MX6UL_PAD_SD1_CLK__USDHC1_CLK		0x10071
--		MX6UL_PAD_SD1_DATA0__USDHC1_DATA0	0x17059
--		MX6UL_PAD_SD1_DATA1__USDHC1_DATA1	0x17059
--		MX6UL_PAD_SD1_DATA2__USDHC1_DATA2	0x17059
--		MX6UL_PAD_SD1_DATA3__USDHC1_DATA3	0x17059
--		MX6UL_PAD_GPIO1_IO05__GPIO1_IO05	0x17059 /* SD1 VSELECT */
--		MX6UL_PAD_GPIO1_IO09__GPIO1_IO09	0x17059 /* SD1 RESET */
--	>;
--};
--
--&pinctrl_usdhc1_100mhz {
--		fsl,pins = <
--		MX6UL_PAD_SD1_CMD__USDHC1_CMD		0x170b9
--		MX6UL_PAD_SD1_CLK__USDHC1_CLK		0x100b9
--		MX6UL_PAD_SD1_DATA0__USDHC1_DATA0	0x170b9
--		MX6UL_PAD_SD1_DATA1__USDHC1_DATA1	0x170b9
--		MX6UL_PAD_SD1_DATA2__USDHC1_DATA2	0x170b9
--		MX6UL_PAD_SD1_DATA3__USDHC1_DATA3	0x170b9
--		MX6UL_PAD_GPIO1_IO05__GPIO1_IO05	0x170b9 /* SD1 VSELECT */
--		MX6UL_PAD_GPIO1_IO09__GPIO1_IO09	0x170b9 /* SD1 RESET */
--	>;
--};
--
--&pinctrl_usdhc1_200mhz {
--		fsl,pins = <
--		MX6UL_PAD_SD1_CMD__USDHC1_CMD		0x170f9
--		MX6UL_PAD_SD1_CLK__USDHC1_CLK		0x100f9
--		MX6UL_PAD_SD1_DATA0__USDHC1_DATA0	0x170f9
--		MX6UL_PAD_SD1_DATA1__USDHC1_DATA1	0x170f9
--		MX6UL_PAD_SD1_DATA2__USDHC1_DATA2	0x170f9
--		MX6UL_PAD_SD1_DATA3__USDHC1_DATA3	0x170f9
--		MX6UL_PAD_GPIO1_IO05__GPIO1_IO05	0x170f9 /* SD1 VSELECT */
--		MX6UL_PAD_GPIO1_IO09__GPIO1_IO09	0x170f9 /* SD1 RESET */
--	>;
--};
--
- &reg_sd1_vmmc {
- 	regulator-always-on;
- };
- 
-+&uart2 {
-+	resets = <&modem_reset>;
-+};
-+
- &usdhc1 {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
--	fsl,sdio-async-interrupt-enabled;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc1>;
-+	no-1-8-v;
- 	non-removable;
-+	pm-ignore-notify;
- 	mmc-pwrseq = <&usdhc1_pwrseq>;
--
--	/* Here config the vsel pad as an normal gpio, and use
--	 * the vqmmc(gpio-regulator) method to do the IO voltage switch.
--	 * set gpio to low level select 3.3v, and high level select 1.8v
--	 * If not, when config this pin as vsel specific function,
--	 * though work normal when sdio boot up and in SDIO 3.0 mode,
--	 * but will meet issue after system resume back from mem
--	 * mode, because after system suspend in mem mode, usdhc
--	 * will lost power, so when resume back, all register
--	 * return to default state, need driver to re-config.
--	 * But for sdio wifi device, we config this device with
--	 * flag keep-power-in-suspend, so sdio wifi do nothing
--	 * during system PM, only mark re-tuning flag. When
--	 * system resume back, the original vsel bit lost, which
--	 * means the IO voltage change to 3.3v, but sdio wifi still
--	 * in SDIO3.0 mode, expect the IO voltage in 1.8v, IO
--	 * voltage mismatch happened, data transfer in this time
--	 * will meet CRC/Timeout issue.
--	 */
--	vqmmc-supply = <&reg_nvcc_sd_sel>;
-+	cap-power-off-card;
-+	/delete-property/ wakeup-source;
- 	/delete-property/ enable-sdio-wakeup;
--	/delete-property/ cd-gpios;
-+
-+	brcmf: bcrmf@1 {
-+		reg = <1>;
-+		compatible = "brcm,bcm4329-fmac";
-+	};
- };
- 
- &gpio_spi {
-diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts
 new file mode 100644
 index 000000000000..8da2a49ef54a
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts
 @@ -0,0 +1,21 @@
 +#include "imx6ull-14x14-evk-btwifi-m2-uhs.dts"
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
@@ -393,22 +191,22 @@ index 000000000000..8da2a49ef54a
 +		};
 +	};
 +};
-diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob.dts
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob.dts
 new file mode 100644
 index 000000000000..ff47001d98fb
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-oob.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob.dts
 @@ -0,0 +1,5 @@
 +#include "imx6ull-14x14-evk-btwifi-m2.dts"
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
 +
 +
 +
-diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-uhs.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-uhs.dts
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-uhs.dts b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-uhs.dts
 new file mode 100644
 index 000000000000..8b4112cac3a1
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2-uhs.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-uhs.dts
 @@ -0,0 +1,10 @@
 +#include "imx6ull-14x14-evk-btwifi-m2.dts"
 +
@@ -420,11 +218,11 @@ index 000000000000..8b4112cac3a1
 +	max-frequency = <132000000>; /* Murata - 6ULL MAX with Adapter; 6UL = 100 MHz MAX */
 +	/delete-property/ no-1-8-v;
 +};
-diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2.dts
 new file mode 100644
 index 000000000000..a9622fe60bc5
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-m2.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2.dts
 @@ -0,0 +1,18 @@
 +#include "imx6ull-14x14-evk-btwifi.dts"
 +
@@ -444,11 +242,11 @@ index 000000000000..a9622fe60bc5
 +	pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
 +	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
 +};
-diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-oob.dts b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-oob.dts
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-oob.dtsx b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-oob.dtsx
 new file mode 100644
 index 000000000000..85ea147de16f
 --- /dev/null
-+++ b/arch/arm/boot/dts/imx6ull-14x14-evk-btwifi-oob.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-oob.dtsx
 @@ -0,0 +1,10 @@
 +/*
 + * Copyright (C) 2017 NXP
