@@ -1,17 +1,20 @@
 diff --git a/arch/arm/boot/dts/nxp/imx/Makefile b/arch/arm/boot/dts/nxp/imx/Makefile
-index 12e091dc4c4c..c8003586a2ef 100644
+index 12e091dc4c4c..c2bab384e7e6 100644
 --- a/arch/arm/boot/dts/nxp/imx/Makefile
 +++ b/arch/arm/boot/dts/nxp/imx/Makefile
-@@ -339,6 +339,8 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+@@ -339,6 +339,11 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
  	imx6ul-14x14-evk-csi.dtb \
  	imx6ul-14x14-evk-emmc.dtb \
  	imx6ul-14x14-evk-btwifi.dtb \
++	imx6ul-14x14-evk-btwifi-oob.dtb \
 +	imx6ul-14x14-evk-btwifi-m2.dtb \
++	imx6ul-14x14-evk-btwifi-m2-oob.dtb \
 +	imx6ul-14x14-evk-btwifi-m2-uhs.dtb \
++	imx6ul-14x14-evk-btwifi-m2-oob-uhs.dtb \
  	imx6ul-14x14-evk-ecspi-slave.dtb \
  	imx6ul-14x14-evk-ecspi.dtb \
  	imx6ul-14x14-evk-gpmi-weim.dtb \
-@@ -369,6 +371,8 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+@@ -369,6 +374,8 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
  	imx6ull-14x14-evk.dtb \
  	imx6ull-14x14-evk-emmc.dtb \
  	imx6ull-14x14-evk-btwifi.dtb \
@@ -76,11 +79,11 @@ index 000000000000..ec58eb2e4705
 +	pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
 +	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
 +};
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-oob.dtsx b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-oob.dtsx
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-oob.dts b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-oob.dts
 new file mode 100644
 index 000000000000..90e0045fa2e4
 --- /dev/null
-+++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-oob.dtsx
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-oob.dts
 @@ -0,0 +1,10 @@
 +/*
 + * Copyright (C) 2017 NXP
@@ -92,11 +95,11 @@ index 000000000000..90e0045fa2e4
 +
 +#include "imx6ul-14x14-evk-btwifi.dts"
 +#include "imx6ul-evk-btwifi-oob.dtsi"
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsix b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsix
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsi
 new file mode 100644
-index 000000000000..951bce362425
+index 000000000000..8279ef540968
 --- /dev/null
-+++ b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsix
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsi
 @@ -0,0 +1,30 @@
 +/*
 + * Copyright (C) 2017 NXP
@@ -123,16 +126,16 @@ index 000000000000..951bce362425
 +	status = "disabled";
 +};
 +
-+&brcmf {
-+	interrupt-parent = <&gpio2>;
-+	interrupts = <15 IRQ_TYPE_LEVEL_LOW>;
-+	interrupt-names = "host-wake";
-+};
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsix b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsix
++//&brcmf {
++//	interrupt-parent = <&gpio2>;
++//	interrupts = <15 IRQ_TYPE_LEVEL_LOW>;
++//	interrupt-names = "host-wake";
++//};
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsi
 new file mode 100644
-index 000000000000..e1f16574a24e
+index 000000000000..a56fab4b21c2
 --- /dev/null
-+++ b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsix
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsi
 @@ -0,0 +1,30 @@
 +/*
 + * Copyright 2017-2019 NXP
@@ -159,11 +162,11 @@ index 000000000000..e1f16574a24e
 +	status = "disabled";
 +};
 +
-+&brcmf {
-+	interrupt-parent = <&gpio2>;
-+	interrupts = <15 IRQ_TYPE_LEVEL_LOW>;  /* M.2 WL_HOST_WAKE is active low */
-+	interrupt-names = "host-wake";
-+};
++//&brcmf {
++//	interrupt-parent = <&gpio2>;
++//	interrupts = <15 IRQ_TYPE_LEVEL_LOW>;  /* M.2 WL_HOST_WAKE is active low */
++//	interrupt-names = "host-wake";
++//};
 diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts
 new file mode 100644
 index 000000000000..8da2a49ef54a
@@ -242,11 +245,11 @@ index 000000000000..a9622fe60bc5
 +	pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
 +	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
 +};
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-oob.dtsx b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-oob.dtsx
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-oob.dts b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-oob.dts
 new file mode 100644
 index 000000000000..85ea147de16f
 --- /dev/null
-+++ b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-oob.dtsx
++++ b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-oob.dts
 @@ -0,0 +1,10 @@
 +/*
 + * Copyright (C) 2017 NXP
