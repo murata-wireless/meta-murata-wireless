@@ -107,7 +107,7 @@ iMXmickledoreDeveloperRelease="imx-mickledore-6-1-36"
 iMXnanbieldStableReleaseTag="imx-nanbield-6-6-3_r1.1"
 iMXnanbieldDeveloperRelease="imx-nanbield-6-6-3"
 
-iMXscarthgapStableReleaseTag="imx-scarthgap-6-6-23_r1.1"
+iMXscarthgapStableReleaseTag="imx-scarthgap-6-6-23_r1.0"
 iMXscarthgapDeveloperRelease="imx-scarthgap-6-6-23"
 
 imxhardknottYocto52="5.10.52_2.1.0 GA"
