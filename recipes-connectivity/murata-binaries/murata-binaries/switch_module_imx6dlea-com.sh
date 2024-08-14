@@ -516,7 +516,7 @@ function off() {
 
 function switch_to_cypress_sdio() {
   echo ""
-  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA (Cypress - SDIO)"
+  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA, 2GF (Cypress - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx6dlea-com-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint cypress
@@ -636,7 +636,7 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 2BC, 1XA, 2BZ, 2EA-SDIO, 2EA-PCIe"
+  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 2BC, 1XA, 2BZ, 2GF, 2EA-SDIO, 2EA-PCIe"
   echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2DS, CURRENT or OFF"
   echo ""
 }
@@ -653,7 +653,7 @@ case ${1^^} in
   CYW-PCIE|CX|1CX|XA|1XA|2EA-PCIE)
     switch_to_cypress_pcie
     ;;
-  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ)
+  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ|2GF)
     switch_to_cypress_sdio
     ;;
   ZM|1ZM)

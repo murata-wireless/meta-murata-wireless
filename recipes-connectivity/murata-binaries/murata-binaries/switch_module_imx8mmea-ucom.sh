@@ -516,7 +516,7 @@ function off() {
 
 function switch_to_cypress_sdio() {
   echo ""
-  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA (Cypress - SDIO)"
+  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA, 2GF (Cypress - SDIO)"
   echo "Please wait for 15 seconds (one-time only)..."
   fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint cypress
