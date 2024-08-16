@@ -22,13 +22,14 @@ SRC_URI = " \
 	file://switch_module_imx8mqea-com.sh \
 	file://WlanCalData_ext_2ANT_Dedicated_BT_1XK.conf \
 	file://cyfmac55572-pcie.txt \
-        file://cyfmac55572-sdio.txt \
-        file://cyfmac55572-sdio-ifx-demo.txt \
-        file://cyfmac55572-sdio_v2.4.3.txt \
-        file://cyfmac55572-sdio_v2.5.1.txt \
-        file://cyfmac55572-sdio-ifx-demo.txt \
+    file://cyfmac55572-sdio.txt \
+    file://cyfmac55572-sdio-ifx-demo.txt \
+    file://cyfmac55572-sdio_v2.4.3.txt \
+    file://cyfmac55572-sdio_v2.5.1.txt \
+    file://cyfmac55572-sdio-ifx-demo.txt \
 	file://CYW55560A1_001.002.087.0108.0000.sLNA.hcd \
-        file://CYW55560A1_001.002.087.0159.0010_wlcsp_iPA_sLNA_ANT0_Murata_Type2EA_FCC_max.hcd \
+    file://CYW55560A1_001.002.087.0159.0010_wlcsp_iPA_sLNA_ANT0_Murata_Type2EA_FCC_max.hcd \
+    file://CYW43012C1_003.002.024.0036.0000_Generic_UART_37_4MHz_wlbga_ref3_sLNA_dl_signed.hcd \
 	file://uartspi_n61x_v1.bin.se \
 	file://sduart_nw61x_v1.bin.se \
 	file://ot-daemon.64-bit \
@@ -100,7 +101,7 @@ do_install () {
         install -m 444 ${S}/cyw-bt-patch/CYW4335C0.ZP.hcd ${D}${sysconfdir}/firmware/BCM4335C0.ZP.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd ${D}${sysconfdir}/firmware/BCM4345C0_003.001.025.0187.0366.1MW.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd ${D}${sysconfdir}/firmware/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd
-        install -m 444 ${WORKDIR}/cyw-bt-patch/CYW43012C1_003.002.024.0034.0004.2GF.hcd ${D}${sysconfdir}/firmware/CYW43012C1_003.002.024.0034.0004.2GF.hcd
+        install -m 444 ${S}/CYW43012C1_003.002.024.0036.0000_Generic_UART_37_4MHz_wlbga_ref3_sLNA_dl_signed.hcd ${D}${sysconfdir}/firmware/CYW43012C1_003.002.024.0036.0000_Generic_UART_37_4MHz_wlbga_ref3_sLNA_dl_signed.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW43341B0.1BW.hcd ${D}${sysconfdir}/firmware/BCM43341B0.1BW.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM43430A1_001.002.009.0159.0528.1DX.hcd ${D}${sysconfdir}/firmware/BCM43430A1_001.002.009.0159.0528.1DX.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW4350C0.1BB.hcd ${D}${sysconfdir}/firmware/BCM4350C0.1BB.hcd
@@ -118,7 +119,7 @@ do_install () {
         install -m 444 ${S}/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4345C0_003.001.025.0187.0366.1MW.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM43012C0_003.001.015.0300.0266.1LV.dAnt.hcd ${D}${sysconfdir}/firmware/murata-master/_BCM43012C0_003.001.015.0300.0266.1LV.dAnt.hcd
-        install -m 444 ${WORKDIR}/cyw-bt-patch/CYW43012C1_003.002.024.0034.0004.2GF.hcd ${D}${sysconfdir}/firmware/murata-master/_CYW43012C1_003.002.024.0034.0004.2GF.hcd
+        install -m 444 ${S}/CYW43012C1_003.002.024.0036.0000_Generic_UART_37_4MHz_wlbga_ref3_sLNA_dl_signed.hcd ${D}${sysconfdir}/firmware/murata-master/_CYW43012C1_003.002.024.0036.0000_Generic_UART_37_4MHz_wlbga_ref3_sLNA_dl_signed.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW43341B0.1BW.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43341B0.1BW.hcd
         install -m 444 ${S}/cyw-bt-patch/BCM43430A1_001.002.009.0159.0528.1DX.hcd  ${D}${sysconfdir}/firmware/murata-master/_BCM43430A1_001.002.009.0159.0528.1DX.hcd
         install -m 444 ${S}/cyw-bt-patch/CYW4350C0.1BB.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4350C0.1BB.hcd
