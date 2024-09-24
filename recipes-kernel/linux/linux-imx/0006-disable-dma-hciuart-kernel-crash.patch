@@ -1,18 +1,19 @@
 diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index 33956294e0a8..e20dac871a6d 100644
+index 8d9e91057856..841d932c4b45 100644
 --- a/drivers/tty/serial/imx.c
 +++ b/drivers/tty/serial/imx.c
-@@ -1476,9 +1476,10 @@ static int imx_uart_startup(struct uart_port *port)
+@@ -1476,10 +1476,10 @@ static int imx_uart_startup(struct uart_port *port)
  
  	imx_uart_writel(sport, ucr4 & ~UCR4_DREN, UCR4);
  
 -	/* Can we enable the DMA support? */
 -	if (!uart_console(port) && imx_uart_dma_init(sport) == 0)
 -		dma_is_inited = 1;
+-
 +/*  // Disable DMA support as the Kernel crashes when we make HCI_UART as module
 + 	if (!uart_console(port) && imx_uart_dma_init(sport) == 0)
 + 		dma_is_inited = 1;
 +*/
- 
  	spin_lock_irqsave(&sport->port.lock, flags);
  
+ 	/* Reset fifo's and state machines */
