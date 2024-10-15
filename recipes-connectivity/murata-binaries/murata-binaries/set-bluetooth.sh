@@ -35,6 +35,7 @@ function prepare_for_cypress() {
      # Check for the presence of hci_uart.ko in Kernel, if it is then move/store it to /usr/share/murata_wireless dir
      move_ko
      echo "Setting up of Bluetooth for IFX is complete:"
+     echo "Please reboot the system."
   else
      restore_ko
   fi

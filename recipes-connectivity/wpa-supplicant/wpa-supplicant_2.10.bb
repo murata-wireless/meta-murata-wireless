@@ -6,7 +6,7 @@ SECTION = "network"
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://COPYING;md5=5ebcb90236d1ad640558c3d3cd3035df \
                     file://README;beginline=1;endline=56;md5=e3d2f6c2948991e37c1ca4960de84747 \
-                    file://wpa_supplicant/wpa_supplicant.c;beginline=1;endline=12;md5=76306a95306fee9a976b0ac1be70f705"
+"
 DEPENDS = "dbus libnl"
 RRECOMMENDS:${PN} = "wpa-supplicant-passphrase wpa-supplicant-cli"
 
