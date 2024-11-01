@@ -5,6 +5,7 @@ LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741
 
 SRC_URI = " \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=indrik;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
+        git://github.com/Infineon/ifx-linux-firmware;protocol=http;destsuffix=cyw-fmac-fw-ifx;name=cyw-fmac-fw-ifx \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=indrik;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=nanbield-indrik;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
         git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=master;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
@@ -27,6 +28,7 @@ SRC_URI = " \
 "
 
 SRCREV_cyw-fmac-fw="d6cd8b50b5f71ca3ba26fd88177676a688aac85b"
+SRCREV_cyw-fmac-fw-ifx="1f566522104f69adab2639d798616db1fa795d66"
 SRCREV_cyw-fmac-nvram="61b41349b5aa95227b4d2562e0d0a06ca97a6959"
 SRCREV_cyw-bt-patch="bbc63f8b15394023c4a2fd9f74565fbd0d76ae71"
 SRCREV_cyw-fmac-utils-imx32="fcdd231e9bb23db3c93c10e5dff43a1182f220c5"
@@ -117,8 +119,8 @@ do_install () {
 #   Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
 	install -m 444 ${WORKDIR}/cyw-fmac-fw/*.bin ${D}/${base_libdir}/firmware/cypress
 	install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac43022-sdio.trxs ${D}/${base_libdir}/firmware/cypress
-	install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55572-pcie.trxse ${D}/${base_libdir}/firmware/cypress
-    install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55572-sdio.trxse ${D}/${base_libdir}/firmware/cypress
+	install -m 444 ${WORKDIR}/cyw-fmac-fw-ifx/cyfmac55572-pcie.trxse ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/cyw-fmac-fw-ifx/cyfmac55572-sdio.trxse ${D}/${base_libdir}/firmware/cypress
 	install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4373-sdio.2AE.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2AE.bin
 	install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4373-sdio.2BC.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2BC.bin
 
