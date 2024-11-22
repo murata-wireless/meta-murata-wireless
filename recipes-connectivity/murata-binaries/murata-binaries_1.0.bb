@@ -18,11 +18,15 @@ SRC_URI = " \
         file://CYW55560A1_001.002.087.0159.0010_wlcsp_iPA_sLNA_ANT0_Murata_Type2EA_FCC_max.hcd \
         file://load-2ea-bt.sh \
         file://cyfmac4373.bin \
+        file://cyfmac4373.test.bin \
+        file://cyfmac4373.test.clm_blob \
+        file://cyfmac4373-usb.work.bin \
+        file://cyfmac4373-sdio.work.clm_blob \
         file://hostapd-wifi6.conf \
         file://wpa_supplicant-wifi6.conf \
 "
 
-SRCREV_cyw-fmac-fw="87ff66fdc585ee4a887f83cf6543d956eb58d654"
+SRCREV_cyw-fmac-fw="2d87fbe7494b5b7c80758d45bd9f74f904e662a6"
 SRCREV_cyw-fmac-nvram="9b7d93eb3e13b2d2ed8ce3a01338ceb54151b77a"
 SRCREV_cyw-bt-patch="32af98f8bc8a8e123b4c428af0035d74e85ae4bb"
 SRCREV_cyw-fmac-utils-imx32="fcdd231e9bb23db3c93c10e5dff43a1182f220c5"
@@ -111,6 +115,8 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55572-sdio.trxse ${D}/lib/firmware/cypress
 	install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4373-sdio.2AE.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.2AE.bin
 	install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4373-sdio.2BC.bin ${D}/lib/firmware/cypress/cyfmac4373-sdio.2BC.bin
+	install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4373-usb.2AE.bin ${D}/lib/firmware/cypress/cyfmac4373.bin
+	install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4373-sdio.2AE.clm_blob ${D}/lib/firmware/cypress/cyfmac4373.clm_blob
 
 #   Rename clm blob files accordingly
 	install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4354-sdio.1BB.clm_blob ${D}/lib/firmware/cypress/cyfmac4354-sdio.clm_blob
@@ -187,7 +193,6 @@ do_install () {
 
 #   Based on MACHINE type
     install -m 755 ${S}/set_module.sh ${D}/usr/sbin/set_module.sh
-	install -m 444 ${S}/cyfmac4373.bin ${D}/lib/firmware/cypress
 
 #	Defaults point to 2BC
     ln -sf /lib/firmware/cypress/cyfmac4373-sdio.2BC.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
@@ -196,6 +201,12 @@ do_install () {
 
 #   For loading 2EA@BT
 	install -m 755 ${WORKDIR}/load-2ea-bt.sh ${D}/usr/sbin/load-2ea-bt.sh
+
+    install -m 444 ${WORKDIR}/cyfmac4373.test.bin ${D}/lib/firmware/cypress/cyfmac4373.test.bin
+    install -m 444 ${WORKDIR}/cyfmac4373.test.clm_blob ${D}/lib/firmware/cypress/cyfmac4373.test.clm_blob
+    install -m 444 ${WORKDIR}/cyfmac4373-usb.work.bin ${D}/lib/firmware/cypress/cyfmac4373-usb.work.bin
+    install -m 444 ${WORKDIR}/cyfmac4373-sdio.work.clm_blob ${D}/lib/firmware/cypress/cyfmac4373-sdio.work.clm_blob
+
 }
 
 PACKAGES =+ "${PN}-mfgtest"
