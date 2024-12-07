@@ -471,10 +471,10 @@ function prepare_for_cypress() {
      cp /lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   2EA-SDIO|2EA-PCIE)
-     cp /lib/firmware/brcm/CYW55560A1_001.002.087.0159.0010.hcd /lib/firmware/brcm/BCM.hcd
+     cp /lib/firmware/brcm/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   2FY)
-     cp /lib/firmware/brcm/CYW55500A1_001.002.032.0034.MR244461_Generic_UART_37_4MHz_wlbga_iPA_sLNA_ANT0_0320.hcd /lib/firmware/brcm/BCM.hcd
+     cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033_FCC.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   esac
 

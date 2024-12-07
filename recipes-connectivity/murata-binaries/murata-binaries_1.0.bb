@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741
 SRC_URI = " \
         git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
         https://github.com/Infineon/ifx-linux-firmware/archive/refs/tags/release-v6.1.97-2024_1115.tar.gz;destsuffix=cyw-fmac-fw-ifx;name=cyw-fmac-fw-ifx \
-        git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=master;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
+        git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=jaculus;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=master;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=master;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
         git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=master;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
@@ -39,19 +39,16 @@ SRC_URI = " \
         file://chip-tool \
         file://chip-tool-web \
         file://brcm_patchram_plus_usb_64bit \
-        file://cyfmac55500-sdio.clm_blob \
         file://cyfmac55500-sdio.txt \
-        file://CYW55500A1_001.002.032.0034.MR244461_Generic_UART_37_4MHz_wlbga_iPA_sLNA_ANT0_0320.hcd \
-        file://wl_tool_arm64 \
 "
 
 SRC_URI[cyw-fmac-fw-ifx.sha256sum]="34f5bfac6476d849af26f945705dc5a19965825333840405ef25dcd835d521d7"
 SRCREV_nxp-linux-calibration="87197da5490dfe36da2e7c40df256a20d43ab0df"
-SRCREV_cyw-fmac-fw="d6e3ee1b8cd4306ee5f93229840d5290338011c8"
+SRCREV_cyw-fmac-fw="acc1006a873a196495ed209bd18b3f47b4128426"
 SRCREV_cyw-fmac-nvram="76931abf63d6ff069bb98ac9a57bceb4a7dc9b3f"
-SRCREV_cyw-bt-patch="f9076c94f34734a7f189c5d64f48416fdd492f8b"
-SRCREV_cyw-fmac-utils-imx32="fcdd231e9bb23db3c93c10e5dff43a1182f220c5"
-SRCREV_cyw-fmac-utils-imx64="52cc4cc6be8629781014505aa276b67e18cf6e8d"
+SRCREV_cyw-bt-patch="83f8e16423c47e195f52a06fd68ac92a20a80a9f"
+SRCREV_cyw-fmac-utils-imx32="dad9ed86bf6691910197bc91d42a45ea8175180c"
+SRCREV_cyw-fmac-utils-imx64="368bd9a4163e115468d79c238192b41f6266c523"
 SRCREV_connectedhomeip="7879111b8b17d5cb2789ffd4d634438dd2e8c52a"
 
 SRCREV_default = "${AUTOREV}"
@@ -146,9 +143,8 @@ do_install () {
 
 
 # For 2FY
-    install -m 444 ${WORKDIR}/CYW55500A1_001.002.032.0034.MR244461_Generic_UART_37_4MHz_wlbga_iPA_sLNA_ANT0_0320.hcd ${D}/${base_libdir}/firmware/brcm/CYW55500A1_001.002.032.0034.MR244461_Generic_UART_37_4MHz_wlbga_iPA_sLNA_ANT0_0320.hcd
+    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033_FCC.hcd ${D}/${base_libdir}/firmware/brcm/CYW55500A1_001.002.032.0040.0033_FCC.hcd
     install -m 444 ${WORKDIR}/cyfmac55500-sdio.txt ${D}/${base_libdir}/firmware/cypress
-    install -m 444 ${WORKDIR}/cyfmac55500-sdio.clm_blob ${D}/${base_libdir}/firmware/cypress
 
 
 #   Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
@@ -157,9 +153,15 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-fmac-fw/*.bin ${D}/${base_libdir}/firmware/cypress
 
 #   From IFX GitHub
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/*.bin ${D}/${base_libdir}/firmware/cypress
+#   install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/*.bin ${D}/${base_libdir}/firmware/cypress
     install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/*.trxse ${D}/${base_libdir}/firmware/cypress
     install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/*.trxs ${D}/${base_libdir}/firmware/cypress
+
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac43012-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac43439-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac43455-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac54591-pcie.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac54591-sdio.bin ${D}/${base_libdir}/firmware/cypress
 
     install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac4373-sdio.industrial.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2AE.bin
     install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac4373-sdio.bin ${D}/${base_libdir}/firmware/cypresscyfmac4373-sdio.2BC.bin
@@ -181,7 +183,7 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55572-sdio.2EA.clm_blob_STAIndoor  ${D}/${base_libdir}/firmware/cypress/cyfmac55572-sdio.clm_blob
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55572-pcie.2EA.clm_blob_STAIndoor  ${D}/${base_libdir}/firmware/cypress/cyfmac55572-pcie.clm_blob
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac43022-sdio.2GF.STA.clm_blob  ${D}/${base_libdir}/firmware/cypress/cyfmac43022-sdio.2GF.STA.clm_blob
-#    install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55500-sdio.2FY.clm_blob  ${D}/${base_libdir}/firmware/cypress/cyfmac55500-sdio.clm_blob
+    install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55500-sdio.2FY.clm_blob  ${D}/${base_libdir}/firmware/cypress/cyfmac55500-sdio.clm_blob
     install -m 444 ${WORKDIR}/cyw-fmac-fw/README_CLM_BLOB.txt ${D}/${base_libdir}/firmware/cypress/README_CLM_BLOB.txt
     install -m 444 ${WORKDIR}/cyw-fmac-fw/README_FW.txt ${D}/${base_libdir}/firmware/cypress/README_FW.txt
 
@@ -201,6 +203,8 @@ do_install () {
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac43439-sdio.1YN.txt ${D}/${base_libdir}/firmware/cypress/cyfmac43439-sdio.txt
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac4373-sdio.2BC.txt ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2BC.txt
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2AE.txt
+
+#   2FY has an eror with OOB
 #	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac55500-sdio.2FY.txt ${D}/${base_libdir}/firmware/cypress/cyfmac55500-sdio.txt
 
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac5557x-pcie_sdio.sant.2EA_2EC.txt ${D}/${base_libdir}/firmware/cypress/cyfmac55572-sdio.txt
@@ -227,20 +231,16 @@ do_install () {
 
 #   Copying wl tool binary to /usr/sbin
     if [ ${TARGET_ARCH} = "aarch64" ]; then
-        #To be removed (after github update)
-		install -m 755 ${WORKDIR}/wl_tool_arm64 ${D}/usr/sbin/wl_tool_arm64
 		install -m 755 ${WORKDIR}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl
 		install -m 755 ${WORKDIR}/ot-ctl.64-bit ${D}/usr/sbin/ot-ctl
 		install -m 755 ${WORKDIR}/ot-daemon.64-bit ${D}/usr/sbin/ot-daemon
 		install -m 755 ${WORKDIR}/fw_loader_imx_lnx.64-bit ${D}/usr/sbin/fw_loader_imx_lnx
-		install -m 755 ${WORKDIR}/mlanutl.64-bit ${D}/usr/share/nxp_wireless/mlanutl
+		install -m 755 ${WORKDIR}/mlanutl.64-bit ${D}/usr/sbin/mlanutl
 	else
-        #To be removed (after github update)
-		install -m 755 ${WORKDIR}/wl_tool_arm ${D}/usr/sbin/wl_tool_arm
 		install -m 755 ${WORKDIR}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
 		install -m 755 ${WORKDIR}/ot-ctl.32-bit ${D}/usr/sbin/ot-ctl
 		install -m 755 ${WORKDIR}/ot-daemon.32-bit ${D}/usr/sbin/ot-daemon
-		install -m 755 ${WORKDIR}/mlanutl.32-bit ${D}/usr/share/nxp_wireless/mlanutl
+		install -m 755 ${WORKDIR}/mlanutl.32-bit ${D}/usr/sbin/mlanutl
 	fi
 	
 #	Points default to NXP
