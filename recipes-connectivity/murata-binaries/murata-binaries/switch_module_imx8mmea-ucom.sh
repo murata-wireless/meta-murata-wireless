@@ -462,17 +462,20 @@ function prepare_for_cypress() {
   YN|1YN)
      cp /lib/firmware/brcm/CYW4343A2_001.003.016.0031.0000.1YN.hcd /lib/firmware/brcm/BCM.hcd
     ;;
+  2AE-USB|AE-USB|2BC-USB|BC-USB)
+     cp /lib/firmware/brcm/murata-master/CYW4373A0_001.001.025.0119.0000.2AE.USB_FCC.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
   2AE|AE)
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.clm_blob /lib/firmware/cypress/cyfmac4373-sdio.clm_blob
-     cp /lib/firmware/brcm/BCM4373A0.2AE.hcd /lib/firmware/brcm/BCM.hcd
+     cp /lib/firmware/brcm/BCM4373A0_001.001.025.0103.0155.FCC.CE.2AE.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   2BC|BC)
      cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
      cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
      cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.clm_blob /lib/firmware/cypress/cyfmac4373-sdio.clm_blob
-     cp /lib/firmware/brcm/BCM4373A0.2BC.hcd /lib/firmware/brcm/BCM.hcd
+     cp /lib/firmware/brcm/BCM4373A0_001.001.025.0103.0155.FCC.CE.2BC.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   XA|1XA)
      cp /lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd /lib/firmware/brcm/BCM.hcd
