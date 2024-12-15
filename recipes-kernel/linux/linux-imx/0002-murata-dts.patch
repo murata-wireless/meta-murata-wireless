@@ -1,0 +1,331 @@
+diff --git a/arch/arm/boot/dts/nxp/imx/Makefile b/arch/arm/boot/dts/nxp/imx/Makefile
+index 12e091dc4c4c..c2bab384e7e6 100644
+--- a/arch/arm/boot/dts/nxp/imx/Makefile
++++ b/arch/arm/boot/dts/nxp/imx/Makefile
+@@ -339,6 +339,11 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+ 	imx6ul-14x14-evk-csi.dtb \
+ 	imx6ul-14x14-evk-emmc.dtb \
+ 	imx6ul-14x14-evk-btwifi.dtb \
++	imx6ul-14x14-evk-btwifi-oob.dtb \
++	imx6ul-14x14-evk-btwifi-m2.dtb \
++	imx6ul-14x14-evk-btwifi-m2-oob.dtb \
++	imx6ul-14x14-evk-btwifi-m2-uhs.dtb \
++	imx6ul-14x14-evk-btwifi-m2-oob-uhs.dtb \
+ 	imx6ul-14x14-evk-ecspi-slave.dtb \
+ 	imx6ul-14x14-evk-ecspi.dtb \
+ 	imx6ul-14x14-evk-gpmi-weim.dtb \
+@@ -369,6 +374,8 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+ 	imx6ull-14x14-evk.dtb \
+ 	imx6ull-14x14-evk-emmc.dtb \
+ 	imx6ull-14x14-evk-btwifi.dtb \
++	imx6ull-14x14-evk-btwifi-m2.dtb \
++	imx6ull-14x14-evk-btwifi-m2-uhs.dtb \
+ 	imx6ull-14x14-evk-gpmi-weim.dtb \
+ 	imx6ull-9x9-evk.dtb \
+ 	imx6ull-9x9-evk-ldo.dtb \
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob-uhs.dts b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob-uhs.dts
+new file mode 100644
+index 000000000000..06168803818e
+--- /dev/null
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob-uhs.dts
+@@ -0,0 +1,2 @@
++#include "imx6ul-14x14-evk-btwifi-m2-uhs.dts"
++#include "imx6ul-evk-btwifi-m2-oob.dtsi"
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob.dts
+new file mode 100644
+index 000000000000..5826e965c2da
+--- /dev/null
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob.dts
+@@ -0,0 +1,2 @@
++#include "imx6ul-14x14-evk-btwifi-m2.dts"
++#include "imx6ul-evk-btwifi-m2-oob.dtsi"
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-uhs.dts b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-uhs.dts
+new file mode 100644
+index 000000000000..4d1687487ce1
+--- /dev/null
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-uhs.dts
+@@ -0,0 +1,10 @@
++#include "imx6ul-14x14-evk-btwifi-m2.dts"
++
++&usdhc1 {
++	pinctrl-names = "default", "state_100mhz", "state_200mhz"; /* Murata -- add 100 and 200 Mhz entries for UHS mode */
++	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
++	pinctrl-1 = <&pinctrl_usdhc1_100mhz &pinctrl_wifi>;
++	pinctrl-2 = <&pinctrl_usdhc1_200mhz &pinctrl_wifi>;
++	max-frequency = <132000000>; /* Murata - 6ULL MAX with Adapter; 6UL = 100 MHz MAX */
++	/delete-property/ no-1-8-v;
++};
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2.dts
+new file mode 100644
+index 000000000000..ec58eb2e4705
+--- /dev/null
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2.dts
+@@ -0,0 +1,18 @@
++#include "imx6ul-14x14-evk-btwifi.dts"
++
++&usdhc1_pwrseq {
++	/delete-property/ pinctrl-names;
++	/delete-property/ pinctrl-0;
++	post-power-on-delay-ms = <120>;  /* Murata -- add delay before accessing SDIO bus */
++};
++
++&pinctrl_usdhc1 {
++        fsl,pins = <
++            	MX6UL_PAD_GPIO1_IO05__GPIO1_IO05	0x17059 /* SD1 VSELECT */
++        >;
++};
++
++&usdhc1 {
++	pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
++	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
++};
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-oob.dts b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-oob.dts
+new file mode 100644
+index 000000000000..90e0045fa2e4
+--- /dev/null
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-oob.dts
+@@ -0,0 +1,10 @@
++/*
++ * Copyright (C) 2017 NXP
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include "imx6ul-14x14-evk-btwifi.dts"
++#include "imx6ul-evk-btwifi-oob.dtsi"
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsi
+new file mode 100644
+index 000000000000..951bce362425
+--- /dev/null
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsi
+@@ -0,0 +1,30 @@
++/*
++ * Copyright (C) 2017 NXP
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++&pinctrl_wifi {
++	fsl,pins = <
++		/* MUXing for WL_HOST_WAKE */
++		MX6UL_PAD_ENET2_RX_ER__GPIO2_IO15  0x0b000 /* input: 100K Pull-up */
++	>;
++};
++
++/*
++ * For WL_HOST_WAKE (OOB_IRQ) to function correctly, we must disable
++ * the secondary ethernet port (FEC2). Hardware re-work is to remove
++ * R1633 and populate R1704 with 0 Ohm resistor.
++ * Refer to Murata Hardware Reference Manual for more details.
++ */
++&fec2 {
++	status = "disabled";
++};
++
++&brcmf {
++	interrupt-parent = <&gpio2>;
++	interrupts = <15 IRQ_TYPE_LEVEL_LOW>;
++	interrupt-names = "host-wake";
++};
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsi
+new file mode 100644
+index 000000000000..e1f16574a24e
+--- /dev/null
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsi
+@@ -0,0 +1,30 @@
++/*
++ * Copyright 2017-2019 NXP
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++&pinctrl_wifi {
++	fsl,pins = <
++		/* MUXing for WL_HOST_WAKE */
++		MX6UL_PAD_ENET2_RX_ER__GPIO2_IO15  0x0b001 /* input: 100K Pull-up */
++	>;
++};
++
++/*
++ * For WL_HOST_WAKE (OOB_IRQ) to function correctly, we must disable
++ * the secondary ethernet port (FEC2). Hardware re-work is to remove
++ * R1633 and populate R1704 with 0 Ohm resistor.
++ * Refer to Murata Hardware Reference Manual for more details.
++ */
++&fec2 {
++	status = "disabled";
++};
++
++&brcmf {
++	interrupt-parent = <&gpio2>;
++	interrupts = <15 IRQ_TYPE_LEVEL_LOW>;  /* M.2 WL_HOST_WAKE is active low */
++	interrupt-names = "host-wake";
++};
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi.dtsi
+index 748e173ed351..e9a62a6486a0 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi.dtsi
+@@ -10,6 +10,13 @@
+ 
+ 
+ / {
++	modem_reset: modem-reset {
++		compatible = "gpio-reset";
++		reset-gpios = <&gpio_spi 4 GPIO_ACTIVE_LOW>;
++		reset-delay-us = <1000>;
++		#reset-cells = <0>;
++	};
++
+ 	usdhc1_pwrseq: usdhc1_pwrseq {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pinctrl_wifi>;
+@@ -80,33 +87,29 @@ &reg_sd1_vmmc {
+ 	regulator-always-on;
+ };
+ 
++&uart2 {
++	resets = <&modem_reset>;
++};
++
++
+ &usdhc1 {
+ 	#address-cells = <1>;
+ 	#size-cells = <0>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usdhc1>;
++	no-1-8-v;
+ 	non-removable;
++	pm-ignore-notify;
+ 	mmc-pwrseq = <&usdhc1_pwrseq>;
+-
+-	/* Here config the vsel pad as an normal gpio, and use
+-	 * the vqmmc(gpio-regulator) method to do the IO voltage switch.
+-	 * set gpio to low level select 3.3v, and high level select 1.8v
+-	 * If not, when config this pin as vsel specific function,
+-	 * though work normal when sdio boot up and in SDIO 3.0 mode,
+-	 * but will meet issue after system resume back from mem
+-	 * mode, because after system suspend in mem mode, usdhc
+-	 * will lost power, so when resume back, all register
+-	 * return to default state, need driver to re-config.
+-	 * But for sdio wifi device, we config this device with
+-	 * flag keep-power-in-suspend, so sdio wifi do nothing
+-	 * during system PM, only mark re-tuning flag. When
+-	 * system resume back, the original vsel bit lost, which
+-	 * means the IO voltage change to 3.3v, but sdio wifi still
+-	 * in SDIO3.0 mode, expect the IO voltage in 1.8v, IO
+-	 * voltage mismatch happened, data transfer in this time
+-	 * will meet CRC/Timeout issue.
+-	 */
+-	vqmmc-supply = <&reg_nvcc_sd_sel>;
++	cap-power-off-card;
++	/delete-property/ wakeup-source;
+ 	/delete-property/ enable-sdio-wakeup;
+ 	/delete-property/ cd-gpios;
++
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	};
+ };
+ 
+ &gpio_spi {
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts
+new file mode 100644
+index 000000000000..8da2a49ef54a
+--- /dev/null
++++ b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts
+@@ -0,0 +1,21 @@
++#include "imx6ull-14x14-evk-btwifi-m2-uhs.dts"
++#include "imx6ul-evk-btwifi-m2-oob.dtsi"
++
++&fec2 {
++	status="disabled";
++};
++
++&fec1 {
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethphy0: ethernet-phy@2 {
++			compatible = "ethernet-phy-ieee802.3-c22";
++			reg = <2>;
++			micrel,led-mode = <1>;
++			clocks = <&clks IMX6UL_CLK_ENET_REF>;
++			clock-names = "rmii-ref";
++		};
++	};
++};
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob.dts b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob.dts
+new file mode 100644
+index 000000000000..ff47001d98fb
+--- /dev/null
++++ b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob.dts
+@@ -0,0 +1,5 @@
++#include "imx6ull-14x14-evk-btwifi-m2.dts"
++#include "imx6ul-evk-btwifi-m2-oob.dtsi"
++
++
++
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-uhs.dts b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-uhs.dts
+new file mode 100644
+index 000000000000..8b4112cac3a1
+--- /dev/null
++++ b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-uhs.dts
+@@ -0,0 +1,10 @@
++#include "imx6ull-14x14-evk-btwifi-m2.dts"
++
++&usdhc1 {
++	pinctrl-names = "default", "state_100mhz", "state_200mhz"; /* Murata -- add 100 and 200 Mhz entries for UHS mode */
++	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
++	pinctrl-1 = <&pinctrl_usdhc1_100mhz &pinctrl_wifi>;
++	pinctrl-2 = <&pinctrl_usdhc1_200mhz &pinctrl_wifi>;
++	max-frequency = <132000000>; /* Murata - 6ULL MAX with Adapter; 6UL = 100 MHz MAX */
++	/delete-property/ no-1-8-v;
++};
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2.dts b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2.dts
+new file mode 100644
+index 000000000000..a9622fe60bc5
+--- /dev/null
++++ b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2.dts
+@@ -0,0 +1,18 @@
++#include "imx6ull-14x14-evk-btwifi.dts"
++
++&usdhc1_pwrseq {
++	/delete-property/ pinctrl-names;
++	/delete-property/ pinctrl-0;
++	post-power-on-delay-ms = <120>;  /* Murata -- add delay before accessing SDIO bus */
++};
++
++&pinctrl_usdhc1 {
++        fsl,pins = <
++            	MX6UL_PAD_GPIO1_IO05__GPIO1_IO05	0x17059 /* SD1 VSELECT */
++        >;
++};
++
++&usdhc1 {
++	pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
++	pinctrl-0 = <&pinctrl_usdhc1 &pinctrl_wifi>;
++};
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-oob.dts b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-oob.dts
+new file mode 100644
+index 000000000000..85ea147de16f
+--- /dev/null
++++ b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-oob.dts
+@@ -0,0 +1,10 @@
++/*
++ * Copyright (C) 2017 NXP
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include "imx6ull-14x14-evk-btwifi.dts"
++#include "imx6ul-evk-btwifi-oob.dtsi"
