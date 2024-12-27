@@ -6,9 +6,11 @@ LIC_FILES_CHKSUM = "file://${S}/nxp-linux-calibration/LICENSE;md5=ffa10f40b98be2
 SRC_URI = " \
 	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
 	file://switch_module.sh \
+	file://mlanutl.32-bit \
+	file://mlanutl.64-bit \
 "
 
-SRCREV_nxp-linux-calibration="dff222148965a83a25e6e0d372aeba9191e0959d"
+SRCREV_nxp-linux-calibration="3f04b4cd4fdfa46d210cd93cb8e343aaf643f05b"
 
 SRCREV_default = "${AUTOREV}"
 
@@ -39,21 +41,18 @@ DO_INSTALL_64BIT_BINARIES_mx8 = "yes"
 do_install () {
 	echo "Installing: "
 	install -d ${D}/usr/sbin
-	install -d ${D}/etc/udev/rules.d
 
-        # Install /lib/firmware/nxp folder
-        install -d ${D}/lib/firmware/nxp
-        install -d ${D}/lib/firmware/nxp/murata
-        install -d ${D}/lib/firmware/nxp/murata/files
-	    install -d ${D}/lib/firmware/nxp/murata/files/1XK
-        install -d ${D}/lib/firmware/nxp/murata/files/1XL
-        install -d ${D}/lib/firmware/nxp/murata/files/1ZM
-        install -d ${D}/lib/firmware/nxp/murata/files/1YM
-        install -d ${D}/lib/firmware/nxp/murata/files/2DS
-        install -d ${D}/lib/firmware/nxp/murata/files/2DL
-        install -d ${D}/lib/firmware/nxp/murata/files/2EL
-        install -d ${D}/lib/firmware/nxp/murata/files/32_bit
-        install -d ${D}/lib/firmware/nxp/murata/files/64_bit
+    # Install /lib/firmware/nxp folder
+    install -d ${D}/lib/firmware/nxp
+    install -d ${D}/lib/firmware/nxp/murata
+    install -d ${D}/lib/firmware/nxp/murata/files
+	install -d ${D}/lib/firmware/nxp/murata/files/1XK
+    install -d ${D}/lib/firmware/nxp/murata/files/1XL
+    install -d ${D}/lib/firmware/nxp/murata/files/1ZM
+    install -d ${D}/lib/firmware/nxp/murata/files/1YM
+    install -d ${D}/lib/firmware/nxp/murata/files/2DS
+    install -d ${D}/lib/firmware/nxp/murata/files/2DL
+    install -d ${D}/lib/firmware/nxp/murata/files/2EL
 
 #	Based on MACHINE type
 	install -m 755 ${S}/switch_module.sh ${D}/usr/sbin/switch_module.sh
@@ -68,9 +67,15 @@ do_install () {
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/2EL/* ${D}/lib/firmware/nxp/murata/files/2EL
 
 	install -m 444 ${S}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/lib/firmware/nxp/murata/files
-        install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/lib/firmware/nxp/murata/files
-        install -m 755 ${S}/nxp-linux-calibration/murata/switch_regions.sh ${D}/usr/sbin/switch_regions.sh
-        install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/lib/firmware/nxp/murata/README.txt
+    install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/lib/firmware/nxp/murata/files
+    install -m 755 ${S}/nxp-linux-calibration/murata/switch_regions.sh ${D}/usr/sbin/switch_regions.sh
+    install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/lib/firmware/nxp/murata/README.txt
+
+    if [ ${TARGET_ARCH} = "aarch64" ]; then
+		install -m 755 ${WORKDIR}/mlanutl.64-bit ${D}/usr/sbin/mlanutl
+	else
+		install -m 755 ${WORKDIR}/mlanutl.32-bit ${D}/usr/sbin/mlanutl
+	fi
 }
 
 PACKAGES =+ "${PN}-mfgtest"
