@@ -112,12 +112,13 @@ do_install () {
 
 #   Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
 	install -m 444 ${WORKDIR}/cyw-fmac-fw/*.bin ${D}/${base_libdir}/firmware/cypress
-	install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac43022-sdio.trxs ${D}/${base_libdir}/firmware/cypress
-	install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55572-pcie.trxse ${D}/${base_libdir}/firmware/cypress
-    install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55572-sdio.trxse ${D}/${base_libdir}/firmware/cypress
-    install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55500-sdio.trxse ${D}/${base_libdir}/firmware/cypress
-	install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4373-sdio.2AE.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2AE.bin
-	install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4373-sdio.2BC.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2BC.bin
+
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac43022-sdio.trxs ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac55500-sdio.trxse ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac55572-pcie.trxse ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac55572-sdio.trxse ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac4373-sdio.industrial.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2AE.bin
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac4373-sdio.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2BC.bin
 
 #   Rename clm blob files accordingly
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4354-sdio.1BB.clm_blob ${D}/${base_libdir}/firmware/cypress/cyfmac4354-sdio.clm_blob
