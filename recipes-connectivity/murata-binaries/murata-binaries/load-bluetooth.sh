@@ -5,6 +5,7 @@
 if [ -e /usr/share/murata_wireless/hci_uart.ko ]; then
     rmmod btbcm
     rmmod hci_uart
-    insmod /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko
+    echo "7" > /proc/sys/kernel/printk
+    insmod /usr/share/murata_wireless/btbcm.ko
     insmod /usr/share/murata_wireless/hci_uart.ko
 fi
