@@ -1,0 +1,113 @@
+do_install:append() {
+	# Remove pointless bash script
+	rm -r ${D}/lib/firmware/brcm
+	rm -r ${D}/lib/firmware/liquidio
+	rm -r ${D}/lib/firmware/matrox
+	rm -r ${D}/lib/firmware/mediatek
+	rm -r ${D}/lib/firmware/mellanox
+	rm -r ${D}/lib/firmware/meson
+	rm -r ${D}/lib/firmware/microchip
+	rm -r ${D}/lib/firmware/moxa
+	rm -r ${D}/lib/firmware/mrvl
+	rm -r ${D}/lib/firmware/vicam
+	rm -r ${D}/lib/firmware/vxge
+	rm -r ${D}/lib/firmware/wfx
+	rm -r ${D}/lib/firmware/yam
+	rm -r ${D}/lib/firmware/yamaha
+	rm -r ${D}/lib/firmware/iwlwifi*
+	rm -r ${D}/lib/firmware/LICENCE*
+	rm -r ${D}/lib/firmware/acenic
+	rm -r ${D}/lib/firmware/adaptec
+	rm -r ${D}/lib/firmware/agere_ap_fw.bin
+	rm -r ${D}/lib/firmware/agere_sta_fw.bin
+	rm -r ${D}/lib/firmware/amd
+	rm -r ${D}/lib/firmware/amd-ucode
+	rm -r ${D}/lib/firmware/3com
+	rm -r ${D}/lib/firmware/a300_pfp.fw
+	rm -r ${D}/lib/firmware/a300_pm4.fw
+	rm -r ${D}/lib/firmware/advansys
+	rm -r ${D}/lib/firmware/amdgpu
+	rm -r ${D}/lib/firmware/amphion
+	rm -r ${D}/lib/firmware/ar5523.bin
+	rm -r ${D}/lib/firmware/as*.hex
+	rm -r ${D}/lib/firmware/ath*
+	rm -r ${D}/lib/firmware/at*
+	rm -r ${D}/lib/firmware/av7110
+	rm -r ${D}/lib/firmware/bnx2
+	rm -r ${D}/lib/firmware/bnx2x
+	rm -r ${D}/lib/firmware/cadence
+	rm -r ${D}/lib/firmware/cavium
+	rm -r ${D}/lib/firmware/cirrus
+	rm -r ${D}/lib/firmware/cis
+	rm -r ${D}/lib/firmware/cnm
+	rm -r ${D}/lib/firmware/cpia2
+	rm -r ${D}/lib/firmware/cxgb3
+	rm -r ${D}/lib/firmware/cxgb4
+	rm -r ${D}/lib/firmware/dabusb
+	rm -r ${D}/lib/firmware/dpaa2
+	rm -r ${D}/lib/firmware/dsp56k
+	rm -r ${D}/lib/firmware/e100
+	rm -r ${D}/lib/firmware/edgeport
+	rm -r ${D}/lib/firmware/emi26
+	rm -r ${D}/lib/firmware/emi62
+	rm -r ${D}/lib/firmware/ene-ub6250
+	rm -r ${D}/lib/firmware/ess
+	rm -r ${D}/lib/firmware/go7007
+	rm -r ${D}/lib/firmware/i915
+	rm -r ${D}/lib/firmware/inside-secure
+	rm -r ${D}/lib/firmware/intel
+	rm -r ${D}/lib/firmware/isci
+	rm -r ${D}/lib/firmware/kaweth
+	rm -r ${D}/lib/firmware/keyspan
+	rm -r ${D}/lib/firmware/keyspan_pda
+	rm -r ${D}/lib/firmware/korg
+	rm -r ${D}/lib/firmware/mwl8k
+	rm -r ${D}/lib/firmware/mwlwifi
+	rm -r ${D}/lib/firmware/qlogic
+	rm -r ${D}/lib/firmware/r128
+	rm -r ${D}/lib/firmware/radeon
+	rm -r ${D}/lib/firmware/rsi
+	rm -r ${D}/lib/firmware/RTL8192E
+	rm -r ${D}/lib/firmware/rtl_bt
+	rm -r ${D}/lib/firmware/rtl_nic
+	rm -r ${D}/lib/firmware/rtlwifi
+	rm -r ${D}/lib/firmware/rtw88
+	rm -r ${D}/lib/firmware/rtw89
+	rm -r ${D}/lib/firmware/sb16
+	rm -r ${D}/lib/firmware/*.fw
+	rm -r ${D}/lib/firmware/*.bin
+	rm -r ${D}/lib/firmware/*.dat
+	rm -r ${D}/lib/firmware/*.dlmem
+	rm -r ${D}/lib/firmware/*.inp
+	rm -r ${D}/lib/firmware/myricom
+	rm -r ${D}/lib/firmware/ositech
+	rm -r ${D}/lib/firmware/qca
+	rm -r ${D}/lib/firmware/qcom
+	rm -r ${D}/lib/firmware/qed
+	rm -r ${D}/lib/firmware/rockchip
+	rm -r ${D}/lib/firmware/slicoss
+	rm -r ${D}/lib/firmware/sun
+	rm -r ${D}/lib/firmware/sxg
+	rm -r ${D}/lib/firmware/tehuti
+	rm -r ${D}/lib/firmware/ti
+	rm -r ${D}/lib/firmware/ti-connectivity
+	rm -r ${D}/lib/firmware/tigon
+	rm -r ${D}/lib/firmware/ti-keystone
+	rm -r ${D}/lib/firmware/ttusb-budget
+	rm -r ${D}/lib/firmware/ueagle-atm
+	rm -r ${D}/lib/firmware/libertas
+}
+
+FILES_${PN} += "/lib/firmware/brcm"
+FILES_${PN} += "/lib/firmware/brcm/murata_NVRAM"
+
+FILES_${PN} += "/lib/firmware"
+FILES_${PN} += "/lib/firmware/*"
+#FILES_${PN} += "${bindir}"
+#FILES_${PN} += "${sbindir}"
+FILES_${PN} += "{sysconfdir}/firmware"
+FILES_${PN} += "/lib"
+#FILES_${PN} += "/etc/firmware"
+
+
+
