@@ -3,13 +3,10 @@
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
-SRC_URI:append = " file://0001-patch-indrik-fmac-6-1-36.patch \
-		   file://0002-murata-dts.patch \
-		   file://0005-murata-disable-cfg-regdb.patch \
-		   file://0006-disable-dma-hciuart-kernel-crash.patch \
+SRC_URI:append = " file://0001-defconfig.patch \
+                   file://0002-murata-dts.patch \
+                   file://0006-disable-dma-hciuart-kernel-crash.patch \
 "
-
-
 
 addtask copy_defconfig_after_patch after do_patch before do_configure
 do_copy_defconfig_after_patch () {

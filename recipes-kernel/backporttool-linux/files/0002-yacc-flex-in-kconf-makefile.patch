@@ -40,7 +40,7 @@ index 98d1e6f..25c5693 100644
  	strsep(&ptr, "\n");
  
  	/* Print fw version info */
-+    brcmf_info("Murata Customized Version: imx-kirkstone-jaculus_r1.0\n");
++    brcmf_info("Murata Customized Version: imx-mickledore-jaculus_r1.0\n");
  	brcmf_info("Firmware: %s %s\n", ri->chipname, buf);
  
  	/* locate firmware version number for ethtool */
