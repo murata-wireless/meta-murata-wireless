@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=12162024
+VERSION=12192024
 
 
 ###################################################################################################
@@ -51,6 +51,7 @@ VERSION=12162024
 #  1.31     | 08/06/2024   |    RC        |    Added support for nanbield.
 #  1.32     | 11/20/2024   |    RC        |    Moved 5.10.52 support to legacy.
 #  1.33     | 12/16/2024   |    RC        |    Added support for FMAC Jaculus, BSP Scarthgap
+#  1.34     | 12/19/2024   |    RC        |    Added support for FMAC Jaculus in 6.1.36 and 5.15.32.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -146,6 +147,9 @@ iMXnanbieldindrikStableReleaseTag="imx-nanbield-indrik_r1.0"
 iMXnanbieldindrikDeveloperRelease="imx-nanbield-indrik"
 
 # Mickledore
+iMXmickledorejaculusStableReleaseTag="imx-mickledore-jaculus_r1.0"
+iMXmickledorejaculusDeveloperRelease="imx-mickledore-jaculus"
+
 iMXmickledoreindrikStableReleaseTag="imx-mickledore-indrik_r1.0"
 iMXmickledoreindrikDeveloperRelease="imx-mickledore-indrik"
 
@@ -163,6 +167,9 @@ iMXlangdalegodzillaStableReleaseTag="imx-langdale-godzilla_r1.0"
 iMXlangdalegodzillaDeveloperRelease="imx-langdale-godzilla"
 
 # Kirkstone
+iMXkirkstonejaculusStableReleaseTag="imx-kirkstone-jaculus_r1.0"
+iMXkirkstonejaculusDeveloperRelease="imx-kirkstone-jaculus"
+
 iMXkirkstoneebirahStableReleaseTag="imx-kirkstone-ebirah_r1.0"
 iMXkirkstoneebirahDeveloperRelease="imx-kirkstone-ebirah"
 
@@ -607,29 +614,29 @@ while true; do
 	echo " "
 	echo "${STEP_COUNT}) Select "\""Linux Kernel"\"" "
 	echo "------------------------"
-	echo "----------------------------------------------------------------------------"
-	echo "|Entry|   Linux Kernel   | Yocto      | FMAC Supported                     |"
-	echo "|-----|------------------|------------|------------------------------------|"
+	echo "-----------------------------------------------------------------------------------"
+	echo "|Entry|   Linux Kernel   | Yocto      | FMAC Supported                            |"
+	echo "|-----|------------------|------------|-------------------------------------------|"
 	if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
-		echo "|  1  |     ${LINUX_KERNEL_6_6_23_STR}       | scarthgap  | Jaculus                            |"
-		echo "|  2  |     ${LINUX_KERNEL_6_6_3_STR}        | nanbield   | Indrik                             |"
-		echo "|  3  |     ${LINUX_KERNEL_6_1_36_STR}       | mickledore | Godzilla, Hedorah, Indrik          |"
-		echo "|  4  |     ${LINUX_KERNEL_6_1_1_STR}        | langdale   | Fafnir, Godzilla                   |"
-		echo "|  5  |     ${LINUX_KERNEL_5_15_32_STR}      | kirkstone  | Ebirah, Fafnir, Godzilla, Indrik   |"
-		echo "|  6  |     ${LINUX_KERNEL_5_10_52_STR}      | hardknott  | Cynder,Drogon                      |"
-		echo "|  7  |     ${LINUX_KERNEL_5_4_47_STR}       | zeus       | Baragon,Spiga,Zigra                |"
-		echo "|  8  |     ${LINUX_KERNEL_4_14_98_STR}      | sumo       | Baragon,Spiga,Zigra,Kong,Manda     |"
-		echo "|  9  |     ${LINUX_KERNEL_4_9_123_STR}      | rocko      | Baragon,Spiga,Zigra,Kong,Manda     |"
-		echo "| 10  |     ${LINUX_KERNEL_4_1_15_STR}       | krogoth    | Baragon,Spiga,Zigra,Manda,Mothra   |"
+		echo "|  1  |     ${LINUX_KERNEL_6_6_23_STR}       | scarthgap  | Jaculus                                   |"
+		echo "|  2  |     ${LINUX_KERNEL_6_6_3_STR}        | nanbield   | Indrik                                    |"
+		echo "|  3  |     ${LINUX_KERNEL_6_1_36_STR}       | mickledore | Godzilla, Hedorah, Indrik, Jaculus        |"
+		echo "|  4  |     ${LINUX_KERNEL_6_1_1_STR}        | langdale   | Fafnir, Godzilla                          |"
+		echo "|  5  |     ${LINUX_KERNEL_5_15_32_STR}      | kirkstone  | Ebirah, Fafnir, Godzilla, Indrik, Jaculus |"
+		echo "|  6  |     ${LINUX_KERNEL_5_10_52_STR}      | hardknott  | Cynder,Drogon                             |"
+		echo "|  7  |     ${LINUX_KERNEL_5_4_47_STR}       | zeus       | Baragon,Spiga,Zigra                       |"
+		echo "|  8  |     ${LINUX_KERNEL_4_14_98_STR}      | sumo       | Baragon,Spiga,Zigra,Kong,Manda            |"
+		echo "|  9  |     ${LINUX_KERNEL_4_9_123_STR}      | rocko      | Baragon,Spiga,Zigra,Kong,Manda            |"
+		echo "| 10  |     ${LINUX_KERNEL_4_1_15_STR}       | krogoth    | Baragon,Spiga,Zigra,Manda,Mothra          |"
 	else
-		echo "|  1  |     ${LINUX_KERNEL_6_6_23_STR}       | scarthgap  | Jaculus                            |"
-		echo "|  2  |     ${LINUX_KERNEL_6_6_3_STR}        | nanbield   | Indrik                             |"
-		echo "|  3  |     ${LINUX_KERNEL_6_1_36_STR}       | mickledore | Godzilla, Hedorah, Indrik          |"
-		echo "|  4  |     ${LINUX_KERNEL_6_1_1_STR}        | langdale   | Fafnir, Godzilla                   |"
-		echo "|  5  |     ${LINUX_KERNEL_5_15_32_STR}      | kirkstone  | Ebirah, Fafnir, Godzilla, Indrik   |"
+		echo "|  1  |     ${LINUX_KERNEL_6_6_23_STR}       | scarthgap  | Jaculus                                   |"
+		echo "|  2  |     ${LINUX_KERNEL_6_6_3_STR}        | nanbield   | Indrik                                    |"
+		echo "|  3  |     ${LINUX_KERNEL_6_1_36_STR}       | mickledore | Godzilla, Hedorah, Indrik, Jaculus        |"
+		echo "|  4  |     ${LINUX_KERNEL_6_1_1_STR}        | langdale   | Fafnir, Godzilla                          |"
+		echo "|  5  |     ${LINUX_KERNEL_5_15_32_STR}      | kirkstone  | Ebirah, Fafnir, Godzilla, Indrik, Jaculus |"
 	fi
 
-	echo "----------------------------------------------------------------------------"
+	echo "-----------------------------------------------------------------------------------"
 	read -p "Select which entry? " LINUX_KERNEL
 
 	if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
@@ -1172,7 +1179,8 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 				echo     "|  0.   | ${EBIRAH_FMAC_STR}                                            |"
 				echo     "|  1.   | ${FAFNIR_FMAC_STR}                                            |"
 				echo     "|  2.   | ${GODZILLA_FMAC_STR}                                          |"
-				echo -e  "|  3.   | ${INDRIK_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "|  3.   | ${INDRIK_FMAC_STR}                                            |"
+				echo -e  "|  4.   | ${JACULUS_FMAC_STR} - ${GRN}Latest release${NC}                          |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1234,6 +1242,21 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 					iMXYoctoRelease="$imxkirkstoneYocto"
 					YoctoBranch="kirkstone"
 					fmacversion=${INDRIK_FMAC_STR}
+					break
+					;;
+				4)
+					# for JACULUS
+					FMAC_VERSION=${JACULUS_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: kirkstone-jaculus"
+						BRANCH_RELEASE_NAME="$iMXkirkstonejaculusStableReleaseTag"
+					else
+						#echo "DEBUG:: kirkstone-jaculus"
+						BRANCH_RELEASE_NAME="$iMXkirkstonejaculusDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxkirkstoneYocto"
+					YoctoBranch="kirkstone"
+					fmacversion=${JACULUS_FMAC_STR}
 					break
 					;;
 				*)
@@ -1299,7 +1322,8 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 				echo     "|-------|---------------------------------------------------|"
 				echo     "|  0.   | ${GODZILLA_FMAC_STR}                                          |"
 				echo     "|  1.   | ${HEDORAH_FMAC_STR}                                           |"
-				echo -e  "|  2.   | ${INDRIK_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "|  2.   | ${INDRIK_FMAC_STR}                                            |"
+				echo -e  "|  3.   | ${JACULUS_FMAC_STR} - ${GRN}Latest release${NC}                          |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1346,6 +1370,21 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 					iMXYoctoRelease="$imxmickledoreYocto"
 					YoctoBranch="mickledore"
 					fmacversion=${INDRIK_FMAC_STR}
+					break
+					;;
+				3)
+					# for JACULUS
+					FMAC_VERSION=${JACULUS_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: mickledore-jaculus"
+						BRANCH_RELEASE_NAME="$iMXmickledorejaculusStableReleaseTag"
+					else
+						#echo "DEBUG:: mickledore-jaculus"
+						BRANCH_RELEASE_NAME="$iMXmickledorejaculusDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxmickledoreYocto"
+					YoctoBranch="mickledore"
+					fmacversion=${JACULUS_FMAC_STR}
 					break
 					;;
 				*)
@@ -1436,7 +1475,8 @@ else
 				echo     "|  0.   | ${EBIRAH_FMAC_STR}                                            |"
 				echo     "|  1.   | ${FAFNIR_FMAC_STR}                                            |"
 				echo     "|  2.   | ${GODZILLA_FMAC_STR}                                          |"
-				echo -e  "|  3.   | ${INDRIK_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "|  3.   | ${INDRIK_FMAC_STR}                                            |"
+				echo -e  "|  4.   | ${JACULUS_FMAC_STR} - ${GRN}Latest release${NC}                          |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1498,6 +1538,21 @@ else
 					iMXYoctoRelease="$imxkirkstoneYocto"
 					YoctoBranch="kirkstone"
 					fmacversion=${INDRIK_FMAC_STR}
+					break
+					;;
+				4)
+					# for JACULUS
+					FMAC_VERSION=${JACULUS_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: kirkstone-jaculus"
+						BRANCH_RELEASE_NAME="$iMXkirkstonejaculusStableReleaseTag"
+					else
+						#echo "DEBUG:: kirkstone-jaculus"
+						BRANCH_RELEASE_NAME="$iMXkirkstonejaculusDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxkirkstoneYocto"
+					YoctoBranch="kirkstone"
+					fmacversion=${JACULUS_FMAC_STR}
 					break
 					;;
 				*)
@@ -1562,8 +1617,9 @@ else
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
 				echo     "|  0.   | ${GODZILLA_FMAC_STR}                                          |"
-				echo     "|  1.   | ${HEDORAH_FMAC_STR}                                          |"
-				echo -e  "|  2.   | ${INDRIK_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "|  1.   | ${HEDORAH_FMAC_STR}                                           |"
+				echo     "|  2.   | ${INDRIK_FMAC_STR}                                            |"
+				echo -e  "|  3.   | ${JACULUS_FMAC_STR} - ${GRN}Latest release${NC}                          |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1610,6 +1666,21 @@ else
 					iMXYoctoRelease="$imxmickledoreYocto"
 					YoctoBranch="mickledore"
 					fmacversion=${INDRIK_FMAC_STR}
+					break
+					;;
+				3)
+					# for JACULUS
+					FMAC_VERSION=${JACULUS_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: mickledore-jaculus"
+						BRANCH_RELEASE_NAME="$iMXmickledorejaculusStableReleaseTag"
+					else
+						#echo "DEBUG:: mickledore-jaculus"
+						BRANCH_RELEASE_NAME="$iMXmickledorejaculusDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxmickledoreYocto"
+					YoctoBranch="mickledore"
+					fmacversion=${JACULUS_FMAC_STR}
 					break
 					;;
 				*)
