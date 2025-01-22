@@ -1,5 +1,5 @@
 Title: README.txt
-Date:  June 20th, 2024
+Date:  December 19th, 2024
 
 Description: 
 ============
@@ -35,9 +35,14 @@ $./Murata_Wireless_Yocto_Build_IFX.sh
 --------------------------------------------------------------------------------------
 | Kernel release | Yocto code name  |  FMAC code name |  Release information         |
 |----------------|------------------|-----------------|------------------------------|
+| 6.6.23_2.0.0   | Scarthgap        |  Jaculus        |  imx-scarthgap-jaculus_r1.0  |
+|----------------|------------------|-----------------|------------------------------|
+| 6.6.3_1.0.0    | Nanbield         |  Indrik         |  imx-nanbield-indrik_r1.0    |
+|----------------|------------------|-----------------|------------------------------|
 | 6.1.36_2.1.0   | Mickeldore       |  Godzilla       |  imx-mickledore-godzilla_r1.0|
 |                |                  |  Hedorah        |  imx-mickledore-hedorah_r1.0 |
 |                |                  |  Indrik         |  imx-mickledore-indrik_r1.0  |
+|                |                  |  Jaculus        |  imx-mickledore-jaculus_r1.0 |
 |----------------|------------------|-----------------|------------------------------|
 | 6.1.1_1.0.0    | Langdale         |  Fafnir         |  imx-langdale-fafnir_r1.0    |
 |                |                  |  Godzilla       |  imx-langdale-godzilla_r1.0  |
@@ -46,18 +51,7 @@ $./Murata_Wireless_Yocto_Build_IFX.sh
 |                |                  |  Fafnir         |  imx-kirkstone-fafnir_r1.0   |
 |                |                  |  Godzilla       |  imx-kirkstone-godzilla_r1.0 |
 |                |                  |  Indrik         |  imx-kirkstone-indrik_r1.0   |
-|----------------|------------------|-----------------|------------------------------|
-| 5.10.52_2.1.0  | Hardknott        |  Drogon         |  imx-hardknott-drogon_r1.0   |
-|                |                  |  Cynder         |  imx-hardknott-cynder_r1.0   |
-|----------------|------------------|-----------------|------------------------------|
-| 5.4.47_2.2.0   | Zeus             |  Baragon        |  imx-zeus-baragon_r1.0       |
-|                |                  |  Spiga          |  imx-zeus-spiga_r1.0         |
-|----------------|------------------|-----------------|------------------------------|
-| 4.14.98_2.3.0  | Sumo             |  Baragon        |  imx-sumo-baragon_r1.0       |
-|                |                  |  Spiga          |  imx-sumo-spiga_r1.0         |
-|----------------|------------------|-----------------|------------------------------|
-| 4.9.123_2.3.0  | Rocko Mini       |  Baragon        |  imx-rocko-mini-baragon_r1.0 |
-|                |                  |  Spiga          |  imx-rocko-mini-spiga_r1.0   |
+|                |                  |  Jaculus        |  imx-kirkstone-jaculus_r1.0  |
 --------------------------------------------------------------------------------------
 
 Murata_Wireless_Yocto_Build_NXP.sh:
