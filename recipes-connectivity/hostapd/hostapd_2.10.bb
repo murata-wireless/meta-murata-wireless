@@ -8,11 +8,10 @@ DEPENDS = "libnl openssl"
 
 SRC_URI = " \
 	   http://w1.fi/releases/hostapd-${PV}.tar.gz \
-	   file://defconfig \
+	   file://defconfig_base \
 	   file://init \
 	   file://hostapd.service \
 	   file://udhcpd.conf \
-	   file://defconfig_base \
 	   file://0000-hostapd.patch;apply=yes \
 "
 

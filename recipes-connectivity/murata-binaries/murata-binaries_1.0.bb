@@ -82,6 +82,7 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd ${D}${sysconfdir}/firmware/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd ${D}${sysconfdir}/firmware/BCM.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}${sysconfdir}/firmware/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
+    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033_FCC.hcd ${D}${sysconfdir}/firmware/CYW55500A1_001.002.032.0040.0033_FCC.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}${sysconfdir}/firmware/README_BT_PATCHFILE.txt
 
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW4335C0.ZP.hcd    ${D}${sysconfdir}/firmware/murata-master/_BCM4335C0.ZP.hcd
@@ -101,13 +102,12 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}${sysconfdir}/firmware/murata-master/_BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd ${D}${sysconfdir}/firmware/murata-master/_BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW4373A0_001.001.025.0119.0000.2AE.USB_FCC.hcd ${D}${sysconfdir}/firmware/murata-master/_CYW4373A0_001.001.025.0119.0000.2AE.USB_FCC.hcd
+    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033_FCC.hcd ${D}${sysconfdir}/firmware/murata-master/_CYW55500A1_001.002.032.0040.0033_FCC.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}${sysconfdir}/firmware/murata-master/README_BT_PATCHFILE.txt
 
 
 # For 2FY
-    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033_FCC.hcd ${D}${sysconfdir}/firmware/CYW55500A1_001.002.032.0040.0033_FCC.hcd
     install -m 444 ${WORKDIR}/cyfmac55500-sdio.txt ${D}/lib/firmware/cypress
-
 
 #   Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
 	install -m 444 ${WORKDIR}/cyw-fmac-fw/*.bin ${D}/lib/firmware/cypress
