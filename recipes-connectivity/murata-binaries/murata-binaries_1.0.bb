@@ -48,7 +48,7 @@ SRC_URI = " \
 
 SRC_URI[cyw-fmac-fw-ifx.sha256sum]="34f5bfac6476d849af26f945705dc5a19965825333840405ef25dcd835d521d7"
 SRCREV_nxp-linux-calibration="87197da5490dfe36da2e7c40df256a20d43ab0df"
-SRCREV_cyw-fmac-fw="acc1006a873a196495ed209bd18b3f47b4128426"
+SRCREV_cyw-fmac-fw="a5cb86a5d11192ba6e7738f82b4d2dc9eeeca679"
 SRCREV_cyw-fmac-nvram="76931abf63d6ff069bb98ac9a57bceb4a7dc9b3f"
 SRCREV_cyw-bt-patch="83f8e16423c47e195f52a06fd68ac92a20a80a9f"
 SRCREV_cyw-fmac-utils-imx32="dad9ed86bf6691910197bc91d42a45ea8175180c"
@@ -192,7 +192,7 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac43439-sdio.1YN.clm_blob  ${D}/${base_libdir}/firmware/cypress/cyfmac43439-sdio.clm_blob 
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55572-sdio.2EA.clm_blob_STAIndoor  ${D}/${base_libdir}/firmware/cypress/cyfmac55572-sdio.clm_blob
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55572-pcie.2EA.clm_blob_STAIndoor  ${D}/${base_libdir}/firmware/cypress/cyfmac55572-pcie.clm_blob
-    install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac43022-sdio.2GF.STA.clm_blob  ${D}/${base_libdir}/firmware/cypress/cyfmac43022-sdio.clm_blob
+    install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac43022-sdio.2GF.IndoorSTA.clm_blob  ${D}/${base_libdir}/firmware/cypress/cyfmac43022-sdio.clm_blob
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55500-sdio.2FY.clm_blob  ${D}/${base_libdir}/firmware/cypress/cyfmac55500-sdio.clm_blob
     install -m 444 ${WORKDIR}/cyw-fmac-fw/README_CLM_BLOB.txt ${D}/${base_libdir}/firmware/cypress/README_CLM_BLOB.txt
     install -m 444 ${WORKDIR}/cyw-fmac-fw/README_FW.txt ${D}/${base_libdir}/firmware/cypress/README_FW.txt

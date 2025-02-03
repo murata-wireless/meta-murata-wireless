@@ -582,7 +582,7 @@ function switch_to_nxp_sdio() {
   restore_ko
   fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp
-  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8987-bt"
+  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8987-bt; fdt set /soc/bus@42800000/mmc@428b0000 max-frequency <134000000>"
   prepare_for_nxp_sdio
   echo "Setup complete."
   echo ""
@@ -642,7 +642,7 @@ function switch_to_nxp_ym_sdio() {
   restore_ko
   fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_sdio
-  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8997-bt"
+  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8997-bt; fdt set /soc/bus@42800000/mmc@428b0000 max-frequency <134000000>"
   prepare_for_nxp_ym_sdio
   echo "Setup complete."
   echo ""
