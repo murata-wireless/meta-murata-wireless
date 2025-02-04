@@ -447,9 +447,6 @@ function prepare_for_cypress() {
   # It needs <module.hcd> to be renamed as "BCM.hcd" and placed in /lib/firmware/brcm
 
   case $cyw_module in
-  CX|1CX)
-     cp /lib/firmware/brcm/BCM4356A2_001.003.015.0112.0410.1CX.hcd /lib/firmware/brcm/BCM.hcd
-    ;;
   DX|1DX)
      cp /lib/firmware/brcm/BCM43430A1_001.002.009.0159.0528.1DX.hcd /lib/firmware/brcm/BCM.hcd
     ;;
@@ -486,8 +483,8 @@ function prepare_for_cypress() {
   2EA-SDIO|2EA-PCIE)
      cp /lib/firmware/brcm/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd /lib/firmware/brcm/BCM.hcd
     ;;
-  2FY)
-     cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033_FCC.hcd /lib/firmware/brcm/BCM.hcd
+  2FY|FY)
+     cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2FY.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   esac
 
@@ -694,7 +691,7 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2EA-SDIO, 2EA-PCIe"
+  echo "     CYW-SDIO, CYW-PCIe, 1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2EA-SDIO, 2EA-PCIe"
   echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2DS, CURRENT or OFF"
   echo ""
 }
@@ -708,7 +705,7 @@ fi
 cyw_module=${1^^}
 
 case ${1^^} in
-  CYW-PCIE|CX|1CX|XA|1XA|2EA-PCIE)
+  CYW-PCIE|XA|1XA|2EA-PCIE)
     switch_to_cypress_pcie
     ;;
   CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ|GF|2GF|FY|2FY)
