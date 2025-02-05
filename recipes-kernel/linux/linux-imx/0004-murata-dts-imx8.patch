@@ -1,5 +1,5 @@
 diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index afc9f83f11df..5966ce4ed195 100644
+index afc9f83f11df..ac705c1918b5 100644
 --- a/arch/arm64/boot/dts/freescale/Makefile
 +++ b/arch/arm64/boot/dts/freescale/Makefile
 @@ -71,7 +71,9 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb imx8mm-evk-rpmsg.dtb imx8mm-evk-rm67191
@@ -13,6 +13,19 @@ index afc9f83f11df..5966ce4ed195 100644
  			  imx8mm-evk-rm67199.dtb imx8mm-evk-rm67191-cmd-ram.dtb imx8mm-evk-rm67199-cmd-ram.dtb \
  			  imx8mm-evk-lk.dtb imx8mm-evk-rpmsg-wm8524-lpv.dtb
  dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk-rpmsg-wm8524.dtb
+@@ -101,7 +103,11 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mn-bsh-smm-s2pro.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb imx8mn-evk-rm67191.dtb imx8mn-evk-rm67199.dtb \
+ 			  imx8mn-evk-rm67191-cmd-ram.dtb imx8mn-evk-rm67199-cmd-ram.dtb \
+ 			  imx8mn-evk-rpmsg.dtb imx8mn-evk-8mic-revE.dtb \
+-			  imx8mn-evk-8mic-swpdm.dtb imx8mn-evk-usd-wifi.dtb
++			  imx8mn-evk-8mic-swpdm.dtb imx8mn-evk-usd-wifi.dtb \
++			  imx8mn-evk-usd-m2.dtb \
++			  imx8mn-evk-usd-m2-oob.dtb \
++              imx8mn-evk-usd-m2-2ea.dtb \
++              imx8mn-evk-usd-m2-oob-2ea.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr3l-evk.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb imx8mn-ddr4-evk-rm67191.dtb imx8mn-ddr4-evk-rm67199.dtb \
+ 			  imx8mn-ddr4-evk-rm67191-cmd-ram.dtb imx8mn-ddr4-evk-rm67199-cmd-ram.dtb \
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts
 new file mode 100644
 index 000000000000..3bc289a5e8b7
@@ -129,10 +142,10 @@ index 000000000000..ac85f9fd32e2
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts
 new file mode 100644
-index 000000000000..3509e02ffb81
+index 000000000000..4fae0469ec90
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts
-@@ -0,0 +1,105 @@
+@@ -0,0 +1,109 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2019 NXP
@@ -147,6 +160,10 @@ index 000000000000..3509e02ffb81
 +		compatible = "mmc-pwrseq-simple";
 +		pinctrl-names = "default";
 +		reset-gpios = <&gpio5 11 GPIO_ACTIVE_LOW>;  /* WL REG ON */
++        /* Add time delay for 2FY */
++        post-power-on-delay-ms = <120>;
++		power-off-delay-us = <100000>;
++		status = "okay";
 +	};
 +
 +	modem_reset_usd_m2: modem-reset {
@@ -238,6 +255,79 @@ index 000000000000..3509e02ffb81
 +		compatible = "brcm,bcm4329-fmac";
 +	};
 +};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea.dts
+new file mode 100644
+index 000000000000..221f0cd74963
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea.dts
+@@ -0,0 +1,24 @@
++#include "imx8mn-evk-usd-m2.dts"
++
++
++/* Delete clashes from included DT */
++/ {
++	/delete-node/ modem-reset;
++};
++
++&uart3 {
++	/delete-property/ resets;
++};
++
++
++/* Delete clashes from included DT */
++
++&uart3 {
++  	/* For 2EA - Bluetooth */
++  	bluetooth {
++	        compatible = "infineon,cyw55572-bt";
++	        shutdown-gpios = <&gpio5 12 GPIO_ACTIVE_HIGH>;
++	        max-speed = <3000000>;
++	        brcm,requires-autobaud-mode;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob-2ea.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob-2ea.dts
+new file mode 100644
+index 000000000000..fa8b1712bf6b
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob-2ea.dts
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ */
++
++#include "imx8mn-evk-usd-m2-2ea.dts"
++
++
++&pinctrl_usdhc2_gpio {
++	fsl,pins = <
++    		MX8MN_IOMUXC_GPIO1_IO15_GPIO1_IO15	0x1c4
++    		MX8MN_IOMUXC_ECSPI2_MOSI_GPIO5_IO11	0x19  /* WL_REG_ON */
++    		MX8MN_IOMUXC_ECSPI2_MISO_GPIO5_IO12	0x19  /* BT_REG_ON */
++    		MX8MN_IOMUXC_GPIO1_IO04_GPIO1_IO4	0x1d0 /* Murata -- should be pull-up on this */
++    		MX8MN_IOMUXC_ECSPI2_SCLK_GPIO5_IO10	0x1d0 /* Murata WL_HOST_WAKE -- pull-up */
++	>;
++};
++
++
++&usdhc2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	pinctrl-assert-gpios = <&gpio1 4 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
++	/delete-property/ cd-gpios;
++	mmc-pwrseq = <&usdhc2_pwrseq>;
++	pm-ignore-notify;
++	keep-power-in-suspend;
++	non-removable;
++	cap-power-off-card;
++	brcmf: bcrmf@1 {
++		reg = <1>;
++		compatible = "brcm,bcm4329-fmac";
++	  	interrupt-parent = <&gpio5>;
++    		interrupts = <10 IRQ_TYPE_LEVEL_LOW>;
++    		interrupt-names = "host-wake";
++	};
++};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts
 new file mode 100644
 index 000000000000..d1826e7bc0f9
@@ -281,10 +371,10 @@ index 000000000000..d1826e7bc0f9
 +};
 diff --git a/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts
 new file mode 100644
-index 000000000000..c37c29c14531
+index 000000000000..88e22dc8fc4f
 --- /dev/null
 +++ b/arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts
-@@ -0,0 +1,105 @@
+@@ -0,0 +1,110 @@
 +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
 +/*
 + * Copyright 2019 NXP
@@ -299,6 +389,11 @@ index 000000000000..c37c29c14531
 +		compatible = "mmc-pwrseq-simple";
 +		pinctrl-names = "default";
 +		reset-gpios = <&gpio5 11 GPIO_ACTIVE_LOW>;  /* WL REG ON */
++        /* Add time delay for 2FY */
++		post-power-on-delay-ms = <120>;
++		power-off-delay-us = <100000>;
++		status = "okay";
++
 +	};
 +
 +	modem_reset_usd_m2: modem-reset {
@@ -390,3 +485,48 @@ index 000000000000..c37c29c14531
 +		compatible = "brcm,bcm4329-fmac";
 +	};
 +};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk-usdhc1-m2.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk-usdhc1-m2.dts
+index 5de15f59b6ff..d22be92ed2eb 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-evk-usdhc1-m2.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-evk-usdhc1-m2.dts
+@@ -22,6 +22,10 @@ usdhc1_pwrseq: usdhc1_pwrseq {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pinctrl_usdhc1_pwrseq>;
+ 		reset-gpios = <&gpio2 10 GPIO_ACTIVE_LOW>;
++        /* Add time delay for 2FY */
++		post-power-on-delay-ms = <120>;
++		power-off-delay-us = <100000>;
++		status = "okay";
+ 	};
+ };
+ 
+diff --git a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
+index 6e6d04c2be81..5695a31809db 100644
+--- a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
+@@ -174,6 +174,10 @@ reg_usdhc2_vmmc: regulator-usdhc2 {
+ 	usdhc2_pwrseq: usdhc2_pwrseq {
+ 		compatible = "mmc-pwrseq-simple";
+ 		reset-gpios = <&pcal6408 0 GPIO_ACTIVE_LOW>;
++        /* Add time delay for 2FY */
++		post-power-on-delay-ms = <120>;
++		power-off-delay-us = <100000>;
++		status = "okay";
+ 	};
+ 
+ 	bt_sco_codec: bt_sco_codec {
+diff --git a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
+index b0c6a952b346..145fe51e7e5b 100644
+--- a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
+@@ -140,6 +140,10 @@ reg_usdhc3_vmmc: regulator-usdhc3 {
+ 	usdhc3_pwrseq: usdhc3_pwrseq {
+ 		compatible = "mmc-pwrseq-simple";
+ 		reset-gpios = <&pcal6524 12 GPIO_ACTIVE_LOW>;
++        /* Add time delay for 2FY */
++		post-power-on-delay-ms = <120>;
++		power-off-delay-us = <100000>;
++		status = "okay";
+ 	};
+ 
+ 	reg_audio_pwr: regulator-audio-pwr {
