@@ -6,6 +6,36 @@ VERSION="1.0"
 
 cyw_module="none"
 
+
+function move_ko() {
+     # Check for the presence of hci_uart.ko in Kernel, if it is then move/store it to /usr/share/murata_wireless dir
+     if [ -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
+        echo "DEBUG::store() Found hci_uart.ko. Moving it murata_wireless"
+        mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
+     fi
+
+     if [ -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko ]; then
+        echo "DEBUG::store() Found btbcm.ko. Moving it murata_wireless"
+        mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko /usr/share/murata_wireless
+     fi
+
+}
+
+function restore_ko {
+     # Check for the presence of hci_uart.ko in murata_wireless
+     if [ ! -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
+        echo "DEBUG::restore() Not Found hci_uart.ko. Copying it to Kernel"
+        cp /usr/share/murata_wireless/hci_uart.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko
+     fi
+
+     if [ ! -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko ]; then
+        echo "DEBUG::restore() Not Found hci_uart.ko. Copying it to Kernel"
+        cp /usr/share/murata_wireless/btbcm.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko
+     fi
+
+}
+
+
 function current() {
   echo ""
   echo "Current setup:"
@@ -71,6 +101,8 @@ function prepare_for_cypress() {
   fi
 
 
+  # Check for the presence of hci_uart.ko and btbcm.ko in Kernel, if it is then move/store it to /usr/share/murata_wireless dir
+  move_ko
 
 }
 
@@ -83,17 +115,13 @@ function switch_to_cypress() {
 function usage() {
   echo ""
   echo "Version: $VERSION"
-  echo "Purpose: "
-  echo " 1. Sets corresponding NVRAM, CLM_BLOB and Firmware for the specified module (2AE / 2BC)."
-  echo " 2. Sets bluetooth hcd for 2EA and 2FY."
-
   echo ""
   echo "Usage:"
   echo "  $0  <module>"
   echo ""
   echo "Where:"
   echo "  <module> is one of :"
-  echo "     2AE, 2BC, 2EA, 2FY"
+  echo "     1DX,1YN,1LV,1XA,2AE,2BA,2BC,2BZ,2EA,2FY"
   echo ""
 }
 
@@ -106,7 +134,7 @@ fi
 cyw_module=${1^^}
 
 case ${1^^} in
-  2AE|2BC|2EA|2FY)
+  1DX|1YN|1LV|1XA|2AE|2BA|2BC|2BZ|2EA|2FY)
     switch_to_cypress
     ;;
   *)
