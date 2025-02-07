@@ -19,6 +19,8 @@ SRC_URI = " \
         file://hostapd-wifi6.conf \
         file://wpa_supplicant-wifi6.conf \
         file://murata_test_version.sh \
+        file://throughput-ifx.sh \
+        file://wowl-setup.sh \
 "
 
 SRC_URI[cyw-fmac-fw-ifx.sha256sum]="34f5bfac6476d849af26f945705dc5a19965825333840405ef25dcd835d521d7"
@@ -202,7 +204,8 @@ do_install () {
 	install -m 755 ${WORKDIR}/set-bluetooth.sh ${D}/usr/sbin/set-bluetooth.sh
 	install -m 755 ${WORKDIR}/switch_module.sh ${D}/usr/sbin/switch_module.sh
 	install -m 755 ${WORKDIR}/bluetooth_up.sh ${D}/usr/sbin/bluetooth_up.sh
-
+	install -m 755 ${WORKDIR}/throughput-ifx.sh ${D}/usr/sbin/throughput-ifx.sh
+	install -m 755 ${WORKDIR}/wowl-setup.sh ${D}/usr/sbin/wowl-setup.sh
 }
 
 PACKAGES =+ "${PN}-mfgtest"
