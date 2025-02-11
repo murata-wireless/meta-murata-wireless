@@ -18,6 +18,12 @@ function move_ko() {
         echo "DEBUG::store() Found hci_uart.ko. Moving it murata_wireless"
         mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
      fi
+
+     if [ -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko ]; then
+        echo "DEBUG::store() Found btbcm.ko. Moving it murata_wireless"
+        mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko /usr/share/murata_wireless
+     fi
+
 }
 
 function restore_ko {
@@ -26,13 +32,19 @@ function restore_ko {
         echo "DEBUG::restore() Not Found hci_uart.ko. Copying it to Kernel"
         cp /usr/share/murata_wireless/hci_uart.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko
      fi
+
+     if [ ! -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko ]; then
+        echo "DEBUG::restore() Not Found hci_uart.ko. Copying it to Kernel"
+        cp /usr/share/murata_wireless/btbcm.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko
+     fi
+
 }
 
 function prepare_for_cypress() {
 #  echo "IFX module : $cyw_module"
 
   if [ $cyw_module == "IFX" ]; then
-     # Check for the presence of hci_uart.ko in Kernel, if it is then move/store it to /usr/share/murata_wireless dir
+     # Check for the presence of hci_uart.ko and btbcm.ko in Kernel, if it is then move/store it to /usr/share/murata_wireless dir
      move_ko
      echo "Setting up of Bluetooth for IFX is complete:"
   else
