@@ -21,6 +21,7 @@ SRC_URI = " \
         file://murata_test_version.sh \
         file://throughput-ifx.sh \
         file://wowl-setup.sh \
+        file://wl \
 "
 
 SRC_URI[cyw-fmac-fw-ifx.sha256sum]="34f5bfac6476d849af26f945705dc5a19965825333840405ef25dcd835d521d7"
@@ -184,7 +185,8 @@ do_install () {
 
 #   Copying wl tool binary to /usr/sbin
     if [ ${TARGET_ARCH} = "aarch64" ]; then
-		install -m 755 ${WORKDIR}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl
+		install -m 755 ${WORKDIR}/wl ${D}/usr/share/murata_wireless/wl
+		install -m 755 ${WORKDIR}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl 
 	else
 		install -m 755 ${WORKDIR}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
 	fi
