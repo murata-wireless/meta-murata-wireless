@@ -1,5 +1,5 @@
 diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
-index 89abd461ab22..631be43948de 100644
+index 89abd461ab22..ad9656f66ce2 100644
 --- a/arch/arm64/configs/imx_v8_defconfig
 +++ b/arch/arm64/configs/imx_v8_defconfig
 @@ -173,15 +173,15 @@ CONFIG_BT_HIDP=y
@@ -30,7 +30,7 @@ index 89abd461ab22..631be43948de 100644
  CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
  CONFIG_BRCMSTB_GISB_ARB=y
  CONFIG_VEXPRESS_CONFIG=y
-@@ -1192,3 +1192,17 @@ CONFIG_MEMTEST=y
+@@ -1192,3 +1192,18 @@ CONFIG_MEMTEST=y
  CONFIG_VHOST_NET=m
  CONFIG_IMX_ISPMU=m
  CONFIG_IMX_ISP_REMOTEPROC=m
@@ -48,3 +48,4 @@ index 89abd461ab22..631be43948de 100644
 +CONFIG_PKCS7_MESSAGE_PARSER=y
 +CONFIG_MMC_BUS_CLOCK_GATE=y
 +CONFIG_IFX_BT_SHARED_SDIO=y
++CONFIG_BRCMFMAC_USB=y
