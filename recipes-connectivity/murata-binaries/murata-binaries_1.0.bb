@@ -13,6 +13,7 @@ SRC_URI = " \
         file://cyfmac55500-sdio.txt \
         file://set_module.sh \
         file://load-bluetooth.sh \
+        file://load-2ae-bt-hcd.sh \
         file://set-bluetooth.sh \
         file://load-2ea-bt.sh \
         file://switch_module.sh \
@@ -23,6 +24,8 @@ SRC_URI = " \
         file://throughput-ifx.sh \
         file://wowl-setup.sh \
         file://wl \
+        file://brcm_patchram_plus_usb_32bit \
+        file://brcm_patchram_plus_usb_64bit \
 "
 
 SRC_URI[cyw-fmac-fw-ifx.sha256sum]="34f5bfac6476d849af26f945705dc5a19965825333840405ef25dcd835d521d7"
@@ -186,12 +189,15 @@ do_install () {
     if [ ${TARGET_ARCH} = "aarch64" ]; then
 		install -m 755 ${WORKDIR}/wl ${D}/usr/share/murata_wireless/wl
 		install -m 755 ${WORKDIR}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl 
+		install -m 755 ${WORKDIR}/brcm_patchram_plus_usb_64bit ${D}/usr/sbin/brcm_patchram_plus_usb_64bit
 	else
 		install -m 755 ${WORKDIR}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
+		install -m 755 ${WORKDIR}/brcm_patchram_plus_usb_32bit ${D}/usr/sbin/brcm_patchram_plus_usb_32bit
 	fi
 
 #   Based on MACHINE type
     install -m 755 ${S}/set_module.sh ${D}/usr/sbin/set_module.sh
+    install -m 755 ${S}/load-2ae-bt-hcd.sh ${D}/usr/sbin/load-2ae-bt-hcd.sh
     install -m 755 ${S}/murata_test_version.sh ${D}/usr/sbin/murata_test_version.sh
 
 
