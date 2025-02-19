@@ -95,6 +95,23 @@ index 000000000000..90e0045fa2e4
 +
 +#include "imx6ul-14x14-evk-btwifi.dts"
 +#include "imx6ul-evk-btwifi-oob.dtsi"
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk.dtsi
+index 33ad0d612e80..9f844f7c4ebf 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk.dtsi
+@@ -393,10 +393,11 @@ &uart2 {
+ 	/* fsl,dte-mode; */
+ 	/* pinctrl-0 = <&pinctrl_uart2dte>; */
+ 	status = "okay";
+-
++    /*
+ 	bluetooth {
+ 		compatible = "nxp,88w8987-bt";
+ 	};
++    */
+ };
+ 
+ &usbotg1 {
 diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsi
 new file mode 100644
 index 000000000000..951bce362425
