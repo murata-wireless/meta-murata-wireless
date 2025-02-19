@@ -1,10 +1,10 @@
 diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
-index ea95f8367503..d35e1cde8421 100644
+index f076bf99e0cd..2e437df6ec70 100644
 --- a/arch/arm64/configs/imx_v8_defconfig
 +++ b/arch/arm64/configs/imx_v8_defconfig
-@@ -1161,3 +1161,5 @@ CONFIG_CORESIGHT_STM=m
- CONFIG_CORESIGHT_CPU_DEBUG=m
- CONFIG_CORESIGHT_CTI=m
- CONFIG_MEMTEST=y
+@@ -1205,3 +1205,5 @@ CONFIG_MEMTEST=y
+ CONFIG_VHOST_NET=m
+ CONFIG_IMX_ISPMU=m
+ CONFIG_IMX_ISP_REMOTEPROC=m
 +CONFIG_CFG80211_REQUIRE_SIGNED_REGDB=n
 +CONFIG_CFG80211_USE_KERNEL_REGDB_KEYS=n
