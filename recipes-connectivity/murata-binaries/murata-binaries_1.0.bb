@@ -201,12 +201,6 @@ do_install () {
     install -m 755 ${S}/load-2ae-bt-hcd.sh ${D}/usr/sbin/load-2ae-bt-hcd.sh
     install -m 755 ${S}/murata_test_version.sh ${D}/usr/sbin/murata_test_version.sh
 
-
-#	Defaults point to 2BC
-    ln -sf /${base_libdir}/firmware/cypress/cyfmac4373-sdio.2BC.txt ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.txt
-    ln -sf /${base_libdir}/firmware/cypress/cyfmac4373-sdio.2BC.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.bin
-    ln -sf /${base_libdir}/firmware/cypress/cyfmac4373-sdio.2BC.clm_blob ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.clm_blob
-
 #   For loading 2EA@BT
 	install -m 755 ${WORKDIR}/load-bluetooth.sh ${D}/usr/sbin/load-bluetooth.sh
 	install -m 755 ${WORKDIR}/set-bluetooth.sh ${D}/usr/sbin/set-bluetooth.sh
