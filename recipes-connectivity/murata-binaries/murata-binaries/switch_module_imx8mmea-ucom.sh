@@ -536,7 +536,7 @@ function switch_to_cypress_ae_usb() {
   echo ""
   echo "Setting up for 2AE (Cypress - USB)"
 
-  fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-pcie.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   fw_setenv cmd_custom
   restore_ko
@@ -551,7 +551,7 @@ function switch_to_cypress_bc_usb() {
   echo ""
   echo "Setting up for 2BC (Cypress - USB)"
 
-  fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-pcie.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   fw_setenv cmd_custom
   restore_ko

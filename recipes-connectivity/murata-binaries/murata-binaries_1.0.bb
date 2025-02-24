@@ -37,6 +37,7 @@ SRC_URI = " \
         file://mlanutl.64-bit \
         file://load-fmac.sh \
         file://load-2ea-bt.sh \
+        file://load-usb-bt.sh \
         file://hostapd-wifi6.conf \
         file://wpa_supplicant-wifi6.conf \
         file://chip-tool \
@@ -302,6 +303,7 @@ do_install () {
     install -m 755 ${WORKDIR}/test_2el_spi.sh ${D}/usr/sbin/test_2el_spi.sh
 	install -m 755 ${WORKDIR}/load-fmac.sh ${D}/usr/share/murata_wireless/load-fmac.sh
 	install -m 755 ${WORKDIR}/load-2ea-bt.sh ${D}/usr/sbin/load-2ea-bt.sh
+	install -m 755 ${WORKDIR}/load-usb-bt.sh ${D}/usr/sbin/load-usb-bt.sh
 
 
 	install -m 755 ${WORKDIR}/chip-tool ${D}/usr/sbin/chip-tool
