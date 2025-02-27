@@ -86,7 +86,7 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd ${D}/lib/firmware/brcm/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd ${D}/lib/firmware/brcm/BCM.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}/lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
-    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033_FCC.hcd ${D}/lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2FY.hcd
+    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033.2FY.hcd ${D}/lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2FY.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}/lib/firmware/brcm/README_BT_PATCHFILE.txt
 
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd   ${D}/lib/firmware/brcm/murata-master/_BCM4345C0_003.001.025.0187.0366.1MW.hcd
@@ -103,7 +103,7 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd ${D}/lib/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW4373A0_001.001.025.0119.0000.2AE.USB_FCC.hcd ${D}/lib/firmware/brcm/murata-master/_CYW4373A0_001.001.025.0119.0000.2AE.USB_FCC.hcd
-    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033.2FY.hcd ${D}/lib/firmware/brcm/murata-master/_CYW55500A1_001.002.032.0040.0033_FCC.hcd
+    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033.2FY.hcd ${D}/lib/firmware/brcm/murata-master/_CYW55500A1_001.002.032.0040.0033.2FY.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}/lib/firmware/brcm/murata-master/README_BT_PATCHFILE.txt
 
 
