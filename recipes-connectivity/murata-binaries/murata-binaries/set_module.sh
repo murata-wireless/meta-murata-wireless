@@ -66,7 +66,7 @@ function prepare_for_cypress() {
   fi
 
   if [ $cyw_module == "2FY" ]; then
-        cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033_FCC.hcd /lib/firmware/brcm/BCM.hcd
+        cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2GF.hcd /lib/firmware/brcm/BCM.hcd
         echo "Setting up of 2FY is complete:"
   fi
 

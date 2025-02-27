@@ -1,15 +1,15 @@
-#CYW955513WLIPA Rev2.03
+#CYW955513SDM2WLIPA_TAG215
 #802.11ax 1x1 Tri-Band HE20 WiFi 6/6e + BT/BLE 5.2 Combo with SDIO/SPI interface
-#test1
-NVRAMRev=$Rev: 4628 $
+#Type2FY
+NVRAMRev=$Rev: 5062 $
 sromrev=11
-boardrev=0x1203
-boardtype=0x0899
+boardrev=0x1530
+boardtype=0x0904
 boardflags=0x00400001
 boardflags2=0x00800000
 boardflags3=0x40000100
 #boardnum=57410
-macaddr=00:90:4c:2e:c0:01
+macaddr=00:90:4c:2e:c3:05
 
 #Regulatory specific
 ccode=0
@@ -167,14 +167,14 @@ AvVmid_c0=6,75,5,93,5,93,5,93,5,93,5,90,5,90,5,90,5,90
 
 low_adc_rate_en=1
 #limit Tx gain index
-txidxcap2g=0
-txidxcap5g=0
-txidxcap6g=0
+txidxcap2g=10
+txidxcap5g=10
+txidxcap6g=10
 
 # Single RANGE TPC/TSSI
 #2G OFDM
 #pa2ga0=0,8015,-676
-pa2ga0=-156,6359,-711
+pa2ga0=-156,6167,-696
 #2G CCK
 #pa2gccka0=0,8015,-676
 pa2gccka0=-110,7093,-749
@@ -183,52 +183,58 @@ pa2gccka0=-110,7093,-749
 pa5ga0=-198,5370,-617,-211,5672,-695,-191,6112,-720,-170,5778,-646
 #PA Params 6G UNII-5,6,7,8
 #pa6ga0=-157,6659,-714,-156,6675,-721,-145,6830,-731,-162,6499,-716
-pa6ga0=-137,6057,-650,-147,6141,-680,-119,6684,-706,-136,6880,-753
+pa6ga0=-137,6057,-650,-147,6141,-680,-119,6556,-698,-136,6816,-749
+
 
 # Max power and offsets
 maxp2ga0=86
-maxp5ga0=72,72,72,72
+maxp5ga0=70,70,70,70
 #Max Power on 6G UNII-5/6 and UNII-7/8
-maxp6ga0=66,62
+maxp6ga0=70,70
 
 subband5gver=0x4
 paparambwver=3
 cckpwroffset0=0
 
-pdoffset20ma0=0xf010
-pdoffset6g20ma0=0x10ff
-pdoffset6g20ma0_group1=0xed40
+# PD offsets for 2G,5G,6G
+# 2G power offset per channel 
+powoffs2gtna0=0,0,0,0,0,0,0,0,0,0,0,0,0,0
+# 5G power offset per channel for band edge channel
+powoffs5g20mtna0=0,0,0,0,0,0,0
+pdoffset20ma0=0x0000
+pdoffset6g20ma0=0x0000
+pdoffset6g20ma0_group1=0x0000
 
-cckbw202gpo=0
-cckbw20ul2gpo=0
-mcsbw202gpo=0x88554444
+cckbw202gpo=0x2220
+cckbw20ul2gpo=0x2220
+mcsbw202gpo=0xaa886666
 
-dot11agofdmhrbw202gpo=0x5444
-ofdmlrbw202gpo=0x0044
-mcsbw205glpo=0x55111110
-mcsbw205gmpo=0x55111110
-mcsbw205ghpo=0x55111110
+dot11agofdmhrbw202gpo=0x6666
+ofdmlrbw202gpo=0x0066
+mcsbw205glpo=0x66400000
+mcsbw205gmpo=0x66400000
+mcsbw205ghpo=0x66400000
 
 # ppr offsets for UNII-5/6 of 6GHz band
-mcsbw206glpo=0x87522222
+mcsbw206glpo=0x66400000
 
 # ppr offsets for UNII-7/8 of 6GHz band
-mcsbw206gmpo=0x87522222
+mcsbw206gmpo=0x66400000
 
-powoffs2gtna0=-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3,-3
-mcs1024qam2gpo=0x00aa
-mcs1024qam5glpo=0x000077
-mcs1024qam5gmpo=0x000077
-mcs1024qam5ghpo=0x000077
-mcs1024qam5gx1po=0x000077
-mcs1024qam5gx2po=0x000077
+mcs1024qam2gpo=0xffcc
+mcs1024qam5glpo=0xffffcc
+mcs1024qam5gmpo=0xffffcc
+mcs1024qam5ghpo=0xffffcc
+mcs1024qam5gx1po=0xffffcc
+mcs1024qam5gx2po=0xffffcc
 mcs8poexp=0
 mcs9poexp=0
 mcs10poexp=0
+mcs11poexp=0
 # 1024QAM rates' offset for 6GHz UNII-5/6
-mcs1024qam6glpo=0xBBBBAA
+mcs1024qam6glpo=0xffffcc
 # 1024QAM rates' offset for 6GHz UNII-7/8
-mcs1024qam6gmpo=0xBBBBAA
+mcs1024qam6gmpo=0xffffcc
 
 #UL-OFDMA PPR's accros RU's
 #currently programmed same PPR accross RU's
@@ -246,11 +252,6 @@ ruppr5g20qam16a0=0x10842
 ruppr5g20qam64a0=0x10842
 ruppr5g20qam256a0=0x18c63
 ruppr5g20qam1024a0=0x294A5
-
-# 5G power offset per channel for band edge channel
-powoffs5g20mtna0=0,0,0,0,0,0,0
-
-mcs11poexp=0
 
 # OLPC Related
 disable_olpc=0
@@ -368,11 +369,11 @@ wb_PapdLutSel_idx_2g5g=53,52
 # energy detect threshold
 ed_thresh2g=-65
 ed_thresh5g=-68
-ed_thresh6g=-68
+ed_thresh6g=-78
 # energy detect threshold for EU
 eu_edthresh2g=-65
 eu_edthresh5g=-68
-eu_edthresh6g=-68
+eu_edthresh6g=-78
 
 btldopu=0
 
@@ -447,7 +448,7 @@ mcsbw206gpo_1024qam_ht=0x66
 #        6G BW20 HE/VHT temp offset, 0.5dBm/step, rate(C11,C10)
 
 # SWDIV related
-swdiv_en=1 #To enable SW-DIV feature
+swdiv_en=0 #To enable SW-DIV feature
 swdiv_gpio=0
 swdiv_swctrl_en=2
 swdiv_swctrl_ant0=0
