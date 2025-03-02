@@ -6,6 +6,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 SRC_URI:append = " file://0003-defconfig-imx8.patch \
                    file://0004-murata-dts-imx8.patch \
                    file://0006-disable-dma-hciuart-kernel-crash.patch \
+                   file://0007-Patch-for-CYW4373-hci-up-fail-issue-for-6.1.36.patch \
 "
 
 addtask copy_defconfig_after_patch after do_patch before do_configure
