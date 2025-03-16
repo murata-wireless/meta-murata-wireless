@@ -7,6 +7,7 @@ SRC_URI:append = " file://0001-patch-jaculus-fmac-6-6-23.patch \
 		   file://0001-defconfig.patch \
 		   file://0002-murata-dts.patch \
 		   file://0006-disable-dma-hciuart-kernel-crash.patch \
+           file://0008-Patch-for-CYW4373-hci-up-fail-issue-for-6.6.23.patch \
 "
 
 addtask copy_defconfig_after_patch after do_patch before do_configure

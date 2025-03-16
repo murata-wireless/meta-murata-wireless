@@ -117,7 +117,7 @@ function prepare_for_cypress() {
      cp /lib/firmware/brcm/BCM4345C0_003.001.025.0187.0366.1MW.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   YN|1YN)
-     cp /lib/firmware/brcm/CYW4343A2_001.003.016.0031.0000.1YN.hcd /lib/firmware/brcm/BCM.hcd
+     cp /lib/firmware/brcm/CYW4343A2_001.003.016.0071.0017.1YN.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   2AE-USB|AE-USB|2BC-USB|BC-USB)
      cp /lib/firmware/brcm/murata-master/_CYW4373A0_001.001.025.0119.0000.2AE.USB_FCC.hcd /lib/firmware/brcm/BCM.hcd
