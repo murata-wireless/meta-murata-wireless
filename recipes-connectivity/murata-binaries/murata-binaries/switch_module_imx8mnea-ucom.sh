@@ -151,6 +151,11 @@ function clean_up() {
   if [ ! -e /usr/share/murata_wireless/hci_uart.ko ]; then
       cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless/hci_uart.ko 
   fi
+
+  # Delete the special file created for 2FY
+  if [ -e /etc/modprobe.d/2fy_m2.conf ]; then
+    rm /etc/modprobe.d/2fy_m2.conf
+  fi
 }
 
 function prepare_for_nxp_bt() {
@@ -528,6 +533,13 @@ function switch_to_cypress_sdio() {
   fi
 
   prepare_for_cypress
+
+  # Set sdio_idleclk_disable=1 parameter when loading brcmfmac for 2FY.
+  # The file created here is deleted in clean_up function above.
+  if [ $cyw_module == "2FY" ]; then
+     echo "options brcmfmac sdio_idleclk_disable=1" > /etc/modprobe.d/2fy_m2.conf
+  fi
+
   echo "Setup complete."
   echo ""
 }
@@ -536,7 +548,7 @@ function switch_to_cypress_ae_usb() {
   echo ""
   echo "Setting up for 2AE (Cypress - USB)"
 
-  fw_setenv fdt_file imx8mn-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mn-ea-ucom-kit_${DTB_VER}-m2_usb.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   fw_setenv cmd_custom
   restore_ko
@@ -551,7 +563,7 @@ function switch_to_cypress_bc_usb() {
   echo ""
   echo "Setting up for 2BC (Cypress - USB)"
 
-  fw_setenv fdt_file imx8mn-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mn-ea-ucom-kit_${DTB_VER}-m2_usb.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   fw_setenv cmd_custom
   restore_ko
