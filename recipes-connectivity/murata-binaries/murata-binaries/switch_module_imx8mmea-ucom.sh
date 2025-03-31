@@ -429,6 +429,40 @@ EOT
   handle_services true false
 }
 
+function prepare_for_nxp_ll_sdio() {
+  clean_up
+  prepare_for_nxp_bt
+  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
+  
+  cat <<EOT > /etc/depmod.d/nxp_depmod.conf
+# Force modprobe to search kernel/net/wireless (where the NXP
+# version of cfg80211.ko is placed) before looking in updates/net/wireless/
+# (where the Cypress version is)
+override cfg80211 * kernel/net/wireless
+
+EOT
+
+  cat <<EOT > /etc/modprobe.d/nxp_modules.conf
+# Prevent the Cypress version of cfg80211.ko from being loaded.
+blacklist cfg80211
+
+# Alias for the NXP modules
+alias sdio:c*v0471d0215* moal
+
+# Specify arguments to pass when loading the iw612 module
+options moal mod_para=nxp/wifi_mod_para.conf
+EOT
+
+  depmod -a
+
+  # Disable Cypress service and enable NXP service
+  handle_services true false
+}
+
+
 function prepare_for_cypress() {
   clean_up
   ln -s /usr/sbin/wpa_supplicant.cyw /usr/sbin/wpa_supplicant
@@ -462,7 +496,7 @@ function prepare_for_cypress() {
      cp /lib/firmware/brcm/BCM4345C0_003.001.025.0187.0366.1MW.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   YN|1YN)
-     cp /lib/firmware/brcm/CYW4343A2_001.003.016.0031.0000.1YN.hcd /lib/firmware/brcm/BCM.hcd
+     cp /lib/firmware/brcm/CYW4343A2_001.003.016.0071.0017.1YN.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   2AE-USB|AE-USB|2BC-USB|BC-USB)
      cp /lib/firmware/brcm/murata-master/_CYW4373A0_001.001.025.0119.0000.2AE.USB_FCC.hcd /lib/firmware/brcm/BCM.hcd
@@ -631,6 +665,19 @@ function switch_to_nxp_el_sdio() {
   echo ""
 }
 
+function switch_to_nxp_ll_sdio() {
+  echo ""
+  echo "Setting up for 2KL, 2LL (NXP - SDIO)"
+  restore_ko
+  fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
+  fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
+  prepare_for_nxp_ll_sdio
+  echo "Setup complete."
+  echo ""
+}
+
+
 function switch_to_nxp_xk_sdio() {
   echo ""
   echo "Setting up for 1XK, 2XK (NXP - SDIO)"
@@ -704,7 +751,7 @@ function usage() {
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
   echo "     CYW-SDIO, CYW-PCIe, 1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2EA-SDIO, 2EA-PCIe"
-  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2DS, CURRENT or OFF"
+  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2KL-SDIO, 2LL-SDIO, 2DS, CURRENT or OFF"
   echo ""
 }
 
@@ -752,6 +799,9 @@ case ${1^^} in
     ;;
   2EL|2DL)
     switch_to_nxp_el_sdio
+    ;;
+  2KL-SDIO|2LL-SDIO)
+    switch_to_nxp_ll_sdio
     ;;
   CURRENT)
     current
