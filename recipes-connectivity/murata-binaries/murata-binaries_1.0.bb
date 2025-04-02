@@ -314,6 +314,7 @@ do_install () {
 #	Copy configuration file for 2EL
 #	install -m 444 ${WORKDIR}/WlanCalData_ext.conf ${D}/${base_libdir}/firmware/nxp
     install -m 755 ${WORKDIR}/test_2el_spi.sh ${D}/usr/sbin/test_2el_spi.sh
+    install -m 755 ${WORKDIR}/test_2ll_spi.sh ${D}/usr/sbin/test_2ll_spi.sh
 	install -m 755 ${WORKDIR}/load-fmac.sh ${D}/usr/share/murata_wireless/load-fmac.sh
 	install -m 755 ${WORKDIR}/load-2ea-bt.sh ${D}/usr/sbin/load-2ea-bt.sh
 	install -m 755 ${WORKDIR}/load-usb-bt.sh ${D}/usr/sbin/load-usb-bt.sh
@@ -326,10 +327,10 @@ do_install () {
 
     # Install NXP Connectivity
     install -d ${D}${nonarch_base_libdir}/firmware/nxp
-    # Push original to murata_wireless
-    install -m 0644 ${WORKDIR}/imx-firmware/nxp/wifi_mod_para.conf    ${D}/usr/share/murata_wireless
-    # Use Combo (sduartspi) firmware for 2LL
-	install -m 755 ${WORKDIR}/wifi_mod_para.conf ${D}${nonarch_base_libdir}/firmware/nxp
+    # Keep original as is
+    install -m 0644 ${WORKDIR}/imx-firmware/nxp/wifi_mod_para.conf ${D}${nonarch_base_libdir}/firmware/nxp
+    # Push Combo (sduartspi) firmware for 2LL to murata_wireless
+	install -m 755 ${WORKDIR}/wifi_mod_para.conf ${D}/usr/share/murata_wireless
 
     # Install NXP Connectivity SD8801 firmware
     install -m 0644 ${WORKDIR}/imx-firmware/nxp/FwImage_8801_SD/ed_mac_ctrl_V1_8801.conf  ${D}${nonarch_base_libdir}/firmware/nxp
