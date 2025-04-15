@@ -1,5 +1,5 @@
 diff --git a/net/wireless/Kconfig b/net/wireless/Kconfig
-index f620acd2a0f5..3c8ce5a1175b 100644
+index 10345388ad13..596f5e76071e 100644
 --- a/net/wireless/Kconfig
 +++ b/net/wireless/Kconfig
 @@ -91,7 +91,7 @@ config CFG80211_CERTIFICATION_ONUS
