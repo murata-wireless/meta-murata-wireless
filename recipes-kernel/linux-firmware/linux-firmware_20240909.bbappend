@@ -67,7 +67,6 @@ do_install:append() {
 	rm -r ${D}/${base_libdir}/firmware/r128
 	rm -r ${D}/${base_libdir}/firmware/radeon
 	rm -r ${D}/${base_libdir}/firmware/rsi
-	rm -r ${D}/${base_libdir}/firmware/RTL8192E
 	rm -r ${D}/${base_libdir}/firmware/rtl_bt
 	rm -r ${D}/${base_libdir}/firmware/rtl_nic
 	rm -r ${D}/${base_libdir}/firmware/rtlwifi

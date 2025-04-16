@@ -1,8 +1,8 @@
 diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
-index f076bf99e0cd..e430cbbfbe5a 100644
+index 89abd461ab22..ad9656f66ce2 100644
 --- a/arch/arm64/configs/imx_v8_defconfig
 +++ b/arch/arm64/configs/imx_v8_defconfig
-@@ -174,15 +174,15 @@ CONFIG_BT_HIDP=y
+@@ -173,15 +173,15 @@ CONFIG_BT_HIDP=y
  CONFIG_BT_LEDS=y
  # CONFIG_BT_DEBUGFS is not set
  CONFIG_BT_HCIBTUSB=m
@@ -21,7 +21,7 @@ index f076bf99e0cd..e430cbbfbe5a 100644
  CONFIG_CFG80211=y
  CONFIG_NL80211_TESTMODE=y
  CONFIG_CFG80211_WEXT=y
-@@ -218,7 +218,7 @@ CONFIG_PCI_EPF_TEST=y
+@@ -217,7 +217,7 @@ CONFIG_PCI_EPF_TEST=y
  CONFIG_PCI_NXP_RPMSG=y
  CONFIG_DEVTMPFS=y
  CONFIG_DEVTMPFS_MOUNT=y
@@ -30,7 +30,7 @@ index f076bf99e0cd..e430cbbfbe5a 100644
  CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
  CONFIG_BRCMSTB_GISB_ARB=y
  CONFIG_VEXPRESS_CONFIG=y
-@@ -1205,3 +1205,18 @@ CONFIG_MEMTEST=y
+@@ -1192,3 +1192,18 @@ CONFIG_MEMTEST=y
  CONFIG_VHOST_NET=m
  CONFIG_IMX_ISPMU=m
  CONFIG_IMX_ISP_REMOTEPROC=m

@@ -1,8 +1,8 @@
 diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index e9c214b0ee27..0204c973b71f 100644
+index 8d9e91057856..841d932c4b45 100644
 --- a/drivers/tty/serial/imx.c
 +++ b/drivers/tty/serial/imx.c
-@@ -1492,10 +1492,10 @@ static int imx_uart_startup(struct uart_port *port)
+@@ -1476,10 +1476,10 @@ static int imx_uart_startup(struct uart_port *port)
  
  	imx_uart_writel(sport, ucr4 & ~UCR4_DREN, UCR4);
  
