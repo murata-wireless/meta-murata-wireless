@@ -12,8 +12,7 @@ SRCREV_nxp-linux-calibration="fe8c2c6e418360f6fe356199b3b5016c375965eb"
 
 SRCREV_default = "${AUTOREV}"
 
-S = "${WORKDIR}"
-B = "${WORKDIR}"
+S = "${WORKDIR}/nxp-linux-calibration"
 DEPENDS = " libnl "
 
 do_compile () {

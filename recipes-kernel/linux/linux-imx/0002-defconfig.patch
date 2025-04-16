@@ -1,8 +1,8 @@
 diff --git a/arch/arm/configs/imx_v7_defconfig b/arch/arm/configs/imx_v7_defconfig
-index 472dff26b4b3..d6f9087fd2a1 100644
+index 1680d7d78f55..cad166523522 100644
 --- a/arch/arm/configs/imx_v7_defconfig
 +++ b/arch/arm/configs/imx_v7_defconfig
-@@ -595,3 +595,5 @@ CONFIG_CRYPTO_SM4_GENERIC=m
+@@ -598,3 +598,5 @@ CONFIG_CRYPTO_SM4_GENERIC=m
  CONFIG_CRYPTO_ARIA=m
  CONFIG_CRYPTO_HCTR2=m
  CONFIG_CRYPTO_SM3_GENERIC=m
