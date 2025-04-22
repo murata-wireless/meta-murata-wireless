@@ -4,15 +4,17 @@ LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://${S}/nxp-linux-calibration/LICENSE;md5=ffa10f40b98be2c2bc9608f56827ed23"
 
 SRC_URI = " \
-	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-6-6-3;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
+	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
 	file://switch_module.sh \
 "
 
-SRCREV_nxp-linux-calibration="fe8c2c6e418360f6fe356199b3b5016c375965eb"
+SRCREV_nxp-linux-calibration="843edffde6d9afb3712fd278be59d0163ca458f0"
 
 SRCREV_default = "${AUTOREV}"
 
-S = "${WORKDIR}/nxp-linux-calibration"
+S = "${WORKDIR}/sources"
+UNPACKDIR = "${S}"
+
 DEPENDS = " libnl "
 
 do_compile () {
@@ -82,6 +84,7 @@ FILES:${PN} += "{sysconfdir}/firmware/nxp"
 FILES:${PN} += "{sysconfdir}/firmware/nxp/murata"
 FILES:${PN} += "{sysconfdir}/firmware/nxp/murata/files"
 FILES:${PN} += "{sysconfdir}/firmware/nxp/murata/1XK"
+#FILES:${PN} += "${D}/usr/sbin/switch_module.sh"
 #FILES:${PN} += "/usr/sbin/wpa_supplicant"
 
 INSANE_SKIP:${PN} += "build-deps"

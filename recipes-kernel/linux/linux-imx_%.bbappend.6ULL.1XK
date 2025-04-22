@@ -3,7 +3,7 @@
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
-SRC_URI:append = "  file://2EL-murata-hex.patch \
+SRC_URI:append = "  file://1XK-murata-hex.patch \
 "
 
 addtask copy_defconfig_after_patch after do_patch before do_configure
