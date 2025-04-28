@@ -8389,7 +8389,7 @@ index a194b0e68eb5..9a71eea8798a 100644
  	strsep(&ptr, "\n");
  
  	/* Print fw version info */
-+    brcmf_info("Murata Customized Version: imx-scarthgap-jaculus_r1.0\n");
++    brcmf_info("Murata Customized Version: imx-scarthgap-jaculus_r1.1\n");
  	brcmf_info("Firmware: %s %s\n", ri->chipname, buf);
  
  	/* locate firmware version number for ethtool */

@@ -85,6 +85,10 @@ function clean_up() {
       cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko /usr/share/murata_wireless/btbcm.ko 
   fi
 
+  # Delete the special file created for 2FY
+  if [ -e /etc/modprobe.d/2fy_m2.conf ]; then
+    rm /etc/modprobe.d/2fy_m2.conf
+  fi
 }
 
 
@@ -143,7 +147,7 @@ function prepare_for_cypress() {
   2EA-SDIO|2EA-PCIE)
      cp /lib/firmware/brcm/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd /lib/firmware/brcm/BCM.hcd
     ;;
-  2FY|FY)
+  2FY|FY|2GY|GY)
      cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2FY.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   esac
@@ -186,6 +190,12 @@ function switch_to_cypress_sdio() {
 #     fw_setenv cmd_custom
 #     restore_ko
 #  fi
+
+  # Set sdio_idleclk_disable=1 parameter when loading brcmfmac for 2FY.
+  # The file created here is deleted in clean_up function above.
+  if [ $cyw_module == "2FY" ] || [ $cyw_module == "2GY" ]; then
+     echo "options brcmfmac sdio_idleclk_disable=1" > /etc/modprobe.d/2fy_m2.conf
+  fi
 
   prepare_for_cypress
   echo "Setup complete."
