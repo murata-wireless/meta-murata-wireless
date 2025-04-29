@@ -1,5 +1,5 @@
 Title: README-IFX.txt
-Date:  December 19th, 2024
+Date:  April 28th, 2025
 
 Description: 
 ============
@@ -34,7 +34,9 @@ $./Murata_Wireless_Yocto_Build_IFX.sh
 --------------------------------------------------------------------------------------
 | Kernel release | Yocto code name  |  FMAC code name |  Release information         |
 |----------------|------------------|-----------------|------------------------------|
-| 6.6.23_2.0.0   | Scarthgap        |  Jaculus        |  imx-scarthgap-jaculus_r1.0  |
+| 6.6.52_2.2.0   | Scarthgap        |  Jaculus        |  imx-scarthgap52-jaculus_r1.0|
+|----------------|------------------|-----------------|------------------------------|
+| 6.6.23_2.0.0   | Scarthgap        |  Jaculus        |  imx-scarthgap-jaculus_r1.1  |
 |----------------|------------------|-----------------|------------------------------|
 | 6.6.3_1.0.0    | Nanbield         |  Indrik         |  imx-nanbield-indrik_r1.0    |
 |----------------|------------------|-----------------|------------------------------|
