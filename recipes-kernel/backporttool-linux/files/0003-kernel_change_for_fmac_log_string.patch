@@ -1,0 +1,12 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+index 5c9ac47..1b69836 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+@@ -310,6 +310,7 @@ int brcmf_c_preinit_dcmds(struct brcmf_if *ifp)
+ 	strsep(&ptr, "\n");
+ 
+ 	/* Print fw version info */
++	brcmf_info("Murata Customized Version: imx-mickledore-godzilla_r3.0\n");
+ 	brcmf_info("Firmware: %s %s\n", ri->chipname, buf);
+ 
+ 	/* locate firmware version number for ethtool */
