@@ -10,7 +10,7 @@ SRC_URI = " \
 	file://mlanutl.64-bit \
 "
 
-SRCREV_nxp-linux-calibration="3f04b4cd4fdfa46d210cd93cb8e343aaf643f05b"
+SRCREV_nxp-linux-calibration="a2e2e8090548c59f655ecd3f971565e9bce8cc74"
 
 SRCREV_default = "${AUTOREV}"
 
