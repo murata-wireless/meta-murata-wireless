@@ -2,13 +2,16 @@
 # Released under the MIT license (see COPYING.MIT for the terms)
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
-
-SRC_URI:append = "  file://1YM-murata-hex.patch \
+SRC_URI:append = "  file://0003-defconfig-imx8.patch \
+                    file://1YM-murata-hex.patch \
 "
 
-addtask copy_defconfig_after_patch after do_patch before do_configure
-do_copy_defconfig_after_patch () {
-    # copy latest imx_v8_defconfig to use
-    cp ${S}/arch/arm64/configs/imx_v8_defconfig ${B}/.config
-    cp ${S}/arch/arm64/configs/imx_v8_defconfig ${B}/../defconfig
-}
+#SRC_URI:append = "  file://2EL-murata-hex.patch \
+#"
+
+#addtask copy_defconfig_after_patch after do_patch before do_configure
+#do_copy_defconfig_after_patch () {
+#    # copy latest imx_v8_defconfig to use
+#    cp ${S}/arch/arm64/configs/imx_v8_defconfig ${B}/.config
+#    cp ${S}/arch/arm64/configs/imx_v8_defconfig ${B}/../defconfig
+#}
