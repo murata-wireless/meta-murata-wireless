@@ -8,7 +8,7 @@ SRC_URI = " \
 	file://switch_module.sh \
 "
 
-SRCREV_nxp-linux-calibration="843edffde6d9afb3712fd278be59d0163ca458f0"
+SRCREV_nxp-linux-calibration="a2e2e8090548c59f655ecd3f971565e9bce8cc74"
 
 SRCREV_default = "${AUTOREV}"
 
