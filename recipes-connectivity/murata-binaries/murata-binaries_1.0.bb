@@ -45,6 +45,7 @@ SRC_URI = " \
         file://chip-tool \
         file://chip-tool-web \
         file://brcm_patchram_plus_usb_64bit \
+        file://brcm_patchram_plus_usb_32bit \
         file://cyfmac55500-sdio.txt \
         file://ot-daemon \
         file://ot-ctl \
@@ -230,11 +231,17 @@ do_install () {
 		install -m 755 ${WORKDIR}/sources/ot-daemon ${D}/usr/share/murata_wireless
 		install -m 755 ${WORKDIR}/sources/fw_loader_imx_lnx.64-bit ${D}/usr/sbin/fw_loader_imx_lnx
 		install -m 755 ${WORKDIR}/sources/mlanutl.64-bit ${D}/usr/sbin/mlanutl
+
+		install -m 755 ${WORKDIR}/sources/chip-tool ${D}/usr/sbin/chip-tool
+		install -m 755 ${WORKDIR}/sources/chip-tool-web ${D}/usr/sbin/chip-tool-web
+		install -m 755 ${WORKDIR}/sources/brcm_patchram_plus_usb_64bit ${D}/usr/sbin/brcm_patchram_plus_usb_64bit
+
 	else
 		install -m 755 ${WORKDIR}/sources/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
 		install -m 755 ${WORKDIR}/sources/ot-ctl.32-bit ${D}/usr/sbin/ot-ctl
 		install -m 755 ${WORKDIR}/sources/ot-daemon.32-bit ${D}/usr/sbin/ot-daemon
 		install -m 755 ${WORKDIR}/sources/mlanutl.32-bit ${D}/usr/sbin/mlanutl
+		install -m 755 ${WORKDIR}/sources/brcm_patchram_plus_usb_32bit ${D}/usr/sbin/brcm_patchram_plus_usb_32bit
 	fi
 	
 #	Points default to NXP
@@ -306,11 +313,7 @@ do_install () {
 	install -m 755 ${WORKDIR}/sources/load-2ea-bt.sh ${D}/usr/sbin/load-2ea-bt.sh
 	install -m 755 ${WORKDIR}/sources/load-usb-bt.sh ${D}/usr/sbin/load-usb-bt.sh
 
-
-	install -m 755 ${WORKDIR}/sources/chip-tool ${D}/usr/sbin/chip-tool
-	install -m 755 ${WORKDIR}/sources/chip-tool-web ${D}/usr/sbin/chip-tool-web
 	install -m 755 ${WORKDIR}/sources/connectedhomeip/credentials/production/paa-root-certs/* ${D}/usr/share/murata_wireless
-	install -m 755 ${WORKDIR}/sources/brcm_patchram_plus_usb_64bit ${D}/usr/sbin/brcm_patchram_plus_usb_64bit
 
     # Install NXP Connectivity
     install -d ${D}${nonarch_base_libdir}/firmware/nxp
@@ -401,4 +404,4 @@ FILES:${PN}-mfgtest = " \
 INSANE_SKIP:${PN} += "build-deps"
 INSANE_SKIP:${PN} += "file-rdeps"
 INSANE_SKIP:${PN} += "already-stripped"
-
+INSANE_SKIP = "32bit-time"
