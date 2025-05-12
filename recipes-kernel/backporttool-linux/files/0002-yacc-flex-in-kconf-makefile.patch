@@ -1,0 +1,60 @@
+diff --git a/Makefile b/Makefile
+index 548d813..4f8c9be 100644
+--- a/Makefile
++++ b/Makefile
+@@ -3,7 +3,6 @@
+ #
+ 
+ ifeq ($(KERNELRELEASE),)
+-
+ MAKEFLAGS += --no-print-directory
+ SHELL := /bin/bash
+ BACKPORT_DIR := $(shell pwd)
+diff --git a/Makefile.real b/Makefile.real
+index 6550802..338af69 100644
+--- a/Makefile.real
++++ b/Makefile.real
+@@ -19,11 +19,12 @@ menuconfig:
+ .PHONY: listnewconfig oldaskconfig oldconfig \
+ 	silentoldconfig olddefconfig oldnoconfig \
+ 	allnoconfig allyesconfig allmodconfig \
+-	alldefconfig randconfig
+-listnewconfig oldaskconfig oldconfig \
+-silentoldconfig olddefconfig oldnoconfig \
+-allnoconfig allyesconfig allmodconfig \
+-alldefconfig randconfig:
++	alldefconfig randconfig \
++	listnewconfig oldaskconfig oldconfig \
++	silentoldconfig olddefconfig oldnoconfig \
++	allnoconfig allyesconfig allmodconfig \
++	alldefconfig
++randconfig:
+ 	@$(MAKE) -C kconf conf
+ 	@./kconf/conf --$@ Kconfig
+ 
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+index 98d1e6f..25c5693 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
+@@ -491,6 +491,7 @@ int brcmf_c_preinit_dcmds(struct brcmf_if *ifp)
+ 	strsep(&ptr, "\n");
+ 
+ 	/* Print fw version info */
++    brcmf_info("Murata Customized Version: imx-kirkstone-jaculus_r1.0\n");
+ 	brcmf_info("Firmware: %s %s\n", ri->chipname, buf);
+ 
+ 	/* locate firmware version number for ethtool */
+diff --git a/kconf/Makefile b/kconf/Makefile
+index 2004c44..8f2c01d 100644
+--- a/kconf/Makefile
++++ b/kconf/Makefile
+@@ -17,7 +17,7 @@ clean:
+ zconf.tab.c: zconf.lex.c
+ 
+ %.tab.c: %.y
+-	$(YACC) -o$@ -t -l $<
++	yacc -o$@ -t -l $<
+ 
+ %.lex.c: %.l
+-	$(LEX) -o$@ -L $<
++	flex -o$@ -L $<

@@ -1,0 +1,3 @@
+KERNEL_CONFIG_FRAGMENTS:append_am57xx-evm = " ${WORKDIR}/0001-murata-fmac-defconfig.cfg"
+SRC_URI += " file://0001-murata-fmac-defconfig.cfg"
+KERNEL_CONFIG_FRAGMENTS:append_am57xx-evm = " ${WORKDIR}/0001-murata-fmac-defconfig.cfg"
