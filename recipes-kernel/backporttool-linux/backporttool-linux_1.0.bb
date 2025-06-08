@@ -9,15 +9,13 @@ LICENSE = "GPL-2.0-only"
 
 LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
-
 SRC_URI =  " \
-    git://github.com/murata-wireless/cyw-fmac;protocol=http;branch=imx-mickledore-jaculus \
+    https://github.com/Infineon/ifx-backports/archive/refs/tags/release-v6.1.97-2024_1115.tar.gz;protocol=http;destsuffix=cyw-fmac;name=cyw-fmac \
     file://0002-yacc-flex-in-kconf-makefile.patch;apply=yes \
 "
 
-SRCREV = "649b8c15e969ceca698531b1310a9ca563d1c2f9"
-S = "${WORKDIR}/git"
-
+SRC_URI[cyw-fmac.sha256sum]="9c09ec7053db61339c7b59c1d5de1d3129fd86edd5bbe952693e3158c9663703"
+S = "${WORKDIR}/ifx-backports-release-v6.1.97-2024_1115/v6.1.97-backports"
 
 EXTRA_OEMAKE = "KLIB_BUILD=${STAGING_KERNEL_DIR} KLIB=${D} DESTDIR=${D}"
 
