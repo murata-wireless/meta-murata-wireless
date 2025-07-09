@@ -4,7 +4,7 @@ LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
 SRC_URI = " \
-        https://github.com/Infineon/ifx-linux-firmware/archive/refs/tags/release-v6.1.97-2025_0219.tar.gz;destsuffix=cyw-fmac-fw-ifx;name=cyw-fmac-fw-ifx \
+        https://github.com/Infineon/ifx-linux-firmware/archive/refs/tags/release-v6.1.110-2025_0602.tar.gz;destsuffix=cyw-fmac-fw-ifx;name=cyw-fmac-fw-ifx \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=kraken;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=kraken;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=master;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
@@ -27,8 +27,8 @@ SRC_URI = " \
         file://brcm_patchram_plus_usb_64bit \
 "
 
-SRC_URI[cyw-fmac-fw-ifx.sha256sum]="1ff021a1b3ef1608f5c0ad4b39fec8e0f5cb8c204d178f1de0f8215d06abc8d9"
-SRCREV_cyw-fmac-fw="a5cb86a5d11192ba6e7738f82b4d2dc9eeeca679"
+SRC_URI[cyw-fmac-fw-ifx.sha256sum]="ab5934c3ee44ea2caced3d3fc9e3439d20c31cc03458946d0360f4f6cd8e24de"
+SRCREV_cyw-fmac-fw="0ab939767e0f5f05626858efbb7114fb193211fb"
 SRCREV_cyw-fmac-nvram="146d1438372b6c4857f92b8769b91c1801d3ede2"
 SRCREV_cyw-bt-patch="23de75a4e5384d16e8478f668b769b0d24ede0de"
 SRCREV_cyw-fmac-utils-imx32="dad9ed86bf6691910197bc91d42a45ea8175180c"
@@ -116,17 +116,17 @@ do_install () {
 #   From Murata GitHub
     install -m 444 ${WORKDIR}/cyw-fmac-fw/*.bin ${D}/${base_libdir}/firmware/cypress
 #   From IFX GitHub
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2025_0219/firmware/cyfmac43022-sdio.trxs ${D}/${base_libdir}/firmware/cypress
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2025_0219/firmware/cyfmac55500-sdio.trxse ${D}/${base_libdir}/firmware/cypress
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2025_0219/firmware/cyfmac55572-pcie.trxse ${D}/${base_libdir}/firmware/cypress
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2025_0219/firmware/cyfmac55572-sdio.trxse ${D}/${base_libdir}/firmware/cypress
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2025_0219/firmware/cyfmac43012-sdio.bin ${D}/${base_libdir}/firmware/cypress
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2025_0219/firmware/cyfmac43439-sdio.bin ${D}/${base_libdir}/firmware/cypress
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2025_0219/firmware/cyfmac43455-sdio.bin ${D}/${base_libdir}/firmware/cypress
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2025_0219/firmware/cyfmac54591-pcie.bin ${D}/${base_libdir}/firmware/cypress
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2025_0219/firmware/cyfmac54591-sdio.bin ${D}/${base_libdir}/firmware/cypress
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2025_0219/firmware/cyfmac4373-sdio.industrial.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2AE.bin
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2025_0219/firmware/cyfmac4373-sdio.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2BC.bin
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac43022-sdio.trxs ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac55500-sdio.trxse ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac55572-pcie.trxse ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac55572-sdio.trxse ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac43012-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac43439-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac43455-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac54591-pcie.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac54591-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac4373-sdio.industrial.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2AE.bin
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac4373-sdio.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2BC.bin
 
 #   Rename clm blob files accordingly
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4354-sdio.1BB.clm_blob ${D}/${base_libdir}/firmware/cypress/cyfmac4354-sdio.clm_blob
@@ -171,7 +171,7 @@ do_install () {
 
 # Setting the default to 2AE
     install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt      ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.txt
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2025_0219/firmware/cyfmac4373-sdio.industrial.bin         ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.bin
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac4373-sdio.industrial.bin         ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.bin
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4373-sdio.2AE.clm_blob    ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.clm_blob
 
 
