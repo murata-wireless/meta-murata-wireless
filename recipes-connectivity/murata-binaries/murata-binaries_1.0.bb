@@ -28,7 +28,7 @@ SRC_URI = " \
         file://brcm_patchram_plus_usb_64bit \
 "
 
-SRC_URI[cyw-fmac-fw-ifx.sha256sum]="ab5934c3ee44ea2caced3d3fc9e3439d20c31cc03458946d0360f4f6cd8e24de"
+SRC_URI[cyw-fmac-fw-ifx.sha256sum]="c9861c5dfe6f1a0136148530997ca1433a05e01dcd08a9bf962ec0c49ae0a558"
 SRCREV_cyw-fmac-fw="0ab939767e0f5f05626858efbb7114fb193211fb"
 SRCREV_cyw-fmac-nvram="771ce3e5c4a24f61dad62152b7d6971416962324"
 SRCREV_cyw-bt-patch="742f5cec14c98000dc532518c9e5acaec40de668"
