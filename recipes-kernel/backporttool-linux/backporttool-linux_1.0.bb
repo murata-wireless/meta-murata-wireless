@@ -14,7 +14,7 @@ SRC_URI =  " \
     file://0002-yacc-flex-in-kconf-makefile.patch;apply=yes \
 "
 
-SRC_URI[cyw-fmac.sha256sum]="9c09ec7053db61339c7b59c1d5de1d3129fd86edd5bbe952693e3158c9663703"
+SRC_URI[cyw-fmac.sha256sum]="71e40f133ac4f59dba7691ae61ead42ed39d954b2a18c1a2db64a68792598730"
 S = "${WORKDIR}/ifx-backports-release-v6.1.110-2025_0602/v6.1.110-backports"
 
 EXTRA_OEMAKE = "KLIB_BUILD=${STAGING_KERNEL_DIR} KLIB=${D} DESTDIR=${D}"
