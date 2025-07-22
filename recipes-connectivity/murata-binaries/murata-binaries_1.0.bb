@@ -10,7 +10,6 @@ SRC_URI = " \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=master;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
         git://github.com/murata-wireless/cyw-fmac-utils-imx32;protocol=http;branch=master;destsuffix=cyw-fmac-utils-imx32;name=cyw-fmac-utils-imx32 \
         git://github.com/murata-wireless/cyw-fmac-utils-imx64;protocol=http;branch=master;destsuffix=cyw-fmac-utils-imx64;name=cyw-fmac-utils-imx64 \
-        file://cyfmac55500-sdio.txt \
         file://set_module.sh \
         file://load-bluetooth.sh \
         file://load-2ae-bt-hcd.sh \
@@ -29,9 +28,9 @@ SRC_URI = " \
 "
 
 SRC_URI[cyw-fmac-fw-ifx.sha256sum]="c9861c5dfe6f1a0136148530997ca1433a05e01dcd08a9bf962ec0c49ae0a558"
-SRCREV_cyw-fmac-fw="0ab939767e0f5f05626858efbb7114fb193211fb"
-SRCREV_cyw-fmac-nvram="771ce3e5c4a24f61dad62152b7d6971416962324"
-SRCREV_cyw-bt-patch="742f5cec14c98000dc532518c9e5acaec40de668"
+SRCREV_cyw-fmac-fw="982c400fa3a9ecc865c1bd9615a49dc3a7b4443b"
+SRCREV_cyw-fmac-nvram="348fe6b5aabfb291ced0a6b50e5d2173fd990634"
+SRCREV_cyw-bt-patch="64ac86708253e12d7089cf75ef8dcc9b30594958"
 SRCREV_cyw-fmac-utils-imx32="dad9ed86bf6691910197bc91d42a45ea8175180c"
 SRCREV_cyw-fmac-utils-imx64="368bd9a4163e115468d79c238192b41f6266c523"
 
@@ -87,7 +86,7 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd ${D}${sysconfdir}/firmware/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd ${D}${sysconfdir}/firmware/BCM.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}${sysconfdir}/firmware/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
-    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033.2FY.hcd ${D}${sysconfdir}/firmware/CYW55500A1_001.002.032.0040.0033.2FY.hcd
+    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033.FCC.2FY.2GY.hcd ${D}${sysconfdir}/firmware/CYW55500A1_001.002.032.0040.0033.FCC.2FY.2GY.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}${sysconfdir}/firmware/README_BT_PATCHFILE.txt
 
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd   ${D}${sysconfdir}/firmware/murata-master/_BCM4345C0_003.001.025.0187.0366.1MW.hcd
@@ -107,9 +106,6 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033.2FY.hcd ${D}${sysconfdir}/firmware/murata-master/_CYW55500A1_001.002.032.0040.0033.2FY.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}${sysconfdir}/firmware/murata-master/README_BT_PATCHFILE.txt
 
-
-# For 2FY
-    install -m 444 ${WORKDIR}/cyfmac55500-sdio.txt ${D}/lib/firmware/cypress
 
 #   Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
 #   From Murata GitHub
@@ -161,17 +157,15 @@ do_install () {
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac43439-sdio.1YN.txt ${D}/lib/firmware/cypress/cyfmac43439-sdio.txt
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac4373-sdio.2BC.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.2BC.txt
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.2AE.txt
-
-#   2FY has an eror with OOB
-#	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac55500-sdio.2FY.txt ${D}/lib/firmware/cypress/cyfmac55500-sdio.txt
+	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac55500-sdio.2FY.txt ${D}/lib/firmware/cypress/cyfmac55500-sdio.2FY.txt
 
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac5557x-pcie_sdio.sant.2EA_2EC.txt ${D}/lib/firmware/cypress/cyfmac55572-sdio.txt
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac5557x-pcie_sdio.sant.2EA_2EC.txt ${D}/lib/firmware/cypress/cyfmac55572-pcie.txt
 
-# Setting the default to 2AE
-    install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt      ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac4373-sdio.industrial.bin         ${D}/lib/firmware/cypress/cyfmac4373-sdio.bin
-    install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4373-sdio.2AE.clm_blob    ${D}/lib/firmware/cypress/cyfmac4373-sdio.clm_blob
+# Setting the default to 2FY
+    install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac55500-sdio.2FY.txt      ${D}/lib/firmware/cypress/cyfmac55500-sdio.txt
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac55500-sdio.trxse         ${D}/lib/firmware/cypress/cyfmac55500-sdio.trxse
+    install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55500-sdio.2FY.STAIndoor.clm_blob    ${D}/lib/firmware/cypress/cyfmac55500-sdio.clm_blob
 
 
 #   For 2BZ
