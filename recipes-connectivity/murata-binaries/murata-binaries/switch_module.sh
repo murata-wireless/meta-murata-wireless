@@ -144,7 +144,16 @@ function prepare_for_cypress() {
      cp /lib/firmware/brcm/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   2FY|FY)
-     cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2FY.hcd /lib/firmware/brcm/BCM.hcd
+     cp /lib/firmware/cypress/cyfmac55500-sdio.trxse /lib/firmware/cypress/cyfmac55500-sdio.trxse
+     cp /lib/firmware/cypress/cyfmac55500-sdio.2FY.txt /lib/firmware/cypress/cyfmac55500-sdio.txt
+     cp /lib/firmware/cypress/cyfmac55500-sdio.2FY.clm_blob /lib/firmware/cypress/cyfmac55500-sdio.clm_blob
+     cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.FCC.2FY.2GY.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  2GY|GY)
+     cp /lib/firmware/cypress/cyfmac55500-sdio.trxse /lib/firmware/cypress/cyfmac55500-sdio.trxse
+     cp /lib/firmware/cypress/cyfmac55500-sdio.2GY.txt /lib/firmware/cypress/cyfmac55500-sdio.txt
+     cp /lib/firmware/cypress/cyfmac55500-sdio.2GY.clm_blob /lib/firmware/cypress/cyfmac55500-sdio.clm_blob
+     cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.FCC.2FY.2GY.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   esac
 
@@ -173,9 +182,9 @@ function off() {
 
 function switch_to_cypress_sdio() {
   echo ""
-  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA, 2GF, 2FY (Cypress - SDIO)"
+  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA, 2GF, 2FY, 2GY (Cypress - SDIO)"
 
-#  if [ $cyw_module == "2EA-SDIO" ] || [ $cyw_module == "2FY" ]; then
+#  if [ $cyw_module == "2EA-SDIO" ] || [ $cyw_module == "2FY" ] || [ $cyw_module == "2GY" ]; then
 #     echofw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-2ea.dtb 2>/dev/null
 #     fw_setenv bt_hint cypress_2ea
 #     fw_setenv cmd_custom
@@ -254,7 +263,7 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2EA-SDIO, 2EA-PCIe"
+  echo "     1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2GY, 2EA-SDIO, 2EA-PCIe"
   echo ""
 }
 
@@ -270,7 +279,7 @@ case ${1^^} in
   CYW-PCIE|XA|1XA|2EA-PCIE)
     switch_to_cypress_pcie
     ;;
-  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ|GF|2GF|FY|2FY)
+  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ|GF|2GF|FY|2FY|GY|2GY)
     switch_to_cypress_sdio
     ;;
   AE-USB|2AE-USB)

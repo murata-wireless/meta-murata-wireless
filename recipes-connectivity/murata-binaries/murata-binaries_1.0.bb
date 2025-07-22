@@ -137,7 +137,8 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55572-sdio.2EA.clm_blob_STAIndoor  ${D}/lib/firmware/cypress/cyfmac55572-sdio.clm_blob
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55572-pcie.2EA.clm_blob_STAIndoor  ${D}/lib/firmware/cypress/cyfmac55572-pcie.clm_blob
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac43022-sdio.2GF.IndoorSTA.clm_blob  ${D}/lib/firmware/cypress/cyfmac43022-sdio.clm_blob
-    install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55500-sdio.2FY.clm_blob  ${D}/lib/firmware/cypress/cyfmac55500-sdio.clm_blob
+    install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55500-sdio.2FY.STAIndoor.clm_blob  ${D}/lib/firmware/cypress/cyfmac55500-sdio.2FY.clm_blob
+    install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac55500-sdio.2GY.STAIndoor.clm_blob  ${D}/lib/firmware/cypress/cyfmac55500-sdio.2GY.clm_blob
     install -m 444 ${WORKDIR}/cyw-fmac-fw/README_CLM_BLOB.txt ${D}/lib/firmware/cypress/README_CLM_BLOB.txt
     install -m 444 ${WORKDIR}/cyw-fmac-fw/README_FW.txt ${D}/lib/firmware/cypress/README_FW.txt
 
@@ -158,9 +159,15 @@ do_install () {
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac4373-sdio.2BC.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.2BC.txt
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt ${D}/lib/firmware/cypress/cyfmac4373-sdio.2AE.txt
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac55500-sdio.2FY.txt ${D}/lib/firmware/cypress/cyfmac55500-sdio.2FY.txt
+    install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac55500-sdio.2GY.txt ${D}/lib/firmware/cypress/cyfmac55500-sdio.2GY.txt
 
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac5557x-pcie_sdio.sant.2EA_2EC.txt ${D}/lib/firmware/cypress/cyfmac55572-sdio.txt
 	install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac5557x-pcie_sdio.sant.2EA_2EC.txt ${D}/lib/firmware/cypress/cyfmac55572-pcie.txt
+
+# Setting the default to 2AE
+    install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt      ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac4373-sdio.industrial.bin         ${D}/lib/firmware/cypress/cyfmac4373-sdio.bin
+    install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4373-sdio.2AE.clm_blob    ${D}/lib/firmware/cypress/cyfmac4373-sdio.clm_blob
 
 # Setting the default to 2FY
     install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac55500-sdio.2FY.txt      ${D}/lib/firmware/cypress/cyfmac55500-sdio.txt
