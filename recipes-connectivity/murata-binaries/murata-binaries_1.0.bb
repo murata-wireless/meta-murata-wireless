@@ -82,7 +82,7 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd ${D}${sysconfdir}/firmware/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4373A0_001.001.025.0103.0155.FCC.CE.2AE.hcd ${D}${sysconfdir}/firmware/BCM4373A0_001.001.025.0103.0155.FCC.CE.2AE.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4373A0_001.001.025.0103.0155.FCC.CE.2BC.hcd ${D}${sysconfdir}/firmware/BCM4373A0_001.001.025.0103.0155.FCC.CE.2BC.hcd
-    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}${sysconfdir}/firmware/CYW4343A2_001.003.016.0031.0000.1YN.hcd
+    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW4343A2_001.003.016.0071.0017.1YN.hcd ${D}${sysconfdir}/firmware/CYW4343A2_001.003.016.0071.0017.1YN.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd ${D}${sysconfdir}/firmware/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd ${D}${sysconfdir}/firmware/BCM.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}${sysconfdir}/firmware/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
@@ -99,11 +99,11 @@ do_install () {
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0274.1XA.dAnt.hcd ${D}${sysconfdir}/firmware/murata-master/_BCM4359D0_004.001.016.0241.0274.1XA.dAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4373A0_001.001.025.0103.0155.FCC.CE.2AE.hcd ${D}${sysconfdir}/firmware/murata-master/_BCM4373A0_001.001.025.0103.0155.FCC.CE.2AE.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4373A0_001.001.025.0103.0155.FCC.CE.2BC.hcd ${D}${sysconfdir}/firmware/murata-master/_BCM4373A0_001.001.025.0103.0155.FCC.CE.2BC.hcd
-    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW4343A2_001.003.016.0031.0000.1YN.hcd ${D}${sysconfdir}/firmware/murata-master/_CYW4343A2_001.003.016.0031.0000.1YN.hcd
+    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW4343A2_001.003.016.0071.0017.1YN.hcd ${D}${sysconfdir}/firmware/murata-master/_CYW4343A2_001.003.016.0071.0017.1YN.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}${sysconfdir}/firmware/murata-master/_BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd ${D}${sysconfdir}/firmware/murata-master/_BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/CYW4373A0_001.001.025.0119.0000.2AE.USB_FCC.hcd ${D}${sysconfdir}/firmware/murata-master/_CYW4373A0_001.001.025.0119.0000.2AE.USB_FCC.hcd
-    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033.2FY.hcd ${D}${sysconfdir}/firmware/murata-master/_CYW55500A1_001.002.032.0040.0033.2FY.hcd
+    install -m 444 ${WORKDIR}/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033.FCC.2FY.2GY.hcd ${D}${sysconfdir}/firmware/murata-master/_CYW55500A1_001.002.032.0040.0033.FCC.2FY.2GY.hcd
     install -m 444 ${WORKDIR}/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}${sysconfdir}/firmware/murata-master/README_BT_PATCHFILE.txt
 
 
@@ -166,7 +166,7 @@ do_install () {
 
 # Setting the default to 2AE
     install -m 444 ${WORKDIR}/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt      ${D}/lib/firmware/cypress/cyfmac4373-sdio.txt
-    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.97-2024_1115/firmware/cyfmac4373-sdio.industrial.bin         ${D}/lib/firmware/cypress/cyfmac4373-sdio.bin
+    install -m 444 ${WORKDIR}/ifx-linux-firmware-release-v6.1.110-2025_0602/firmware/cyfmac4373-sdio.industrial.bin         ${D}/lib/firmware/cypress/cyfmac4373-sdio.bin
     install -m 444 ${WORKDIR}/cyw-fmac-fw/cyfmac4373-sdio.2AE.clm_blob    ${D}/lib/firmware/cypress/cyfmac4373-sdio.clm_blob
 
 # Setting the default to 2FY

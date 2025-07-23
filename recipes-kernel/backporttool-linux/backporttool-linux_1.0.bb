@@ -11,7 +11,9 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 SRC_URI =  " \
     https://github.com/Infineon/ifx-backports/archive/refs/tags/release-v6.1.110-2025_0602.tar.gz;protocol=http;destsuffix=cyw-fmac;name=cyw-fmac \
+    file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
     file://0002-yacc-flex-in-kconf-makefile.patch;apply=yes \
+    file://0003-suppress-warnings-as-errors.patch;apply=yes \
 "
 
 SRC_URI[cyw-fmac.sha256sum]="71e40f133ac4f59dba7691ae61ead42ed39d954b2a18c1a2db64a68792598730"
