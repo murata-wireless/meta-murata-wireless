@@ -1,0 +1,22 @@
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+index 6b8fdb1..7e78745 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
+@@ -6556,7 +6556,8 @@ brcmf_cfg80211_update_mgmt_frame_registrations(struct wiphy *wiphy,
+ 	vif->mgmt_rx_reg = upd->interface_stypes;
+ }
+ 
+-
++#pragma GCC diagnostic push
++#pragma GCC diagnostic warning "-Wpointer-to-int-cast"
+ static int
+ brcmf_cfg80211_mgmt_tx(struct wiphy *wiphy, struct wireless_dev *wdev,
+ 		       struct cfg80211_mgmt_tx_params *params, u64 *cookie)
+@@ -6740,6 +6741,7 @@ tx_status:
+ exit:
+ 	return err;
+ }
++#pragma GCC diagnostic pop
+ 
+ static int brcmf_cfg80211_set_cqm_rssi_range_config(struct wiphy *wiphy,
+ 						    struct net_device *ndev,
