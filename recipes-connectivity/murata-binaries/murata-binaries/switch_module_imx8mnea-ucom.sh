@@ -677,6 +677,17 @@ function switch_to_nxp_ll_sdio() {
   echo ""
 }
 
+function switch_to_nxp_ll_usb() {
+  echo ""
+  echo "Setting up for 2KL, 2LL (NXP - USB)"
+  restore_ko
+  fw_setenv fdt_file imx8mn-ea-ucom-kit_${DTB_VER}-m2_usb.dtb 2>/dev/null
+  fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
+  prepare_for_nxp_ll_usb
+  echo "Setup complete."
+  echo ""
+}
 
 function switch_to_nxp_xk_sdio() {
   echo ""
@@ -751,7 +762,7 @@ function usage() {
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
   echo "     CYW-SDIO, CYW-PCIe, 1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2EA-SDIO, 2EA-PCIe"
-  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2KL-SDIO, 2LL-SDIO, 2DS, CURRENT or OFF"
+  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2KL-SDIO, 2KL-USB, 2LL-SDIO, 2LL-USB, CURRENT or OFF"
   echo ""
 }
 
@@ -802,6 +813,9 @@ case ${1^^} in
     ;;
   2KL-SDIO|2LL-SDIO)
     switch_to_nxp_ll_sdio
+    ;;
+  2KL-USB|2LL-USB)
+    switch_to_nxp_ll_usb
     ;;
   CURRENT)
     current

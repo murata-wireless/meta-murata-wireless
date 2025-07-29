@@ -72,6 +72,6 @@ fi
 
 i2cset -y 1 0x20 0x03 0xfe
 i2cset -y 1 0x20 0x01 0x01
-/usr/share/murata_wireless/ot-daemon "spinel+spi:///dev/spidev0.0?gpio-reset-device=/dev/gpiochip${gpio_reset_device}&gpio-int-device=/dev/gpiochip${gpio_int_device}&gpio-int-line=${gpio_int_line}&gpio-reset-line=14&spi-mode=0&spi-speed=1000000&spi-reset-delay=500" -d 5 > ot.log 2>&1 &
+ot-daemon "spinel+spi:///dev/spidev0.0?gpio-reset-device=/dev/gpiochip${gpio_reset_device}&gpio-int-device=/dev/gpiochip${gpio_int_device}&gpio-int-line=${gpio_int_line}&gpio-reset-line=14&spi-mode=0&spi-speed=1000000&spi-reset-delay=500" -d 5 > ot.log 2>&1 &
 sleep 2
-/usr/share/murata_wireless/ot-ctl version
+ot-ctl version

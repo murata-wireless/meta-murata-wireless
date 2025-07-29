@@ -452,6 +452,39 @@ EOT
   handle_services true false
 }
 
+function prepare_for_nxp_ll_usb() {
+  clean_up
+  prepare_for_nxp_bt
+  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
+  
+  cat <<EOT > /etc/depmod.d/nxp_depmod.conf
+# Force modprobe to search kernel/net/wireless (where the NXP
+# version of cfg80211.ko is placed) before looking in updates/net/wireless/
+# (where the Cypress version is)
+override cfg80211 * kernel/net/wireless
+
+EOT
+
+  cat <<EOT > /etc/modprobe.d/nxp_modules.conf
+# Prevent the Cypress version of cfg80211.ko from being loaded.
+blacklist cfg80211
+
+# Alias for the NXP modules
+alias usb:v0471p0215* moal
+
+# Specify arguments to pass when loading the iw612 module
+options moal mod_para=nxp/wifi_mod_para.conf
+EOT
+
+  depmod -a
+
+  # Disable Cypress service and enable NXP service
+  handle_services true false
+}
+
 
 function prepare_for_cypress() {
   clean_up
@@ -512,7 +545,7 @@ function prepare_for_cypress() {
   2EA-SDIO|2EA-PCIE)
      cp /lib/firmware/brcm/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd /lib/firmware/brcm/BCM.hcd
     ;;
-  FY|2FY)
+  2FY|FY)
      cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2FY.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   esac
@@ -659,7 +692,7 @@ function switch_to_nxp_ll_sdio() {
   echo ""
   echo "Setting up for 2KL, 2LL (NXP - SDIO)"
   restore_ko
-  fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+  fw_setenv fdt_file imx93-ea-ucom-kit-m2_usb.dtb 2>/dev/null
   fw_setenv bt_hint nxp
   fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_ll_sdio
@@ -667,6 +700,17 @@ function switch_to_nxp_ll_sdio() {
   echo ""
 }
 
+function switch_to_nxp_ll_usb() {
+  echo ""
+  echo "Setting up for 2KL, 2LL (NXP - USB)"
+  restore_ko
+  fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+  fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8987-bt"
+  prepare_for_nxp_ll_usb
+  echo "Setup complete."
+  echo ""
+}
 
 function switch_to_nxp_xk_sdio() {
   echo ""
@@ -741,7 +785,7 @@ function usage() {
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
   echo "     CYW-SDIO, CYW-PCIe, 1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2EA-SDIO, 2EA-PCIe"
-  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2KL-SDIO, 2LL-SDIO, 2DS, CURRENT or OFF"
+  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2KL-SDIO, 2KL-USB, 2LL-SDIO, 2LL-USB, CURRENT or OFF"
   echo ""
 }
 
@@ -792,6 +836,9 @@ case ${1^^} in
     ;;
   2KL-SDIO|2LL-SDIO)
     switch_to_nxp_ll_sdio
+    ;;
+  2KL-USB|2LL-USB)
+    switch_to_nxp_ll_usb
     ;;
   CURRENT)
     current

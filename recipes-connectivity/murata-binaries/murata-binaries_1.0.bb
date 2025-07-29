@@ -4,14 +4,14 @@ LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
 IMX_FIRMWARE_SRC ?= "git://github.com/nxp-imx/imx-firmware.git;protocol=https"
-SRCBRANCH_imx-firmware = "lf-6.12.3_1.0.0"
+SRCBRANCH_imx-firmware = "lf-6.12.20_2.0.0"
 
 NXP_IMX = "git://github.com/nxp-imx/meta-nxp-connectivity.git;protocol=https"
 SRCBRANCH_meta-nxp-connectivity = "imx_matter_2024_q4-post"
 
 SRC_URI = " \
         ${IMX_FIRMWARE_SRC};branch=${SRCBRANCH_imx-firmware};destsuffix=imx-firmware;name=imx-firmware \
-        git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
+        git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-6-12-3;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=jaculus;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=jaculus;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=master;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
@@ -50,20 +50,21 @@ SRC_URI = " \
         file://ot-daemon \
         file://ot-ctl \
         file://test_2ll_spi.sh \
+        file://test_spi.sh \
         ${NXP_IMX};branch=imx_matter_2024_q4-post;destsuffix=meta-nxp-connectivity;name=meta-nxp-connectivity \
         file://sduart_nw61x_v1.bin.se \
         file://wifi_mod_para.conf \
 "
 
 SRC_URI[cyw-fmac-fw-ifx.sha256sum]="34f5bfac6476d849af26f945705dc5a19965825333840405ef25dcd835d521d7"
-SRCREV_nxp-linux-calibration="87197da5490dfe36da2e7c40df256a20d43ab0df"
+SRCREV_nxp-linux-calibration="66a6ebabd2bd6b0bea660eb05bdf3b7ae3ffed7e"
 SRCREV_cyw-fmac-fw="a5cb86a5d11192ba6e7738f82b4d2dc9eeeca679"
 SRCREV_cyw-fmac-nvram="146d1438372b6c4857f92b8769b91c1801d3ede2"
 SRCREV_cyw-bt-patch="23de75a4e5384d16e8478f668b769b0d24ede0de"
 SRCREV_cyw-fmac-utils-imx32="dad9ed86bf6691910197bc91d42a45ea8175180c"
 SRCREV_cyw-fmac-utils-imx64="368bd9a4163e115468d79c238192b41f6266c523"
 SRCREV_connectedhomeip="7879111b8b17d5cb2789ffd4d634438dd2e8c52a"
-SRCREV_imx-firmware = "eef7ef94bc44cacd3b068f66658ef33391547daa"
+SRCREV_imx-firmware = "d31ea8aaba67e188ba0071a90da0364e3946c83a"
 SRCREV_meta-nxp-connectivity = "9728012463cb9c99bf766801a13edc07732a9195"
 
 SRCREV_default = "${AUTOREV}"
@@ -224,11 +225,11 @@ do_install () {
 #   Copying wl tool binary to /usr/sbin
     if [ ${TARGET_ARCH} = "aarch64" ]; then
 		install -m 755 ${WORKDIR}/sources/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl
-		install -m 755 ${WORKDIR}/sources/ot-ctl.64-bit ${D}/usr/sbin/ot-ctl
-		install -m 755 ${WORKDIR}/sources/ot-daemon.64-bit ${D}/usr/sbin/ot-daemon
+		install -m 755 ${WORKDIR}/sources/ot-ctl ${D}/usr/sbin/ot-ctl
+		install -m 755 ${WORKDIR}/sources/ot-daemon ${D}/usr/sbin/ot-daemon
         #Copy ot-daemon and ot-ctl for 2LL
-		install -m 755 ${WORKDIR}/sources/ot-ctl ${D}/usr/share/murata_wireless
-		install -m 755 ${WORKDIR}/sources/ot-daemon ${D}/usr/share/murata_wireless
+#		install -m 755 ${WORKDIR}/sources/ot-ctl ${D}/usr/share/murata_wireless
+#		install -m 755 ${WORKDIR}/sources/ot-daemon ${D}/usr/share/murata_wireless
 		install -m 755 ${WORKDIR}/sources/fw_loader_imx_lnx.64-bit ${D}/usr/sbin/fw_loader_imx_lnx
 		install -m 755 ${WORKDIR}/sources/mlanutl.64-bit ${D}/usr/sbin/mlanutl
 
@@ -309,6 +310,7 @@ do_install () {
 #	install -m 444 ${WORKDIR}/sources/WlanCalData_ext.conf ${D}/${base_libdir}/firmware/nxp
     install -m 755 ${WORKDIR}/sources/test_2el_spi.sh ${D}/usr/sbin/test_2el_spi.sh
     install -m 755 ${WORKDIR}/sources/test_2ll_spi.sh ${D}/usr/sbin/test_2ll_spi.sh
+    install -m 755 ${WORKDIR}/sources/test_spi.sh ${D}/usr/sbin/test_spi.sh
 	install -m 755 ${WORKDIR}/sources/load-fmac.sh ${D}/usr/share/murata_wireless/load-fmac.sh
 	install -m 755 ${WORKDIR}/sources/load-2ea-bt.sh ${D}/usr/sbin/load-2ea-bt.sh
 	install -m 755 ${WORKDIR}/sources/load-usb-bt.sh ${D}/usr/sbin/load-usb-bt.sh
@@ -321,10 +323,6 @@ do_install () {
     install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/wifi_mod_para.conf ${D}${nonarch_base_libdir}/firmware/nxp
     # Push Combo (sduartspi) firmware for 2LL to murata_wireless
 	install -m 755 ${WORKDIR}/sources/wifi_mod_para.conf ${D}/usr/share/murata_wireless
-
-    # Install NXP Connectivity SD8801 firmware
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8801_SD/ed_mac_ctrl_V1_8801.conf  ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8801_SD/sd8801_uapsta.bin         ${D}${nonarch_base_libdir}/firmware/nxp
 
     # Install NXP Connectivity 8987 firmware
     install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8987/ed_mac_ctrl_V3_8987.conf  ${D}${nonarch_base_libdir}/firmware/nxp
@@ -373,13 +371,19 @@ do_install () {
     install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW612_SD/sd_w61x_v1.bin.se      ${D}${nonarch_base_libdir}/firmware/nxp
     install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW612_SD/uartspi_n61x_v1.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
 
-    # Install NXP Connectivity IW610 firmware
+    # Install NXP Connectivity IW610-sdio firmware
     install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_SD/sd_iw610.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
     install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_SD/sduart_iw610.bin.se      ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_SD/sduartspi_iw610.bin.se      ${D}${nonarch_base_libdir}/firmware/nxp
     install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_SD/uart_iw610_bt.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
     install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_SD/uartspi_iw610.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
     # Use tri-radio firmware for testing purpose
-    install -m 0644 ${WORKDIR}/sources/meta-nxp-connectivity/meta-nxp-matter-advanced/recipes-bsp/firmware-imx/files/IW610-Q4-24-R3-p43/sduartspi_iw610.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/meta-nxp-connectivity/meta-nxp-matter-advanced/recipes-bsp/firmware-imx/files/IW610-Q4-24-R3-p43/sduartspi_iw610.bin.se ${D}${nonarch_base_libdir}/firmware/nxp/sduartspi_iw610.bin.se-bak-working
+
+    # Install NXP Connectivity IW610-usb firmware
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_USB/usbusb_iw610.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_USB/usbusbspi_iw610.bin.se      ${D}${nonarch_base_libdir}/firmware/nxp
+
 }
 
 PACKAGES =+ "${PN}-mfgtest"
