@@ -1,3 +1,13 @@
+From cd85c5776767d531d1d1578966563cdf061e5d10 Mon Sep 17 00:00:00 2001
+From: Romit Chatterjee <romit.chatterjee@murata.com>
+Date: Fri, 8 Aug 2025 08:16:07 -0500
+Subject: [PATCH] Upstream-Status: Inappropriate [board/product-specific
+ changes]
+
+---
+ net/wireless/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
 diff --git a/net/wireless/Kconfig b/net/wireless/Kconfig
 index 10345388ad13..596f5e76071e 100644
 --- a/net/wireless/Kconfig
@@ -20,3 +30,6 @@ index 10345388ad13..596f5e76071e 100644
  	depends on CFG80211_REQUIRE_SIGNED_REGDB
  	help
  	  Allow the regulatory database to be signed by one of the keys for
+-- 
+2.49.0
+

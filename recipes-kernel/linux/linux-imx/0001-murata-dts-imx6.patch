@@ -1,3 +1,14 @@
+From f6b48ec3e575b09372eb06a9e1e77a3848526201 Mon Sep 17 00:00:00 2001
+From: Romit Chatterjee <romit.chatterjee@murata.com>
+Date: Fri, 8 Aug 2025 08:12:13 -0500
+Subject: [PATCH] Upstream-Status: Inappropriate [board/product-specific
+ changes]
+
+---
+ arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi.dts  | 5 +++++
+ arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi.dts | 5 +++++
+ 2 files changed, 10 insertions(+)
+
 diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi.dts b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi.dts
 index 4613799a97c7..97e002a38270 100644
 --- a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi.dts
@@ -24,3 +35,6 @@ index 8a0a85d2e197..1281810c67bd 100644
 +       pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
 +       no-1-8-v;
 +};
+-- 
+2.49.0
+

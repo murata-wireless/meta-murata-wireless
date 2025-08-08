@@ -1,3 +1,13 @@
+From 2bcaae27935197a74e99aa1b11a3bf8b10804701 Mon Sep 17 00:00:00 2001
+From: Romit Chatterjee <romit.chatterjee@murata.com>
+Date: Fri, 8 Aug 2025 08:17:18 -0500
+Subject: [PATCH] Upstream-Status: Inappropriate [board/product-specific
+ changes]
+
+---
+ arch/arm64/boot/dts/freescale/imx8mm-evk-usd-wifi.dts | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-wifi.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-wifi.dts
 index e660727aaa58..e4d282e3e4a2 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-wifi.dts
@@ -12,3 +22,6 @@ index e660727aaa58..e4d282e3e4a2 100644
 +              compatible = "nxp,88w8987-bt";
 +     };
 +};
+-- 
+2.49.0
+
