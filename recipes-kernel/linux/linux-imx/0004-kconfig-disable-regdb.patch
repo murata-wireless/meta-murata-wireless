@@ -1,3 +1,11 @@
+Do not treat warnings as errors
+
+There are additional warnings found with musl which are
+treated as errors and fails the build, we have more combinations
+than upstream supports to handle.
+
+Upstream-Status: Inappropriate [oe specific]
+
 diff --git a/net/wireless/Kconfig b/net/wireless/Kconfig
 index 10345388ad13..596f5e76071e 100644
 --- a/net/wireless/Kconfig
@@ -20,3 +28,6 @@ index 10345388ad13..596f5e76071e 100644
  	depends on CFG80211_REQUIRE_SIGNED_REGDB
  	help
  	  Allow the regulatory database to be signed by one of the keys for
+-- 
+2.49.0
+
