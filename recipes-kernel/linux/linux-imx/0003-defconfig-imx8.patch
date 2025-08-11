@@ -1,12 +1,10 @@
-From 313ff277e2d332d915b872fb31c4a7fea11103da Mon Sep 17 00:00:00 2001
-From: Romit Chatterjee <romit.chatterjee@murata.com>
-Date: Fri, 8 Aug 2025 08:15:03 -0500
-Subject: [PATCH] Upstream-Status: Inappropriate [board/product-specific
- changes]
+Do not treat warnings as errors
 
----
- arch/arm64/configs/imx_v8_defconfig | 3 +++
- 1 file changed, 3 insertions(+)
+There are additional warnings found with musl which are
+treated as errors and fails the build, we have more combinations
+than upstream supports to handle.
+
+Upstream-Status: Inappropriate [oe specific]
 
 diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
 index 31eabe2708ea..fa06f9b1aa48 100644

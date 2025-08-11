@@ -1,12 +1,10 @@
-From cd85c5776767d531d1d1578966563cdf061e5d10 Mon Sep 17 00:00:00 2001
-From: Romit Chatterjee <romit.chatterjee@murata.com>
-Date: Fri, 8 Aug 2025 08:16:07 -0500
-Subject: [PATCH] Upstream-Status: Inappropriate [board/product-specific
- changes]
+Do not treat warnings as errors
 
----
- net/wireless/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+There are additional warnings found with musl which are
+treated as errors and fails the build, we have more combinations
+than upstream supports to handle.
+
+Upstream-Status: Inappropriate [oe specific]
 
 diff --git a/net/wireless/Kconfig b/net/wireless/Kconfig
 index 10345388ad13..596f5e76071e 100644
