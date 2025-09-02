@@ -5,6 +5,7 @@ BUGTRACKER = "http://w1.fi/security/"
 SECTION = "network"
 LICENSE = "BSD-3-Clause"
 LIC_FILES_CHKSUM = "file://COPYING;md5=5ebcb90236d1ad640558c3d3cd3035df \
+                    file://README;beginline=1;endline=56;md5=e3d2f6c2948991e37c1ca4960de84747 \
 "
 DEPENDS = "dbus libnl"
 #RRECOMMENDS:${PN} = "wpa-supplicant-passphrase wpa-supplicant-cli"
@@ -26,7 +27,7 @@ SRC_URI = "http://w1.fi/releases/wpa_supplicant-${PV}.tar.gz \
            file://99_wpa_supplicant \
     	   file://0000-supplicant.patch;apply=yes \
 "
-SRC_URI[sha256sum] = "20df7ae5154b3830355f8ab4269123a87affdea59fe74fe9292a91d0d7e17b2f"
+SRC_URI[sha256sum] = "912ea06f74e30a8e36fbb68064d6cdff218d8d591db0fc5d75dee6c81ac7fc0a"
 
 CVE_PRODUCT = "wpa_supplicant"
 
