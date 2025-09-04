@@ -4,5 +4,5 @@ SRC_URI += "file://wifi.cfg"
 #                   file://0008-Patch-for-CYW4373-hci-up-fail-issue-for-6.6.23.patch \
 #"
 
-SRC_URI:append = " file://0003-murata-1XL-hex.patch \
-"
+#SRC_URI:append = " file://0003-murata-1XL-hex.patch \
+#"

@@ -11,7 +11,7 @@ SRCBRANCH_meta-nxp-connectivity = "imx_matter_2024_q4-post"
 
 SRC_URI = " \
         ${IMX_FIRMWARE_SRC};branch=${SRCBRANCH_imx-firmware};destsuffix=imx-firmware;name=imx-firmware \
-        git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-6-12-3;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
+        git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=jaculus;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=jaculus;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=master;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
@@ -57,7 +57,7 @@ SRC_URI = " \
 "
 
 SRC_URI[cyw-fmac-fw-ifx.sha256sum]="34f5bfac6476d849af26f945705dc5a19965825333840405ef25dcd835d521d7"
-SRCREV_nxp-linux-calibration="66a6ebabd2bd6b0bea660eb05bdf3b7ae3ffed7e"
+SRCREV_nxp-linux-calibration="df741be492748547eae8075139ca24f4faadbc2c"
 SRCREV_cyw-fmac-fw="a5cb86a5d11192ba6e7738f82b4d2dc9eeeca679"
 SRCREV_cyw-fmac-nvram="146d1438372b6c4857f92b8769b91c1801d3ede2"
 SRCREV_cyw-bt-patch="23de75a4e5384d16e8478f668b769b0d24ede0de"
@@ -121,6 +121,7 @@ do_install () {
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/1XL
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2EL
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2DL
+    install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2LL
 
 #   Copying *.HCD files to etc/firmware and etc/firmware/murata-master (using "_" before the name of the file in murata-master)
     install -m 444 ${WORKDIR}/sources/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd ${D}/${base_libdir}/firmware/brcm/BCM4345C0_003.001.025.0187.0366.1MW.hcd
@@ -298,6 +299,7 @@ do_install () {
 	install -m 444 ${WORKDIR}/sources/nxp-linux-calibration/murata/files/1XL/* ${D}/${base_libdir}/firmware/nxp/murata/files/1XL
 	install -m 444 ${WORKDIR}/sources/nxp-linux-calibration/murata/files/2EL/* ${D}/${base_libdir}/firmware/nxp/murata/files/2EL
 	install -m 444 ${WORKDIR}/sources/nxp-linux-calibration/murata/files/2DL/* ${D}/${base_libdir}/firmware/nxp/murata/files/2DL
+	install -m 444 ${WORKDIR}/sources/nxp-linux-calibration/murata/files/2LL/* ${D}/${base_libdir}/firmware/nxp/murata/files/2LL
 
 
 
