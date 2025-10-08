@@ -10,4 +10,3 @@ index 02b6d8d..ab8e096 100644
  	brcmf_info("Firmware: %s %s\n", ri->chipname, buf);
  
  	/* locate firmware version number for ethtool */
-
