@@ -1,11 +1,3 @@
-Do not treat warnings as errors
-
-There are additional warnings found with musl which are
-treated as errors and fails the build, we have more combinations
-than upstream supports to handle.
-
-Upstream-Status: Inappropriate [oe specific]
-
 diff --git a/net/wireless/certs/murata.hex b/net/wireless/certs/murata.hex
 new file mode 100644
 index 000000000000..310eaf025044
