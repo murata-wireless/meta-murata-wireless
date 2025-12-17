@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=04282025
+VERSION=09032025
 
 
 ###################################################################################################
@@ -54,6 +54,9 @@ VERSION=04282025
 #  1.34     | 12/19/2024   |    RC        |    Added support for FMAC Jaculus in 6.1.36 and 5.15.32.
 #  1.35     | 02/11/2025   |    RC        |    Added support for FMAC Jaculus in 6.6.52
 #  1.36     | 04/29/2025   |    RC        |    Updated scarthgap-jaculus release.
+#  1.37     | 07/04/2025   |    RC        |    Added support for FMAC Kraken in 6.6.23 and 5.15.32.
+#  1.38     | 07/25/2025   |    RC        |    Added support for FMAC Kraken in 6.1.36.
+#  1.39     | 09/03/2025   |    RC        |    Added support for i.MX91 EVK.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -93,6 +96,7 @@ GODZILLA_FMAC_INDEX="11"
 HEDORAH_FMAC_INDEX="12"
 INDRIK_FMAC_INDEX="13"
 JACULUS_FMAC_INDEX="13"
+KRAKEN_FMAC_INDEX="14"
 
 MOTHRA_FMAC_STR="mothra"
 MANDA_FMAC_STR="manda"
@@ -108,6 +112,7 @@ GODZILLA_FMAC_STR="godzilla"
 HEDORAH_FMAC_STR="hedorah"
 INDRIK_FMAC_STR="indrik"
 JACULUS_FMAC_STR="jaculus"
+KRAKEN_FMAC_STR="kraken"
 
 LINUX_KERNEL_6_6_52=1
 LINUX_KERNEL_6_6_23=2
@@ -143,6 +148,9 @@ fmacversion=""
 linuxVersion=""
 
 # Scarthgap
+iMXscarthgapkrakenStableReleaseTag="imx-scarthgap-kraken_r1.0"
+iMXscarthgapkrakenDeveloperRelease="imx-scarthgap-kraken"
+
 iMXscarthgap52jaculusStableReleaseTag="imx-scarthgap52-jaculus_r1.0"
 iMXscarthgap52jaculusDeveloperRelease="imx-scarthgap52-jaculus"
 
@@ -154,6 +162,9 @@ iMXnanbieldindrikStableReleaseTag="imx-nanbield-indrik_r1.0"
 iMXnanbieldindrikDeveloperRelease="imx-nanbield-indrik"
 
 # Mickledore
+iMXmickledorekrakenStableReleaseTag="imx-mickledore-kraken_r1.0"
+iMXmickledorekrakenDeveloperRelease="imx-mickledore-kraken"
+
 iMXmickledorejaculusStableReleaseTag="imx-mickledore-jaculus_r1.0"
 iMXmickledorejaculusDeveloperRelease="imx-mickledore-jaculus"
 
@@ -174,6 +185,9 @@ iMXlangdalegodzillaStableReleaseTag="imx-langdale-godzilla_r1.0"
 iMXlangdalegodzillaDeveloperRelease="imx-langdale-godzilla"
 
 # Kirkstone
+iMXkirkstonekrakenStableReleaseTag="imx-kirkstone-kraken_r1.0"
+iMXkirkstonekrakenDeveloperRelease="imx-kirkstone-kraken"
+
 iMXkirkstonejaculusStableReleaseTag="imx-kirkstone-jaculus_r1.0"
 iMXkirkstonejaculusDeveloperRelease="imx-kirkstone-jaculus"
 
@@ -627,11 +641,13 @@ while true; do
 	echo "|-----|------------------|------------|-------------------------------------------|"
 	if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 		echo "|  1  |     ${LINUX_KERNEL_6_6_52_STR}       | scarthgap  | Jaculus                                   |"
-		echo "|  2  |     ${LINUX_KERNEL_6_6_23_STR}       | scarthgap  | Jaculus                                   |"
+		echo "|  2  |     ${LINUX_KERNEL_6_6_23_STR}       | scarthgap  | Jaculus, Kraken                           |"
 		echo "|  3  |     ${LINUX_KERNEL_6_6_3_STR}        | nanbield   | Indrik                                    |"
 		echo "|  4  |     ${LINUX_KERNEL_6_1_36_STR}       | mickledore | Godzilla, Hedorah, Indrik, Jaculus        |"
+		echo "|     |                  |            | Kraken                                    |"
 		echo "|  5  |     ${LINUX_KERNEL_6_1_1_STR}        | langdale   | Fafnir, Godzilla                          |"
 		echo "|  6  |     ${LINUX_KERNEL_5_15_32_STR}      | kirkstone  | Ebirah, Fafnir, Godzilla, Indrik, Jaculus |"
+		echo "|     |                  |            | Kraken                                    |"
 		echo "|  7  |     ${LINUX_KERNEL_5_10_52_STR}      | hardknott  | Cynder,Drogon                             |"
 		echo "|  8  |     ${LINUX_KERNEL_5_4_47_STR}       | zeus       | Baragon,Spiga,Zigra                       |"
 		echo "|  9  |     ${LINUX_KERNEL_4_14_98_STR}      | sumo       | Baragon,Spiga,Zigra,Kong,Manda            |"
@@ -639,11 +655,13 @@ while true; do
 		echo "| 11  |     ${LINUX_KERNEL_4_1_15_STR}       | krogoth    | Baragon,Spiga,Zigra,Manda,Mothra          |"
 	else
 		echo "|  1  |     ${LINUX_KERNEL_6_6_52_STR}       | scarthgap  | Jaculus                                   |"
-		echo "|  2  |     ${LINUX_KERNEL_6_6_23_STR}       | scarthgap  | Jaculus                                   |"
+		echo "|  2  |     ${LINUX_KERNEL_6_6_23_STR}       | scarthgap  | Jaculus, Kraken                           |"
 		echo "|  3  |     ${LINUX_KERNEL_6_6_3_STR}        | nanbield   | Indrik                                    |"
 		echo "|  4  |     ${LINUX_KERNEL_6_1_36_STR}       | mickledore | Godzilla, Hedorah, Indrik, Jaculus        |"
+		echo "|     |                  |            | Kraken                                    |"
 		echo "|  5  |     ${LINUX_KERNEL_6_1_1_STR}        | langdale   | Fafnir, Godzilla                          |"
 		echo "|  6  |     ${LINUX_KERNEL_5_15_32_STR}      | kirkstone  | Ebirah, Fafnir, Godzilla, Indrik, Jaculus |"
+		echo "|     |                  |            | Kraken                                    |"
 	fi
 
 	echo "-----------------------------------------------------------------------------------"
@@ -1198,7 +1216,8 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 				echo     "|  1.   | ${FAFNIR_FMAC_STR}                                            |"
 				echo     "|  2.   | ${GODZILLA_FMAC_STR}                                          |"
 				echo     "|  3.   | ${INDRIK_FMAC_STR}                                            |"
-				echo -e  "|  4.   | ${JACULUS_FMAC_STR} - ${GRN}Latest release${NC}                          |"
+				echo     "|  4.   | ${JACULUS_FMAC_STR}                                           |"
+				echo -e  "|  5.   | ${KRAKEN_FMAC_STR} - ${GRN}Latest release${NC}                           |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1275,6 +1294,21 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 					iMXYoctoRelease="$imxkirkstoneYocto"
 					YoctoBranch="kirkstone"
 					fmacversion=${JACULUS_FMAC_STR}
+					break
+					;;
+				5)
+					# for KRAKEN
+					FMAC_VERSION=${KRAKEN_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: kirkstone-kraken"
+						BRANCH_RELEASE_NAME="$iMXkirkstonekrakenStableReleaseTag"
+					else
+						#echo "DEBUG:: kirkstone-kraken"
+						BRANCH_RELEASE_NAME="$iMXkirkstonekrakenDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxkirkstoneYocto"
+					YoctoBranch="kirkstone"
+					fmacversion=${KRAKEN_FMAC_STR}
 					break
 					;;
 				*)
@@ -1341,7 +1375,8 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 				echo     "|  0.   | ${GODZILLA_FMAC_STR}                                          |"
 				echo     "|  1.   | ${HEDORAH_FMAC_STR}                                           |"
 				echo     "|  2.   | ${INDRIK_FMAC_STR}                                            |"
-				echo -e  "|  3.   | ${JACULUS_FMAC_STR} - ${GRN}Latest release${NC}                          |"
+				echo     "|  3.   | ${JACULUS_FMAC_STR}                                           |"
+				echo -e  "|  4.   | ${KRAKEN_FMAC_STR} - ${GRN}Latest release${NC}                          |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1405,6 +1440,21 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 					fmacversion=${JACULUS_FMAC_STR}
 					break
 					;;
+				4)
+					# for KRAKEN
+					FMAC_VERSION=${KRAKEN_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: mickledore-kraken"
+						BRANCH_RELEASE_NAME="$iMXmickledorekrakenStableReleaseTag"
+					else
+						#echo "DEBUG:: mickledore-kraken"
+						BRANCH_RELEASE_NAME="$iMXmickledorekrakenDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxmickledoreYocto"
+					YoctoBranch="mickledore"
+					fmacversion=${KRAKEN_FMAC_STR}
+					break
+					;;
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					echo $'\n'
@@ -1450,7 +1500,8 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo -e  "|  0.   | ${JACULUS_FMAC_STR} - ${GRN}Latest release${NC}                          |"
+				echo     "|  0.   | ${JACULUS_FMAC_STR}                                           |"
+				echo -e  "|  1.   | ${KRAKEN_FMAC_STR} - ${GRN}Latest release${NC}                          |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1467,6 +1518,21 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 					iMXYoctoRelease="$imxscarthgapYocto"
 					YoctoBranch="scarthgap"
 					fmacversion=${JACULUS_FMAC_STR}
+					break
+					;;
+				1)
+					# for KRAKEN
+					FMAC_VERSION=${KRAKEN_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: scarthgap-kraken"
+						BRANCH_RELEASE_NAME="$iMXscarthgapkrakenStableReleaseTag"
+					else
+						#echo "DEBUG:: scarthgap-kraken"
+						BRANCH_RELEASE_NAME="$iMXscarthgapkrakenDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxscarthgapYocto"
+					YoctoBranch="scarthgap"
+					fmacversion=${KRAKEN_FMAC_STR}
 					break
 					;;
 				*)
@@ -1526,7 +1592,8 @@ else
 				echo     "|  1.   | ${FAFNIR_FMAC_STR}                                            |"
 				echo     "|  2.   | ${GODZILLA_FMAC_STR}                                          |"
 				echo     "|  3.   | ${INDRIK_FMAC_STR}                                            |"
-				echo -e  "|  4.   | ${JACULUS_FMAC_STR} - ${GRN}Latest release${NC}                          |"
+				echo     "|  4.   | ${JACULUS_FMAC_STR}                                           |"
+				echo -e  "|  5.   | ${KRAKEN_FMAC_STR} - ${GRN}Latest release${NC}                           |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1605,6 +1672,21 @@ else
 					fmacversion=${JACULUS_FMAC_STR}
 					break
 					;;
+				5)
+					# for KRAKEN
+					FMAC_VERSION=${KRAKEN_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: kirkstone-kraken"
+						BRANCH_RELEASE_NAME="$iMXkirkstonekrakenStableReleaseTag"
+					else
+						#echo "DEBUG:: kirkstone-kraken"
+						BRANCH_RELEASE_NAME="$iMXkirkstonekrakenDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxkirkstoneYocto"
+					YoctoBranch="kirkstone"
+					fmacversion=${KRAKEN_FMAC_STR}
+					break
+					;;
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					echo $'\n'
@@ -1669,7 +1751,8 @@ else
 				echo     "|  0.   | ${GODZILLA_FMAC_STR}                                          |"
 				echo     "|  1.   | ${HEDORAH_FMAC_STR}                                           |"
 				echo     "|  2.   | ${INDRIK_FMAC_STR}                                            |"
-				echo -e  "|  3.   | ${JACULUS_FMAC_STR} - ${GRN}Latest release${NC}                          |"
+				echo     "|  3.   | ${JACULUS_FMAC_STR}                                           |"
+				echo -e  "|  4.   | ${KRAKEN_FMAC_STR} - ${GRN}Latest release${NC}                           |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1733,6 +1816,21 @@ else
 					fmacversion=${JACULUS_FMAC_STR}
 					break
 					;;
+				4)
+					# for KRAKEN
+					FMAC_VERSION=${KRAKEN_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: mickledore-kraken"
+						BRANCH_RELEASE_NAME="$iMXmickledorekrakenStableReleaseTag"
+					else
+						#echo "DEBUG:: mickledore-kraken"
+						BRANCH_RELEASE_NAME="$iMXmickledorekrakenDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxmickledoreYocto"
+					YoctoBranch="mickledore"
+					fmacversion=${KRAKEN_FMAC_STR}
+					break
+					;;
 				*)
 					echo -e "${RED}That is not a valid choice, try again.${NC}"
 					echo $'\n'
@@ -1778,7 +1876,8 @@ else
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo -e  "|  0.   | ${JACULUS_FMAC_STR} - ${GRN}Latest release${NC}                          |"
+				echo     "|  0.   | ${JACULUS_FMAC_STR}                                           |"
+				echo -e  "|  1.   | ${KRAKEN_FMAC_STR} - ${GRN}Latest release${NC}                          |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
@@ -1795,6 +1894,21 @@ else
 					iMXYoctoRelease="$imxscarthgapYocto"
 					YoctoBranch="scarthgap"
 					fmacversion=${JACULUS_FMAC_STR}
+					break
+					;;
+				1)
+					# for KRAKEN
+					FMAC_VERSION=${KRAKEN_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: scarthgap-kraken"
+						BRANCH_RELEASE_NAME="$iMXscarthgapkrakenStableReleaseTag"
+					else
+						#echo "DEBUG:: scarthgap-kraken"
+						BRANCH_RELEASE_NAME="$iMXscarthgapkrakenDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxscarthgapYocto"
+					YoctoBranch="scarthgap"
+					fmacversion=${KRAKEN_FMAC_STR}
 					break
 					;;
 				*)
@@ -3031,10 +3145,11 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 				echo "|  15    |  imx8mp-lpddr4-evk       | 8MPLUSLPD4-EVK           |"
 				echo "|  16    |  imx8ulp-lpddr4-evk      | MCIMX8ULP-EVK            |"
 				echo "|  17    |  imx8ulp-9x9-lpddr4-evk  | MCIMX8ULP-EVK9           |"
-				echo "|  18    |  imx93evk                | MCIMX93-EVK              |"
-				echo "|  19    |  imx93-11x11-lpddr4x-evk | MCIMX93-EVK (11x11)      |"
-				echo "|  20    |  imx93-9x9-lpddr4-qsb    | MCIMX93-EVK (9x9)        |"
-				echo "|  21    |  imx93-14x14-lpddr4x-evk | MCIMX93-EVK (14x14)      |"
+				echo "|  18    |  imx91-11x11-lpddr4-evk  | IMX91LP4EVK-11CM         |"
+				echo "|  19    |  imx93evk                | MCIMX93-EVK              |"
+				echo "|  20    |  imx93-11x11-lpddr4x-evk | MCIMX93-EVK (11x11)      |"
+				echo "|  21    |  imx93-9x9-lpddr4-qsb    | MCIMX93-EVK (9x9)        |"
+				echo "|  22    |  imx93-14x14-lpddr4x-evk | MCIMX93-EVK (14x14)      |"
 				echo "----------------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
@@ -3152,6 +3267,14 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				18)
+					TARGET_NAME=imx91-11x11-lpddr4-evk
+					PART_NUMBER=IMX91LP4EVK-11CM
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				19)
 					TARGET_NAME=imx93evk
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -3159,7 +3282,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-				19)
+				20)
 					TARGET_NAME=imx93-11x11-lpddr4x-evk
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -3167,7 +3290,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-				20)
+				21)
 					TARGET_NAME=imx93-9x9-lpddr4-qsb
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -3175,7 +3298,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-				21)
+				22)
 					TARGET_NAME=imx93-14x14-lpddr4x-evk
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -3218,10 +3341,11 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 				echo "|  15    |  imx8mp-lpddr4-evk       | 8MPLUSLPD4-EVK           |"
 				echo "|  16    |  imx8ulp-lpddr4-evk      | MCIMX8ULP-EVK            |"
 				echo "|  17    |  imx8ulp-9x9-lpddr4-evk  | MCIMX8ULP-EVK9           |"
-				echo "|  18    |  imx93evk                | MCIMX93-EVK              |"
-				echo "|  19    |  imx93-11x11-lpddr4x-evk | MCIMX93-EVK (11x11)      |"
-				echo "|  20    |  imx93-9x9-lpddr4-qsb    | MCIMX93-EVK (9x9)        |"
-				echo "|  21    |  imx93-14x14-lpddr4x-evk | MCIMX93-EVK (14x14)      |"
+				echo "|  18    |  imx91-11x11-lpddr4-evk  | IMX91LP4EVK-11CM         |"
+				echo "|  19    |  imx93evk                | MCIMX93-EVK              |"
+				echo "|  20    |  imx93-11x11-lpddr4x-evk | MCIMX93-EVK (11x11)      |"
+				echo "|  21    |  imx93-9x9-lpddr4-qsb    | MCIMX93-EVK (9x9)        |"
+				echo "|  22    |  imx93-14x14-lpddr4x-evk | MCIMX93-EVK (14x14)      |"
 				echo "----------------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
@@ -3339,6 +3463,14 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					break
 					;;
 				18)
+					TARGET_NAME=imx91-11x11-lpddr4-evk
+					PART_NUMBER=IMX91LP4EVK-11CM
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				19)
 					TARGET_NAME=imx93evk
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -3346,7 +3478,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-				19)
+				20)
 					TARGET_NAME=imx93-11x11-lpddr4x-evk
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -3354,7 +3486,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-				20)
+				21)
 					TARGET_NAME=imx93-9x9-lpddr4-qsb
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -3362,7 +3494,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-				21)
+				22)
 					TARGET_NAME=imx93-14x14-lpddr4x-evk
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -4014,10 +4146,11 @@ else
 				echo "|  15    |  imx8mp-lpddr4-evk       | 8MPLUSLPD4-EVK           |"
 				echo "|  16    |  imx8ulp-lpddr4-evk      | MCIMX8ULP-EVK            |"
 				echo "|  17    |  imx8ulp-9x9-lpddr4-evk  | MCIMX8ULP-EVK9           |"
-				echo "|  18    |  imx93evk                | MCIMX93-EVK              |"
-				echo "|  19    |  imx93-11x11-lpddr4x-evk | MCIMX93-EVK (11x11)      |"
-				echo "|  20    |  imx93-9x9-lpddr4-qsb    | MCIMX93-EVK (9x9)        |"
-				echo "|  21    |  imx93-14x14-lpddr4x-evk | MCIMX93-EVK (14x14)      |"
+				echo "|  18    |  imx91-11x11-lpddr4-evk  | IMX91LP4EVK-11CM         |"
+				echo "|  19    |  imx93evk                | MCIMX93-EVK              |"
+				echo "|  20    |  imx93-11x11-lpddr4x-evk | MCIMX93-EVK (11x11)      |"
+				echo "|  21    |  imx93-9x9-lpddr4-qsb    | MCIMX93-EVK (9x9)        |"
+				echo "|  22    |  imx93-14x14-lpddr4x-evk | MCIMX93-EVK (14x14)      |"
 				echo "----------------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
@@ -4135,6 +4268,14 @@ else
 					break
 					;;
 				18)
+					TARGET_NAME=imx91-11x11-lpddr4-evk
+					PART_NUMBER=IMX91LP4EVK-11CM
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				19)
 					TARGET_NAME=imx93evk
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -4142,7 +4283,7 @@ else
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-				19)
+				20)
 					TARGET_NAME=imx93-11x11-lpddr4x-evk
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -4150,7 +4291,7 @@ else
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-				20)
+				21)
 					TARGET_NAME=imx93-9x9-lpddr4-qsb
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -4158,7 +4299,7 @@ else
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-				21)
+				22)
 					TARGET_NAME=imx93-14x14-lpddr4x-evk
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -4201,10 +4342,11 @@ else
 				echo "|  15    |  imx8mp-lpddr4-evk       | 8MPLUSLPD4-EVK           |"
 				echo "|  16    |  imx8ulp-lpddr4-evk      | MCIMX8ULP-EVK            |"
 				echo "|  17    |  imx8ulp-9x9-lpddr4-evk  | MCIMX8ULP-EVK9           |"
-				echo "|  18    |  imx93evk                | MCIMX93-EVK              |"
-				echo "|  19    |  imx93-11x11-lpddr4x-evk | MCIMX93-EVK (11x11)      |"
-				echo "|  20    |  imx93-9x9-lpddr4-qsb    | MCIMX93-EVK (9x9)        |"
-				echo "|  21    |  imx93-14x14-lpddr4x-evk | MCIMX93-EVK (14x14)      |"
+				echo "|  18    |  imx91-11x11-lpddr4-evk  | IMX91LP4EVK-11CM         |"
+				echo "|  19    |  imx93evk                | MCIMX93-EVK              |"
+				echo "|  20    |  imx93-11x11-lpddr4x-evk | MCIMX93-EVK (11x11)      |"
+				echo "|  21    |  imx93-9x9-lpddr4-qsb    | MCIMX93-EVK (9x9)        |"
+				echo "|  22    |  imx93-14x14-lpddr4x-evk | MCIMX93-EVK (14x14)      |"
 				echo "----------------------------------------------------------------"
 				echo -n "Select your entry: "
 				read TARGET_OPTION
@@ -4322,6 +4464,14 @@ else
 					break
 					;;
 				18)
+					TARGET_NAME=imx91-11x11-lpddr4-evk
+					PART_NUMBER=IMX91LP4EVK-11CM
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				19)
 					TARGET_NAME=imx93evk
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -4329,7 +4479,7 @@ else
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-				19)
+				20)
 					TARGET_NAME=imx93-11x11-lpddr4x-evk
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -4337,7 +4487,7 @@ else
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-				20)
+				21)
 					TARGET_NAME=imx93-9x9-lpddr4-qsb
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
@@ -4345,7 +4495,7 @@ else
 					DISTRO_NAME=fsl-imx-wayland
 					break
 					;;
-				21)
+				22)
 					TARGET_NAME=imx93-14x14-lpddr4x-evk
 					PART_NUMBER=MCIMX93-EVK
 					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
