@@ -20,6 +20,3 @@ index e660727aaa58..e4d282e3e4a2 100644
 +              compatible = "nxp,88w8987-bt";
 +     };
 +};
--- 
-2.49.0
-

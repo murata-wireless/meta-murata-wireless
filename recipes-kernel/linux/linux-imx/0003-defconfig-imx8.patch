@@ -7,16 +7,12 @@ than upstream supports to handle.
 Upstream-Status: Inappropriate [oe specific]
 
 diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
-index 31eabe2708ea..fa06f9b1aa48 100644
+index 0e9e6dfe63d0..fc0a9ba36ebb 100644
 --- a/arch/arm64/configs/imx_v8_defconfig
 +++ b/arch/arm64/configs/imx_v8_defconfig
-@@ -1219,3 +1219,6 @@ CONFIG_MEMTEST=y
- CONFIG_VHOST_NET=m
- CONFIG_VIDEO_MAX9286=y
- CONFIG_VIDEO_RDACM20=y
-+
+@@ -1153,3 +1153,5 @@ CONFIG_CORESIGHT_STM=m
+ CONFIG_CORESIGHT_CPU_DEBUG=m
+ CONFIG_CORESIGHT_CTI=m
+ CONFIG_MEMTEST=y
 +CONFIG_CFG80211_REQUIRE_SIGNED_REGDB=n
 +CONFIG_CFG80211_USE_KERNEL_REGDB_KEYS=n
--- 
-2.49.0
-

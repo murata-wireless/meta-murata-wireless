@@ -32,6 +32,3 @@ index 8a0a85d2e197..1281810c67bd 100644
 +       pinctrl-assert-gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>; /* Force 1.8V VIO */
 +       no-1-8-v;
 +};
--- 
-2.49.0
-

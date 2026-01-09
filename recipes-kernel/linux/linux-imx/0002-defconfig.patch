@@ -7,16 +7,12 @@ than upstream supports to handle.
 Upstream-Status: Inappropriate [oe specific]
 
 diff --git a/arch/arm/configs/imx_v7_defconfig b/arch/arm/configs/imx_v7_defconfig
-index 1680d7d78f55..cc27c6ac9eae 100644
+index 1680d7d78f55..cad166523522 100644
 --- a/arch/arm/configs/imx_v7_defconfig
 +++ b/arch/arm/configs/imx_v7_defconfig
-@@ -598,3 +598,6 @@ CONFIG_CRYPTO_SM4_GENERIC=m
+@@ -598,3 +598,5 @@ CONFIG_CRYPTO_SM4_GENERIC=m
  CONFIG_CRYPTO_ARIA=m
  CONFIG_CRYPTO_HCTR2=m
  CONFIG_CRYPTO_SM3_GENERIC=m
-+
 +CONFIG_CFG80211_REQUIRE_SIGNED_REGDB=n
 +CONFIG_CFG80211_USE_KERNEL_REGDB_KEYS=n
--- 
-2.49.0
-
