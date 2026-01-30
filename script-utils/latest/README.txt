@@ -1,5 +1,5 @@
 Title: README.txt
-Date:  June 20th, 2024
+Date:  January 30th, 2026
 
 Description: 
 ============
@@ -35,9 +35,20 @@ $./Murata_Wireless_Yocto_Build_IFX.sh
 --------------------------------------------------------------------------------------
 | Kernel release | Yocto code name  |  FMAC code name |  Release information         |
 |----------------|------------------|-----------------|------------------------------|
+| 6.12.3_1.0.0   | Styhead          |  Longma         |  imx-styhead-longma_r1.0     |
+|----------------|------------------|-----------------|------------------------------|
+| 6.6.52_2.2.0   | Scarthgap        |  Jaculus        |  imx-scarthgap52-jaculus_r1.0|
+|----------------|------------------|-----------------|------------------------------|
+| 6.6.23_2.0.0   | Scarthgap        |  Jaculus        |  imx-scarthgap-jaculus_r1.1  |
+|                |                  |  Kraken         |  imx-scarthgap-kraken_r1.0   |
+|----------------|------------------|-----------------|------------------------------|
+| 6.6.3_1.0.0    | Nanbield         |  Indrik         |  imx-nanbield-indrik_r1.0    |
+|----------------|------------------|-----------------|------------------------------|
 | 6.1.36_2.1.0   | Mickeldore       |  Godzilla       |  imx-mickledore-godzilla_r1.0|
 |                |                  |  Hedorah        |  imx-mickledore-hedorah_r1.0 |
 |                |                  |  Indrik         |  imx-mickledore-indrik_r1.0  |
+|                |                  |  Jaculus        |  imx-mickledore-jaculus_r1.0 |
+|                |                  |  Kraken         |  imx-mickledore-kraken_r1.0  |
 |----------------|------------------|-----------------|------------------------------|
 | 6.1.1_1.0.0    | Langdale         |  Fafnir         |  imx-langdale-fafnir_r1.0    |
 |                |                  |  Godzilla       |  imx-langdale-godzilla_r1.0  |
@@ -46,18 +57,8 @@ $./Murata_Wireless_Yocto_Build_IFX.sh
 |                |                  |  Fafnir         |  imx-kirkstone-fafnir_r1.0   |
 |                |                  |  Godzilla       |  imx-kirkstone-godzilla_r1.0 |
 |                |                  |  Indrik         |  imx-kirkstone-indrik_r1.0   |
-|----------------|------------------|-----------------|------------------------------|
-| 5.10.52_2.1.0  | Hardknott        |  Drogon         |  imx-hardknott-drogon_r1.0   |
-|                |                  |  Cynder         |  imx-hardknott-cynder_r1.0   |
-|----------------|------------------|-----------------|------------------------------|
-| 5.4.47_2.2.0   | Zeus             |  Baragon        |  imx-zeus-baragon_r1.0       |
-|                |                  |  Spiga          |  imx-zeus-spiga_r1.0         |
-|----------------|------------------|-----------------|------------------------------|
-| 4.14.98_2.3.0  | Sumo             |  Baragon        |  imx-sumo-baragon_r1.0       |
-|                |                  |  Spiga          |  imx-sumo-spiga_r1.0         |
-|----------------|------------------|-----------------|------------------------------|
-| 4.9.123_2.3.0  | Rocko Mini       |  Baragon        |  imx-rocko-mini-baragon_r1.0 |
-|                |                  |  Spiga          |  imx-rocko-mini-spiga_r1.0   |
+|                |                  |  Jaculus        |  imx-kirkstone-jaculus_r1.0  |
+|                |                  |  Kraken         |  imx-kirkstone-kraken_r1.0   |
 --------------------------------------------------------------------------------------
 
 Murata_Wireless_Yocto_Build_NXP.sh:
@@ -73,10 +74,6 @@ $./Murata_Wireless_Yocto_Build_NXP.sh
 --------------------------------------------------------------------
 | Kernel release | Yocto code name  |  Release information         |
 |----------------|------------------|------------------------------|
-| 5.10.52_2.1.0  | Hardknott        |  imx-hardknott-5-10-52_r1.0  |
-|----------------|------------------|------------------------------|
-| 5.10.72_2.2.0  | Hardknott        |  imx-hardknott-5-10-72_r1.0  |
---------------------------------------------------------------------
 | 5.15.32_2.0.0  | Kirkstone        |  imx-kirkstone-5-15-32_r1.0  |
 --------------------------------------------------------------------
 | 6.1.1_1.0.0    | Langdale         |  imx-langdale-6-1-1_r1.0     |
@@ -84,6 +81,14 @@ $./Murata_Wireless_Yocto_Build_NXP.sh
 | 6.1.36_2.1.0   | Mickledore       |  imx-mickledore-6-1-36_r1.0  |
 --------------------------------------------------------------------
 | 6.6.3_1.0.0    | Nanbield         |  imx-nanbield-6-6-3_r1.0     |
+--------------------------------------------------------------------
+| 6.6.23_2.0.0   | Scarthgap        |  imx-scarthgap-6-6-23_r1.0   |
+--------------------------------------------------------------------
+| 6.6.52_2.3.0   | Scarthgap        |  imx-scarthgap-6-6-52_r1.0   |
+--------------------------------------------------------------------
+| 6.12.20_2.0.0  | WalNascar        |  imx-walnascar-6-12-20_r1.0  |
+--------------------------------------------------------------------
+| 6.12.49_2.2.0  | WalNascar        |  imx-walnascar-6-12-49_r1.0  |
 --------------------------------------------------------------------
 
 
