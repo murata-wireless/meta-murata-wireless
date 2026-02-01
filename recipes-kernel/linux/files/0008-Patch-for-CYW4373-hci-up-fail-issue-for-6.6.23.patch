@@ -1,8 +1,16 @@
+Do not treat warnings as errors
+
+There are additional warnings found with musl which are
+treated as errors and fails the build, we have more combinations
+than upstream supports to handle.
+
+Upstream-Status: Inappropriate [oe specific]
+
 diff --git a/drivers/bluetooth/btbcm.c b/drivers/bluetooth/btbcm.c
-index 0a5445ac5e1b..c5b687fcbcb1 100644
+index a1153ada74d2..c9e20c2f49ce 100644
 --- a/drivers/bluetooth/btbcm.c
 +++ b/drivers/bluetooth/btbcm.c
-@@ -33,6 +33,18 @@
+@@ -34,6 +34,18 @@
  
  #define BCM_FW_NAME_LEN			64
  #define BCM_FW_NAME_COUNT_MAX		4
@@ -21,7 +29,7 @@ index 0a5445ac5e1b..c5b687fcbcb1 100644
  /* For kmalloc-ing the fw-name array instead of putting it on the stack */
  typedef char bcm_fw_name[BCM_FW_NAME_LEN];
  
-@@ -437,18 +449,45 @@ static const struct dmi_system_id disable_broken_read_transmit_power[] = {
+@@ -438,18 +450,45 @@ static const struct dmi_system_id disable_broken_read_transmit_power[] = {
  	{ }
  };
  
@@ -68,7 +76,7 @@ index 0a5445ac5e1b..c5b687fcbcb1 100644
  }
  
 diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 8dbdc51976e7..0ce975d1621c 100644
+index 4ccaddb46ddd..61530fffcbfa 100644
 --- a/drivers/bluetooth/btusb.c
 +++ b/drivers/bluetooth/btusb.c
 @@ -126,6 +126,10 @@ static const struct usb_device_id btusb_table[] = {
