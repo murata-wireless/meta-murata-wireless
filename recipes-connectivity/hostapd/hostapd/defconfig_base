@@ -23,8 +23,8 @@ CONFIG_DRIVER_NL80211=y
 
 CONFIG_DRIVER_BRCM_WL=y
 
-# IFX vendor extensions to nl80211
-CONFIG_DRIVER_NL80211_IFX=y
+# INF vendor extensions to nl80211
+CONFIG_DRIVER_NL80211_INF=y
 
 # driver_nl80211.c requires libnl. If you are compiling it yourself
 # you may need to point hostapd to your version of libnl.
