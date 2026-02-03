@@ -10,7 +10,7 @@ SRC_URI = "file://hostap_cs.modalias \
 
 inherit allarch
 
-S = "${WORKDIR}"
+S = "${UNPACKDIR}"
 
 do_compile() {
 }
