@@ -11,6 +11,7 @@ SRCBRANCH_meta-nxp-connectivity = "imx_matter_2024_q4-post"
 
 SRC_URI = " \
         ${IMX_FIRMWARE_SRC};branch=${SRCBRANCH_imx-firmware};destsuffix=imx-firmware;name=imx-firmware \
+        git://github.com/Infineon/ifx-linux-firmware;protocol=http;branch=master;destsuffix=ifx-linux-firmware;name=ifx-linux-firmware \
         git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=jaculus;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=jaculus;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
@@ -57,6 +58,7 @@ SRC_URI = " \
 "
 
 SRC_URI[cyw-fmac-fw-ifx.sha256sum]="34f5bfac6476d849af26f945705dc5a19965825333840405ef25dcd835d521d7"
+SRCREV_ifx-linux-firmware="c6c73c37e89b088624f7970fb0a7ef535c5dee0b"
 SRCREV_nxp-linux-calibration="df741be492748547eae8075139ca24f4faadbc2c"
 SRCREV_cyw-fmac-fw="a5cb86a5d11192ba6e7738f82b4d2dc9eeeca679"
 SRCREV_cyw-fmac-nvram="146d1438372b6c4857f92b8769b91c1801d3ede2"
@@ -163,6 +165,19 @@ do_install () {
 #   Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
 #   From Murata GitHub
     install -m 444 ${WORKDIR}/sources/cyw-fmac-fw/*.bin ${D}/${base_libdir}/firmware/cypress
+#   From IFX GitHub
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware/firmware/cyfmac43022-sdio.trxs ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware/firmware/cyfmac55500-sdio.trxse ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware/firmware/cyfmac55572-pcie.trxse ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware/firmware/cyfmac55572-sdio.trxse ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware/firmware/cyfmac43012-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware/firmware/cyfmac43439-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware/firmware/cyfmac43455-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware/firmware/cyfmac54591-pcie.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware/firmware/cyfmac54591-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware/firmware/cyfmac4373-sdio.industrial.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2AE.bin
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware/firmware/cyfmac4373-sdio.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2BC.bin
+
 
 #   Rename clm blob files accordingly
     install -m 444 ${WORKDIR}/sources/cyw-fmac-fw/cyfmac4354-sdio.1BB.clm_blob ${D}/${base_libdir}/firmware/cypress/cyfmac4354-sdio.clm_blob
