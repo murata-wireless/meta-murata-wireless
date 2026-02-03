@@ -4,8 +4,11 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
 SRC_URI:append = " file://0001-patch-longma-fmac-6-12-3.patch \
+                   file://0001-defconfig.patch \
+		               file://0002-murata-dts.patch \
                    file://0002-murata-customized-string.patch \
                    file://0004-wifi-brcmfmac-add-missing-header-include-for-brcmf_d.patch \
+		               file://0006-disable-dma-hciuart-kernel-crash.patch \
                    file://0008-Patch-for-CYW4373-hci-up-fail-issue-for-6.6.23.patch \
 "
 
