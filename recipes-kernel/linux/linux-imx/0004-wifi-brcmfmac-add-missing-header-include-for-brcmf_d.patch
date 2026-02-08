@@ -6,6 +6,15 @@ than upstream supports to handle.
 
 Upstream-Status: Inappropriate [oe specific]
 
+From f049637927a6b0dc669676792a3761b86f853da1 Mon Sep 17 00:00:00 2001
+From: Jameel Kareem <jkareem@murata.com>
+Date: Wed, 4 Feb 2026 12:36:56 -0800
+Subject: [PATCH 3/5] missing headers
+
+---
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h
 index d5748f4d66c3..b15cda5d8b23 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h
@@ -19,3 +28,6 @@ index d5748f4d66c3..b15cda5d8b23 100644
  /*******************************************************************************
   * Dongle command codes that are interpreted by firmware
   ******************************************************************************/
+-- 
+2.25.1
+

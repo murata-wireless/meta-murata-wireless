@@ -6,6 +6,15 @@ than upstream supports to handle.
 
 Upstream-Status: Inappropriate [oe specific]
 
+From e45fad46ac7cded191d4f1336556aec0cabdc08c Mon Sep 17 00:00:00 2001
+From: Jameel Kareem <jkareem@murata.com>
+Date: Wed, 4 Feb 2026 12:35:03 -0800
+Subject: [PATCH 2/5] customized
+
+---
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c | 1 +
+ 1 file changed, 1 insertion(+)
+
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
 index bf7395cf10e2..c6697cde9052 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
@@ -18,3 +27,6 @@ index bf7395cf10e2..c6697cde9052 100644
  	brcmf_info("Firmware: %s %s\n", ri->chipname, buf);
  
  	/* locate firmware version number for ethtool */
+-- 
+2.25.1
+

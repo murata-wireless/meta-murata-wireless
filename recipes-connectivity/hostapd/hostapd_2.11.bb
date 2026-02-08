@@ -2,7 +2,7 @@ SUMMARY = "User space daemon for extended IEEE 802.11 management"
 HOMEPAGE = "http://w1.fi/hostapd/"
 SECTION = "kernel/userland"
 LICENSE = "BSD-3-Clause"
-LIC_FILES_CHKSUM = "file://hostapd/README;md5=c905478466c90f1cefc0df987c40e172"
+LIC_FILES_CHKSUM = "file://hostapd/README;beginline=5;endline=47;md5=8e2c69e491b28390f9de0df1f64ebd6d"
 
 DEPENDS = "libnl openssl"
 
@@ -31,7 +31,7 @@ SYSTEMD_SERVICE:${PN} = "hostapd.service"
 SYSTEMD_AUTO_ENABLE:${PN} = "disable"
 
 do_configure:append() {
-    install -m 0644 ${WORKDIR}/defconfig_base ${B}/.config
+    install -m 0644 ${UNPACKDIR}/defconfig_base ${B}/.config
 }
 
 do_compile() {
@@ -44,12 +44,12 @@ do_install() {
     install -d ${D}${sbindir} ${D}${sysconfdir}/init.d ${D}${systemd_unitdir}/system/
     install -m 0644 ${B}/hostapd.conf ${D}${sysconfdir}
 #   Adding udhcdp.conf
-    install -m 0644 ${WORKDIR}/udhcpd.conf ${D}${sysconfdir}
+    install -m 0644 ${UNPACKDIR}/udhcpd.conf ${D}${sysconfdir}
 
     install -m 0755 ${B}/hostapd ${D}${sbindir}/hostapd
     install -m 0755 ${B}/hostapd_cli ${D}${sbindir}/hostapd_cli
-    install -m 755 ${WORKDIR}/init ${D}${sysconfdir}/init.d/hostapd
-    install -m 0644 ${WORKDIR}/hostapd.service ${D}${systemd_unitdir}/system/
+    install -m 755 ${UNPACKDIR}/init ${D}${sysconfdir}/init.d/hostapd
+    install -m 0644 ${UNPACKDIR}/hostapd.service ${D}${systemd_unitdir}/system/
     sed -i -e 's,@SBINDIR@,${sbindir},g' -e 's,@SYSCONFDIR@,${sysconfdir},g' ${D}${systemd_unitdir}/system/hostapd.service
 }
 

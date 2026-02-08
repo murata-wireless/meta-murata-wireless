@@ -1,8 +1,48 @@
+Do not treat warnings as errors
+
+There are additional warnings found with musl which are
+treated as errors and fails the build, we have more combinations
+than upstream supports to handle.
+
+Upstream-Status: Inappropriate [oe specific]
+
+From 5eabbbbd80b2c773c53d0e09eca709dddc5aaa48 Mon Sep 17 00:00:00 2001
+From: Jameel Kareem <jkareem@murata.com>
+Date: Wed, 4 Feb 2026 14:07:32 -0800
+Subject: [PATCH] imx8 dts patch
+
+---
+ arch/arm64/boot/dts/freescale/Makefile        |   10 +-
+ arch/arm64/boot/dts/freescale/Makefile.orig   |  854 +++++++++++
+ .../dts/freescale/imx8mm-evk-usd-m2-2ea.dts   |   24 +
+ .../freescale/imx8mm-evk-usd-m2-oob-2ea.dts   |   36 +
+ .../dts/freescale/imx8mm-evk-usd-m2-oob.dts   |   36 +
+ .../boot/dts/freescale/imx8mm-evk-usd-m2.dts  |  109 ++
+ .../dts/freescale/imx8mn-evk-usd-m2-2ea.dts   |   24 +
+ .../freescale/imx8mn-evk-usd-m2-oob-2ea.dts   |   37 +
+ .../dts/freescale/imx8mn-evk-usd-m2-oob.dts   |   35 +
+ .../boot/dts/freescale/imx8mn-evk-usd-m2.dts  |  110 ++
+ .../dts/freescale/imx8mp-evk-usdhc1-m2.dts    |    4 +
+ arch/arm64/boot/dts/freescale/imx8ulp-evk.dts |    4 +
+ .../boot/dts/freescale/imx93-11x11-evk.dts    |    4 +
+ .../dts/freescale/imx93-11x11-evk.dts.orig    | 1263 +++++++++++++++++
+ 14 files changed, 2548 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/freescale/Makefile.orig
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob-2ea.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-oob.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-2ea.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob-2ea.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2-oob.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mn-evk-usd-m2.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts.orig
+
 diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
-index afc9f83f11df..ac705c1918b5 100644
+index 3ca040ceada7..62d213e45f60 100644
 --- a/arch/arm64/boot/dts/freescale/Makefile
 +++ b/arch/arm64/boot/dts/freescale/Makefile
-@@ -71,7 +71,9 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb imx8mm-evk-rpmsg.dtb imx8mm-evk-rm67191
+@@ -128,7 +128,9 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb imx8mm-evk-rpmsg.dtb imx8mm-evk-rm67191
  			  imx8mm-evk-pcie-ep.dtb \
  			  imx8mm-evk-usd-wifi.dtb \
  			  imx8mm-evk-qca-wifi.dtb \
@@ -13,7 +53,7 @@ index afc9f83f11df..ac705c1918b5 100644
  			  imx8mm-evk-rm67199.dtb imx8mm-evk-rm67191-cmd-ram.dtb imx8mm-evk-rm67199-cmd-ram.dtb \
  			  imx8mm-evk-lk.dtb imx8mm-evk-rpmsg-wm8524-lpv.dtb
  dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk-rpmsg-wm8524.dtb
-@@ -101,7 +103,11 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mn-bsh-smm-s2pro.dtb
+@@ -157,7 +159,11 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mn-dimonoff-gateway-evk.dtb
  dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb imx8mn-evk-rm67191.dtb imx8mn-evk-rm67199.dtb \
  			  imx8mn-evk-rm67191-cmd-ram.dtb imx8mn-evk-rm67199-cmd-ram.dtb \
  			  imx8mn-evk-rpmsg.dtb imx8mn-evk-8mic-revE.dtb \
@@ -26,6 +66,866 @@ index afc9f83f11df..ac705c1918b5 100644
  dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr3l-evk.dtb
  dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb imx8mn-ddr4-evk-rm67191.dtb imx8mn-ddr4-evk-rm67199.dtb \
  			  imx8mn-ddr4-evk-rm67191-cmd-ram.dtb imx8mn-ddr4-evk-rm67199-cmd-ram.dtb \
+diff --git a/arch/arm64/boot/dts/freescale/Makefile.orig b/arch/arm64/boot/dts/freescale/Makefile.orig
+new file mode 100644
+index 000000000000..3ca040ceada7
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/Makefile.orig
+@@ -0,0 +1,854 @@
++# SPDX-License-Identifier: GPL-2.0
++
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1012a-2g5rdb.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1012a-frdm.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1012a-frwy.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1012a-oxalis.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1012a-qds.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1012a-rdb.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-kontron-kbox-a-230-ls.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-kontron-sl28.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-kontron-sl28-var1.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-kontron-sl28-var2.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-kontron-sl28-var3.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-kontron-sl28-var3-ads2.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-kontron-sl28-var4.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-qds.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-rdb.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-rdb-dpdk.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1043a-qds.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1043a-qds-sdk.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1043a-rdb.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1043a-rdb-sdk.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1043a-rdb-usdpaa.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1043a-tqmls1043a-mbls10xxa.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1046a-frwy.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1046a-frwy-sdk.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1046a-frwy-usdpaa.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1046a-qds.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1046a-qds-sdk.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1046a-rdb.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1046a-rdb-sdk.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1046a-rdb-usdpaa.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1046a-rdb-shared-mac9-only.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1046a-rdb-usdpaa-shared-mac10.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1046a-rdb-usdpaa-shared.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1046a-tqmls1046a-mbls10xxa.dtb
++DTC_FLAGS_fsl-ls1088a-qds := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1088a-qds.dtb
++DTC_FLAGS_fsl-ls1088a-rdb := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1088a-rdb.dtb
++DTC_FLAGS_fsl-ls1088a-ten64 := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1088a-ten64.dtb
++DTC_FLAGS_fsl-ls1088a-tqmls1088a-mbls10xxa := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1088a-tqmls1088a-mbls10xxa.dtb
++DTC_FLAGS_fsl-ls2080a-qds := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls2080a-qds.dtb
++DTC_FLAGS_fsl-ls2080a-rdb := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls2080a-rdb.dtb
++DTC_FLAGS_fsl-ls2081a-rdb := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls2081a-rdb.dtb
++DTC_FLAGS_fsl-ls2080a-simu := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls2080a-simu.dtb
++DTC_FLAGS_fsl-ls2088a-qds := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls2088a-qds.dtb
++DTC_FLAGS_fsl-ls2088a-rdb := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls2088a-rdb.dtb
++DTC_FLAGS_fsl-lx2160a-bluebox3 := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-bluebox3.dtb
++DTC_FLAGS_fsl-lx2160a-bluebox3-rev-a := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-bluebox3-rev-a.dtb
++DTC_FLAGS_fsl-lx2160a-clearfog-cx := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-clearfog-cx.dtb
++DTC_FLAGS_fsl-lx2160a-honeycomb := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-honeycomb.dtb
++DTC_FLAGS_fsl-lx2160a-qds := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-qds.dtb
++DTC_FLAGS_fsl-lx2160a-rdb := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-rdb.dtb
++DTC_FLAGS_fsl-lx2162a-clearfog := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-clearfog.dtb
++DTC_FLAGS_fsl-lx2162a-qds := -Wno-interrupt_map
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2162a-qds.dtb
++
++fsl-ls1028a-qds-13bb-dtbs := fsl-ls1028a-qds.dtb fsl-ls1028a-qds-13bb.dtbo
++fsl-ls1028a-qds-65bb-dtbs := fsl-ls1028a-qds.dtb fsl-ls1028a-qds-65bb.dtbo
++fsl-ls1028a-qds-7777-dtbs := fsl-ls1028a-qds.dtb fsl-ls1028a-qds-7777.dtbo
++fsl-ls1028a-qds-85bb-dtbs := fsl-ls1028a-qds.dtb fsl-ls1028a-qds-85bb.dtbo
++fsl-ls1028a-qds-899b-dtbs := fsl-ls1028a-qds.dtb fsl-ls1028a-qds-899b.dtbo
++fsl-ls1028a-qds-9999-dtbs := fsl-ls1028a-qds.dtb fsl-ls1028a-qds-9999.dtbo
++fsl-ls1028a-qds-backplane-dtbs := \
++	fsl-ls1028a-qds.dtb \
++	fsl-ls1028a-lane-a-backplane.dtbo \
++	fsl-ls1028a-lane-b-backplane.dtbo \
++	fsl-ls1028a-lane-c-backplane.dtbo \
++	fsl-ls1028a-lane-d-backplane.dtbo
++
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-qds-13bb.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-qds-65bb.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-qds-7777.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-qds-85bb.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-qds-899b.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-qds-9999.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-ls1028a-qds-backplane.dtb
++
++DTC_FLAGS_fsl-lx2160a-tqmlx2160a-mblx2160a := -Wno-interrupt_map
++fsl-lx2160a-tqmlx2160a-mblx2160a-12-11-x-dtbs := fsl-lx2160a-tqmlx2160a-mblx2160a.dtb \
++	fsl-lx2160a-tqmlx2160a-mblx2160a_12_x_x.dtbo \
++	fsl-lx2160a-tqmlx2160a-mblx2160a_x_11_x.dtbo
++fsl-lx2160a-tqmlx2160a-mblx2160a-12-7-x-dtbs := fsl-lx2160a-tqmlx2160a-mblx2160a.dtb \
++	fsl-lx2160a-tqmlx2160a-mblx2160a_12_x_x.dtbo \
++	fsl-lx2160a-tqmlx2160a-mblx2160a_x_7_x.dtbo
++fsl-lx2160a-tqmlx2160a-mblx2160a-12-8-x-dtbs := fsl-lx2160a-tqmlx2160a-mblx2160a.dtb \
++	fsl-lx2160a-tqmlx2160a-mblx2160a_12_x_x.dtbo \
++	fsl-lx2160a-tqmlx2160a-mblx2160a_x_8_x.dtbo
++fsl-lx2160a-tqmlx2160a-mblx2160a-14-7-x-dtbs := fsl-lx2160a-tqmlx2160a-mblx2160a.dtb \
++	fsl-lx2160a-tqmlx2160a-mblx2160a_14_x_x.dtbo \
++	fsl-lx2160a-tqmlx2160a-mblx2160a_x_7_x.dtbo
++fsl-lx2160a-tqmlx2160a-mblx2160a-14-8-x-dtbs := fsl-lx2160a-tqmlx2160a-mblx2160a.dtb \
++	fsl-lx2160a-tqmlx2160a-mblx2160a_14_x_x.dtbo \
++	fsl-lx2160a-tqmlx2160a-mblx2160a_x_8_x.dtbo
++fsl-lx2160a-tqmlx2160a-mblx2160a-14-11-x-dtbs := fsl-lx2160a-tqmlx2160a-mblx2160a.dtb \
++	fsl-lx2160a-tqmlx2160a-mblx2160a_14_x_x.dtbo \
++	fsl-lx2160a-tqmlx2160a-mblx2160a_x_11_x.dtbo
++
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-tqmlx2160a-mblx2160a-12-11-x.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-tqmlx2160a-mblx2160a-12-8-x.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-tqmlx2160a-mblx2160a-12-7-x.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-tqmlx2160a-mblx2160a-14-11-x.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-tqmlx2160a-mblx2160a-14-8-x.dtb
++dtb-$(CONFIG_ARCH_LAYERSCAPE) += fsl-lx2160a-tqmlx2160a-mblx2160a-14-7-x.dtb
++
++dtb-$(CONFIG_ARCH_MXC) += imx8dxl-evk.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-ab2.dtb imx8mm-ab2-m4.dtb imx8mm-ddr4-ab2.dtb imx8mm-ddr4-ab2-m4.dtb \
++			  imx8mm-ddr4-ab2-revb.dtb imx8mm-ddr4-ab2-m4-revb.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk.dtb imx8mm-evk-rpmsg.dtb imx8mm-evk-rm67191.dtb \
++			  imx8mm-evk-root.dtb imx8mm-evk-inmate.dtb imx8mm-evk-revb-qca-wifi.dtb \
++			  imx8mm-evk-ecspi-slave.dtb \
++			  imx8mm-evk-pcie-ep.dtb \
++			  imx8mm-evk-usd-wifi.dtb \
++			  imx8mm-evk-qca-wifi.dtb \
++			  imx8mm-evk-dpdk.dtb \
++			  imx8mm-evk-rm67199.dtb imx8mm-evk-rm67191-cmd-ram.dtb imx8mm-evk-rm67199-cmd-ram.dtb \
++			  imx8mm-evk-lk.dtb imx8mm-evk-rpmsg-wm8524-lpv.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk-rpmsg-wm8524.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk-ak4497.dtb imx8mm-evk-ak5558.dtb imx8mm-evk-audio-tdm.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk-8mic-revE.dtb imx8mm-evk-8mic-swpdm.dtb \
++			  imx8mm-evk-iqaudio-dacplus.dtb imx8mm-evk-iqaudio-dacpro.dtb imx8mm-evk-hifiberry-dacplus.dtb \
++			  imx8mm-evk-hifiberry-dac2.dtb imx8mm-evk-hifiberry-dacplusadc.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-ddr4-evk.dtb imx8mm-ddr4-evk-rm67191.dtb imx8mm-ddr4-evk-revb.dtb \
++			  imx8mm-ddr4-evk-revb-rm67191.dtb \
++			  imx8mm-ddr4-evk-revb-rm67191-cmd-ram.dtb \
++			  imx8mm-ddr4-evk-root.dtb \
++			  imx8mm-ddr4-evk-inmate.dtb \
++			  imx8mm-ddr4-evk-pcie-ep.dtb \
++			  imx8mm-ddr4-evk-revb-rm67199.dtb \
++			  imx8mm-ddr4-evk-revb-rm67199-cmd-ram.dtb \
++			  imx8mm-ddr4-evk-rm67199.dtb \
++			  imx8mm-ddr4-evk-rm67191-cmd-ram.dtb \
++			  imx8mm-ddr4-evk-rm67199-cmd-ram.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-emcon-avari.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-emtop-baseboard.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-icore-mx8mm-ctouch2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-icore-mx8mm-edimm2.2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mm-nitrogen-r2.dtb
++
++dtb-$(CONFIG_ARCH_MXC) += imx8mn-dimonoff-gateway-evk.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb imx8mn-evk-rm67191.dtb imx8mn-evk-rm67199.dtb \
++			  imx8mn-evk-rm67191-cmd-ram.dtb imx8mn-evk-rm67199-cmd-ram.dtb \
++			  imx8mn-evk-rpmsg.dtb imx8mn-evk-8mic-revE.dtb \
++			  imx8mn-evk-8mic-swpdm.dtb imx8mn-evk-usd-wifi.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr3l-evk.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk.dtb imx8mn-ddr4-evk-rm67191.dtb imx8mn-ddr4-evk-rm67199.dtb \
++			  imx8mn-ddr4-evk-rm67191-cmd-ram.dtb imx8mn-ddr4-evk-rm67199-cmd-ram.dtb \
++			  imx8mn-ddr4-evk-usd-wifi.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk-rpmsg.dtb imx8mn-ddr3l-evk-rpmsg.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr4-evk-root.dtb imx8mn-ddr4-evk-inmate.dtb imx8mn-evk-root.dtb imx8mn-evk-inmate.dtb \
++			  imx8mn-evk-lk.dtb imx8mn-ddr4-evk-lk.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mn-ddr3l-evk-ak5558.dtb imx8mn-ddr4-evk-ak5558.dtb imx8mn-evk-ak5558.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mn-ab2.dtb imx8mn-ddr3l-ab2.dtb imx8mn-ddr4-ab2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk-iqaudio-dacplus.dtb imx8mn-evk-iqaudio-dacpro.dtb imx8mn-evk-hifiberry-dacplus.dtb \
++			  imx8mn-evk-hifiberry-dac2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk.dtb imx8mp-evk-rm67191.dtb imx8mp-evk-it6263-lvds-dual-channel.dtb \
++			  imx8mp-evk-pcie-ep.dtb  imx8mp-evk-rpmsg.dtb imx8mp-evk-ecspi-slave.dtb \
++			  imx8mp-evk-jdi-wuxga-lvds-panel.dtb imx8mp-evk-flexcan2.dtb \
++			  imx8mp-evk-root.dtb imx8mp-evk-inmate.dtb imx8mp-evk-ov2775.dtb \
++			  imx8mp-evk-ov2775-ov5640.dtb imx8mp-evk-basler-ov5640.dtb imx8mp-evk-basler.dtb \
++			  imx8mp-evk-basler-ov2775.dtb imx8mp-evk-dual-basler.dtb \
++			  imx8mp-evk-dual-ov2775.dtb imx8mp-evk-spdif-lb.dtb imx8mp-evk-dsp.dtb \
++			  imx8mp-evk-sof-wm8960.dtb imx8mp-evk-sof-pdm.dtb \
++			  imx8mp-evk-os08a20-ov5640.dtb imx8mp-evk-os08a20.dtb \
++			  imx8mp-evk-dual-os08a20.dtb \
++			  imx8mp-evk-iqaudio-dacplus.dtb imx8mp-evk-iqaudio-dacpro.dtb imx8mp-evk-hifiberry-dacplus.dtb \
++			  imx8mp-evk-hifiberry-dac2.dtb imx8mp-evk-hifiberry-dacplusadc.dtb \
++			  imx8mp-evk-usdhc1-m2.dtb imx8mp-evk-rm67199.dtb \
++			  imx8mp-evk-dpdk.dtb imx8mp-evk-8mic-swpdm.dtb imx8mp-evk-rpmsg-lpv.dtb imx8mp-evk-revA3-8mic-revE.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-navqp.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-ab2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-navq.dtb imx8mp-navq-ov5640-ov5645.dtb imx8mp-navq-ov5647-ov5640.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-ddr4-evk.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-ndm.dtb
++
++imx8mp-evk-revb4-dtbs := imx8mp-evk.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-rm67191-dtbs := imx8mp-evk-rm67191.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-it6263-lvds-dual-channel-dtbs := imx8mp-evk-it6263-lvds-dual-channel.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-pcie-ep-dtbs := imx8mp-evk-pcie-ep.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-ecspi-slave-dtbs := imx8mp-evk-ecspi-slave.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-jdi-wuxga-lvds-panel-dtbs := imx8mp-evk-jdi-wuxga-lvds-panel.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-flexcan2-dtbs := imx8mp-evk-flexcan2.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-root-dtbs := imx8mp-evk-root.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-ov2775-dtbs := imx8mp-evk-ov2775.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-ov2775-ov5640-dtbs := imx8mp-evk-ov2775-ov5640.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-basler-ov5640-dtbs := imx8mp-evk-basler-ov5640.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-basler-dtbs := imx8mp-evk-basler.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-basler-ov2775-dtbs := imx8mp-evk-basler-ov2775.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-dual-basler-dtbs := imx8mp-evk-dual-basler.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-dual-ov2775-dtbs := imx8mp-evk-dual-ov2775.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-spdif-lb-dtbs := imx8mp-evk-spdif-lb.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-os08a20-ov5640-dtbs := imx8mp-evk-os08a20-ov5640.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-os08a20-dtbs := imx8mp-evk-os08a20.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-dual-os08a20-dtbs := imx8mp-evk-dual-os08a20.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-iqaudio-dacplus-dtbs := imx8mp-evk-iqaudio-dacplus.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-iqaudio-dacpro-dtbs := imx8mp-evk-iqaudio-dacpro.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-hifiberry-dacplus-dtbs := imx8mp-evk-hifiberry-dacplus.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-hifiberry-dac2-dtbs := imx8mp-evk-hifiberry-dac2.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-hifiberry-dacplusadc-dtbs := imx8mp-evk-hifiberry-dacplusadc.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-usdhc1-m2-dtbs := imx8mp-evk-usdhc1-m2.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-rm67199-dtbs := imx8mp-evk-rm67199.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-dpdk-dtbs := imx8mp-evk-dpdk.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-8mic-swpdm-dtbs := imx8mp-evk-8mic-swpdm.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-8mic-revE-dtbs := imx8mp-evk-revA3-8mic-revE.dtb imx8mp-evk-revb4.dtbo
++imx8mp-ddr4-evk-revb4-dtbs := imx8mp-ddr4-evk.dtb imx8mp-evk-revb4.dtbo
++imx8mp-evk-revb4-ndm-dtbs := imx8mp-evk-ndm.dtb imx8mp-evk-revb4.dtbo
++
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-rm67191.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-it6263-lvds-dual-channel.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-pcie-ep.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-ecspi-slave.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-jdi-wuxga-lvds-panel.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-flexcan2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-root.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-ov2775.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-ov2775-ov5640.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-basler-ov5640.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-basler.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-basler-ov2775.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-dual-basler.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-dual-ov2775.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-spdif-lb.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-os08a20-ov5640.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-os08a20.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-dual-os08a20.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-iqaudio-dacplus.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-iqaudio-dacpro.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-hifiberry-dacplus.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-hifiberry-dac2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-hifiberry-dacplusadc.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-usdhc1-m2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-rm67199.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-dpdk.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-8mic-swpdm.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-8mic-revE.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-ddr4-evk-revb4.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-ndm.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-sof-wm8962.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-rpmsg.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk-revb4-rpmsg-lpv.dtb
++
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk.dtb imx8mq-evk-rpmsg.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk.dtb imx8mq-evk-rpmsg.dtb imx8mq-evk-pcie1-m2.dtb imx8mq-evk-usd-wifi.dtb \
++			  imx8mq-evk-usdhc2-m2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk-ak4497.dtb imx8mq-evk-audio-tdm.dtb imx8mq-evk-pdm.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk-root.dtb imx8mq-evk-inmate.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk-lcdif-rm67191.dtb imx8mq-evk-lcdif-adv7535.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk-lcdif-rm67199.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk-dcss-rm67191.dtb imx8mq-evk-dcss-adv7535.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk-dcss-rm67199.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk-dual-display.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-hummingboard-pulse.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-kontron-pitx-imx8m.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-mnt-reform2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-nitrogen.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-phanbell.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-pico-pi.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-thor96.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk-dp.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-zii-ultra-rmb3.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-zii-ultra-zest.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-ddr3l-val.dtb imx8mq-ddr4-val.dtb imx8mq-ddr4-val-gpmi-nand.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk-pcie-ep.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mq-wevk.dtb
++
++#dtb-$(CONFIG_ARCH_MXC) += imx8qm-apalis-eval.dtb
++#dtb-$(CONFIG_ARCH_MXC) += imx8qm-apalis-ixora-v1.1.dtb
++#dtb-$(CONFIG_ARCH_MXC) += imx8qm-apalis-v1.1-eval.dtb
++#dtb-$(CONFIG_ARCH_MXC) += imx8qm-apalis-v1.1-ixora-v1.1.dtb
++#dtb-$(CONFIG_ARCH_MXC) += imx8qm-apalis-v1.1-ixora-v1.2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek.dtb \
++			  imx8qm-mek-enet2-tja1100.dtb imx8qm-mek-rpmsg.dtb \
++			  imx8qm-mek-hdmi.dtb \
++			  imx8qm-mek-jdi-wuxga-lvds1-panel.dtb \
++			  imx8qm-mek-jdi-wuxga-lvds1-panel-rpmsg.dtb \
++			  imx8qm-mek-pcie-ep.dtb \
++			  imx8qm-mek-usdhc3-m2.dtb imx8qm-mek-usd-wifi.dtb \
++			  imx8qm-lpddr4-val.dtb imx8qm-lpddr4-val-mqs.dtb \
++			  imx8qm-lpddr4-val-spdif.dtb imx8qm-mek-ca53.dtb \
++			  imx8qm-mek-ca72.dtb imx8qm-lpddr4-val-ca53.dtb \
++			  imx8qm-lpddr4-val-ca72.dtb imx8qm-ddr4-val.dtb \
++			  imx8qm-lpddr4-val-lpspi.dtb imx8qm-lpddr4-val-lpspi-slave.dtb \
++			  imx8qm-mek-dsi-rm67191.dtb imx8qm-mek-dsi-rm67199.dtb \
++			  imx8qm-lpddr4-val-dp.dtb\
++			  imx8qp-lpddr4-val.dtb imx8dm-lpddr4-val.dtb \
++			  imx8qm-mek-cockpit-a53.dtb imx8qm-mek-cockpit-a72.dtb \
++			  imx8qm-mek-dsi-serdes-rpmsg.dtb \
++			  imx8qm-mek-dsi-serdes.dtb imx8qm-mek-dsi-serdes-dual-display-rpmsg.dtb \
++			  imx8qm-mek-dsi-serdes-dual-display.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-dom0.dtb imx8qm-mek-domu.dtb \
++			  imx8qm-mek-root.dtb imx8qm-mek-inmate.dtb
++
++imx8qm-mek-ov5640-csi0-dtbs := imx8qm-mek.dtb imx8qm-mek-ov5640-csi0.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-ov5640-csi0.dtb
++imx8qm-mek-ov5640-csi1-dtbs := imx8qm-mek.dtb imx8qm-mek-ov5640-csi1.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-ov5640-csi1.dtb
++imx8qm-mek-ov5640-dual-dtbs := imx8qm-mek.dtb imx8qm-mek-ov5640-csi0.dtbo imx8qm-mek-ov5640-csi1.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-ov5640-dual.dtb
++imx8qm-mek-ov5640-csi0-rpmsg-dtbs := imx8qm-mek-rpmsg.dtb imx8qm-mek-ov5640-csi0.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-ov5640-csi0-rpmsg.dtb
++imx8qm-mek-ov5640-csi1-rpmsg-dtbs := imx8qm-mek-rpmsg.dtb imx8qm-mek-ov5640-csi1.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-ov5640-csi1-rpmsg.dtb
++imx8qm-mek-ov5640-dual-rpmsg-dtbs := imx8qm-mek-rpmsg.dtb imx8qm-mek-ov5640-csi0.dtbo imx8qm-mek-ov5640-csi1.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-ov5640-dual-rpmsg.dtb
++imx8qm-mek-max9286-csi0-dtbs := imx8qm-mek.dtb imx8qm-mek-max9286-csi0.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-max9286-csi0.dtb
++imx8qm-mek-max9286-csi1-dtbs := imx8qm-mek.dtb imx8qm-mek-max9286-csi1.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-max9286-csi1.dtb
++imx8qm-mek-max9286-dual-dtbs := imx8qm-mek.dtb imx8qm-mek-max9286-csi0.dtbo imx8qm-mek-max9286-csi1.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-max9286-dual.dtb
++
++imx8qm-mek-revd-dtbs := imx8qm-mek.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-rpmsg-dtbs := imx8qm-mek-rpmsg.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-ov5640-csi0-dtbs := imx8qm-mek-ov5640-csi0.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-ov5640-csi1-dtbs := imx8qm-mek-ov5640-csi1.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-ov5640-dual-dtbs := imx8qm-mek-ov5640-dual.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-max9286-csi0-dtbs := imx8qm-mek-max9286-csi0.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-max9286-csi1-dtbs := imx8qm-mek-max9286-csi1.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-max9286-dual-dtbs := imx8qm-mek-max9286-dual.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-enet2-tja1100-dtbs := imx8qm-mek-enet2-tja1100.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-hdmi-dtbs := imx8qm-mek-hdmi.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-jdi-wuxga-lvds1-panel-dtbs := imx8qm-mek-jdi-wuxga-lvds1-panel.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-jdi-wuxga-lvds1-panel-rpmsg-dtbs := imx8qm-mek-jdi-wuxga-lvds1-panel-rpmsg.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-pcie-ep-dtbs := imx8qm-mek-pcie-ep.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-usdhc3-m2-dtbs := imx8qm-mek-usdhc3-m2.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-usd-wifi-dtbs := imx8qm-mek-usd-wifi.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-ca53-dtbs := imx8qm-mek-ca53.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-ca72-dtbs := imx8qm-mek-ca72.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-dsi-rm67191-dtbs := imx8qm-mek-dsi-rm67191.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-dsi-rm67199-dtbs := imx8qm-mek-dsi-rm67199.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-root-dtbs := imx8qm-mek-root.dtb imx8qm-mek-revd.dtbo
++imx8qm-mek-revd-sof-cs42888-dtbs := imx8qm-mek-sof-cs42888.dtb imx8qm-mek-revd.dtbo
++
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-rpmsg.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-enet2-tja1100.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-hdmi.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-jdi-wuxga-lvds1-panel.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-jdi-wuxga-lvds1-panel-rpmsg.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-pcie-ep.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-usdhc3-m2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-usd-wifi.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-ca53.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-ca72.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-dsi-rm67191.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-dsi-rm67199.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-root.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-revd-sof-cs42888.dtb
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-revd-ov5640-csi0.dtb
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-revd-ov5640-csi1.dtb
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-revd-ov5640-dual.dtb
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-revd-max9286-csi0.dtb
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-revd-max9286-csi1.dtb
++dtb-${CONFIG_ARCH_MXC} += imx8qm-mek-revd-max9286-dual.dtb
++#dtb-$(CONFIG_ARCH_MXC) += imx8qxp-ai_ml.dtb
++#dtb-$(CONFIG_ARCH_MXC) += imx8qxp-colibri-aster.dtb
++#dtb-$(CONFIG_ARCH_MXC) += imx8qxp-colibri-eval-v3.dtb
++#dtb-$(CONFIG_ARCH_MXC) += imx8qxp-colibri-iris.dtb
++#dtb-$(CONFIG_ARCH_MXC) += imx8qxp-colibri-iris-v2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8ulp-evk.dtb imx8ulp-evk-lpspi-slave.dtb \
++			  imx8ulp-evk-i3c.dtb imx8ulp-evk-rk055hdmipi4m.dtb imx8ulp-evk-rk055hdmipi4mv2.dtb \
++			  imx8ulp-evk-epdc.dtb imx8ulp-evk-sof-btsco.dtb \
++			  imx8ulp-evk-flexio-i2c.dtb imx8ulp-evk-nd.dtb imx8ulp-9x9-evk.dtb \
++			  imx8ulp-9x9-evk-rk055hdmipi4m.dtb imx8ulp-9x9-evk-rk055hdmipi4mv2.dtb \
++			  imx8ulp-9x9-evk-lpspi.dtb imx8ulp-9x9-evk-lpspi-slave.dtb \
++			  imx8ulp-9x9-evk-i3c.dtb imx8ulp-9x9-evk-sof-btsco.dtb \
++			  imx8ulp-evk-lpa.dtb imx8ulp-9x9-evk-lpa.dtb \
++			  imx8ulp-evk-tpm.dtb imx8ulp-9x9-evk-tpm.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8dxl-evk.dtb \
++			  imx8dxl-evk-enet0.dtb imx8dxl-evk-enet0-tja1100.dtb \
++			  imx8dxl-evk-pcie-ep.dtb \
++			  imx8dxl-evk-lcdif.dtb \
++			  imx8dxl-evk-lpspi-slave.dtb \
++			  imx8dxl-evk-rpmsg.dtb \
++			  imx8dxl-ddr3l-evk.dtb \
++			  imx8dxl-ddr3l-evk-rpmsg.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8dxl-phantom-mek.dtb \
++			  imx8dxl-phantom-mek-rpmsg.dtb \
++			  imx8dxl-orangebox.dtb \
++			  imx8dxl-orangebox-sd.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek.dtb \
++			  imx8qxp-mek-enet2.dtb imx8qxp-mek-enet2-sja1105.dtb \
++			  imx8qxp-mek-enet2-tja1100.dtb \
++			  imx8qxp-mek-sof-cs42888.dtb imx8qxp-mek-sof.dtb\
++			  imx8qxp-mek-sof-wm8960.dtb imx8qxp-mek-sof-wm8962.dtb\
++			  imx8qxp-mek-rpmsg.dtb imx8qxp-mek-a0.dtb \
++			  imx8qxp-mek-it6263-lvds0-dual-channel.dtb \
++			  imx8qxp-mek-it6263-lvds1-dual-channel.dtb \
++			  imx8qxp-mek-it6263-lvds0-dual-channel-rpmsg.dtb \
++			  imx8qxp-mek-it6263-lvds1-dual-channel-rpmsg.dtb \
++			  imx8qxp-mek-jdi-wuxga-lvds0-panel.dtb \
++			  imx8qxp-mek-jdi-wuxga-lvds1-panel.dtb \
++			  imx8qxp-mek-jdi-wuxga-lvds0-panel-rpmsg.dtb \
++			  imx8qxp-mek-jdi-wuxga-lvds1-panel-rpmsg.dtb \
++			  imx8qxp-mek-dsi-rm67191.dtb \
++			  imx8qxp-mek-dsi-rm67191-rpmsg.dtb \
++			  imx8qxp-mek-dsi-rm67199.dtb \
++			  imx8qxp-mek-dsi-rm67199-rpmsg.dtb \
++			  imx8qxp-mek-dpu-lcdif.dtb \
++			  imx8qxp-mek-dpu-lcdif-rpmsg.dtb \
++			  imx8qxp-mek-pcie-ep.dtb \
++			  imx8dx-mek.dtb imx8dx-mek-rpmsg.dtb \
++			  imx8dx-mek-enet2-tja1100.dtb \
++			  imx8dx-mek-it6263-lvds0-dual-channel.dtb \
++			  imx8dx-mek-it6263-lvds1-dual-channel.dtb \
++			  imx8dx-mek-it6263-lvds0-dual-channel-rpmsg.dtb \
++			  imx8dx-mek-it6263-lvds1-dual-channel-rpmsg.dtb \
++			  imx8dx-mek-jdi-wuxga-lvds0-panel.dtb \
++			  imx8dx-mek-jdi-wuxga-lvds1-panel.dtb \
++			  imx8dx-mek-jdi-wuxga-lvds0-panel-rpmsg.dtb \
++			  imx8dx-mek-jdi-wuxga-lvds1-panel-rpmsg.dtb \
++			  imx8dx-mek-dsi-rm67191.dtb \
++			  imx8dx-mek-dsi-rm67191-rpmsg.dtb \
++			  imx8qxp-mek-lcdif.dtb \
++			  imx8qxp-mek-lcdif-rpmsg.dtb \
++			  imx8qxp-lpddr4-val-a0.dtb \
++			  imx8qxp-lpddr4-val.dtb imx8qxp-lpddr4-val-mqs.dtb imx8qxp-ddr3l-val.dtb \
++			  imx8qxp-lpddr4-val-lpspi.dtb imx8qxp-lpddr4-val-lpspi-slave.dtb \
++			  imx8qxp-lpddr4-val-spdif.dtb imx8qxp-lpddr4-val-gpmi-nand.dtb imx8dxp-lpddr4-val.dtb \
++			  imx8qxp-17x17-val.dtb imx8dx-lpddr4-val.dtb imx8dx-17x17-val.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qxp-mek-dom0.dtb imx8qxp-mek-root.dtb \
++			  imx8qxp-mek-inmate.dtb
++
++imx8qxp-mek-ov5640-csi-dtbs := imx8qxp-mek.dtb imx8qxp-mek-ov5640-csi.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qxp-mek-ov5640-csi.dtb
++imx8qxp-mek-ov5640-parallel-dtbs := imx8qxp-mek.dtb imx8qxp-mek-ov5640-parallel.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qxp-mek-ov5640-parallel.dtb
++imx8qxp-mek-ov5640-dual-dtbs := imx8qxp-mek.dtb imx8qxp-mek-ov5640-csi.dtbo imx8qxp-mek-ov5640-parallel.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qxp-mek-ov5640-dual.dtb
++imx8qxp-mek-ov5640-csi-rpmsg-dtbs := imx8qxp-mek-rpmsg.dtb imx8qxp-mek-ov5640-csi.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qxp-mek-ov5640-csi-rpmsg.dtb
++imx8qxp-mek-ov5640-parallel-rpmsg-dtbs := imx8qxp-mek-rpmsg.dtb imx8qxp-mek-ov5640-parallel.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qxp-mek-ov5640-parallel-rpmsg.dtb
++imx8qxp-mek-ov5640-dual-rpmsg-dtbs := imx8qxp-mek-rpmsg.dtb imx8qxp-mek-ov5640-csi.dtbo imx8qxp-mek-ov5640-parallel.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qxp-mek-ov5640-dual-rpmsg.dtb
++imx8qxp-mek-max9286-dtbs := imx8qxp-mek.dtb imx8qxp-mek-max9286.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qxp-mek-max9286.dtb
++imx8qxp-mek-max9286-rpmsg-dtbs := imx8qxp-mek-rpmsg.dtb imx8qxp-mek-max9286.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx8qxp-mek-max9286-rpmsg.dtb
++
++dtb-$(CONFIG_ARCH_MXC) += imx93-14x14-evk.dtb \
++			  imx93-14x14-evk-tja1103.dtb imx93-14x14-evk-rm67199.dtb \
++			  imx93-14x14-evk-mqs.dtb imx93-14x14-evk-aud-hat.dtb \
++			  imx93-14x14-evk-lvds-it6263.dtb imx93-14x14-evk-sja1105.dtb \
++			  imx93-14x14-evk-flexspi-m2.dtb imx93-14x14-evk-dsi-serdes.dtb \
++			  imx93-14x14-evk-i3c.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk.dtb \
++			  imx93-11x11-evk-inmate.dtb imx93-11x11-evk-root.dtb imx93-11x11-evk-flexio-i2c.dtb \
++			  imx93-11x11-evk-i2c-spi-slave.dtb \
++			  imx93-11x11-evk-i3c.dtb imx93-11x11-evk-lpuart.dtb \
++			  imx93-11x11-evk-mqs.dtb imx93-11x11-evk-aud-hat.dtb \
++			  imx93-11x11-evk-rm67199.dtb imx93-11x11-evk-boe-wxga-lvds-panel.dtb \
++			  imx93-11x11-evk-flexspi-m2.dtb \
++			  imx93-11x11-evk-mt9m114.dtb \
++			  imx93-11x11-evk-ld.dtb \
++			  imx93-11x11-evk-iw612-otbr.dtb \
++			  imx93-11x11-evk-rpmsg.dtb imx93-11x11-evk-rpmsg-lpv.dtb
++
++dtb-$(CONFIG_ARCH_MXC) += imx91-11x11-evk.dtb \
++			  imx91-11x11-evk-flexspi-m2.dtb imx91-11x11-evk-flexspi-nand-m2.dtb \
++			  imx91-11x11-evk-lpuart.dtb \
++			  imx91-11x11-evk-mqs.dtb imx91-11x11-evk-aud-hat.dtb \
++			  imx91-11x11-evk-tianma-wvga-panel.dtb \
++			  imx91-11x11-evk-mt9m114.dtb \
++			  imx91-11x11-evk-ld.dtb \
++			  imx91-11x11-evk-i2c-spi-slave.dtb \
++			  imx91-11x11-evk-i3c.dtb
++
++imx93-11x11-evk-pmic-pf0900-dtbs := imx93-11x11-evk.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-root-dtbs := imx93-11x11-evk-root.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-flexio-i2c-dtbs := imx93-11x11-evk-flexio-i2c.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-i2c-spi-slave-dtbs := imx93-11x11-evk-i2c-spi-slave.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-i3c-dtbs := imx93-11x11-evk-i3c.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-lpuart-dtbs := imx93-11x11-evk-lpuart.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-mqs-dtbs := imx93-11x11-evk-mqs.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-aud-hat-dtbs := imx93-11x11-evk-aud-hat.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-rm67199-dtbs := imx93-11x11-evk-rm67199.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-boe-wxga-lvds-panel-dtbs := imx93-11x11-evk-boe-wxga-lvds-panel.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-flexspi-m2-dtbs := imx93-11x11-evk-flexspi-m2.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-mt9m114-dtbs := imx93-11x11-evk-mt9m114.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-ld-dtbs := imx93-11x11-evk-ld.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-rpmsg-dtbs := imx93-11x11-evk-rpmsg.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++imx93-11x11-evk-pmic-pf0900-rpmsg-lpv-dtbs := imx93-11x11-evk-rpmsg-lpv.dtb imx93-11x11-evk-pmic-pf0900.dtbo
++
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-root.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-flexio-i2c.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-i2c-spi-slave.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-i3c.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-lpuart.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-mqs.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-aud-hat.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-rm67199.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-boe-wxga-lvds-panel.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-flexspi-m2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-mt9m114.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-ld.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-rpmsg.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-11x11-evk-pmic-pf0900-rpmsg-lpv.dtb
++
++dtb-$(CONFIG_ARCH_MXC) += imx93-9x9-qsb.dtb \
++			  imx93-9x9-qsb-can1.dtb \
++			  imx93-9x9-qsb-flexspi-m2.dtb \
++			  imx93-9x9-qsb-tianma-wvga-panel.dtb \
++			  imx93-9x9-qsb-ontat-wvga-panel.dtb \
++			  imx93-9x9-qsb-mt9m114.dtb \
++			  imx93-9x9-qsb-i3c.dtb \
++			  imx93-9x9-qsb-lpspi.dtb imx93-9x9-qsb-lpspi-slave.dtb \
++			  imx93-9x9-qsb-aud-hat.dtb \
++			  imx93-9x9-qsb-ld.dtb \
++			  imx93-9x9-qsb-rpmsg.dtb imx93-9x9-qsb-rpmsg-lpv.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxca.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx93-tqma9352-mba93xxla.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx91-9x9-qsb.dtb \
++			  imx91-9x9-qsb-can1.dtb \
++			  imx91-9x9-qsb-flexspi-nand.dtb \
++			  imx91-9x9-qsb-flexspi-m2.dtb \
++			  imx91-9x9-qsb-hfp.dtb \
++			  imx91-9x9-qsb-mt9m114.dtb \
++			  imx91-9x9-qsb-tianma-wvga-panel.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx91-9x9-qsb-aud-hat.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx91-9x9-qsb-ld.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx91-9x9-qsb-i2c-spi-slave.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx91-9x9-qsb-i3c.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-flexspi-m2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-mqs.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-aud-hat.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-root.dtb imx95-15x15-evk-inmate.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-ab2.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-i2c-spi-slave.dtb
++DTC_FLAGS_imx95-15x15-evk-boe-wxga-lvds0-panel := -@
++DTC_FLAGS_imx95-15x15-evk-boe-wxga-lvds1-panel := -@
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-boe-wxga-lvds0-panel.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-boe-wxga-lvds1-panel.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-boe-wxga-lvds-two-panels.dtb
++
++imx95-15x15-evk-adv7535-dtbs := imx95-15x15-evk.dtb imx95-15x15-evk-adv7535.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx95-15x15-evk-adv7535.dtb
++
++imx95-15x15-evk-ap1302-dtbs := imx95-15x15-evk.dtb imx95-15x15-evk-ap1302.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-ap1302.dtb
++imx95-15x15-evk-ap1302_rpi-dtbs := imx95-15x15-evk.dtb \
++				   imx95-15x15-evk-ap1302.dtbo \
++				   imx95-15x15-evk-ap1302_rpi.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-ap1302_rpi.dtb
++
++imx95-15x15-evk-rm692c9-dtbs := imx95-15x15-evk.dtb imx95-15x15-evk-rm692c9.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-rm692c9.dtb
++
++imx95-15x15-evk-adv7535-ap1302-dtbs := imx95-15x15-evk.dtb \
++				       imx95-15x15-evk-adv7535.dtbo \
++				       imx95-15x15-evk-ap1302.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-adv7535-ap1302.dtb
++
++imx95-15x15-evk-adv7535-ap1302_rpi-dtbs := imx95-15x15-evk-adv7535-ap1302.dtb \
++				       imx95-15x15-evk-ap1302_rpi.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-adv7535-ap1302_rpi.dtb
++
++imx95-15x15-evk-lt9611uxc-dtbs := imx95-15x15-evk.dtb imx95-15x15-evk-lt9611uxc.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx95-15x15-evk-lt9611uxc.dtb
++
++imx95-15x15-evk-lt9611uxc-ap1302-dtbs := imx95-15x15-evk.dtb \
++					 imx95-15x15-evk-lt9611uxc.dtbo \
++					 imx95-15x15-evk-ap1302.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-lt9611uxc-ap1302.dtb
++
++imx95-15x15-evk-ox05b1s-dtbs := imx95-15x15-evk.dtb imx95-15x15-evk-ox05b1s.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx95-15x15-evk-ox05b1s.dtb
++
++imx95-15x15-evk-ox05b1s-combo-dtbs := imx95-15x15-evk.dtb imx95-15x15-evk-ox05b1s-combo.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx95-15x15-evk-ox05b1s-combo.dtb
++
++imx95-15x15-evk-ox05b1s-isp-adv7535-dtbs := imx95-15x15-evk-adv7535.dtb \
++					   imx95-15x15-evk-ox05b1s.dtbo \
++					   imx95-19x19-evk-neoisp.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-ox05b1s-isp-adv7535.dtb
++
++imx95-15x15-evk-ox05b1s-isp-lvds-dual-dtbs := imx95-15x15-evk-boe-wxga-lvds-two-panels.dtb \
++								   imx95-15x15-evk-ox05b1s.dtbo \
++								   imx95-15x15-evk-ox05b1s-combo.dtbo \
++								   imx95-19x19-evk-neoisp.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-ox05b1s-isp-lvds-dual.dtb
++
++imx95-15x15-evk-os08a20-dtbs := imx95-15x15-evk.dtb imx95-15x15-evk-os08a20.dtbo
++dtb-${CONFIG_ARCH_MXC} += imx95-15x15-evk-os08a20.dtb
++
++imx95-15x15-evk-os08a20-combo-dtbs := imx95-15x15-evk.dtb imx95-15x15-evk-os08a20-combo.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-os08a20-combo.dtb
++
++imx95-15x15-evk-os08a20-isp-adv7535-dtbs := imx95-15x15-evk-adv7535.dtb \
++					    imx95-15x15-evk-os08a20.dtbo \
++					    imx95-19x19-evk-neoisp.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-os08a20-isp-adv7535.dtb
++
++imx95-15x15-evk-os08a20-isp-lvds-dual-dtbs := imx95-15x15-evk-boe-wxga-lvds-two-panels.dtb \
++								   imx95-15x15-evk-os08a20.dtbo \
++								   imx95-15x15-evk-os08a20-combo.dtbo \
++								   imx95-19x19-evk-neoisp.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-os08a20-isp-lvds-dual.dtb
++
++DTC_FLAGS_imx95-15x15-evk-rpmsg := -@
++DTC_FLAGS_imx95-15x15-evk-rpmsg-lpv := -@
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-rpmsg.dtb imx95-15x15-evk-rpmsg-lpv.dtb
++
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk.dtb imx95-19x19-evk-root.dtb imx95-19x19-evk-inmate.dtb \
++			  imx95-19x19-evk-lpspi-slave.dtb
++
++imx95-15x15-evk-ox03c10-dtbs := imx95-15x15-evk.dtb imx95-15x15-evk-ox03c10.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-ox03c10.dtb
++
++imx95-15x15-evk-ox03c10-isp-adv7535-dtbs := imx95-15x15-evk-adv7535.dtb \
++					    imx95-15x15-evk-ox03c10.dtbo \
++					    imx95-19x19-evk-neoisp.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-15x15-evk-ox03c10-isp-adv7535.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-sof-wm8962.dtb
++
++imx95-19x19-evk-pcie1-ep-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-pcie1-ep.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-pcie1-ep.dtb
++
++imx95-19x19-evk-ap1302-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-ap1302.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-ap1302.dtb
++
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-tja1103-tja1120.dtb imx95-19x19-evk-tja1103-rmii.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-netc-rpmsg.dtb
++
++imx95-19x19-evk-os08a20-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-os08a20.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-os08a20.dtb
++
++imx95-19x19-evk-ox05b1s-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-ox05b1s.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-ox05b1s.dtb
++
++imx95-19x19-evk-ox05b1s-combo-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-ox05b1s-combo.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-ox05b1s-combo.dtb
++
++imx95-19x19-evk-ti-serdes-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-ti-serdes.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-ti-serdes.dtb
++
++imx95-19x19-evk-ti-serdes-combo-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-ti-serdes-combo.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-ti-serdes-combo.dtb
++
++imx95-19x19-evk-os08a20-combo-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-os08a20-combo.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-os08a20-combo.dtb
++
++imx95-19x19-evk-os08a20-dual-dtbs := imx95-19x19-evk.dtb \
++				     imx95-19x19-evk-os08a20.dtbo \
++				     imx95-19x19-evk-os08a20-combo.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-os08a20-dual.dtb
++
++imx95-19x19-evk-adv7535-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-adv7535.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-adv7535.dtb
++
++imx95-19x19-evk-dsi-serdes-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-dsi-serdes.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-dsi-serdes.dtb
++
++imx95-19x19-evk-adv7535-ap1302-dtbs := imx95-19x19-evk.dtb \
++				       imx95-19x19-evk-adv7535.dtbo \
++				       imx95-19x19-evk-ap1302.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-adv7535-ap1302.dtb
++
++imx95-19x19-evk-lt9611uxc-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-lt9611uxc.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-lt9611uxc.dtb
++
++imx95-19x19-evk-lt9611uxc-ap1302-dtbs := imx95-19x19-evk.dtb \
++					 imx95-19x19-evk-lt9611uxc.dtbo \
++					 imx95-19x19-evk-ap1302.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-lt9611uxc-ap1302.dtb
++
++imx95-19x19-evk-rm692c9-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-rm692c9.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-rm692c9.dtb
++
++imx95-19x19-evk-ox03c10-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-ox03c10.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-ox03c10.dtb
++
++imx95-19x19-evk-ox03c10-combo-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-ox03c10-combo.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-ox03c10-combo.dtb
++
++imx95-19x19-evk-ox03c10-all-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-ox03c10.dtbo imx95-19x19-evk-ox03c10-combo.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-ox03c10-all.dtb
++
++
++imx95-19x19-verdin-ox03c10-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-ox03c10.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-ox03c10.dtb
++
++imx95-19x19-evk-it6263-lvds0-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-it6263-lvds0.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-it6263-lvds0.dtb
++
++imx95-19x19-evk-it6263-lvds1-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-it6263-lvds1.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-it6263-lvds1.dtb
++imx95-19x19-evk-cs42888-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-cs42888.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-cs42888.dtb
++
++imx95-19x19-evk-it6263-lvds-two-disp-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-it6263-lvds0.dtbo imx95-19x19-evk-it6263-lvds1.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-it6263-lvds-two-disp.dtb
++
++imx95-19x19-evk-it6263-lvds-dual-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-it6263-lvds-dual.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-it6263-lvds-dual.dtb
++
++imx95-19x19-evk-jdi-wuxga-lvds-panel-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-jdi-wuxga-lvds-panel.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-jdi-wuxga-lvds-panel.dtb
++
++imx95-19x19-evk-jtag-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-jtag.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-jtag.dtb
++
++imx95-19x19-evk-neoisp-dtbs := imx95-19x19-evk.dtb imx95-19x19-evk-neoisp.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-neoisp.dtb
++
++imx95-19x19-evk-os08a20-isp-it6263-lvds0-dtbs := imx95-19x19-evk-neoisp.dtb imx95-19x19-evk-os08a20.dtbo \
++                        imx95-19x19-evk-it6263-lvds0.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-os08a20-isp-it6263-lvds0.dtb
++
++imx95-19x19-evk-dual-os08a20-isp-it6263-lvds0-dtbs := imx95-19x19-evk-neoisp.dtb \
++						      imx95-19x19-evk-os08a20.dtbo \
++						      imx95-19x19-evk-os08a20-combo.dtbo \
++						      imx95-19x19-evk-it6263-lvds0.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-dual-os08a20-isp-it6263-lvds0.dtb
++
++imx95-19x19-evk-os08a20-isp-lvds-dual-dtbs := imx95-19x19-evk-neoisp.dtb \
++							  imx95-19x19-evk-os08a20.dtbo \
++							  imx95-19x19-evk-os08a20-combo.dtbo \
++							  imx95-19x19-evk-it6263-lvds-dual.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-os08a20-isp-lvds-dual.dtb
++
++imx95-19x19-evk-ox03c10-isp-it6263-lvds0-dtbs := imx95-19x19-evk-neoisp.dtb imx95-19x19-evk-ox03c10.dtbo \
++                        imx95-19x19-evk-it6263-lvds0.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-ox03c10-isp-it6263-lvds0.dtb
++
++imx95-19x19-evk-ox05b1s-isp-it6263-lvds0-dtbs := imx95-19x19-evk-neoisp.dtb imx95-19x19-evk-ox05b1s.dtbo \
++						 imx95-19x19-evk-it6263-lvds0.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-ox05b1s-isp-it6263-lvds0.dtb
++
++imx95-19x19-evk-ox05b1s-isp-lvds-dual-dtbs := imx95-19x19-evk-neoisp.dtb imx95-19x19-evk-ox05b1s.dtbo \
++							  imx95-19x19-evk-ox05b1s-combo.dtbo \
++							  imx95-19x19-evk-it6263-lvds-dual.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-ox05b1s-isp-lvds-dual.dtb
++
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin.dtb
++DTC_FLAGS_imx95-19x19-verdin-rpmsg := -@
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-rpmsg.dtb
++
++imx95-19x19-verdin-adv7535-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-adv7535.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-adv7535.dtb
++
++imx95-19x19-verdin-lt8912-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-lt8912.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-lt8912.dtb
++
++imx95-19x19-verdin-lt9611uxc-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-lt9611uxc.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-lt9611uxc.dtb
++
++imx95-19x19-verdin-panel-cap-touch-10inch-dsi-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-panel-cap-touch-10inch-dsi.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-panel-cap-touch-10inch-dsi.dtb
++
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-panel-cap-touch-10inch-lvds.dtb
++
++imx95-19x19-verdin-ap1302-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-ap1302.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-ap1302.dtb
++
++imx95-19x19-verdin-adv7535-ap1302-dtbs := imx95-19x19-verdin.dtb \
++				       imx95-19x19-verdin-adv7535.dtbo \
++				       imx95-19x19-verdin-ap1302.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-adv7535-ap1302.dtb
++
++imx95-19x19-verdin-lt8912-ap1302-dtbs := imx95-19x19-verdin.dtb \
++				       imx95-19x19-verdin-lt8912.dtbo \
++				       imx95-19x19-verdin-ap1302.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-lt8912-ap1302.dtb
++
++imx95-19x19-verdin-lt9611uxc-ap1302-dtbs := imx95-19x19-verdin.dtb \
++					  imx95-19x19-verdin-lt9611uxc.dtbo \
++					  imx95-19x19-verdin-ap1302.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-lt9611uxc-ap1302.dtb
++
++imx95-19x19-verdin-os08a20-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-os08a20.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-os08a20.dtb
++
++imx95-19x19-verdin-os08a20-combo-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-os08a20-combo.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-os08a20-combo.dtb
++
++imx95-19x19-verdin-os08a20-isp-lt8912-dtbs := imx95-19x19-verdin.dtb \
++					      imx95-19x19-verdin-os08a20.dtbo \
++					      imx95-19x19-evk-neoisp.dtbo \
++					      imx95-19x19-verdin-lt8912.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-os08a20-isp-lt8912.dtb
++
++imx95-19x19-verdin-os08a20-isp-lvds-dual-dtbs := imx95-19x19-verdin-panel-cap-touch-10inch-lvds.dtb \
++					      imx95-19x19-verdin-os08a20.dtbo \
++					      imx95-19x19-verdin-os08a20-combo.dtbo \
++					      imx95-19x19-evk-neoisp.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-os08a20-isp-lvds-dual.dtb
++
++imx95-19x19-verdin-ox05b1s-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-ox05b1s.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-ox05b1s.dtb
++
++imx95-19x19-verdin-ox05b1s-combo-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-ox05b1s-combo.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-ox05b1s-combo.dtb
++
++imx95-19x19-verdin-ox05b1s-isp-lt8912-dtbs := imx95-19x19-verdin.dtb \
++					      imx95-19x19-verdin-ox05b1s.dtbo \
++					      imx95-19x19-evk-neoisp.dtbo \
++					      imx95-19x19-verdin-lt8912.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-ox05b1s-isp-lt8912.dtb
++
++imx95-19x19-verdin-ox05b1s-isp-lvds-dual-dtbs := imx95-19x19-verdin-panel-cap-touch-10inch-lvds.dtb \
++								    imx95-19x19-verdin-ox05b1s.dtbo \
++								    imx95-19x19-verdin-ox05b1s-combo.dtbo \
++								    imx95-19x19-evk-neoisp.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-ox05b1s-isp-lvds-dual.dtb
++
++imx95-19x19-verdin-ox03c10-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-ox03c10.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-ox03c10.dtb
++
++imx95-19x19-verdin-ox03c10-isp-lt8912-dtbs := imx95-19x19-verdin.dtb \
++					      imx95-19x19-verdin-ox03c10.dtbo \
++					      imx95-19x19-evk-neoisp.dtbo \
++					      imx95-19x19-verdin-lt8912.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-ox03c10-isp-lt8912.dtb
++
++imx95-19x19-verdin-ti-serdes-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-ti-serdes.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-ti-serdes.dtb
++
++DTC_FLAGS_imx95-19x19-evk-rpmsg := -@
++DTC_FLAGS_imx95-19x19-evk-rpmsg-lpv := -@
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-evk-rpmsg.dtb imx95-19x19-evk-rpmsg-lpv.dtb
++
++imx95-19x19-verdin-rm692c9-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-rm692c9.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-rm692c9.dtb
++
++imx95-19x19-verdin-root-dtbs := imx95-19x19-verdin.dtb imx95-19x19-verdin-root.dtbo
++dtb-$(CONFIG_ARCH_MXC) += imx95-19x19-verdin-root.dtb imx95-19x19-verdin-inmate.dtb
++
++dtb-$(CONFIG_ARCH_S32) += s32g274a-evb.dtb
++dtb-$(CONFIG_ARCH_S32) += s32g274a-rdb2.dtb
++dtb-$(CONFIG_ARCH_S32) += s32g399a-rdb3.dtb
++dtb-$(CONFIG_ARCH_S32) += s32v234-evb.dtb \
++			  s32v234-sbc.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-sof-cs42888.dtb imx8qm-mek-sof-wm8960.dtb \
++			  imx8qm-mek-revd-sof-wm8962.dtb imx8qm-mek-sof.dtb
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-m2-2ea.dts
 new file mode 100644
 index 000000000000..3bc289a5e8b7
@@ -501,7 +1401,7 @@ index 5de15f59b6ff..d22be92ed2eb 100644
  };
  
 diff --git a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
-index 6e6d04c2be81..5695a31809db 100644
+index 10183c0f67b4..6a4ef870097a 100644
 --- a/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
 +++ b/arch/arm64/boot/dts/freescale/imx8ulp-evk.dts
 @@ -174,6 +174,10 @@ reg_usdhc2_vmmc: regulator-usdhc2 {
@@ -516,10 +1416,10 @@ index 6e6d04c2be81..5695a31809db 100644
  
  	bt_sco_codec: bt_sco_codec {
 diff --git a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
-index b0c6a952b346..145fe51e7e5b 100644
+index 271ccacc7b33..ce954711cc53 100644
 --- a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
 +++ b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
-@@ -140,6 +140,10 @@ reg_usdhc3_vmmc: regulator-usdhc3 {
+@@ -161,6 +161,10 @@ reg_usdhc3_vmmc: regulator-usdhc3 {
  	usdhc3_pwrseq: usdhc3_pwrseq {
  		compatible = "mmc-pwrseq-simple";
  		reset-gpios = <&pcal6524 12 GPIO_ACTIVE_LOW>;
@@ -530,3 +1430,1275 @@ index b0c6a952b346..145fe51e7e5b 100644
  	};
  
  	reg_audio_pwr: regulator-audio-pwr {
+diff --git a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts.orig b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts.orig
+new file mode 100644
+index 000000000000..271ccacc7b33
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts.orig
+@@ -0,0 +1,1263 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2022 NXP
++ */
++
++/dts-v1/;
++
++#include <dt-bindings/usb/pd.h>
++#include "imx93.dtsi"
++
++&ele_fw2 {
++	memory-region = <&ele_reserved>;
++};
++
++/ {
++	model = "NXP i.MX93 11X11 EVK board";
++	compatible = "fsl,imx93-11x11-evk", "fsl,imx93";
++
++	chosen {
++		stdout-path = &lpuart1;
++	};
++
++	reserved-memory {
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++
++		linux,cma {
++			compatible = "shared-dma-pool";
++			reusable;
++			alloc-ranges = <0 0x80000000 0 0x40000000>;
++			size = <0 0x10000000>;
++			linux,cma-default;
++		};
++
++		ethosu_mem: ethosu_region@C0000000 {
++			compatible = "shared-dma-pool";
++			reusable;
++			reg = <0x0 0xC0000000 0x0 0x10000000>;
++		};
++
++		vdev0vring0: vdev0vring0@a4000000 {
++			reg = <0 0xa4000000 0 0x8000>;
++			no-map;
++		};
++
++		vdev0vring1: vdev0vring1@a4008000 {
++			reg = <0 0xa4008000 0 0x8000>;
++			no-map;
++		};
++
++		vdev1vring0: vdev1vring0@a4010000 {
++			reg = <0 0xa4010000 0 0x8000>;
++			no-map;
++		};
++
++		vdev1vring1: vdev1vring1@a4018000 {
++			reg = <0 0xa4018000 0 0x8000>;
++			no-map;
++		};
++
++		rsc_table: rsc-table@2021e000 {
++			reg = <0 0x2021e000 0 0x1000>;
++			no-map;
++		};
++
++		vdevbuffer: vdevbuffer@a4020000 {
++			compatible = "shared-dma-pool";
++			reg = <0 0xa4020000 0 0x100000>;
++			no-map;
++		};
++
++		ele_reserved: ele-reserved@a4120000 {
++			compatible = "shared-dma-pool";
++			reg = <0 0xa4120000 0 0x100000>;
++			no-map;
++		};
++	};
++
++	ethosu {
++		compatible = "arm,ethosu";
++		fsl,cm33-proc = <&cm33>;
++		memory-region = <&ethosu_mem>;
++		power-domains = <&mlmix>;
++	};
++
++	reg_can2_stby: regulator-can2-stby {
++		compatible = "regulator-fixed";
++		regulator-name = "can2-stby";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		gpio = <&adp5585 6 GPIO_ACTIVE_LOW>;
++		enable-active-low;
++	};
++
++	reg_vdd_12v: regulator-vdd-12v {
++		compatible = "regulator-fixed";
++		regulator-name = "VDD_12V";
++		regulator-min-microvolt = <12000000>;
++		regulator-max-microvolt = <12000000>;
++		gpio = <&pcal6524 14 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	reg_vref_1v8: regulator-adc-vref {
++		compatible = "regulator-fixed";
++		regulator-name = "vref_1v8";
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++	};
++
++	reg_usdhc2_vmmc: regulator-usdhc2 {
++		compatible = "regulator-fixed";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_reg_usdhc2_vmmc>;
++		regulator-name = "VSD_3V3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		gpio = <&gpio3 7 GPIO_ACTIVE_HIGH>;
++		off-on-delay-us = <12000>;
++		enable-active-high;
++	};
++
++	backlight_lvds: backlight-lvds {
++		compatible = "pwm-backlight";
++		pwms = <&adp5585 0 100000 0>;
++		brightness-levels = <0 100>;
++		num-interpolated-steps = <100>;
++		default-brightness-level = <100>;
++		power-supply = <&reg_vdd_12v>;
++		enable-gpios = <&adp5585 9 GPIO_ACTIVE_HIGH>;
++		status = "disabled";
++	};
++
++	reg_m2_pwr: regulator-m2-pwr {
++		compatible = "regulator-fixed";
++		regulator-name = "M.2-power";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		gpio = <&pcal6524 13 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++	};
++
++	reg_usdhc3_vmmc: regulator-usdhc3 {
++		compatible = "regulator-fixed";
++		regulator-name = "WLAN_EN";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		vin-supply = <&reg_m2_pwr>;
++		gpio = <&pcal6524 20 GPIO_ACTIVE_HIGH>;
++		/*
++		 * IW612 wifi chip needs more delay than other wifi chips to complete
++		 * the host interface initialization after power up, otherwise the
++		 * internal state of IW612 may be unstable, resulting in the failure of
++		 * the SDIO3.0 switch voltage.
++		 */
++		startup-delay-us = <20000>;
++		enable-active-high;
++	};
++
++	usdhc3_pwrseq: usdhc3_pwrseq {
++		compatible = "mmc-pwrseq-simple";
++		reset-gpios = <&pcal6524 12 GPIO_ACTIVE_LOW>;
++	};
++
++	reg_audio_pwr: regulator-audio-pwr {
++		compatible = "regulator-fixed";
++		regulator-name = "audio-pwr";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		gpio = <&adp5585 1 GPIO_ACTIVE_HIGH>;
++		enable-active-high;
++		regulator-always-on;
++	};
++
++	reg_dvdd_1v2: regulator-dvdd {
++		compatible = "regulator-fixed";
++		regulator-name = "DVDD_1V2";
++		gpio = <&adp5585_isp 7 GPIO_ACTIVE_HIGH>;
++		regulator-min-microvolt = <1200000>;
++		regulator-max-microvolt = <1200000>;
++		enable-active-high;
++	};
++
++	reg_vddio_1v8: regulator-vddo {
++		compatible = "regulator-fixed";
++		regulator-name = "VDDIO_1V8";
++		gpio = <&adp5585_isp 6 GPIO_ACTIVE_HIGH>;
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		enable-active-high;
++	};
++
++	reg_avdd_2v8: regulator-avdd {
++		compatible = "regulator-fixed";
++		regulator-name = "AVDD_2V8";
++		gpio = <&adp5585_isp 8 GPIO_ACTIVE_HIGH>;
++		regulator-min-microvolt = <2800000>;
++		regulator-max-microvolt = <2800000>;
++		enable-active-high;
++	};
++
++	reg_hmisc_vddio: regulator-hmisc-vddio {
++		compatible = "regulator-fixed";
++		regulator-name = "HMISC_VDDIO_1V8";
++		gpio = <&adp5585_isp 10 GPIO_ACTIVE_HIGH>;
++		regulator-min-microvolt = <1800000>;
++		regulator-max-microvolt = <1800000>;
++		enable-active-high;
++	};
++
++	sound-wm8962 {
++		compatible = "fsl,imx-audio-wm8962";
++		model = "wm8962-audio";
++		audio-cpu = <&sai3>;
++		audio-codec = <&codec>;
++		hp-det-gpio = <&pcal6524 4 GPIO_ACTIVE_HIGH>;
++		audio-routing =
++			"Headphone Jack", "HPOUTL",
++			"Headphone Jack", "HPOUTR",
++			"Ext Spk", "SPKOUTL",
++			"Ext Spk", "SPKOUTR",
++			"AMIC", "MICBIAS",
++			"IN3R", "AMIC",
++			"IN1R", "AMIC";
++	};
++
++	bt_sco_codec: bt-sco-codec {
++		compatible = "linux,bt-sco";
++		#sound-dai-cells = <1>;
++	};
++
++	sound-bt-sco {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "bt-sco-audio";
++		simple-audio-card,format = "dsp_a";
++		simple-audio-card,bitclock-inversion;
++		simple-audio-card,frame-master = <&btcpu>;
++		simple-audio-card,bitclock-master = <&btcpu>;
++
++		btcpu: simple-audio-card,cpu {
++			sound-dai = <&sai1>;
++			dai-tdm-slot-num = <2>;
++			dai-tdm-slot-width = <16>;
++		};
++
++		simple-audio-card,codec {
++			sound-dai = <&bt_sco_codec 1>;
++		};
++	};
++
++	sound-micfil {
++		compatible = "fsl,imx-audio-card";
++		model = "micfil-audio";
++
++		pri-dai-link {
++			link-name = "micfil hifi";
++			format = "i2s";
++
++			cpu {
++				sound-dai = <&micfil>;
++			};
++		};
++	};
++
++	sound-xcvr {
++		compatible = "fsl,imx-audio-card";
++		model = "imx-audio-xcvr";
++
++		pri-dai-link {
++			link-name = "XCVR PCM";
++
++			cpu {
++				sound-dai = <&xcvr>;
++			};
++		};
++	};
++};
++
++&adc1 {
++	vref-supply = <&reg_vref_1v8>;
++	status = "okay";
++};
++
++&cm33 {
++	mbox-names = "tx", "rx", "rxdb";
++	mboxes = <&mu1 0 1>,
++		 <&mu1 1 1>,
++		 <&mu1 3 1>;
++	memory-region = <&vdevbuffer>, <&vdev0vring0>, <&vdev0vring1>,
++			<&vdev1vring0>, <&vdev1vring1>, <&rsc_table>;
++	fsl,startup-delay-ms = <500>;
++	status = "okay";
++};
++
++&dphy {
++	status = "okay";
++};
++
++&dsi {
++	status = "okay";
++
++	ports {
++		port@1 {
++			reg = <1>;
++
++			dsi_to_adv7535: endpoint {
++				remote-endpoint = <&adv7535_to_dsi>;
++			};
++		};
++	};
++};
++
++&eqos {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&pinctrl_eqos>;
++	pinctrl-1 = <&pinctrl_eqos_sleep>;
++	phy-mode = "rgmii-id";
++	phy-handle = <&ethphy1>;
++	status = "okay";
++
++	mdio {
++		compatible = "snps,dwmac-mdio";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		clock-frequency = <5000000>;
++
++		ethphy1: ethernet-phy@1 {
++			reg = <1>;
++			reset-gpios = <&pcal6524 15 GPIO_ACTIVE_LOW>;
++			reset-assert-us = <10000>;
++			reset-deassert-us = <80000>;
++			realtek,clkout-disable;
++		};
++	};
++};
++
++&fec {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&pinctrl_fec>;
++	pinctrl-1 = <&pinctrl_fec_sleep>;
++	phy-mode = "rgmii-id";
++	phy-handle = <&ethphy2>;
++	fsl,magic-packet;
++	status = "okay";
++
++	mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		clock-frequency = <5000000>;
++
++		ethphy2: ethernet-phy@2 {
++			reg = <2>;
++			eee-broken-1000t;
++			reset-gpios = <&pcal6524 16 GPIO_ACTIVE_LOW>;
++			reset-assert-us = <10000>;
++			reset-deassert-us = <80000>;
++			realtek,clkout-disable;
++		};
++	};
++};
++
++&flexcan2 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&pinctrl_flexcan2>;
++	pinctrl-1 = <&pinctrl_flexcan2_sleep>;
++	xceiver-supply = <&reg_can2_stby>;
++	status = "okay";
++};
++
++&lcdif {
++	status = "okay";
++	assigned-clock-rates = <445333333>, <148444444>, <400000000>, <133333333>;
++};
++
++&lpm {
++	soc-supply = <&buck1>;
++	status = "okay";
++};
++
++/*
++ * When add, delete or change any target device setting in &lpi2c1,
++ * please synchronize the changes to the &i3c1 bus in imx93-11x11-evk-i3c.dts.
++ */
++&lpi2c1 {
++	clock-frequency = <400000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_lpi2c1>;
++	status = "okay";
++
++	codec: wm8962@1a {
++		compatible = "wlf,wm8962";
++		reg = <0x1a>;
++		clocks = <&clk IMX93_CLK_SAI3_GATE>;
++		DCVDD-supply = <&reg_audio_pwr>;
++		DBVDD-supply = <&reg_audio_pwr>;
++		AVDD-supply = <&reg_audio_pwr>;
++		CPVDD-supply = <&reg_audio_pwr>;
++		MICVDD-supply = <&reg_audio_pwr>;
++		PLLVDD-supply = <&reg_audio_pwr>;
++		SPKVDD1-supply = <&reg_audio_pwr>;
++		SPKVDD2-supply = <&reg_audio_pwr>;
++		gpio-cfg = <
++			0x0000 /* 0:Default */
++			0x0000 /* 1:Default */
++			0x0000 /* 2:FN_DMICCLK */
++			0x0000 /* 3:Default */
++			0x0000 /* 4:FN_DMICCDAT */
++			0x0000 /* 5:Default */
++		>;
++	};
++
++	adv7535: hdmi@3d {
++		compatible = "adi,adv7535";
++		reg = <0x3d>;
++		adi,addr-cec = <0x3b>;
++		adi,dsi-lanes = <4>;
++		status = "okay";
++
++		port {
++			adv7535_to_dsi: endpoint {
++				remote-endpoint = <&dsi_to_adv7535>;
++			};
++		};
++	};
++
++	inertial-meter@6a {
++		compatible = "st,lsm6dso";
++		reg = <0x6a>;
++	};
++};
++
++&lpi2c2 {
++	clock-frequency = <400000>;
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&pinctrl_lpi2c2>;
++	pinctrl-1 = <&pinctrl_lpi2c2>;
++	status = "okay";
++
++	pcal6524: gpio@22 {
++		compatible = "nxp,pcal6524";
++		reg = <0x22>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_pcal6524>;
++		gpio-controller;
++		#gpio-cells = <2>;
++		interrupt-controller;
++		#interrupt-cells = <2>;
++		interrupt-parent = <&gpio3>;
++		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
++
++		m2-pcm-level-shifter-hog {
++			gpio-hog;
++			gpios = <19 GPIO_ACTIVE_HIGH>;
++			output-high;
++		};
++	};
++
++	pmic@25 {
++		compatible = "nxp,pca9451a";
++		reg = <0x25>;
++		interrupt-parent = <&pcal6524>;
++		interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
++
++		regulators {
++			buck1: BUCK1 {
++				regulator-name = "BUCK1";
++				regulator-min-microvolt = <610000>;
++				regulator-max-microvolt = <950000>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <3125>;
++			};
++
++			buck2: BUCK2 {
++				regulator-name = "BUCK2";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <670000>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <3125>;
++			};
++
++			buck4: BUCK4{
++				regulator-name = "BUCK4";
++				regulator-min-microvolt = <1620000>;
++				regulator-max-microvolt = <3400000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck5: BUCK5{
++				regulator-name = "BUCK5";
++				regulator-min-microvolt = <1620000>;
++				regulator-max-microvolt = <3400000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck6: BUCK6 {
++				regulator-name = "BUCK6";
++				regulator-min-microvolt = <1060000>;
++				regulator-max-microvolt = <1140000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo1: LDO1 {
++				regulator-name = "LDO1";
++				regulator-min-microvolt = <1620000>;
++				regulator-max-microvolt = <1980000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo4: LDO4 {
++				regulator-name = "LDO4";
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <840000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo5: LDO5 {
++				regulator-name = "LDO5";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++		};
++	};
++
++	adp5585: io-expander@34 {
++		compatible = "adi,adp5585-00", "adi,adp5585";
++		reg = <0x34>;
++		vdd-supply = <&buck4>;
++		gpio-controller;
++		#gpio-cells = <2>;
++		gpio-reserved-ranges = <5 1>;
++		#pwm-cells = <3>;
++	};
++};
++
++&lpi2c3 {
++	clock-frequency = <400000>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_lpi2c3>;
++	status = "okay";
++
++	adp5585_isp: io-expander-isp@34 {
++		compatible = "adi,adp5585-01", "adi,adp5585";
++		reg = <0x34>;
++		gpio-controller;
++		#gpio-cells = <2>;
++		#pwm-cells = <3>;
++	};
++
++	ap1302: ap1302_mipi@3c {
++		compatible = "onnn,ap1302";
++		reg = <0x3c>;
++		clocks = <&clk IMX93_CLK_24M>;
++		reset-gpios   = <&adp5585 0 GPIO_ACTIVE_LOW>;
++		isp_en-gpios  = <&adp5585_isp 2 GPIO_ACTIVE_HIGH>;
++		orientation = <2>;
++		rotation = <0>;
++		DVDD-supply   = <&reg_dvdd_1v2>;
++		VDDIO_HMISC-supply  = <&reg_hmisc_vddio>;
++		VDDIO_SMISC-supply   = <&reg_hmisc_vddio>;
++		status = "okay";
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++			};
++
++			port@1 {
++				reg = <1>;
++			};
++
++			port@2 {
++				reg = <2>;
++
++				isp_out: endpoint {
++					remote-endpoint = <&mipi_csi_in>;
++					data-lanes = <1 2>;
++				};
++			};
++		};
++
++		sensors {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			onnn,model = "onnn,ar0144";
++
++			sensor@0 {
++				reg = <0>;
++
++				vdd-supply = <&reg_dvdd_1v2>;
++				vddio-supply = <&reg_vddio_1v8>;
++				vaa-supply = <&reg_avdd_2v8>;
++			};
++		};
++	};
++
++	ptn5110: tcpc@50 {
++		compatible = "nxp,ptn5110", "tcpci";
++		reg = <0x50>;
++		interrupt-parent = <&gpio3>;
++		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
++
++		typec1_con: connector {
++			compatible = "usb-c-connector";
++			label = "USB-C";
++			power-role = "dual";
++			data-role = "dual";
++			try-power-role = "sink";
++			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
++			sink-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
++				     PDO_VAR(5000, 20000, 3000)>;
++			op-sink-microwatt = <15000000>;
++			self-powered;
++
++			ports {
++				#address-cells = <1>;
++				#size-cells = <0>;
++
++				port@0 {
++					reg = <0>;
++
++					typec1_dr_sw: endpoint {
++						remote-endpoint = <&usb1_drd_sw>;
++					};
++				};
++			};
++		};
++	};
++
++	ptn5110_2: tcpc@51 {
++		compatible = "nxp,ptn5110", "tcpci";
++		reg = <0x51>;
++		interrupt-parent = <&gpio3>;
++		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
++
++		typec2_con: connector {
++			compatible = "usb-c-connector";
++			label = "USB-C";
++			power-role = "dual";
++			data-role = "dual";
++			try-power-role = "sink";
++			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
++			sink-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
++				     PDO_VAR(5000, 20000, 3000)>;
++			op-sink-microwatt = <15000000>;
++			self-powered;
++
++			ports {
++				#address-cells = <1>;
++				#size-cells = <0>;
++
++				port@0 {
++					reg = <0>;
++
++					typec2_dr_sw: endpoint {
++						remote-endpoint = <&usb2_drd_sw>;
++					};
++				};
++			};
++		};
++	};
++
++	pcf2131: rtc@53 {
++		compatible = "nxp,pcf2131";
++		reg = <0x53>;
++		interrupt-parent = <&pcal6524>;
++		interrupts = <1 IRQ_TYPE_EDGE_FALLING>;
++	};
++};
++
++&lpuart1 { /* console */
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart1>;
++	status = "okay";
++};
++
++&lpuart5 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart5>;
++	status = "okay";
++
++	bluetooth {
++		compatible = "nxp,88w8987-bt";
++	};
++};
++
++&media_blk_ctrl {
++	status = "okay";
++};
++
++&micfil {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&pinctrl_pdm>;
++	pinctrl-1 = <&pinctrl_pdm_sleep>;
++	assigned-clocks = <&clk IMX93_CLK_PDM>;
++	assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
++	assigned-clock-rates = <49152000>;
++	status = "okay";
++};
++
++&mu1 {
++	status = "okay";
++};
++
++&mu2 {
++	status = "okay";
++};
++
++&sai1 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&pinctrl_sai1>;
++	pinctrl-1 = <&pinctrl_sai1_sleep>;
++	assigned-clocks = <&clk IMX93_CLK_SAI1>;
++	assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
++	assigned-clock-rates = <12288000>;
++	fsl,sai-mclk-direction-output;
++	status = "okay";
++};
++
++&sai3 {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&pinctrl_sai3>;
++	pinctrl-1 = <&pinctrl_sai3_sleep>;
++	assigned-clocks = <&clk IMX93_CLK_SAI3>;
++	assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>;
++	assigned-clock-rates = <12288000>;
++	fsl,sai-mclk-direction-output;
++	status = "okay";
++};
++
++&usbotg1 {
++	dr_mode = "otg";
++	hnp-disable;
++	srp-disable;
++	adp-disable;
++	usb-role-switch;
++	disable-over-current;
++	samsung,picophy-pre-emp-curr-control = <3>;
++	samsung,picophy-dc-vol-level-adjust = <7>;
++	status = "okay";
++
++	port {
++		usb1_drd_sw: endpoint {
++			remote-endpoint = <&typec1_dr_sw>;
++		};
++	};
++};
++
++&usbotg2 {
++	dr_mode = "otg";
++	hnp-disable;
++	srp-disable;
++	adp-disable;
++	usb-role-switch;
++	disable-over-current;
++	samsung,picophy-pre-emp-curr-control = <3>;
++	samsung,picophy-dc-vol-level-adjust = <7>;
++	status = "okay";
++
++	port {
++		usb2_drd_sw: endpoint {
++			remote-endpoint = <&typec2_dr_sw>;
++		};
++	};
++};
++
++&usdhc1 {
++	pinctrl-names = "default", "state_100mhz", "state_200mhz";
++	pinctrl-0 = <&pinctrl_usdhc1>;
++	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
++	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
++	bus-width = <8>;
++	fsl,tuning-step = <1>;
++	non-removable;
++	status = "okay";
++};
++
++&usdhc2 {
++	pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
++	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
++	pinctrl-1 = <&pinctrl_usdhc2_100mhz>, <&pinctrl_usdhc2_gpio>;
++	pinctrl-2 = <&pinctrl_usdhc2_200mhz>, <&pinctrl_usdhc2_gpio>;
++	pinctrl-3 = <&pinctrl_usdhc2_sleep>, <&pinctrl_usdhc2_gpio_sleep>;
++	cd-gpios = <&gpio3 00 GPIO_ACTIVE_LOW>;
++	fsl,cd-gpio-wakeup-disable;
++	vmmc-supply = <&reg_usdhc2_vmmc>;
++	bus-width = <4>;
++	fsl,tuning-step = <1>;
++	status = "okay";
++	no-mmc;
++};
++
++&usdhc3 {
++	pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
++	pinctrl-0 = <&pinctrl_usdhc3>, <&pinctrl_usdhc3_wlan>;
++	pinctrl-1 = <&pinctrl_usdhc3_100mhz>, <&pinctrl_usdhc3_wlan>;
++	pinctrl-2 = <&pinctrl_usdhc3_200mhz>, <&pinctrl_usdhc3_wlan>;
++	pinctrl-3 = <&pinctrl_usdhc3_sleep>, <&pinctrl_usdhc3_wlan>;
++	mmc-pwrseq = <&usdhc3_pwrseq>;
++	vmmc-supply = <&reg_usdhc3_vmmc>;
++	bus-width = <4>;
++	keep-power-in-suspend;
++	non-removable;
++	wakeup-source;
++	status = "okay";
++
++	wifi_wake_host {
++		compatible = "nxp,wifi-wake-host";
++		interrupt-parent = <&gpio3>;
++		interrupts = <26 IRQ_TYPE_LEVEL_LOW>;
++		interrupt-names = "host-wake";
++	};
++};
++
++&wdog3 {
++	status = "okay";
++};
++
++&xcvr {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&pinctrl_spdif>;
++	pinctrl-1 = <&pinctrl_spdif_sleep>;
++	assigned-clocks = <&clk IMX93_CLK_SPDIF>,
++			 <&clk IMX93_CLK_AUDIO_XCVR>;
++	assigned-clock-parents = <&clk IMX93_CLK_AUDIO_PLL>,
++			 <&clk IMX93_CLK_SYS_PLL_PFD1_DIV2>;
++	assigned-clock-rates = <12288000>, <200000000>;
++	status = "okay";
++};
++
++&iomuxc {
++	pinctrl_eqos: eqosgrp {
++		fsl,pins = <
++			MX93_PAD_ENET1_MDC__ENET_QOS_MDC			0x57e
++			MX93_PAD_ENET1_MDIO__ENET_QOS_MDIO			0x57e
++			MX93_PAD_ENET1_RD0__ENET_QOS_RGMII_RD0			0x57e
++			MX93_PAD_ENET1_RD1__ENET_QOS_RGMII_RD1			0x57e
++			MX93_PAD_ENET1_RD2__ENET_QOS_RGMII_RD2			0x57e
++			MX93_PAD_ENET1_RD3__ENET_QOS_RGMII_RD3			0x57e
++			MX93_PAD_ENET1_RXC__CCM_ENET_QOS_CLOCK_GENERATE_RX_CLK	0x58e
++			MX93_PAD_ENET1_RX_CTL__ENET_QOS_RGMII_RX_CTL		0x57e
++			MX93_PAD_ENET1_TD0__ENET_QOS_RGMII_TD0			0x57e
++			MX93_PAD_ENET1_TD1__ENET_QOS_RGMII_TD1			0x57e
++			MX93_PAD_ENET1_TD2__ENET_QOS_RGMII_TD2			0x57e
++			MX93_PAD_ENET1_TD3__ENET_QOS_RGMII_TD3			0x57e
++			MX93_PAD_ENET1_TXC__CCM_ENET_QOS_CLOCK_GENERATE_TX_CLK	0x58e
++			MX93_PAD_ENET1_TX_CTL__ENET_QOS_RGMII_TX_CTL		0x57e
++		>;
++	};
++
++	pinctrl_eqos_sleep: eqossleepgrp {
++		fsl,pins = <
++			MX93_PAD_ENET1_MDC__GPIO4_IO00				0x31e
++			MX93_PAD_ENET1_MDIO__GPIO4_IO01				0x31e
++			MX93_PAD_ENET1_RD0__GPIO4_IO10                          0x31e
++			MX93_PAD_ENET1_RD1__GPIO4_IO11				0x31e
++			MX93_PAD_ENET1_RD2__GPIO4_IO12				0x31e
++			MX93_PAD_ENET1_RD3__GPIO4_IO13				0x31e
++			MX93_PAD_ENET1_RXC__GPIO4_IO09                          0x31e
++			MX93_PAD_ENET1_RX_CTL__GPIO4_IO08			0x31e
++			MX93_PAD_ENET1_TD0__GPIO4_IO05                          0x31e
++			MX93_PAD_ENET1_TD1__GPIO4_IO04                          0x31e
++			MX93_PAD_ENET1_TD2__GPIO4_IO03				0x31e
++			MX93_PAD_ENET1_TD3__GPIO4_IO02				0x31e
++			MX93_PAD_ENET1_TXC__GPIO4_IO07                          0x31e
++			MX93_PAD_ENET1_TX_CTL__GPIO4_IO06                       0x31e
++		>;
++	};
++
++	pinctrl_fec: fecgrp {
++		fsl,pins = <
++			MX93_PAD_ENET2_MDC__ENET1_MDC			0x57e
++			MX93_PAD_ENET2_MDIO__ENET1_MDIO			0x57e
++			MX93_PAD_ENET2_RD0__ENET1_RGMII_RD0		0x57e
++			MX93_PAD_ENET2_RD1__ENET1_RGMII_RD1		0x57e
++			MX93_PAD_ENET2_RD2__ENET1_RGMII_RD2		0x57e
++			MX93_PAD_ENET2_RD3__ENET1_RGMII_RD3		0x57e
++			MX93_PAD_ENET2_RXC__ENET1_RGMII_RXC		0x58e
++			MX93_PAD_ENET2_RX_CTL__ENET1_RGMII_RX_CTL	0x57e
++			MX93_PAD_ENET2_TD0__ENET1_RGMII_TD0		0x57e
++			MX93_PAD_ENET2_TD1__ENET1_RGMII_TD1		0x57e
++			MX93_PAD_ENET2_TD2__ENET1_RGMII_TD2		0x57e
++			MX93_PAD_ENET2_TD3__ENET1_RGMII_TD3		0x57e
++			MX93_PAD_ENET2_TXC__ENET1_RGMII_TXC		0x58e
++			MX93_PAD_ENET2_TX_CTL__ENET1_RGMII_TX_CTL	0x57e
++		>;
++	};
++
++	pinctrl_fec_sleep: fecsleepgrp {
++		fsl,pins = <
++			MX93_PAD_ENET2_MDC__GPIO4_IO14			0x51e
++			MX93_PAD_ENET2_MDIO__GPIO4_IO15			0x51e
++			MX93_PAD_ENET2_RD0__GPIO4_IO24			0x51e
++			MX93_PAD_ENET2_RD1__GPIO4_IO25			0x51e
++			MX93_PAD_ENET2_RD2__GPIO4_IO26			0x51e
++			MX93_PAD_ENET2_RD3__GPIO4_IO27			0x51e
++			MX93_PAD_ENET2_RXC__GPIO4_IO23                  0x51e
++			MX93_PAD_ENET2_RX_CTL__GPIO4_IO22		0x51e
++			MX93_PAD_ENET2_TD0__GPIO4_IO19			0x51e
++			MX93_PAD_ENET2_TD1__GPIO4_IO18			0x51e
++			MX93_PAD_ENET2_TD2__GPIO4_IO17			0x51e
++			MX93_PAD_ENET2_TD3__GPIO4_IO16			0x51e
++			MX93_PAD_ENET2_TXC__GPIO4_IO21                  0x51e
++			MX93_PAD_ENET2_TX_CTL__GPIO4_IO20               0x51e
++		>;
++	};
++
++	pinctrl_flexcan2: flexcan2grp {
++		fsl,pins = <
++			MX93_PAD_GPIO_IO25__CAN2_TX	0x139e
++			MX93_PAD_GPIO_IO27__CAN2_RX	0x139e
++		>;
++	};
++	pinctrl_flexcan2_sleep: flexcan2sleepgrp {
++		fsl,pins = <
++			MX93_PAD_GPIO_IO25__GPIO2_IO25  0x31e
++			MX93_PAD_GPIO_IO27__GPIO2_IO27	0x31e
++		>;
++	};
++
++
++	pinctrl_uart1: uart1grp {
++		fsl,pins = <
++			MX93_PAD_UART1_RXD__LPUART1_RX			0x31e
++			MX93_PAD_UART1_TXD__LPUART1_TX			0x31e
++		>;
++	};
++
++	pinctrl_uart5: uart5grp {
++		fsl,pins = <
++			MX93_PAD_DAP_TDO_TRACESWO__LPUART5_TX		0x31e
++			MX93_PAD_DAP_TDI__LPUART5_RX			0x31e
++			MX93_PAD_DAP_TMS_SWDIO__LPUART5_RTS_B		0x31e
++			MX93_PAD_DAP_TCLK_SWCLK__LPUART5_CTS_B		0x31e
++		>;
++	};
++
++	pinctrl_lpi2c1: lpi2c1grp {
++		fsl,pins = <
++			MX93_PAD_I2C1_SCL__LPI2C1_SCL			0x40000b9e
++			MX93_PAD_I2C1_SDA__LPI2C1_SDA			0x40000b9e
++		>;
++	};
++
++	pinctrl_lpi2c2: lpi2c2grp {
++		fsl,pins = <
++			MX93_PAD_I2C2_SCL__LPI2C2_SCL			0x40000b9e
++			MX93_PAD_I2C2_SDA__LPI2C2_SDA			0x40000b9e
++		>;
++	};
++
++	pinctrl_lpi2c3: lpi2c3grp {
++		fsl,pins = <
++			MX93_PAD_GPIO_IO28__LPI2C3_SDA			0x40000b9e
++			MX93_PAD_GPIO_IO29__LPI2C3_SCL			0x40000b9e
++		>;
++	};
++
++	pinctrl_pcal6524: pcal6524grp {
++		fsl,pins = <
++			MX93_PAD_CCM_CLKO2__GPIO3_IO27			0x31e
++		>;
++	};
++
++	pinctrl_pdm: pdmgrp {
++		fsl,pins = <
++			MX93_PAD_PDM_CLK__PDM_CLK			0x31e
++			MX93_PAD_PDM_BIT_STREAM0__PDM_BIT_STREAM00	0x31e
++			MX93_PAD_PDM_BIT_STREAM1__PDM_BIT_STREAM01	0x31e
++		>;
++	};
++
++	pinctrl_pdm_sleep: pdmsleepgrp {
++		fsl,pins = <
++			MX93_PAD_PDM_CLK__GPIO1_IO08			0x31e
++			MX93_PAD_PDM_BIT_STREAM0__GPIO1_IO09		0x31e
++			MX93_PAD_PDM_BIT_STREAM1__GPIO1_IO10		0x31e
++		>;
++	};
++
++	pinctrl_sai1: sai1grp {
++		fsl,pins = <
++			MX93_PAD_SAI1_TXC__SAI1_TX_BCLK			0x31e
++			MX93_PAD_SAI1_TXFS__SAI1_TX_SYNC		0x31e
++			MX93_PAD_SAI1_TXD0__SAI1_TX_DATA00		0x31e
++			MX93_PAD_SAI1_RXD0__SAI1_RX_DATA00		0x31e
++		>;
++	};
++
++	pinctrl_sai1_sleep: sai1sleepgrp {
++		fsl,pins = <
++			MX93_PAD_SAI1_TXC__GPIO1_IO12                   0x51e
++			MX93_PAD_SAI1_TXFS__GPIO1_IO11			0x51e
++			MX93_PAD_SAI1_TXD0__GPIO1_IO13			0x51e
++			MX93_PAD_SAI1_RXD0__GPIO1_IO14			0x51e
++		>;
++	};
++
++	/* need to config the SION for data and cmd pad, refer to ERR052021 */
++	pinctrl_usdhc1: usdhc1grp {
++		fsl,pins = <
++			MX93_PAD_SD1_CLK__USDHC1_CLK		0x1582
++			MX93_PAD_SD1_CMD__USDHC1_CMD		0x40001382
++			MX93_PAD_SD1_DATA0__USDHC1_DATA0	0x40001382
++			MX93_PAD_SD1_DATA1__USDHC1_DATA1	0x40001382
++			MX93_PAD_SD1_DATA2__USDHC1_DATA2	0x40001382
++			MX93_PAD_SD1_DATA3__USDHC1_DATA3	0x40001382
++			MX93_PAD_SD1_DATA4__USDHC1_DATA4	0x40001382
++			MX93_PAD_SD1_DATA5__USDHC1_DATA5	0x40001382
++			MX93_PAD_SD1_DATA6__USDHC1_DATA6	0x40001382
++			MX93_PAD_SD1_DATA7__USDHC1_DATA7	0x40001382
++			MX93_PAD_SD1_STROBE__USDHC1_STROBE	0x1582
++		>;
++	};
++
++	/* need to config the SION for data and cmd pad, refer to ERR052021 */
++	pinctrl_usdhc1_100mhz: usdhc1-100mhzgrp {
++		fsl,pins = <
++			MX93_PAD_SD1_CLK__USDHC1_CLK		0x158e
++			MX93_PAD_SD1_CMD__USDHC1_CMD		0x4000138e
++			MX93_PAD_SD1_DATA0__USDHC1_DATA0	0x4000138e
++			MX93_PAD_SD1_DATA1__USDHC1_DATA1	0x4000138e
++			MX93_PAD_SD1_DATA2__USDHC1_DATA2	0x4000138e
++			MX93_PAD_SD1_DATA3__USDHC1_DATA3	0x4000138e
++			MX93_PAD_SD1_DATA4__USDHC1_DATA4	0x4000138e
++			MX93_PAD_SD1_DATA5__USDHC1_DATA5	0x4000138e
++			MX93_PAD_SD1_DATA6__USDHC1_DATA6	0x4000138e
++			MX93_PAD_SD1_DATA7__USDHC1_DATA7	0x4000138e
++			MX93_PAD_SD1_STROBE__USDHC1_STROBE	0x158e
++		>;
++	};
++
++	/* need to config the SION for data and cmd pad, refer to ERR052021 */
++	pinctrl_usdhc1_200mhz: usdhc1-200mhzgrp {
++		fsl,pins = <
++			MX93_PAD_SD1_CLK__USDHC1_CLK		0x15fe
++			MX93_PAD_SD1_CMD__USDHC1_CMD		0x400013fe
++			MX93_PAD_SD1_DATA0__USDHC1_DATA0	0x400013fe
++			MX93_PAD_SD1_DATA1__USDHC1_DATA1	0x400013fe
++			MX93_PAD_SD1_DATA2__USDHC1_DATA2	0x400013fe
++			MX93_PAD_SD1_DATA3__USDHC1_DATA3	0x400013fe
++			MX93_PAD_SD1_DATA4__USDHC1_DATA4	0x400013fe
++			MX93_PAD_SD1_DATA5__USDHC1_DATA5	0x400013fe
++			MX93_PAD_SD1_DATA6__USDHC1_DATA6	0x400013fe
++			MX93_PAD_SD1_DATA7__USDHC1_DATA7	0x400013fe
++			MX93_PAD_SD1_STROBE__USDHC1_STROBE	0x15fe
++		>;
++	};
++
++	pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
++		fsl,pins = <
++			MX93_PAD_SD2_RESET_B__GPIO3_IO07	0x31e
++		>;
++	};
++
++	pinctrl_spdif: spdifgrp {
++		fsl,pins = <
++			MX93_PAD_GPIO_IO22__SPDIF_IN		0x3fe
++			MX93_PAD_GPIO_IO23__SPDIF_OUT		0x3fe
++		>;
++	};
++
++	pinctrl_spdif_sleep: spdifsleepgrp {
++		fsl,pins = <
++			MX93_PAD_GPIO_IO22__GPIO2_IO22		0x31e
++			MX93_PAD_GPIO_IO23__GPIO2_IO23		0x31e
++		>;
++	};
++
++	pinctrl_usdhc2_gpio: usdhc2gpiogrp {
++		fsl,pins = <
++			MX93_PAD_SD2_CD_B__GPIO3_IO00		0x31e
++		>;
++	};
++
++	pinctrl_usdhc2_gpio_sleep: usdhc2gpiosleepgrp {
++		fsl,pins = <
++			MX93_PAD_SD2_CD_B__GPIO3_IO00		0x51e
++		>;
++	};
++
++	/* need to config the SION for data and cmd pad, refer to ERR052021 */
++	pinctrl_usdhc2: usdhc2grp {
++		fsl,pins = <
++			MX93_PAD_SD2_CLK__USDHC2_CLK		0x1582
++			MX93_PAD_SD2_CMD__USDHC2_CMD		0x40001382
++			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x40001382
++			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x40001382
++			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x40001382
++			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x40001382
++			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
++		>;
++	};
++
++	/* need to config the SION for data and cmd pad, refer to ERR052021 */
++	pinctrl_usdhc2_100mhz: usdhc2-100mhzgrp {
++		fsl,pins = <
++			MX93_PAD_SD2_CLK__USDHC2_CLK		0x158e
++			MX93_PAD_SD2_CMD__USDHC2_CMD		0x4000138e
++			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x4000138e
++			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x4000138e
++			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x4000138e
++			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x4000138e
++			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
++		>;
++	};
++
++	/* need to config the SION for data and cmd pad, refer to ERR052021 */
++	pinctrl_usdhc2_200mhz: usdhc2-200mhzgrp {
++		fsl,pins = <
++			MX93_PAD_SD2_CLK__USDHC2_CLK		0x15fe
++			MX93_PAD_SD2_CMD__USDHC2_CMD		0x400013fe
++			MX93_PAD_SD2_DATA0__USDHC2_DATA0	0x400013fe
++			MX93_PAD_SD2_DATA1__USDHC2_DATA1	0x400013fe
++			MX93_PAD_SD2_DATA2__USDHC2_DATA2	0x400013fe
++			MX93_PAD_SD2_DATA3__USDHC2_DATA3	0x400013fe
++			MX93_PAD_SD2_VSELECT__USDHC2_VSELECT	0x51e
++		>;
++	};
++
++	pinctrl_usdhc2_sleep: usdhc2sleepgrp {
++		fsl,pins = <
++			MX93_PAD_SD2_CLK__GPIO3_IO01            0x51e
++			MX93_PAD_SD2_CMD__GPIO3_IO02		0x51e
++			MX93_PAD_SD2_DATA0__GPIO3_IO03		0x51e
++			MX93_PAD_SD2_DATA1__GPIO3_IO04		0x51e
++			MX93_PAD_SD2_DATA2__GPIO3_IO05		0x51e
++			MX93_PAD_SD2_DATA3__GPIO3_IO06		0x51e
++			MX93_PAD_SD2_VSELECT__GPIO3_IO19	0x51e
++		>;
++	};
++
++	/* need to config the SION for data and cmd pad, refer to ERR052021 */
++	pinctrl_usdhc3: usdhc3grp {
++		fsl,pins = <
++			MX93_PAD_SD3_CLK__USDHC3_CLK		0x1582
++			MX93_PAD_SD3_CMD__USDHC3_CMD		0x40001382
++			MX93_PAD_SD3_DATA0__USDHC3_DATA0	0x40001382
++			MX93_PAD_SD3_DATA1__USDHC3_DATA1	0x40001382
++			MX93_PAD_SD3_DATA2__USDHC3_DATA2	0x40001382
++			MX93_PAD_SD3_DATA3__USDHC3_DATA3	0x40001382
++		>;
++	};
++
++	/* need to config the SION for data and cmd pad, refer to ERR052021 */
++	pinctrl_usdhc3_100mhz: usdhc3-100mhzgrp {
++		fsl,pins = <
++			MX93_PAD_SD3_CLK__USDHC3_CLK		0x158e
++			MX93_PAD_SD3_CMD__USDHC3_CMD		0x4000138e
++			MX93_PAD_SD3_DATA0__USDHC3_DATA0	0x4000138e
++			MX93_PAD_SD3_DATA1__USDHC3_DATA1	0x4000138e
++			MX93_PAD_SD3_DATA2__USDHC3_DATA2	0x4000138e
++			MX93_PAD_SD3_DATA3__USDHC3_DATA3	0x4000138e
++		>;
++	};
++
++	/* need to config the SION for data and cmd pad, refer to ERR052021 */
++	pinctrl_usdhc3_200mhz: usdhc3-200mhzgrp {
++		fsl,pins = <
++			MX93_PAD_SD3_CLK__USDHC3_CLK		0x15fe
++			MX93_PAD_SD3_CMD__USDHC3_CMD		0x400013fe
++			MX93_PAD_SD3_DATA0__USDHC3_DATA0	0x400013fe
++			MX93_PAD_SD3_DATA1__USDHC3_DATA1	0x400013fe
++			MX93_PAD_SD3_DATA2__USDHC3_DATA2	0x400013fe
++			MX93_PAD_SD3_DATA3__USDHC3_DATA3	0x400013fe
++		>;
++	};
++
++	pinctrl_usdhc3_sleep: usdhc3grpsleep {
++		fsl,pins = <
++			MX93_PAD_SD3_CLK__GPIO3_IO20		0x31e
++			MX93_PAD_SD3_CMD__GPIO3_IO21		0x31e
++			MX93_PAD_SD3_DATA0__GPIO3_IO22		0x31e
++			MX93_PAD_SD3_DATA1__GPIO3_IO23		0x31e
++			MX93_PAD_SD3_DATA2__GPIO3_IO24		0x31e
++			MX93_PAD_SD3_DATA3__GPIO3_IO25		0x31e
++		>;
++	};
++
++	pinctrl_usdhc3_wlan: usdhc3wlangrp {
++		fsl,pins = <
++			MX93_PAD_CCM_CLKO1__GPIO3_IO26		0x31e
++		>;
++	};
++
++	pinctrl_sai3: sai3grp {
++		fsl,pins = <
++			MX93_PAD_GPIO_IO26__SAI3_TX_SYNC		0x31e
++			MX93_PAD_GPIO_IO16__SAI3_TX_BCLK		0x31e
++			MX93_PAD_GPIO_IO17__SAI3_MCLK			0x31e
++			MX93_PAD_GPIO_IO19__SAI3_TX_DATA00		0x31e
++			MX93_PAD_GPIO_IO20__SAI3_RX_DATA00		0x31e
++		>;
++	};
++
++	pinctrl_sai3_sleep: sai3grpsleep {
++		fsl,pins = <
++			MX93_PAD_GPIO_IO26__GPIO2_IO26			0x51e
++			MX93_PAD_GPIO_IO16__GPIO2_IO16			0x51e
++			MX93_PAD_GPIO_IO17__GPIO2_IO17			0x51e
++			MX93_PAD_GPIO_IO19__GPIO2_IO19			0x51e
++			MX93_PAD_GPIO_IO20__GPIO2_IO20			0x51e
++		>;
++	};
++};
++
++&epxp {
++	status = "okay";
++};
++
++&isi {
++	status = "okay";
++
++	port {
++		isi_in: endpoint {
++			remote-endpoint = <&mipi_csi_out>;
++		};
++	};
++};
++
++&mipi_csi {
++	status = "okay";
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++
++			mipi_csi_in: endpoint {
++				remote-endpoint = <&isp_out>;
++				data-lanes = <1 2>;
++				clock-lanes = <0>;
++			};
++		};
++
++		port@1 {
++			reg = <1>;
++
++			mipi_csi_out: endpoint {
++				remote-endpoint = <&isi_in>;
++			};
++		};
++	};
++};
++
++&dphy_rx {
++	status = "okay";
++};
+-- 
+2.25.1
+

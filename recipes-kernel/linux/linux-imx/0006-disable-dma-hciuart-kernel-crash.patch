@@ -1,19 +1,41 @@
+Do not treat warnings as errors
+
+There are additional warnings found with musl which are
+treated as errors and fails the build, we have more combinations
+than upstream supports to handle.
+
+Upstream-Status: Inappropriate [oe specific]
+
+From 4f12e7b5604a285b83f4af8afee56d4dd773ac3b Mon Sep 17 00:00:00 2001
+From: Jameel Kareem <jkareem@murata.com>
+Date: Wed, 4 Feb 2026 14:14:49 -0800
+Subject: [PATCH] disable-dma-hciuart-kernel-crash
+
+---
+ drivers/tty/serial/imx.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
 diff --git a/drivers/tty/serial/imx.c b/drivers/tty/serial/imx.c
-index 8d9e91057856..841d932c4b45 100644
+index d5d24b00de00..2c31e47df358 100644
 --- a/drivers/tty/serial/imx.c
 +++ b/drivers/tty/serial/imx.c
-@@ -1476,10 +1476,10 @@ static int imx_uart_startup(struct uart_port *port)
+@@ -1494,12 +1494,10 @@ static int imx_uart_startup(struct uart_port *port)
  
  	imx_uart_writel(sport, ucr4 & ~UCR4_DREN, UCR4);
  
 -	/* Can we enable the DMA support? */
--	if (!uart_console(port) && imx_uart_dma_init(sport) == 0)
+-	if (!uart_console(port) && imx_uart_dma_init(sport) == 0) {
+-		lockdep_set_subclass(&port->lock, 1);
 -		dma_is_inited = 1;
+-	}
 -
 +/*  // Disable DMA support as the Kernel crashes when we make HCI_UART as module
 + 	if (!uart_console(port) && imx_uart_dma_init(sport) == 0)
 + 		dma_is_inited = 1;
 +*/
- 	spin_lock_irqsave(&sport->port.lock, flags);
+ 	uart_port_lock_irqsave(&sport->port, &flags);
  
  	/* Reset fifo's and state machines */
+-- 
+2.25.1
+

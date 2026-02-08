@@ -1,3 +1,13 @@
+Do not treat warnings as errors
+
+There are additional warnings found with musl which are
+treated as errors and fails the build, we have more combinations
+than upstream supports to handle.
+
+Upstream-Status: Inappropriate [oe specific]
+
+
+
 From 96c21ef7fc68886b41ee3648bd0965b64aa25140 Mon Sep 17 00:00:00 2001
 From: Romit Chatterjee <romit.chatterjee@murata.com>
 Date: Sun, 1 Feb 2026 22:43:01 -0600
