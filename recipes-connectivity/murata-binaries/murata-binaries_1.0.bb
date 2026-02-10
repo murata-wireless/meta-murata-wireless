@@ -4,11 +4,11 @@ LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://${S}/nxp-linux-calibration/LICENSE;md5=ffa10f40b98be2c2bc9608f56827ed23"
 
 SRC_URI = " \
-	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
+	git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=imx-6-12-3;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
 	file://switch_module.sh \
 "
 
-SRCREV_nxp-linux-calibration="a2e2e8090548c59f655ecd3f971565e9bce8cc74"
+SRCREV_nxp-linux-calibration="66a6ebabd2bd6b0bea660eb05bdf3b7ae3ffed7e"
 
 SRCREV_default = "${AUTOREV}"
 
