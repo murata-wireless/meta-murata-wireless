@@ -483,7 +483,7 @@ EOT
 blacklist cfg80211
 
 # Alias for the NXP modules
-alias usb:v0471p0215* moal
+alias usb:v0471p021* moal
 
 # Specify arguments to pass when loading the iw612 module
 options moal mod_para=nxp/wifi_mod_para.conf

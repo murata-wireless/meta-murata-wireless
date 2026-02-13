@@ -1,9 +1,13 @@
 #!/bin/sh
 
 # Needed to support writes to otherwise read only memory
-. /etc/profile.d/fw_unlock_mmc.sh 
+. /etc/profile.d/fw_unlock_mmc.sh
 
 VERSION="1.0"
+
+DTB_VER="v4"
+
+echo "DTB_VER is ${DTB_VER}"
 
 cyw_module="none"
 
@@ -139,7 +143,7 @@ function clean_up() {
 
   # Take a backup of hci_uart.ko to murata_wireless
   if [ ! -e /usr/share/murata_wireless/hci_uart.ko ]; then
-      cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless/hci_uart.ko 
+      cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless/hci_uart.ko
   fi
 
   # Delete the special file created for 2FY
@@ -359,7 +363,7 @@ function prepare_for_nxp_xl_pcie() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
+
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -393,7 +397,7 @@ function prepare_for_nxp_el_sdio() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
+
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -426,7 +430,7 @@ function prepare_for_nxp_ll_sdio() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
+
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -441,39 +445,6 @@ blacklist cfg80211
 
 # Alias for the NXP modules
 alias sdio:c*v0471d0215* moal
-
-# Specify arguments to pass when loading the iw612 module
-options moal mod_para=nxp/wifi_mod_para.conf
-EOT
-
-  depmod -a
-
-  # Disable Cypress service and enable NXP service
-  handle_services true false
-}
-
-function prepare_for_nxp_ll_usb() {
-  clean_up
-  prepare_for_nxp_bt
-  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
-  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
-  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
-  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
-  cat <<EOT > /etc/depmod.d/nxp_depmod.conf
-# Force modprobe to search kernel/net/wireless (where the NXP
-# version of cfg80211.ko is placed) before looking in updates/net/wireless/
-# (where the Cypress version is)
-override cfg80211 * kernel/net/wireless
-
-EOT
-
-  cat <<EOT > /etc/modprobe.d/nxp_modules.conf
-# Prevent the Cypress version of cfg80211.ko from being loaded.
-blacklist cfg80211
-
-# Alias for the NXP modules
-alias usb:v0471p021* moal
 
 # Specify arguments to pass when loading the iw612 module
 options moal mod_para=nxp/wifi_mod_para.conf
@@ -545,7 +516,7 @@ function prepare_for_cypress() {
   2EA-SDIO|2EA-PCIE)
      cp /lib/firmware/brcm/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd /lib/firmware/brcm/BCM.hcd
     ;;
-  2FY|FY)
+  2FY|FY|2FY-ONBOARD)
      cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2FY.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   esac
@@ -575,15 +546,20 @@ function off() {
 
 function switch_to_cypress_sdio() {
   echo ""
-  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA, 2GF, 2FY (Cypress - SDIO)"
+  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA, 2GF, 2FY, 2FY-ONBOARD (Cypress - SDIO)"
 
   if [ $cyw_module == "2EA-SDIO" ] || [ $cyw_module == "2FY" ]; then
-     fw_setenv fdt_file imx93-ea-ucom-kit-2ea.dtb 2>/dev/null
+     fw_setenv fdt_file imx8mm-ea-som-kit-2ea.dtb 2>/dev/null
+     fw_setenv bt_hint cypress_2ea
+     fw_setenv cmd_custom
+     move_ko
+  elif [ $cyw_module == "2FY-ONBOARD" ]; then
+     fw_setenv fdt_file imx8mm-ea-som-kit-deepx-2fy.dtb 2>/dev/null
      fw_setenv bt_hint cypress_2ea
      fw_setenv cmd_custom
      move_ko
   else
-     fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+     fw_setenv fdt_file imx8mm-ea-som-kit.dtb 2>/dev/null
      fw_setenv bt_hint cypress
      fw_setenv cmd_custom
      restore_ko
@@ -593,7 +569,7 @@ function switch_to_cypress_sdio() {
 
   # Set sdio_idleclk_disable=1 parameter when loading brcmfmac for 2FY.
   # The file created here is deleted in clean_up function above.
-  if [ $cyw_module == "2FY" ]; then
+  if [ $cyw_module == "2FY" ] || [ $cyw_module == "2FY-ONBOARD" ]; then
      echo "options brcmfmac sdio_idleclk_disable=1" > /etc/modprobe.d/2fy_m2.conf
   fi
 
@@ -605,7 +581,7 @@ function switch_to_cypress_ae_usb() {
   echo ""
   echo "Setting up for 2AE (Cypress - USB)"
 
-  fw_setenv fdt_file imx93-ea-ucom-kit-m2_usb.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-som-kit-m2_usb.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   fw_setenv cmd_custom
   restore_ko
@@ -620,7 +596,7 @@ function switch_to_cypress_bc_usb() {
   echo ""
   echo "Setting up for 2BC (Cypress - USB)"
 
-  fw_setenv fdt_file imx93-ea-ucom-kit-m2_usb.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-som-kit-m2_usb.dtb 2>/dev/null
   fw_setenv bt_hint cypress
   fw_setenv cmd_custom
   restore_ko
@@ -636,12 +612,12 @@ function switch_to_cypress_pcie() {
   echo "Setting up for 1CX, 1XA, 2EA (Cypress - PCIe)"
 
   if [ $cyw_module == "2EA-PCIE" ]; then
-     fw_setenv fdt_file imx93-ea-ucom-kit-pcie-2ea.dtb 2>/dev/null
+     fw_setenv fdt_file imx8mm-ea-som-kit-pcie-ekey-2ea.dtb 2>/dev/null
      fw_setenv bt_hint cypress_2ea
      fw_setenv cmd_custom
      move_ko
   else
-     fw_setenv fdt_file imx93-ea-ucom-kit-pcie.dtb 2>/dev/null
+     fw_setenv fdt_file imx8mm-ea-som-kit-pcie-ekey.dtb 2>/dev/null
      fw_setenv bt_hint cypress
      fw_setenv cmd_custom
      restore_ko
@@ -656,9 +632,9 @@ function switch_to_nxp_sdio() {
   echo ""
   echo "Setting up for 1ZM (NXP - SDIO)"
   restore_ko
-  fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-som-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp
-  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8987-bt; fdt set /soc/bus@42800000/mmc@428b0000 max-frequency <134000000>"
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_sdio
   echo "Setup complete."
   echo ""
@@ -668,9 +644,9 @@ function switch_to_nxp_xl_sdio() {
   echo ""
   echo "Setting up for 1XL, 2XS (NXP - SDIO)"
   restore_ko
-  fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-som-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp
-  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8987-bt; fdt set serial4/bluetooth fw-init-baudrate  <115200>"
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt; fdt set serial0/bluetooth fw-init-baudrate  <115200>"
   prepare_for_nxp_xl_sdio
   echo "Setup complete."
   echo ""
@@ -680,9 +656,9 @@ function switch_to_nxp_el_sdio() {
   echo ""
   echo "Setting up for 2EL, 2DL (NXP - SDIO)"
   restore_ko
-  fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-som-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp
-  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8987-bt"
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_el_sdio
   echo "Setup complete."
   echo ""
@@ -692,33 +668,22 @@ function switch_to_nxp_ll_sdio() {
   echo ""
   echo "Setting up for 2KL, 2LL (NXP - SDIO)"
   restore_ko
-  fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-som-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp
-  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8987-bt"
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_ll_sdio
   echo "Setup complete."
   echo ""
 }
 
-function switch_to_nxp_ll_usb() {
-  echo ""
-  echo "Setting up for 2KL, 2LL (NXP - USB)"
-  restore_ko
-  fw_setenv fdt_file imx93-ea-ucom-kit-m2_usb.dtb 2>/dev/null
-  fw_setenv bt_hint nxp
-  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8987-bt"
-  prepare_for_nxp_ll_usb
-  echo "Setup complete."
-  echo ""
-}
 
 function switch_to_nxp_xk_sdio() {
   echo ""
   echo "Setting up for 1XK, 2XK (NXP - SDIO)"
   restore_ko
-  fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-som-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp
-  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8987-bt"
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_xk_sdio
   echo "Setup complete."
   echo ""
@@ -728,9 +693,9 @@ function switch_to_nxp_ds_sdio() {
   echo ""
   echo "Setting up for 2DS (NXP - SDIO)"
   restore_ko
-  fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-som-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp
-  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8987-bt"
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_ds_sdio
   echo "Setup complete."
   echo ""
@@ -740,9 +705,9 @@ function switch_to_nxp_ym_sdio() {
   echo ""
   echo "Setting up for 1YM (NXP - SDIO)"
   restore_ko
-  fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-som-kit.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_sdio
-  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8997-bt; fdt set /soc/bus@42800000/mmc@428b0000 max-frequency <134000000>"
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8997-bt"
   prepare_for_nxp_ym_sdio
   echo "Setup complete."
   echo ""
@@ -753,9 +718,9 @@ function switch_to_nxp_ym_pcie() {
   echo ""
   echo "Setting up for 1YM (NXP - PCIe)"
   restore_ko
-  fw_setenv fdt_file imx93-ea-ucom-kit-pcie.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-som-kit-pcie-ekey.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_pcie
-  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8997-bt"
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8997-bt"
   prepare_for_nxp_ym_pcie
   echo "Setup complete."
   echo ""
@@ -766,9 +731,9 @@ function switch_to_nxp_xl_pcie() {
   echo ""
   echo "Setting up for 1XL, 2XS (NXP - PCIe)"
   restore_ko
-  fw_setenv fdt_file imx93-ea-ucom-kit-pcie.dtb 2>/dev/null
+  fw_setenv fdt_file imx8mm-ea-som-kit-pcie-ekey.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1xl_pcie
-  fw_setenv cmd_custom "fdt mknod serial4 bluetooth; fdt set serial4/bluetooth compatible nxp,88w8987-bt"
+  fw_setenv cmd_custom "fdt mknod serial0 bluetooth; fdt set serial0/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_xl_pcie
   echo "Setup complete."
   echo ""
@@ -784,8 +749,8 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2EA-SDIO, 2EA-PCIe"
-  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2KL-SDIO, 2KL-USB, 2LL-SDIO, 2LL-USB, CURRENT or OFF"
+  echo "     CYW-SDIO, CYW-PCIe, 1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2FY-ONBOARD, 2EA-SDIO, 2EA-PCIe"
+  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2KL-SDIO, 2LL-SDIO, 2DS, CURRENT or OFF"
   echo ""
 }
 
@@ -800,6 +765,9 @@ cyw_module=${1^^}
 case ${1^^} in
   CYW-PCIE|XA|1XA|2EA-PCIE)
     switch_to_cypress_pcie
+    ;;
+  2FY-ONBOARD)
+    switch_to_cypress_sdio
     ;;
   CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ|GF|2GF|FY|2FY)
     switch_to_cypress_sdio
@@ -836,9 +804,6 @@ case ${1^^} in
     ;;
   2KL-SDIO|2LL-SDIO)
     switch_to_nxp_ll_sdio
-    ;;
-  2KL-USB|2LL-USB)
-    switch_to_nxp_ll_usb
     ;;
   CURRENT)
     current
