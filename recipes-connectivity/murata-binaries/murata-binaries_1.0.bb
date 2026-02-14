@@ -4,13 +4,15 @@ LICENSE = "GPL-2.0-only"
 LIC_FILES_CHKSUM = "file://${S}/cyw-bt-patch/LICENCE.cypress;md5=cbc5f665d04f741f1e006d2096236ba7"
 
 IMX_FIRMWARE_SRC ?= "git://github.com/nxp-imx/imx-firmware.git;protocol=https"
-SRCBRANCH_imx-firmware = "lf-6.12.34_2.1.0"
+SRCBRANCH_imx-firmware = "lf-6.12.49_2.2.0"
 
 NXP_IMX = "git://github.com/nxp-imx/meta-nxp-connectivity.git;protocol=https"
 SRCBRANCH_meta-nxp-connectivity = "imx_matter_2024_q4-post"
 
 SRC_URI = " \
         ${IMX_FIRMWARE_SRC};branch=${SRCBRANCH_imx-firmware};destsuffix=imx-firmware;name=imx-firmware \
+        git://github.com/Infineon/ifx-linux-firmware;protocol=http;branch=master;destsuffix=ifx-linux-firmware-longma;name=ifx-linux-firmware-longma \
+        git://github.com/Infineon/ifx-linux-firmware;protocol=http;branch=master;destsuffix=ifx-linux-firmware-drogon;name=ifx-linux-firmware-drogon \
         git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=jaculus;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=jaculus;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
@@ -51,20 +53,23 @@ SRC_URI = " \
         file://ot-daemon \
         file://ot-ctl \
         file://test_2ll_spi.sh \
+        file://test_2el_spi.sh \
         ${NXP_IMX};branch=imx_matter_2024_q4-post;destsuffix=meta-nxp-connectivity;name=meta-nxp-connectivity \
         file://sduart_nw61x_v1.bin.se \
         file://wifi_mod_para.conf \
 "
 
 SRC_URI[cyw-fmac-fw-ifx.sha256sum]="34f5bfac6476d849af26f945705dc5a19965825333840405ef25dcd835d521d7"
-SRCREV_nxp-linux-calibration="87197da5490dfe36da2e7c40df256a20d43ab0df"
+SRCREV_ifx-linux-firmware-longma="c6c73c37e89b088624f7970fb0a7ef535c5dee0b"
+SRCREV_ifx-linux-firmware-drogon="dc38e700612b334080e0b6df69070a88c4c2a12b"
+SRCREV_nxp-linux-calibration="df741be492748547eae8075139ca24f4faadbc2c"
 SRCREV_cyw-fmac-fw="a5cb86a5d11192ba6e7738f82b4d2dc9eeeca679"
 SRCREV_cyw-fmac-nvram="146d1438372b6c4857f92b8769b91c1801d3ede2"
 SRCREV_cyw-bt-patch="23de75a4e5384d16e8478f668b769b0d24ede0de"
 SRCREV_cyw-fmac-utils-imx32="dad9ed86bf6691910197bc91d42a45ea8175180c"
 SRCREV_cyw-fmac-utils-imx64="368bd9a4163e115468d79c238192b41f6266c523"
 SRCREV_connectedhomeip="7879111b8b17d5cb2789ffd4d634438dd2e8c52a"
-SRCREV_imx-firmware = "2be337a7bdd129ebb5e61ff713d7941eedcfa2ff"
+SRCREV_imx-firmware = "8c9b278016c97527b285f2fcbe53c2d428eb171d"
 SRCREV_meta-nxp-connectivity = "9728012463cb9c99bf766801a13edc07732a9195"
 
 SRCREV_default = "${AUTOREV}"
@@ -121,6 +126,7 @@ do_install () {
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/1XL
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2EL
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2DL
+    install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2LL
 
 #   Copying *.HCD files to etc/firmware and etc/firmware/murata-master (using "_" before the name of the file in murata-master)
     install -m 444 ${WORKDIR}/sources/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd ${D}/${base_libdir}/firmware/brcm/BCM4345C0_003.001.025.0187.0366.1MW.hcd
@@ -162,6 +168,23 @@ do_install () {
 #   Copying FW and CLM BLOB files (*.bin, *.clm_blob) to lib/firmware/cypress folder
 #   From Murata GitHub
     install -m 444 ${WORKDIR}/sources/cyw-fmac-fw/*.bin ${D}/${base_libdir}/firmware/cypress
+#   From IFX GitHub
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-longma/firmware/cyfmac43012-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-longma/firmware/cyfmac43455-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-longma/firmware/cyfmac43022-sdio.trxs ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-longma/firmware/cyfmac55500-sdio.trxse ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-longma/firmware/cyfmac55572-pcie.trxse ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-longma/firmware/cyfmac55572-sdio.trxse ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-longma/firmware/cyfmac43012-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-longma/firmware/cyfmac43439-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-longma/firmware/cyfmac43455-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-longma/firmware/cyfmac54591-pcie.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-longma/firmware/cyfmac54591-sdio.bin ${D}/${base_libdir}/firmware/cypress
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-longma/firmware/cyfmac4373-sdio.industrial.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2AE.bin
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-longma/firmware/cyfmac4373-sdio.bin ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2BC.bin
+#   From "Drogon" for 1DX/43430
+    install -m 444 ${WORKDIR}/sources/ifx-linux-firmware-drogon/firmware/cyfmac43430-sdio.bin ${D}/${base_libdir}/firmware/cypress
+
 
 #   Rename clm blob files accordingly
     install -m 444 ${WORKDIR}/sources/cyw-fmac-fw/cyfmac4354-sdio.1BB.clm_blob ${D}/${base_libdir}/firmware/cypress/cyfmac4354-sdio.clm_blob
@@ -301,6 +324,7 @@ do_install () {
 	install -m 444 ${WORKDIR}/sources/nxp-linux-calibration/murata/files/1XL/* ${D}/${base_libdir}/firmware/nxp/murata/files/1XL
 	install -m 444 ${WORKDIR}/sources/nxp-linux-calibration/murata/files/2EL/* ${D}/${base_libdir}/firmware/nxp/murata/files/2EL
 	install -m 444 ${WORKDIR}/sources/nxp-linux-calibration/murata/files/2DL/* ${D}/${base_libdir}/firmware/nxp/murata/files/2DL
+	install -m 444 ${WORKDIR}/sources/nxp-linux-calibration/murata/files/2LL/* ${D}/${base_libdir}/firmware/nxp/murata/files/2LL
 
 
 
@@ -326,69 +350,65 @@ do_install () {
     # Push Combo (sduartspi) firmware for 2LL to murata_wireless
      install -m 755 ${WORKDIR}/sources/wifi_mod_para.conf ${D}${nonarch_base_libdir}/firmware/nxp
 
-    # Install NXP Connectivity SD8801 firmware
-#    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8801_SD/ed_mac_ctrl_V1_8801.conf  ${D}${nonarch_base_libdir}/firmware/nxp
-#    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8801_SD/sd8801_uapsta.bin         ${D}${nonarch_base_libdir}/firmware/nxp
-
     # Install NXP Connectivity 8987 firmware
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8987/ed_mac_ctrl_V3_8987.conf  ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8987/sd8987_wlan.bin           ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8987/sduart8987_combo.bin ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8987/txpwrlimit_cfg_8987.conf  ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8987/uart8987_bt.bin       ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8987_SD/ed_mac_ctrl_V3_8987.conf  ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8987_SD/sd8987_wlan.bin           ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8987_SD/sduart8987_combo.bin ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8987_SD/txpwrlimit_cfg_8987.conf  ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8987_SD/uart8987_bt.bin       ${D}${nonarch_base_libdir}/firmware/nxp
 
     # Install NXP Connectivity PCIE8997 firmware
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8997/ed_mac_ctrl_V3_8997.conf  ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8997/pcie8997_wlan_v4.bin      ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8997/pcieuart8997_combo_v4.bin ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8997/txpwrlimit_cfg_8997.conf  ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8997/uart8997_bt_v4.bin    ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8997_PCIE/ed_mac_ctrl_V3_8997.conf  ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8997_PCIE/pcie8997_wlan_v4.bin      ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8997_PCIE/pcieuart8997_combo_v4.bin ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8997_PCIE/txpwrlimit_cfg_8997.conf  ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8997_PCIE/uart8997_bt_v4.bin    ${D}${nonarch_base_libdir}/firmware/nxp
 
     # Install NXP Connectivity SDIO8997 firmware
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8997_SD/ed_mac_ctrl_V3_8997.conf  ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8997_SD/sd8997_wlan_v4.bin      ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8997_SD/sduart8997_combo_v4.bin ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8997_SD/txpwrlimit_cfg_8997.conf  ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_8997_SD/uart8997_bt_v4.bin    ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8997_SD/ed_mac_ctrl_V3_8997.conf  ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8997_SD/sd8997_wlan_v4.bin      ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8997_SD/sduart8997_combo_v4.bin ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8997_SD/txpwrlimit_cfg_8997.conf  ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8997_SD/uart8997_bt_v4.bin    ${D}${nonarch_base_libdir}/firmware/nxp
 
     # Install NXP Connectivity PCIE9098 firmware
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_9098_PCIE/ed_mac_ctrl_V3_909x.conf  ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_9098_PCIE/pcie9098_wlan_v1.bin      ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_9098_PCIE/pcieuart9098_combo_v1.bin ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_9098_PCIE/txpwrlimit_cfg_9098.conf  ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_9098_PCIE/uart9098_bt_v1.bin    ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_9098_PCIE/ed_mac_ctrl_V3_909x.conf  ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_9098_PCIE/pcie9098_wlan_v1.bin      ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_9098_PCIE/pcieuart9098_combo_v1.bin ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_9098_PCIE/txpwrlimit_cfg_9098.conf  ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_9098_PCIE/uart9098_bt_v1.bin    ${D}${nonarch_base_libdir}/firmware/nxp
 
     # Install NXP Connectivity SD9098 firmware
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_9098_SD/sd9098_wlan_v1.bin      ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_9098_SD/sduart9098_combo_v1.bin ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_9098_SD/uart9098_bt_v1.bin    ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_9098_SD/sd9098_wlan_v1.bin      ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_9098_SD/sduart9098_combo_v1.bin ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_9098_SD/uart9098_bt_v1.bin    ${D}${nonarch_base_libdir}/firmware/nxp
 
     # Install NXP Connectivity IW416 firmware
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW416_SD/sdiw416_wlan.bin      ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW416_SD/sduartiw416_combo.bin ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW416_SD/uartiw416_bt.bin        ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_IW416_SD/sdiw416_wlan.bin      ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_IW416_SD/sduartiw416_combo.bin ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_IW416_SD/uartiw416_bt.bin        ${D}${nonarch_base_libdir}/firmware/nxp
 
     # Install NXP Connectivity IW612 firmware
     # Keep original IW612(6.12.3) firmware as is(it doesn't support SPI).
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW612_SD/sduart_nw61x_v1.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_IW612_SD/sduart_nw61x_v1.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
     # Keep 6.1.36 combo (sd uart spi) firmware in murata_wireless for testing purpose
     install -m 755 ${WORKDIR}/sources/sduart_nw61x_v1.bin.se ${D}/usr/share/murata_wireless
 
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW612_SD/sd_w61x_v1.bin.se      ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW612_SD/uartspi_n61x_v1.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_IW612_SD/sd_w61x_v1.bin.se      ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_IW612_SD/uartspi_n61x_v1.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
 
-    # Install NXP Connectivity IW610 firmware
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_SD/sd_iw610.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_SD/sduart_iw610.bin.se      ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_SD/sduartspi_iw610.bin.se      ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_SD/uart_iw610_bt.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_SD/uartspi_iw610.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
+    # Install NXP Connectivity IW610-sdio firmware
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_IW610_SD/sd_iw610.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_IW610_SD/sduart_iw610.bin.se      ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_IW610_SD/sduartspi_iw610.bin.se      ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_IW610_SD/uart_iw610_bt.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_IW610_SD/uartspi_iw610.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
     # Use tri-radio firmware for testing purpose
     install -m 0644 ${WORKDIR}/sources/meta-nxp-connectivity/meta-nxp-matter-advanced/recipes-bsp/firmware-imx/files/IW610-Q4-24-R3-p43/sduartspi_iw610.bin.se ${D}/usr/share/murata_wireless
-    
-    # Install NXP connectivity IW610 USB firmware
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_USB/usbusb_iw610.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/FwImage_IW610_USB/usbusbspi_iw610.bin.se      ${D}${nonarch_base_libdir}/firmware/nxp
+
+    # Install NXP Connectivity IW610-usb firmware
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_IW610_USB/usbusb_iw610.bin.se ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_IW610_USB/usbusbspi_iw610.bin.se      ${D}${nonarch_base_libdir}/firmware/nxp
 
 }
 

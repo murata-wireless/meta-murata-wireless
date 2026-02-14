@@ -1,12 +1,32 @@
+Do not treat warnings as errors
+
+There are additional warnings found with musl which are
+treated as errors and fails the build, we have more combinations
+than upstream supports to handle.
+
+Upstream-Status: Inappropriate [oe specific]
+
+From 5d4229e9ed253eff28e534db30d12df68d3c80f0 Mon Sep 17 00:00:00 2001
+From: Jameel Kareem <jkareem@murata.com>
+Date: Wed, 11 Feb 2026 14:42:37 -0800
+Subject: [PATCH 3/4] murata-customized-string
+
+---
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c | 1 +
+ 1 file changed, 1 insertion(+)
+
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
-index 89ffa19a5f78..9a71eea8798a 100644
+index fcc75df6ff60..1c1caf841d7a 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
-@@ -561,6 +561,7 @@ int brcmf_c_preinit_dcmds(struct brcmf_if *ifp)
+@@ -415,6 +415,7 @@ int brcmf_c_preinit_dcmds(struct brcmf_if *ifp)
  	strsep(&ptr, "\n");
  
  	/* Print fw version info */
-+    brcmf_info("Murata Customized Version: imx-scarthgap-jaculus_r1.0\n");
++	brcmf_info("Murata Customized Version: imx-styhead-longma_r1.0\n");
  	brcmf_info("Firmware: %s %s\n", ri->chipname, buf);
  
  	/* locate firmware version number for ethtool */
+-- 
+2.25.1
+
