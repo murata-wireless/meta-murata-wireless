@@ -1,3 +1,12 @@
+Do not treat warnings as errors
+
+There are additional warnings found with musl which are
+treated as errors and fails the build, we have more combinations
+than upstream supports to handle.
+
+Upstream-Status: Inappropriate [oe specific]
+
+
 diff --git a/arch/arm/boot/dts/nxp/imx/Makefile b/arch/arm/boot/dts/nxp/imx/Makefile
 index 12e091dc4c4c..c2bab384e7e6 100644
 --- a/arch/arm/boot/dts/nxp/imx/Makefile

@@ -6,29 +6,51 @@ than upstream supports to handle.
 
 Upstream-Status: Inappropriate [oe specific]
 
-From 226e100521657999948ca13e092d70438252af48 Mon Sep 17 00:00:00 2001
+
+From a2c2ba2682ad0a741f3882e02e2830db61a246d9 Mon Sep 17 00:00:00 2001
 From: Jameel Kareem <jkareem@murata.com>
-Date: Wed, 4 Feb 2026 12:48:23 -0800
-Subject: [PATCH 5/5] imx8 defconfig
+Date: Sat, 14 Feb 2026 15:24:33 -0800
+Subject: [PATCH] defconfig-imx8.patch
 
 ---
- arch/arm64/configs/imx_v8_defconfig | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ arch/arm64/configs/imx_v8_defconfig | 27 ++++++++++++++++++++++-----
+ 1 file changed, 22 insertions(+), 5 deletions(-)
 
 diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
-index 0855e7ff33c5..6295bf67ce5d 100644
+index 0855e7ff33c5..564dcc81e924 100644
 --- a/arch/arm64/configs/imx_v8_defconfig
 +++ b/arch/arm64/configs/imx_v8_defconfig
-@@ -182,7 +182,8 @@ CONFIG_BT_HCIUART_BCM=y
- CONFIG_BT_HCIUART_QCA=y
+@@ -173,16 +173,17 @@ CONFIG_BT_HIDP=y
+ CONFIG_BT_LEDS=y
+ # CONFIG_BT_DEBUGFS is not set
+ CONFIG_BT_HCIBTUSB=m
+-CONFIG_BT_HCIUART=y
++CONFIG_BT_HCIUART=m
+ CONFIG_BT_HCIUART_BCSP=y
+ CONFIG_BT_HCIUART_ATH3K=y
+ CONFIG_BT_HCIUART_LL=y
+ CONFIG_BT_HCIUART_3WIRE=y
+ CONFIG_BT_HCIUART_BCM=y
+-CONFIG_BT_HCIUART_QCA=y
++CONFIG_BT_HCIUART_QCA=n
  CONFIG_BT_HCIVHCI=y
- CONFIG_BT_NXPUART=m
+-CONFIG_BT_NXPUART=m
 -CONFIG_CFG80211=y
++CONFIG_BT_NXPUART=n
 +CONFIG_CFG80211=m
 +CONFIG_BCMDHD=n
  CONFIG_NL80211_TESTMODE=y
  CONFIG_CFG80211_WEXT=y
  CONFIG_MAC80211=y
+@@ -217,7 +218,7 @@ CONFIG_PCI_EPF_TEST=y
+ CONFIG_PCI_NXP_RPMSG=y
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+-CONFIG_FW_LOADER_USER_HELPER=y
++CONFIG_FW_LOADER_USER_HELPER=n
+ CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
+ CONFIG_BRCMSTB_GISB_ARB=y
+ CONFIG_VEXPRESS_CONFIG=y
 @@ -1210,3 +1211,19 @@ CONFIG_MEMTEST=y
  CONFIG_VHOST_NET=m
  CONFIG_VIDEO_MAX9286=y
