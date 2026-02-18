@@ -57,6 +57,7 @@ SRC_URI = " \
         ${NXP_IMX};branch=imx_matter_2024_q4-post;destsuffix=meta-nxp-connectivity;name=meta-nxp-connectivity \
         file://sduart_nw61x_v1.bin.se \
         file://wifi_mod_para.conf \
+        file://udhcpd.conf \ 
 "
 
 SRC_URI[cyw-fmac-fw-ifx.sha256sum]="34f5bfac6476d849af26f945705dc5a19965825333840405ef25dcd835d521d7"
@@ -241,6 +242,7 @@ do_install () {
 #	install -m 444 ${WORKDIR}/sources/10-network.rules                  ${D}${sysconfdir}/udev/rules.d/10-network.rules
 	install -m 444 ${WORKDIR}/sources/hostapd-wifi6.conf                ${D}${sysconfdir}/hostapd-wifi6.conf
 	install -m 444 ${WORKDIR}/sources/wpa_supplicant-wifi6.conf         ${D}${sysconfdir}/wpa_supplicant-wifi6.conf
+	install -m 444 ${WORKDIR}/sources/udhcpd.conf                       ${D}${sysconfdir}/udhcpd.conf
 
 	install -d ${D}/${base_libdir}/firmware/nxp
     install -d ${D}/usr/share/nxp_wireless

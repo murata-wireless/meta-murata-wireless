@@ -498,6 +498,7 @@ EOT
 
 function prepare_for_cypress() {
   clean_up
+  cp -rfp /usr/share/murata_wireless/hostapd_cli.cyw /usr/sbin
   ln -s /usr/sbin/wpa_supplicant.cyw /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.cyw /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.cyw /usr/sbin/hostapd
@@ -568,13 +569,19 @@ function prepare_for_cypress() {
 
 function prepare_for_cypress_ae_usb() {
   rm -rf /lib/firmware/cypress/*
-  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2AE.bin /lib/firmware/cypress/cyfmac4373.bin
+#  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2AE.bin /lib/firmware/cypress/cyfmac4373.bin
+  echo "Refer to Murata Wi-Fi/Bluetooth (IFX) for i.MX Linux User Guide"
+  echo " - Section 8.6 on how to create the USB firmware."
+  echo "Link: https://community.murata.com/s/contentdocument/0695F00000HrYUVQA3"
   cp /usr/share/murata_wireless/cypress/cyfmac4373-sdio.2AE.clm_blob /lib/firmware/cypress/cyfmac4373.clm_blob
 }
 
 function prepare_for_cypress_bc_usb() {
   rm -rf /lib/firmware/cypress/*
-  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2BC.bin /lib/firmware/cypress/cyfmac4373.bin
+#  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2BC.bin /lib/firmware/cypress/cyfmac4373.bin
+  echo "Refer to Murata Wi-Fi/Bluetooth (IFX) for i.MX Linux User Guide"
+  echo " - Section 8.6 on how to create the USB firmware."
+  echo "Link: https://community.murata.com/s/contentdocument/0695F00000HrYUVQA3"
   cp /usr/share/murata_wireless/cypress/cyfmac4373-sdio.2BC.clm_blob /lib/firmware/cypress/cyfmac4373.clm_blob
 }
 
