@@ -6,29 +6,61 @@ than upstream supports to handle.
 
 Upstream-Status: Inappropriate [oe specific]
 
+From 9fd1c94ed24b80e7d7f1635f55e97d427eacf3a3 Mon Sep 17 00:00:00 2001
+From: Jameel Kareem <jkareem@murata.com>
+Date: Thu, 19 Feb 2026 09:03:08 -0800
+Subject: [PATCH] murata-dts
+
+---
+ arch/arm/boot/dts/nxp/imx/Makefile            |  5 +++
+ .../imx6ul-14x14-evk-btwifi-m2-oob-uhs.dts    |  2 +
+ .../imx/imx6ul-14x14-evk-btwifi-m2-oob.dts    |  2 +
+ .../imx/imx6ul-14x14-evk-btwifi-m2-uhs.dts    | 10 +++++
+ .../nxp/imx/imx6ul-14x14-evk-btwifi-m2.dts    | 18 ++++++++
+ .../nxp/imx/imx6ul-14x14-evk-btwifi-oob.dts   | 10 +++++
+ .../boot/dts/nxp/imx/imx6ul-14x14-evk.dtsi    |  3 +-
+ .../dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsi | 30 +++++++++++++
+ .../dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsi    | 30 +++++++++++++
+ .../boot/dts/nxp/imx/imx6ul-evk-btwifi.dtsi   | 43 ++++++++++---------
+ .../imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts   | 21 +++++++++
+ .../imx/imx6ull-14x14-evk-btwifi-m2-oob.dts   |  5 +++
+ .../imx/imx6ull-14x14-evk-btwifi-m2-uhs.dts   | 10 +++++
+ .../nxp/imx/imx6ull-14x14-evk-btwifi-m2.dts   | 18 ++++++++
+ .../nxp/imx/imx6ull-14x14-evk-btwifi-oob.dts  | 10 +++++
+ 15 files changed, 196 insertions(+), 21 deletions(-)
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob-uhs.dts
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-oob.dts
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2-uhs.dts
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-m2.dts
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk-btwifi-oob.dts
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-m2-oob.dtsi
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ul-evk-btwifi-oob.dtsi
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob.dts
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-uhs.dts
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2.dts
+ create mode 100644 arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-oob.dts
 
 diff --git a/arch/arm/boot/dts/nxp/imx/Makefile b/arch/arm/boot/dts/nxp/imx/Makefile
-index 12e091dc4c4c..c2bab384e7e6 100644
+index 89171be84f27..87c8d8d85956 100644
 --- a/arch/arm/boot/dts/nxp/imx/Makefile
 +++ b/arch/arm/boot/dts/nxp/imx/Makefile
-@@ -339,6 +339,11 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+@@ -350,6 +350,9 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
  	imx6ul-14x14-evk-csi.dtb \
  	imx6ul-14x14-evk-emmc.dtb \
  	imx6ul-14x14-evk-btwifi.dtb \
 +	imx6ul-14x14-evk-btwifi-oob.dtb \
 +	imx6ul-14x14-evk-btwifi-m2.dtb \
 +	imx6ul-14x14-evk-btwifi-m2-oob.dtb \
-+	imx6ul-14x14-evk-btwifi-m2-uhs.dtb \
-+	imx6ul-14x14-evk-btwifi-m2-oob-uhs.dtb \
  	imx6ul-14x14-evk-ecspi-slave.dtb \
  	imx6ul-14x14-evk-ecspi.dtb \
  	imx6ul-14x14-evk-gpmi-weim.dtb \
-@@ -369,6 +374,8 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
+@@ -380,6 +383,8 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
  	imx6ull-14x14-evk.dtb \
  	imx6ull-14x14-evk-emmc.dtb \
  	imx6ull-14x14-evk-btwifi.dtb \
 +	imx6ull-14x14-evk-btwifi-m2.dtb \
-+	imx6ull-14x14-evk-btwifi-m2-uhs.dtb \
++	imx6ull-14x14-evk-btwifi-m2-oob.dtb \
  	imx6ull-14x14-evk-gpmi-weim.dtb \
  	imx6ull-9x9-evk.dtb \
  	imx6ull-9x9-evk-ldo.dtb \
@@ -105,10 +137,10 @@ index 000000000000..90e0045fa2e4
 +#include "imx6ul-14x14-evk-btwifi.dts"
 +#include "imx6ul-evk-btwifi-oob.dtsi"
 diff --git a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk.dtsi b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk.dtsi
-index 33ad0d612e80..9f844f7c4ebf 100644
+index 9101b205339f..873a4d0f4b43 100644
 --- a/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk.dtsi
 +++ b/arch/arm/boot/dts/nxp/imx/imx6ul-14x14-evk.dtsi
-@@ -393,10 +393,11 @@ &uart2 {
+@@ -392,10 +392,11 @@ &uart2 {
  	/* fsl,dte-mode; */
  	/* pinctrl-0 = <&pinctrl_uart2dte>; */
  	status = "okay";
@@ -355,3 +387,6 @@ index 000000000000..85ea147de16f
 +
 +#include "imx6ull-14x14-evk-btwifi.dts"
 +#include "imx6ul-evk-btwifi-oob.dtsi"
+-- 
+2.25.1
+
