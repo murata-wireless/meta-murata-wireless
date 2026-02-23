@@ -1,5 +1,5 @@
 #!/bin/bash
-VERSION=09032025
+VERSION=02232026
 
 
 ###################################################################################################
@@ -57,6 +57,7 @@ VERSION=09032025
 #  1.37     | 07/04/2025   |    RC        |    Added support for FMAC Kraken in 6.6.23 and 5.15.32.
 #  1.38     | 07/25/2025   |    RC        |    Added support for FMAC Kraken in 6.1.36.
 #  1.39     | 09/03/2025   |    RC        |    Added support for i.MX91 EVK.
+#  1.40     | 02/23/2026   |    RC        |    Added support for FMAC Longma, BSP Styhead.
 ####################################################################################################
 
 # Use colors to highlight pass/fail conditions.
@@ -97,6 +98,7 @@ HEDORAH_FMAC_INDEX="12"
 INDRIK_FMAC_INDEX="13"
 JACULUS_FMAC_INDEX="13"
 KRAKEN_FMAC_INDEX="14"
+LONGMA_FMAC_INDEX="15"
 
 MOTHRA_FMAC_STR="mothra"
 MANDA_FMAC_STR="manda"
@@ -113,20 +115,28 @@ HEDORAH_FMAC_STR="hedorah"
 INDRIK_FMAC_STR="indrik"
 JACULUS_FMAC_STR="jaculus"
 KRAKEN_FMAC_STR="kraken"
+LONGMA_FMAC_STR="longma"
 
-LINUX_KERNEL_6_6_52=1
+LINUX_KERNEL_6_12_3=1
 LINUX_KERNEL_6_6_23=2
-LINUX_KERNEL_6_6_3=3
-LINUX_KERNEL_6_1_36=4
-LINUX_KERNEL_6_1_1=5
-LINUX_KERNEL_5_15_32=6
-LINUX_KERNEL_5_10_52=7
-LINUX_KERNEL_5_4_47=8
-LINUX_KERNEL_4_14_98=9
-LINUX_KERNEL_4_9_123=10
-LINUX_KERNEL_4_1_15=11
+LINUX_KERNEL_6_1_36=3
+LINUX_KERNEL_5_15_32=4
+
+LINUX_KERNEL_6_12_3_LEGACY=1
+LINUX_KERNEL_6_6_52_LEGACY=2
+LINUX_KERNEL_6_6_23_LEGACY=3
+LINUX_KERNEL_6_6_3_LEGACY=4
+LINUX_KERNEL_6_1_36_LEGACY=5
+LINUX_KERNEL_6_1_1_LEGACY=6
+LINUX_KERNEL_5_15_32_LEGACY=7
+LINUX_KERNEL_5_10_52_LEGACY=8
+LINUX_KERNEL_5_4_47_LEGACY=9
+LINUX_KERNEL_4_14_98_LEGACY=10
+LINUX_KERNEL_4_9_123_LEGACY=11
+LINUX_KERNEL_4_1_15_LEGACY=12
 
 # Linux Kernel Strings
+LINUX_KERNEL_6_12_3_STR="6.12.3"
 LINUX_KERNEL_6_6_52_STR="6.6.52"
 LINUX_KERNEL_6_6_23_STR="6.6.23"
 LINUX_KERNEL_6_6_3_STR="6.6.3"
@@ -146,6 +156,10 @@ iMXYoctoRelease=""
 YoctoBranch=""
 fmacversion=""
 linuxVersion=""
+
+# Styhead
+iMXstyheadlongmaStableReleaseTag="imx-styhead-longma_r1.0"
+iMXstyheadlongmaDeveloperRelease="imx-styhead-longma"
 
 # Scarthgap
 iMXscarthgapkrakenStableReleaseTag="imx-scarthgap-kraken_r1.0"
@@ -268,6 +282,7 @@ iMXkrogothmandaDeveloperRelease="imx-krogoth-manda"
 iMXkrogothmothraStableReleaseTag="imx-krogoth-mothra_r1.1"
 iMXkrogothmothraDeveloperRelease="imx-krogoth-mothra"
 
+imxstyheadYocto="6.12.3_1.0.0"
 imxscarthgap52Yocto="6.6.52_2.2.0"
 imxscarthgapYocto="6.6.23_2.0.0"
 imxnanbieldYocto="6.6.3_1.0.0"
@@ -640,28 +655,25 @@ while true; do
 	echo "|Entry|   Linux Kernel   | Yocto      | FMAC Supported                            |"
 	echo "|-----|------------------|------------|-------------------------------------------|"
 	if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
-		echo "|  1  |     ${LINUX_KERNEL_6_6_52_STR}       | scarthgap  | Jaculus                                   |"
-		echo "|  2  |     ${LINUX_KERNEL_6_6_23_STR}       | scarthgap  | Jaculus, Kraken                           |"
-		echo "|  3  |     ${LINUX_KERNEL_6_6_3_STR}        | nanbield   | Indrik                                    |"
-		echo "|  4  |     ${LINUX_KERNEL_6_1_36_STR}       | mickledore | Godzilla, Hedorah, Indrik, Jaculus        |"
+		echo "|  1  |     ${LINUX_KERNEL_6_12_3_STR}       | styhead    | Longma                                    |"
+		echo "|  2  |     ${LINUX_KERNEL_6_6_52_STR}       | scarthgap  | Jaculus                                   |"
+		echo "|  3  |     ${LINUX_KERNEL_6_6_23_STR}       | scarthgap  | Jaculus, Kraken                           |"
+		echo "|  4  |     ${LINUX_KERNEL_6_6_3_STR}        | nanbield   | Indrik                                    |"
+		echo "|  5  |     ${LINUX_KERNEL_6_1_36_STR}       | mickledore | Godzilla, Hedorah, Indrik, Jaculus        |"
 		echo "|     |                  |            | Kraken                                    |"
-		echo "|  5  |     ${LINUX_KERNEL_6_1_1_STR}        | langdale   | Fafnir, Godzilla                          |"
-		echo "|  6  |     ${LINUX_KERNEL_5_15_32_STR}      | kirkstone  | Ebirah, Fafnir, Godzilla, Indrik, Jaculus |"
+		echo "|  6  |     ${LINUX_KERNEL_6_1_1_STR}        | langdale   | Fafnir, Godzilla                          |"
+		echo "|  7  |     ${LINUX_KERNEL_5_15_32_STR}      | kirkstone  | Ebirah, Fafnir, Godzilla, Indrik, Jaculus |"
 		echo "|     |                  |            | Kraken                                    |"
-		echo "|  7  |     ${LINUX_KERNEL_5_10_52_STR}      | hardknott  | Cynder,Drogon                             |"
-		echo "|  8  |     ${LINUX_KERNEL_5_4_47_STR}       | zeus       | Baragon,Spiga,Zigra                       |"
-		echo "|  9  |     ${LINUX_KERNEL_4_14_98_STR}      | sumo       | Baragon,Spiga,Zigra,Kong,Manda            |"
-		echo "| 10  |     ${LINUX_KERNEL_4_9_123_STR}      | rocko      | Baragon,Spiga,Zigra,Kong,Manda            |"
-		echo "| 11  |     ${LINUX_KERNEL_4_1_15_STR}       | krogoth    | Baragon,Spiga,Zigra,Manda,Mothra          |"
+		echo "|  8  |     ${LINUX_KERNEL_5_10_52_STR}      | hardknott  | Cynder,Drogon                             |"
+		echo "|  9  |     ${LINUX_KERNEL_5_4_47_STR}       | zeus       | Baragon,Spiga,Zigra                       |"
+		echo "| 10  |     ${LINUX_KERNEL_4_14_98_STR}      | sumo       | Baragon,Spiga,Zigra,Kong,Manda            |"
+		echo "| 11  |     ${LINUX_KERNEL_4_9_123_STR}      | rocko      | Baragon,Spiga,Zigra,Kong,Manda            |"
+		echo "| 12  |     ${LINUX_KERNEL_4_1_15_STR}       | krogoth    | Baragon,Spiga,Zigra,Manda,Mothra          |"
 	else
-		echo "|  1  |     ${LINUX_KERNEL_6_6_52_STR}       | scarthgap  | Jaculus                                   |"
+		echo "|  1  |     ${LINUX_KERNEL_6_12_3_STR}       | styhead    | Longma                                    |"
 		echo "|  2  |     ${LINUX_KERNEL_6_6_23_STR}       | scarthgap  | Jaculus, Kraken                           |"
-		echo "|  3  |     ${LINUX_KERNEL_6_6_3_STR}        | nanbield   | Indrik                                    |"
-		echo "|  4  |     ${LINUX_KERNEL_6_1_36_STR}       | mickledore | Godzilla, Hedorah, Indrik, Jaculus        |"
-		echo "|     |                  |            | Kraken                                    |"
-		echo "|  5  |     ${LINUX_KERNEL_6_1_1_STR}        | langdale   | Fafnir, Godzilla                          |"
-		echo "|  6  |     ${LINUX_KERNEL_5_15_32_STR}      | kirkstone  | Ebirah, Fafnir, Godzilla, Indrik, Jaculus |"
-		echo "|     |                  |            | Kraken                                    |"
+		echo "|  3  |     ${LINUX_KERNEL_6_1_36_STR}       | mickledore | Hedorah, Indrik, Jaculus, Kraken          |"
+		echo "|  4  |     ${LINUX_KERNEL_5_15_32_STR}      | kirkstone  | Indrik, Jaculus, Kraken                   |"
 	fi
 
 	echo "-----------------------------------------------------------------------------------"
@@ -669,48 +681,52 @@ while true; do
 
 	if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 		case $LINUX_KERNEL in
-		$LINUX_KERNEL_4_1_15)
+		$LINUX_KERNEL_4_1_15_LEGACY)
 			linuxVersion=${LINUX_KERNEL_4_1_15_STR}
 			break
 			;;
-		$LINUX_KERNEL_4_9_123)
+		$LINUX_KERNEL_4_9_123_LEGACY)
 			linuxVersion=${LINUX_KERNEL_4_9_123_STR}
 			break
 			;;
-		$LINUX_KERNEL_4_14_98)
+		$LINUX_KERNEL_4_14_98_LEGACY)
 			linuxVersion=${LINUX_KERNEL_4_14_98_STR}
 			break
 				;;
-		$LINUX_KERNEL_5_4_47)
+		$LINUX_KERNEL_5_4_47_LEGACY)
 			linuxVersion=${LINUX_KERNEL_5_4_47_STR}
 			break
 			;;
-		$LINUX_KERNEL_5_10_52)
+		$LINUX_KERNEL_5_10_52_LEGACY)
 			linuxVersion=${LINUX_KERNEL_5_10_52_STR}
 			break
 			;;
-		$LINUX_KERNEL_5_15_32)
+		$LINUX_KERNEL_5_15_32_LEGACY)
 			linuxVersion=${LINUX_KERNEL_5_15_32_STR}
 			break
 			;;
-		$LINUX_KERNEL_6_1_1)
+		$LINUX_KERNEL_6_1_1_LEGACY)
 			linuxVersion=${LINUX_KERNEL_6_1_1_STR}
 			break
 			;;
-		$LINUX_KERNEL_6_1_36)
+		$LINUX_KERNEL_6_1_36_LEGACY)
 			linuxVersion=${LINUX_KERNEL_6_1_36_STR}
 			break
 			;;
-		$LINUX_KERNEL_6_6_3)
+		$LINUX_KERNEL_6_6_3_LEGACY)
 			linuxVersion=${LINUX_KERNEL_6_6_3_STR}
 			break
 			;;
-		$LINUX_KERNEL_6_6_23)
+		$LINUX_KERNEL_6_6_23_LEGACY)
 			linuxVersion=${LINUX_KERNEL_6_6_23_STR}
 			break
 			;;
-		$LINUX_KERNEL_6_6_52)
+		$LINUX_KERNEL_6_6_52_LEGACY)
 			linuxVersion=${LINUX_KERNEL_6_6_52_STR}
+			break
+			;;
+		$LINUX_KERNEL_6_12_3_LEGACY)
+			linuxVersion=${LINUX_KERNEL_6_12_3_STR}
 			break
 			;;
 		*)
@@ -724,24 +740,16 @@ while true; do
 			linuxVersion=${LINUX_KERNEL_5_15_32_STR}
 			break
 			;;
-		$LINUX_KERNEL_6_1_1)
-			linuxVersion=${LINUX_KERNEL_6_1_1_STR}
-			break
-			;;
 		$LINUX_KERNEL_6_1_36)
 			linuxVersion=${LINUX_KERNEL_6_1_36_STR}
-			break
-			;;
-		$LINUX_KERNEL_6_6_3)
-			linuxVersion=${LINUX_KERNEL_6_6_3_STR}
 			break
 			;;
 		$LINUX_KERNEL_6_6_23)
 			linuxVersion=${LINUX_KERNEL_6_6_23_STR}
 			break
 			;;
-		$LINUX_KERNEL_6_6_52)
-			linuxVersion=${LINUX_KERNEL_6_6_52_STR}
+		$LINUX_KERNEL_6_12_3)
+			linuxVersion=${LINUX_KERNEL_6_12_3_STR}
 			break
 			;;
 		*)
@@ -762,7 +770,7 @@ echo "------------------------"
 if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 	while true; do
 		case $LINUX_KERNEL in
-		$LINUX_KERNEL_4_1_15) # for 4.1.15_2.0.0
+		$LINUX_KERNEL_4_1_15_LEGACY) # for 4.1.15_2.0.0
 			while true; do
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
@@ -872,7 +880,7 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 			done
 			break
 			;;
-		$LINUX_KERNEL_4_9_123) #for 4.9.123_2.3.0
+		$LINUX_KERNEL_4_9_123_LEGACY) #for 4.9.123_2.3.0
 			while true; do
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
@@ -984,7 +992,7 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 			done
 			break
 			;;
-		$LINUX_KERNEL_4_14_98)
+		$LINUX_KERNEL_4_14_98_LEGACY)
 			while true; do
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
@@ -1095,7 +1103,7 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 			done
 			break
 			;;
-		$LINUX_KERNEL_5_4_47)
+		$LINUX_KERNEL_5_4_47_LEGACY)
 			while true; do
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
@@ -1159,7 +1167,7 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 			done
 			break
 			;;
-		$LINUX_KERNEL_5_10_52)
+		$LINUX_KERNEL_5_10_52_LEGACY)
 			while true; do
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
@@ -1207,7 +1215,7 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 			done
 			break
 			;;
-		$LINUX_KERNEL_5_15_32)
+		$LINUX_KERNEL_5_15_32_LEGACY)
 			while true; do
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
@@ -1319,7 +1327,7 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 			done
 			break
 			;;
-		$LINUX_KERNEL_6_1_1)
+		$LINUX_KERNEL_6_1_1_LEGACY)
 			while true; do
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
@@ -1367,7 +1375,7 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 			done
 			break
 			;;
-		$LINUX_KERNEL_6_1_36)
+		$LINUX_KERNEL_6_1_36_LEGACY)
 			while true; do
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
@@ -1463,7 +1471,7 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 			done
 			break
 			;;
-		$LINUX_KERNEL_6_6_3)
+		$LINUX_KERNEL_6_6_3_LEGACY)
 			while true; do
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
@@ -1495,7 +1503,7 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 			done
 			break
 			;;
-		$LINUX_KERNEL_6_6_23)
+		$LINUX_KERNEL_6_6_23_LEGACY)
 			while true; do
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
@@ -1543,7 +1551,7 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 			done
 			break
 			;;
-		$LINUX_KERNEL_6_6_52)
+		$LINUX_KERNEL_6_6_52_LEGACY)
 			while true; do
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
@@ -1575,6 +1583,38 @@ if [ "${LEGACY_SOFTWARE_SUPPORT}" = "ON" ]; then
 			done
 			break
 			;;
+		$LINUX_KERNEL_6_12_3_LEGACY)
+			while true; do
+				echo     "-------------------------------------------------------------"
+				echo     "| Entry | "\""fmac"\"" version                                    |"
+				echo     "|-------|---------------------------------------------------|"
+				echo -e  "|  0.   | ${LONGMA_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "-------------------------------------------------------------"
+				read -p "Select which entry? " FMAC_VERSION
+				case $FMAC_VERSION in
+				0)
+					# for LONGMA
+					FMAC_VERSION=${LONGMA_FMAC_INDEX}
+					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
+						#echo "DEBUG:: styhead-longma"
+						BRANCH_RELEASE_NAME="$iMXstyheadlongmaStableReleaseTag"
+					else
+						#echo "DEBUG:: styhead-longma"
+						BRANCH_RELEASE_NAME="$iMXstyheadlongmaDeveloperRelease"
+					fi
+					iMXYoctoRelease="$imxstyheadYocto"
+					YoctoBranch="styhead"
+					fmacversion=${LONGMA_FMAC_STR}
+					break
+					;;
+				*)
+					echo -e "${RED}That is not a valid choice, try again.${NC}"
+					echo $'\n'
+					;;
+				esac
+				done
+			break
+			;;
 		*)
 			echo -e "${RED}That is not a valid choice, try again.${NC}"
 			;;
@@ -1588,61 +1628,13 @@ else
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo     "|  0.   | ${EBIRAH_FMAC_STR}                                            |"
-				echo     "|  1.   | ${FAFNIR_FMAC_STR}                                            |"
-				echo     "|  2.   | ${GODZILLA_FMAC_STR}                                          |"
-				echo     "|  3.   | ${INDRIK_FMAC_STR}                                            |"
-				echo     "|  4.   | ${JACULUS_FMAC_STR}                                           |"
-				echo -e  "|  5.   | ${KRAKEN_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "|  0.   | ${INDRIK_FMAC_STR}                                            |"
+				echo     "|  1.   | ${JACULUS_FMAC_STR}                                           |"
+				echo -e  "|  2.   | ${KRAKEN_FMAC_STR} - ${GRN}Latest release${NC}                           |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
 				0)
-					# for EBIRAH
-					FMAC_VERSION=${EBIRAH_FMAC_INDEX}
-					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
-						#echo "DEBUG:: kirkstone-ebirah"
-						BRANCH_RELEASE_NAME="$iMXkirkstoneebirahStableReleaseTag"
-					else
-						#echo "DEBUG:: kirkstone-ebirah"
-						BRANCH_RELEASE_NAME="$iMXkirkstoneebirahDeveloperRelease"
-					fi
-					iMXYoctoRelease="$imxkirkstoneYocto"
-					YoctoBranch="kirkstone"
-					fmacversion=${EBIRAH_FMAC_STR}
-					break
-					;;
-				1)
-					# for FAFNIR
-					FMAC_VERSION=${FAFNIR_FMAC_INDEX}
-					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
-						#echo "DEBUG:: kirkstone-fafnir"
-						BRANCH_RELEASE_NAME="$iMXkirkstonefafnirStableReleaseTag"
-					else
-						#echo "DEBUG:: kirkstone-fafnir"
-						BRANCH_RELEASE_NAME="$iMXkirkstonefafnirDeveloperRelease"
-					fi
-					iMXYoctoRelease="$imxkirkstoneYocto"
-					YoctoBranch="kirkstone"
-					fmacversion=${FAFNIR_FMAC_STR}
-					break
-					;;
-				2)
-					# for GODZILLA
-					FMAC_VERSION=${GODZILLA_FMAC_INDEX}
-					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
-						#echo "DEBUG:: kirkstone-godzilla"
-						BRANCH_RELEASE_NAME="$iMXkirkstonegodzillaStableReleaseTag"
-					else
-						#echo "DEBUG:: kirkstone-godzilla"
-						BRANCH_RELEASE_NAME="$iMXkirkstonegodzillaDeveloperRelease"
-					fi
-					iMXYoctoRelease="$imxkirkstoneYocto"
-					YoctoBranch="kirkstone"
-					fmacversion=${GODZILLA_FMAC_STR}
-					break
-					;;
-				3)
 					# for INDRIK
 					FMAC_VERSION=${INDRIK_FMAC_INDEX}
 					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
@@ -1657,7 +1649,7 @@ else
 					fmacversion=${INDRIK_FMAC_STR}
 					break
 					;;
-				4)
+				1)
 					# for JACULUS
 					FMAC_VERSION=${JACULUS_FMAC_INDEX}
 					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
@@ -1672,7 +1664,7 @@ else
 					fmacversion=${JACULUS_FMAC_STR}
 					break
 					;;
-				5)
+				2)
 					# for KRAKEN
 					FMAC_VERSION=${KRAKEN_FMAC_INDEX}
 					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
@@ -1695,83 +1687,19 @@ else
 			done
 			break
 			;;
-		$LINUX_KERNEL_6_1_1)
-			while true; do
-				echo     "-------------------------------------------------------------"
-				echo     "| Entry | "\""fmac"\"" version                                    |"
-				echo     "|-------|---------------------------------------------------|"
-				echo -e  "|  0.   | ${FAFNIR_FMAC_STR}                                            |"
-				echo -e  "|  1.   | ${GODZILLA_FMAC_STR} - ${GRN}Latest release${NC}                         |"
-				echo     "-------------------------------------------------------------"
-				read -p "Select which entry? " FMAC_VERSION
-				case $FMAC_VERSION in
-				0)
-					# for FAFNIR
-					FMAC_VERSION=${FAFNIR_FMAC_INDEX}
-					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
-						#echo "DEBUG:: langdale-fafnir"
-						BRANCH_RELEASE_NAME="$iMXlangdalefafnirStableReleaseTag"
-					else
-						#echo "DEBUG:: langdale-fafnir"
-						BRANCH_RELEASE_NAME="$iMXlangdalefafnirDeveloperRelease"
-					fi
-					iMXYoctoRelease="$imxlangdaleYocto"
-					YoctoBranch="langdale"
-					fmacversion=${FAFNIR_FMAC_STR}
-					break
-					;;
-				1)
-					# for GODZILLA
-					FMAC_VERSION=${GODZILLA_FMAC_INDEX}
-					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
-						#echo "DEBUG:: langdale-godzilla"
-						BRANCH_RELEASE_NAME="$iMXlangdalegodzillaStableReleaseTag"
-					else
-						#echo "DEBUG:: langdale-godzilla"
-						BRANCH_RELEASE_NAME="$iMXlangdalegodzillaDeveloperRelease"
-					fi
-					iMXYoctoRelease="$imxlangdaleYocto"
-					YoctoBranch="langdale"
-					fmacversion=${GODZILLA_FMAC_STR}
-					break
-					;;
-				*)
-					echo -e "${RED}That is not a valid choice, try again.${NC}"
-					echo $'\n'
-					;;
-				esac
-			done
-			break
-			;;
 		$LINUX_KERNEL_6_1_36)
 			while true; do
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo     "|  0.   | ${GODZILLA_FMAC_STR}                                          |"
-				echo     "|  1.   | ${HEDORAH_FMAC_STR}                                           |"
-				echo     "|  2.   | ${INDRIK_FMAC_STR}                                            |"
-				echo     "|  3.   | ${JACULUS_FMAC_STR}                                           |"
-				echo -e  "|  4.   | ${KRAKEN_FMAC_STR} - ${GRN}Latest release${NC}                           |"
+				echo     "|  0.   | ${HEDORAH_FMAC_STR}                                           |"
+				echo     "|  1.   | ${INDRIK_FMAC_STR}                                            |"
+				echo     "|  2.   | ${JACULUS_FMAC_STR}                                           |"
+				echo -e  "|  3.   | ${KRAKEN_FMAC_STR} - ${GRN}Latest release${NC}                           |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
 				0)
-					# for GODZILLA
-					FMAC_VERSION=${GODZILLA_FMAC_INDEX}
-					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
-						#echo "DEBUG:: mickledore-godzilla"
-						BRANCH_RELEASE_NAME="$iMXmickledoregodzillaStableReleaseTag"
-					else
-						#echo "DEBUG:: mickledore-godzilla"
-						BRANCH_RELEASE_NAME="$iMXmickledoregodzillaDeveloperRelease"
-					fi
-					iMXYoctoRelease="$imxmickledoreYocto"
-					YoctoBranch="mickledore"
-					fmacversion=${GODZILLA_FMAC_STR}
-					break
-					;;
-				1)
 					# for HEDORAH
 					FMAC_VERSION=${HEDORAH_FMAC_INDEX}
 					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
@@ -1786,7 +1714,7 @@ else
 					fmacversion=${HEDORAH_FMAC_STR}
 					break
 					;;
-				2)
+				1)
 					# for INDRIK
 					FMAC_VERSION=${INDRIK_FMAC_INDEX}
 					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
@@ -1801,7 +1729,7 @@ else
 					fmacversion=${INDRIK_FMAC_STR}
 					break
 					;;
-				3)
+				2)
 					# for JACULUS
 					FMAC_VERSION=${JACULUS_FMAC_INDEX}
 					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
@@ -1816,7 +1744,7 @@ else
 					fmacversion=${JACULUS_FMAC_STR}
 					break
 					;;
-				4)
+				3)
 					# for KRAKEN
 					FMAC_VERSION=${KRAKEN_FMAC_INDEX}
 					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
@@ -1829,38 +1757,6 @@ else
 					iMXYoctoRelease="$imxmickledoreYocto"
 					YoctoBranch="mickledore"
 					fmacversion=${KRAKEN_FMAC_STR}
-					break
-					;;
-				*)
-					echo -e "${RED}That is not a valid choice, try again.${NC}"
-					echo $'\n'
-					;;
-				esac
-			done
-			break
-			;;
-		$LINUX_KERNEL_6_6_3)
-			while true; do
-				echo     "-------------------------------------------------------------"
-				echo     "| Entry | "\""fmac"\"" version                                    |"
-				echo     "|-------|---------------------------------------------------|"
-				echo -e  "|  0.   | ${INDRIK_FMAC_STR} - ${GRN}Latest release${NC}                           |"
-				echo     "-------------------------------------------------------------"
-				read -p "Select which entry? " FMAC_VERSION
-				case $FMAC_VERSION in
-				0)
-					# for INDRIK
-					FMAC_VERSION=${INDRIK_FMAC_INDEX}
-					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
-						#echo "DEBUG:: nanbield-indrik"
-						BRANCH_RELEASE_NAME="$iMXnanbieldindrikStableReleaseTag"
-					else
-						#echo "DEBUG:: nanbield-indrik"
-						BRANCH_RELEASE_NAME="$iMXnanbieldindrikDeveloperRelease"
-					fi
-					iMXYoctoRelease="$imxnanbieldYocto"
-					YoctoBranch="nanbield"
-					fmacversion=${INDRIK_FMAC_STR}
 					break
 					;;
 				*)
@@ -1919,28 +1815,28 @@ else
 			done
 			break
 			;;
-		$LINUX_KERNEL_6_6_52)
+		$LINUX_KERNEL_6_12_3)
 			while true; do
 				echo     "-------------------------------------------------------------"
 				echo     "| Entry | "\""fmac"\"" version                                    |"
 				echo     "|-------|---------------------------------------------------|"
-				echo -e  "|  0.   | ${JACULUS_FMAC_STR} - ${GRN}Latest release${NC}                          |"
+				echo -e  "|  0.   | ${LONGMA_FMAC_STR} - ${GRN}Latest release${NC}                           |"
 				echo     "-------------------------------------------------------------"
 				read -p "Select which entry? " FMAC_VERSION
 				case $FMAC_VERSION in
 				0)
-					# for JACULUS
-					FMAC_VERSION=${JACULUS_FMAC_INDEX}
+					# for LONGMA
+					FMAC_VERSION=${LONGMA_FMAC_INDEX}
 					if [ "$BRANCH_TAG_OPTION"    = "y" ]; then
-						#echo "DEBUG:: scarthgap-jaculus52"
-						BRANCH_RELEASE_NAME="$iMXscarthgap52jaculusStableReleaseTag"
+						#echo "DEBUG:: styhead-longma"
+						BRANCH_RELEASE_NAME="$iMXstyheadlongmaStableReleaseTag"
 					else
-						#echo "DEBUG:: scarthgap-jaculus52"
-						BRANCH_RELEASE_NAME="$iMXscarthgap52jaculusDeveloperRelease"
+						#echo "DEBUG:: styhead-longma"
+						BRANCH_RELEASE_NAME="$iMXstyheadlongmaDeveloperRelease"
 					fi
-					iMXYoctoRelease="$imxscarthgap52Yocto"
-					YoctoBranch="scarthgap"
-					fmacversion=${JACULUS_FMAC_STR}
+					iMXYoctoRelease="$imxstyheadYocto"
+					YoctoBranch="styhead"
+					fmacversion=${LONGMA_FMAC_STR}
 					break
 					;;
 				*)
@@ -1962,7 +1858,7 @@ echo -e "${GRN}Selected : $fmacversion${NC}"
 if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 	while true; do
 		case $LINUX_KERNEL in
-		$LINUX_KERNEL_4_1_15) # for 4.1.15_2.0.0
+		$LINUX_KERNEL_4_1_15_LEGACY) # for 4.1.15_2.0.0
 			while true; do
 				echo " "
 				echo "${STEP_COUNT}) Select target"
@@ -2027,7 +1923,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 			echo $'\n'
 			break
 			;;
-		$LINUX_KERNEL_4_9_123) #for 4.9.123_2.3.0
+		$LINUX_KERNEL_4_9_123_LEGACY) #for 4.9.123_2.3.0
 			while true; do
 				echo " "
 				echo "${STEP_COUNT}) Select Target"
@@ -2125,7 +2021,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 			echo $'\n'
 			break
 			;;
-		$LINUX_KERNEL_4_14_98)
+		$LINUX_KERNEL_4_14_98_LEGACY)
 			while true; do
 				echo " "
 				echo "${STEP_COUNT}) Select Target"
@@ -2231,7 +2127,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 			echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
 			break
 			;;
-		$LINUX_KERNEL_5_4_47)
+		$LINUX_KERNEL_5_4_47_LEGACY)
 			while true; do
 				echo " "
 				echo "${STEP_COUNT}) Select Target"
@@ -2337,7 +2233,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 			echo $'\n'
 			break
 			;;
-		$LINUX_KERNEL_5_10_52)
+		$LINUX_KERNEL_5_10_52_LEGACY)
 			while true; do
 				echo " "
 				echo "${STEP_COUNT}) Select Target"
@@ -2452,7 +2348,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 			echo $'\n'
 			break
 			;;
-		$LINUX_KERNEL_5_15_32)
+		$LINUX_KERNEL_5_15_32_LEGACY)
 			while true; do
 				echo " "
 				echo "${STEP_COUNT}) Select Target"
@@ -2576,7 +2472,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 			echo $'\n'
 			break
 			;;
-		$LINUX_KERNEL_6_1_1)
+		$LINUX_KERNEL_6_1_1_LEGACY)
 			while true; do
 				echo " "
 				echo "${STEP_COUNT}) Select Target"
@@ -2745,7 +2641,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 			echo $'\n'
 			break
 			;;
-		$LINUX_KERNEL_6_1_36)
+		$LINUX_KERNEL_6_1_36_LEGACY)
 			while true; do
 				echo " "
 				echo "${STEP_COUNT}) Select Target"
@@ -2932,7 +2828,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 			echo $'\n'
 			break
 			;;
-		$LINUX_KERNEL_6_6_3)
+		$LINUX_KERNEL_6_6_3_LEGACY)
 			while true; do
 				echo " "
 				echo "${STEP_COUNT}) Select Target"
@@ -3119,7 +3015,7 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 			echo $'\n'
 			break
 			;;
-		$LINUX_KERNEL_6_6_23)
+		$LINUX_KERNEL_6_6_23_LEGACY)
 			while true; do
 				echo " "
 				echo "${STEP_COUNT}) Select Target"
@@ -3315,7 +3211,203 @@ if [ "${LEGACY_PLATFORM_SUPPORT}" = "ON" ]; then
 			echo $'\n'
 			break
 			;;
-		$LINUX_KERNEL_6_6_52)
+		$LINUX_KERNEL_6_6_52_LEGACY)
+			while true; do
+				echo " "
+				echo "${STEP_COUNT}) Select Target"
+				echo "----------------"
+				echo " "
+				echo "----------------------------------------------------------------"
+				echo "| Entry  |    Target Name           | NXP i.MX EVK Part Number |"
+				echo "|--------|--------------------------|--------------------------|"
+				echo "|  1     |  imx6ulevk               | MCIMX6UL-EVK             |"
+				echo "|  2     |  imx6ull14x14evk         | MCIMX6ULL-EVK            |"
+				echo "|  3     |  imx6sxsabresd           | MCIMX6SX-SDB             |"
+				echo "|  4     |  imx6qsabresd            | MCIMX6Q-SDB              |"
+				echo "|  5     |  imx6qpsabresd           | MCIMX6QP-SDB             |"
+				echo "|  6     |  imx6dlsabresd           | MCIMX6DL-SDP             |"
+				echo "|  7     |  imx7dsabresd            | MCIMX7SABRE              |"
+				echo "|  8     |  imx7ulpevk              | MCIMX7ULP-EVK            |"
+				echo "|  9     |  imx8mqevk               | MCIMX8M-EVKB             |"
+				echo "|  10    |  imx8mm-lpddr4-evk       | 8MMINILPD4-EVK           |"
+				echo "|  11    |  imx8mm-ddr4-evk         | 8MMINID4-EVK             |"
+				echo "|  12    |  imx8mn-lpddr4-evk       | 8MNANOLPD4-EVK           |"
+				echo "|  13    |  imx8mn-ddr4-evk         | 8MNANOD4-EVK             |"
+				echo "|  14    |  imx8qxpc0mek            | MCIMX8QXP-CPU            |"
+				echo "|  15    |  imx8mp-lpddr4-evk       | 8MPLUSLPD4-EVK           |"
+				echo "|  16    |  imx8ulp-lpddr4-evk      | MCIMX8ULP-EVK            |"
+				echo "|  17    |  imx8ulp-9x9-lpddr4-evk  | MCIMX8ULP-EVK9           |"
+				echo "|  18    |  imx91-11x11-lpddr4-evk  | IMX91LP4EVK-11CM         |"
+				echo "|  19    |  imx93evk                | MCIMX93-EVK              |"
+				echo "|  20    |  imx93-11x11-lpddr4x-evk | MCIMX93-EVK (11x11)      |"
+				echo "|  21    |  imx93-9x9-lpddr4-qsb    | MCIMX93-EVK (9x9)        |"
+				echo "|  22    |  imx93-14x14-lpddr4x-evk | MCIMX93-EVK (14x14)      |"
+				echo "----------------------------------------------------------------"
+				echo -n "Select your entry: "
+				read TARGET_OPTION
+				case $TARGET_OPTION in
+				1)
+					TARGET_NAME=imx6ulevk
+					PART_NUMBER=MCIMX6UL-EVK
+					break
+					;;
+				2)
+					TARGET_NAME=imx6ull14x14evk
+					PART_NUMBER=MCIMX6ULL-EVK
+					break
+					;;
+				3)
+					TARGET_NAME=imx6sxsabresd
+					PART_NUMBER=MCIMX6SX-SDB
+					break
+					;;
+				4)
+					TARGET_NAME=imx6qsabresd
+					PART_NUMBER=MCIMX6Q-SDB
+					break
+					;;
+				5)
+					TARGET_NAME=imx6qpsabresd
+					PART_NUMBER=MCIMX6QP-SDB
+					break
+					;;
+				6)
+					TARGET_NAME=imx6dlsabresd
+					PART_NUMBER=MCIMX6DL-SDP
+					break
+					;;
+				7)
+					TARGET_NAME=imx7dsabresd
+					PART_NUMBER=MCIMX7SABRE
+					break
+					;;
+				8)
+					TARGET_NAME=imx7ulpevk
+					PART_NUMBER=MCIMX7ULP-EVK
+					break
+					;;
+				9)
+					TARGET_NAME=imx8mqevk
+					PART_NUMBER=MCIMX8M-EVKB
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				10)
+					TARGET_NAME=imx8mm-lpddr4-evk
+					PART_NUMBER=8MMINILPD4-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				11)
+					TARGET_NAME=imx8mm-ddr4-evk
+					PART_NUMBER=8MMINID4-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				12)
+					TARGET_NAME=imx8mn-lpddr4-evk
+					PART_NUMBER=8MNANOLPD4-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				13)
+					TARGET_NAME=imx8mn-ddr4-evk
+					PART_NUMBER=8MNANOD4-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				14)
+					TARGET_NAME=imx8qxpc0mek
+					PART_NUMBER=MCIMX8QXP-CPU
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				15)
+					TARGET_NAME=imx8mp-lpddr4-evk
+					PART_NUMBER=8MPLUSLPD4-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				16)
+					TARGET_NAME=imx8ulp-lpddr4-evk
+					PART_NUMBER=MCIMX8ULP-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				17)
+					TARGET_NAME=imx8ulp-9x9-lpddr4-evk
+					PART_NUMBER=MCIMX8ULP-EVK9
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				18)
+					TARGET_NAME=imx91-11x11-lpddr4-evk
+					PART_NUMBER=IMX91LP4EVK-11CM
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				19)
+					TARGET_NAME=imx93evk
+					PART_NUMBER=MCIMX93-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				20)
+					TARGET_NAME=imx93-11x11-lpddr4x-evk
+					PART_NUMBER=MCIMX93-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				21)
+					TARGET_NAME=imx93-9x9-lpddr4-qsb
+					PART_NUMBER=MCIMX93-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				22)
+					TARGET_NAME=imx93-14x14-lpddr4x-evk
+					PART_NUMBER=MCIMX93-EVK
+					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
+					LINUX_DEST=linux-imx_%.bbappend
+					DISTRO_NAME=fsl-imx-wayland
+					break
+					;;
+				*)
+					echo -e "${RED}That is not a valid choice, try again.${NC}"
+					;;
+				esac
+			done
+			echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
+			echo $'\n'
+			break
+			;;
+		$LINUX_KERNEL_6_12_3_LEGACY)
 			while true; do
 				echo " "
 				echo "${STEP_COUNT}) Select Target"
@@ -3610,330 +3702,7 @@ else
 			echo $'\n'
 			break
 			;;
-		$LINUX_KERNEL_6_1_1)
-			while true; do
-				echo " "
-				echo "${STEP_COUNT}) Select Target"
-				echo "----------------"
-				echo " "
-				echo "----------------------------------------------------------------"
-				echo "| Entry  |    Target Name           | NXP i.MX EVK Part Number |"
-				echo "|--------|--------------------------|--------------------------|"
-				echo "|  1     |  imx6ulevk               | MCIMX6UL-EVK             |"
-				echo "|  2     |  imx6ull14x14evk         | MCIMX6ULL-EVK            |"
-				echo "|  3     |  imx6qsabresd            | MCIMX6Q-SDB              |"
-				echo "|  4     |  imx6dlsabresd           | MCIMX6DL-SDP             |"
-				echo "|  5     |  imx8mqevk               | MCIMX8M-EVKB             |"
-				echo "|  6     |  imx8mm-lpddr4-evk       | 8MMINILPD4-EVK           |"
-				echo "|  7     |  imx8mn-lpddr4-evk       | 8MNANOLPD4-EVK           |"
-				echo "|  8     |  imx8mn-ddr4-evk         | 8MNANOD4-EVK             |"
-				echo "|  9     |  imx8qxpc0mek            | MCIMX8QXP-CPU            |"
-				echo "|  10    |  imx8mp-lpddr4-evk       | 8MPLUSLPD4-EVK           |"
-				echo "|  11    |  imx8ulp-lpddr4-evk      | MCIMX8ULP-EVK            |"
-				echo "|  12    |  imx8ulp-9x9-evk         | MCIMX8ULP-EVK9           |"
-				echo "|  13    |  imx93evk                | MCIMX93-EVK              |"
-				echo "|  14    |  imx93-11x11-lpddr4x-evk | MCIMX93-EVK              |"
-				echo "----------------------------------------------------------------"
-				echo -n "Select your entry: "
-				read TARGET_OPTION
-				case $TARGET_OPTION in
-				1)
-					TARGET_NAME=imx6ulevk
-					PART_NUMBER=MCIMX6UL-EVK
-					break
-					;;
-				2)
-					TARGET_NAME=imx6ull14x14evk
-					PART_NUMBER=MCIMX6ULL-EVK
-					break
-					;;
-				3)
-					TARGET_NAME=imx6qsabresd
-					PART_NUMBER=MCIMX6Q-SDB
-					break
-					;;
-				4)
-					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6DL-SDP
-					break
-					;;
-				5)
-					TARGET_NAME=imx8mqevk
-					PART_NUMBER=MCIMX8M-EVKB
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				6)
-					TARGET_NAME=imx8mm-lpddr4-evk
-					PART_NUMBER=8MMINILPD4-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				7)
-					TARGET_NAME=imx8mn-lpddr4-evk
-					PART_NUMBER=8MNANOLPD4-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				8)
-					TARGET_NAME=imx8mn-ddr4-evk
-					PART_NUMBER=8MNANOD4-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				9)
-					TARGET_NAME=imx8qxpc0mek
-					PART_NUMBER=MCIMX8QXP-CPU
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				10)
-					TARGET_NAME=imx8mp-lpddr4-evk
-					PART_NUMBER=8MPLUSLPD4-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				11)
-					TARGET_NAME=imx8ulp-lpddr4-evk
-					PART_NUMBER=MCIMX8ULP-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				12)
-					TARGET_NAME=imx8ulp-9x9-evk
-					PART_NUMBER=MCIMX8ULP-EVK9
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				13)
-					TARGET_NAME=imx93evk
-					PART_NUMBER=MCIMX93-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				14)
-					TARGET_NAME=imx93-11x11-lpddr4x-evk
-					PART_NUMBER=MCIMX93-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				*)
-					echo -e "${RED}That is not a valid choice, try again.${NC}"
-					;;
-				esac
-			done
-			echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
-			echo $'\n'
-			break
-			;;
 		$LINUX_KERNEL_6_1_36)
-			while true; do
-				echo " "
-				echo "${STEP_COUNT}) Select Target"
-				echo "----------------"
-				echo " "
-				echo "----------------------------------------------------------------"
-				echo "| Entry  |    Target Name           | NXP i.MX EVK Part Number |"
-				echo "|--------|--------------------------|--------------------------|"
-				echo "|  1     |  imx6ulevk               | MCIMX6UL-EVK             |"
-				echo "|  2     |  imx6ull14x14evk         | MCIMX6ULL-EVK            |"
-				echo "|  3     |  imx6sxsabresd           | MCIMX6SX-SDB             |"
-				echo "|  4     |  imx6qsabresd            | MCIMX6Q-SDB              |"
-				echo "|  5     |  imx6qpsabresd           | MCIMX6QP-SDB             |"
-				echo "|  6     |  imx6dlsabresd           | MCIMX6DL-SDP             |"
-				echo "|  7     |  imx7dsabresd            | MCIMX7SABRE              |"
-				echo "|  8     |  imx7ulpevk              | MCIMX7ULP-EVK            |"
-				echo "|  9     |  imx8mqevk               | MCIMX8M-EVKB             |"
-				echo "|  10    |  imx8mm-lpddr4-evk       | 8MMINILPD4-EVK           |"
-				echo "|  11    |  imx8mm-ddr4-evk         | 8MMINID4-EVK             |"
-				echo "|  12    |  imx8mn-lpddr4-evk       | 8MNANOLPD4-EVK           |"
-				echo "|  13    |  imx8mn-ddr4-evk         | 8MNANOD4-EVK             |"
-				echo "|  14    |  imx8qxpc0mek            | MCIMX8QXP-CPU            |"
-				echo "|  15    |  imx8mp-lpddr4-evk       | 8MPLUSLPD4-EVK           |"
-				echo "|  16    |  imx8ulp-lpddr4-evk      | MCIMX8ULP-EVK            |"
-				echo "|  17    |  imx8ulp-9x9-lpddr4-evk  | MCIMX8ULP-EVK9           |"
-				echo "|  18    |  imx93evk                | MCIMX93-EVK              |"
-				echo "|  19    |  imx93-11x11-lpddr4x-evk | MCIMX93-EVK (11x11)      |"
-				echo "|  20    |  imx93-9x9-lpddr4-qsb    | MCIMX93-EVK (9x9)        |"
-				echo "|  21    |  imx93-14x14-lpddr4x-evk | MCIMX93-EVK (14x14)      |"
-				echo "----------------------------------------------------------------"
-				echo -n "Select your entry: "
-				read TARGET_OPTION
-				case $TARGET_OPTION in
-				1)
-					TARGET_NAME=imx6ulevk
-					PART_NUMBER=MCIMX6UL-EVK
-					break
-					;;
-				2)
-					TARGET_NAME=imx6ull14x14evk
-					PART_NUMBER=MCIMX6ULL-EVK
-					break
-					;;
-				3)
-					TARGET_NAME=imx6sxsabresd
-					PART_NUMBER=MCIMX6SX-SDB
-					break
-					;;
-				4)
-					TARGET_NAME=imx6qsabresd
-					PART_NUMBER=MCIMX6Q-SDB
-					break
-					;;
-				5)
-					TARGET_NAME=imx6qpsabresd
-					PART_NUMBER=MCIMX6QP-SDB
-					break
-					;;
-				6)
-					TARGET_NAME=imx6dlsabresd
-					PART_NUMBER=MCIMX6DL-SDP
-					break
-					;;
-				7)
-					TARGET_NAME=imx7dsabresd
-					PART_NUMBER=MCIMX7SABRE
-					break
-					;;
-				8)
-					TARGET_NAME=imx7ulpevk
-					PART_NUMBER=MCIMX7ULP-EVK
-					break
-					;;
-				9)
-					TARGET_NAME=imx8mqevk
-					PART_NUMBER=MCIMX8M-EVKB
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				10)
-					TARGET_NAME=imx8mm-lpddr4-evk
-					PART_NUMBER=8MMINILPD4-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				11)
-					TARGET_NAME=imx8mm-ddr4-evk
-					PART_NUMBER=8MMINID4-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				12)
-					TARGET_NAME=imx8mn-lpddr4-evk
-					PART_NUMBER=8MNANOLPD4-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				13)
-					TARGET_NAME=imx8mn-ddr4-evk
-					PART_NUMBER=8MNANOD4-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				14)
-					TARGET_NAME=imx8qxpc0mek
-					PART_NUMBER=MCIMX8QXP-CPU
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				15)
-					TARGET_NAME=imx8mp-lpddr4-evk
-					PART_NUMBER=8MPLUSLPD4-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				16)
-					TARGET_NAME=imx8ulp-lpddr4-evk
-					PART_NUMBER=MCIMX8ULP-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				17)
-					TARGET_NAME=imx8ulp-9x9-lpddr4-evk
-					PART_NUMBER=MCIMX8ULP-EVK9
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				18)
-					TARGET_NAME=imx93evk
-					PART_NUMBER=MCIMX93-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				19)
-					TARGET_NAME=imx93-11x11-lpddr4x-evk
-					PART_NUMBER=MCIMX93-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				20)
-					TARGET_NAME=imx93-9x9-lpddr4-qsb
-					PART_NUMBER=MCIMX93-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				21)
-					TARGET_NAME=imx93-14x14-lpddr4x-evk
-					PART_NUMBER=MCIMX93-EVK
-					LINUX_SRC=linux-imx_6.1.bbappend.8MQ
-					LINUX_DEST=linux-imx_%.bbappend
-					DISTRO_NAME=fsl-imx-wayland
-					break
-					;;
-				*)
-					echo -e "${RED}That is not a valid choice, try again.${NC}"
-					;;
-				esac
-			done
-			echo -e "${GRN}Selected target: $TARGET_NAME ${NC}"
-			echo $'\n'
-			break
-			;;
-		$LINUX_KERNEL_6_6_3)
 			while true; do
 				echo " "
 				echo "${STEP_COUNT}) Select Target"
@@ -4316,7 +4085,7 @@ else
 			echo $'\n'
 			break
 			;;
-		$LINUX_KERNEL_6_6_52)
+		$LINUX_KERNEL_6_12_3)
 			while true; do
 				echo " "
 				echo "${STEP_COUNT}) Select Target"
@@ -4543,7 +4312,7 @@ if [ "$PROMPT" = "n" ] || [ "$PROMPT" = "N" ]; then
 
 	if [ "$PROMPT" = "U" ] || [ "$PROMPT" = "u" ]; then
 		# For 5.4.47 onwards, as per i.MX Yocto Project Users Guide, x11 Distro is no longer supported
-		if [ ${linuxVersion} = ${LINUX_KERNEL_5_4_47_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_10_52_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_15_32_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_6_1_1_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_6_1_36_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_6_6_3_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_6_6_23_STR} || [ ${linuxVersion} = ${LINUX_KERNEL_6_6_52_STR} ]; then
+		if [ ${linuxVersion} = ${LINUX_KERNEL_5_4_47_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_10_52_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_15_32_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_6_1_1_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_6_1_36_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_6_6_3_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_6_6_23_STR} || [ ${linuxVersion} = ${LINUX_KERNEL_6_6_52_STR} || [ ${linuxVersion} = ${LINUX_KERNEL_6_12_3_STR} ]; then
 			select_supported_distros_for_5_x_onwards
 		else
 			select_previous_distros_supported
@@ -4682,7 +4451,10 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	done
 
 	# Invoke Repo Init based on Yocto Release
-	if [ "$iMXYoctoRelease" = "$imxscarthgap52Yocto" ]; then
+	if [ "$iMXYoctoRelease" = "$imxstyheadYocto" ]; then
+		#echo "DEBUG:: IMXALL-STYHEAD"
+		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-styhead -m imx-6.12.3-1.0.0.xml
+	elif [ "$iMXYoctoRelease" = "$imxscarthgap52Yocto" ]; then
 		#echo "DEBUG:: IMXALL-SCARTHGAP52"
 		$REPO_PATH/repo init -u https://github.com/nxp-imx/imx-manifest -b imx-linux-scarthgap -m imx-6.6.52-2.2.0.xml
 	elif [ "$iMXYoctoRelease" = "$imxscarthgapYocto" ]; then
@@ -4724,7 +4496,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 
 	#echo "DEBUG:: Performing Setup of DISTRO and MACHINE"
 	#echo "DEBUG:: pwd = $BSP_DIR"
-	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]  || [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ] || [ "$iMXYoctoRelease" = "$imxlangdaleYocto" ] || [ "$iMXYoctoRelease" = "$imxmickledoreYocto" ] || [ "$iMXYoctoRelease" = "$imxnanbieldYocto" ] || [ "$iMXYoctoRelease" = "$imxscarthgapYocto" ] || [ "$iMXYoctoRelease" = "$imxscarthgap52Yocto" ]; then
+	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ]  || [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ] || [ "$iMXYoctoRelease" = "$imxlangdaleYocto" ] || [ "$iMXYoctoRelease" = "$imxmickledoreYocto" ] || [ "$iMXYoctoRelease" = "$imxnanbieldYocto" ] || [ "$iMXYoctoRelease" = "$imxscarthgapYocto" ] || [ "$iMXYoctoRelease" = "$imxscarthgap52Yocto" ] || [ "$iMXYoctoRelease" = "$imxstyheadYocto" ]; then
 		DISTRO=$DISTRO_NAME MACHINE=$TARGET_NAME source ./imx-setup-release.sh -b $BUILD_DIR_NAME
 	else
 		DISTRO=$DISTRO_NAME MACHINE=$TARGET_NAME source ./fsl-setup-release.sh -b $BUILD_DIR_NAME
@@ -4881,7 +4653,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	fi
 
 	# for zeus, hardknott, kirkstone, langdale, mickledore, nanbield and scarthgap
-	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ] || [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ] || [ "$iMXYoctoRelease" = "$imxlangdaleYocto" ] || [ "$iMXYoctoRelease" = "$imxmickledoreYocto" ] || [ "$iMXYoctoRelease" = "$imxnanbieldYocto" ] || [ "$iMXYoctoRelease" = "$imxscarthgapYocto" ] || [ "$iMXYoctoRelease" = "$imxscarthgap52Yocto" ]; then
+	if [ "$iMXYoctoRelease" = "$imxzeusYocto" ] || [ "$iMXYoctoRelease" = "$imxhardknottYocto" ] || [ "$iMXYoctoRelease" = "$imxkirkstoneYocto" ] || [ "$iMXYoctoRelease" = "$imxlangdaleYocto" ] || [ "$iMXYoctoRelease" = "$imxmickledoreYocto" ] || [ "$iMXYoctoRelease" = "$imxnanbieldYocto" ] || [ "$iMXYoctoRelease" = "$imxscarthgapYocto" ] || [ "$iMXYoctoRelease" = "$imxscarthgap52Yocto" ] || [ "$iMXYoctoRelease" = "$imxstyheadYocto" ]; then
 		if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 			cp $LINUX_SRC $LINUX_DEST
 		fi

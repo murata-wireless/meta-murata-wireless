@@ -1,5 +1,5 @@
 Title: README-IFX.txt
-Date:  April 28th, 2025
+Date:  February 23rd, 2026
 
 Description: 
 ============
@@ -34,25 +34,19 @@ $./Murata_Wireless_Yocto_Build_IFX.sh
 --------------------------------------------------------------------------------------
 | Kernel release | Yocto code name  |  FMAC code name |  Release information         |
 |----------------|------------------|-----------------|------------------------------|
-| 6.6.52_2.2.0   | Scarthgap        |  Jaculus        |  imx-scarthgap52-jaculus_r1.0|
+| 6.12.3_1.0.0   | Styhead          |  Longma         |  imx-styhead-longma_r1.0     |
 |----------------|------------------|-----------------|------------------------------|
 | 6.6.23_2.0.0   | Scarthgap        |  Jaculus        |  imx-scarthgap-jaculus_r1.1  |
+|                |                  |  Kraken         |  imx-scarthgap-kraken_r1.0   |
 |----------------|------------------|-----------------|------------------------------|
-| 6.6.3_1.0.0    | Nanbield         |  Indrik         |  imx-nanbield-indrik_r1.0    |
-|----------------|------------------|-----------------|------------------------------|
-| 6.1.36_2.1.0   | Mickeldore       |  Godzilla       |  imx-mickledore-godzilla_r1.0|
-|                |                  |  Hedorah        |  imx-mickledore-hedorah_r1.0 |
+| 6.1.36_2.1.0   | Mickeldore       |  Hedorah        |  imx-mickledore-hedorah_r1.0 |
 |                |                  |  Indrik         |  imx-mickledore-indrik_r1.0  |
 |                |                  |  Jaculus        |  imx-mickledore-jaculus_r1.0 |
+|                |                  |  Kraken         |  imx-mickledore-kraken_r1.0  |
 |----------------|------------------|-----------------|------------------------------|
-| 6.1.1_1.0.0    | Langdale         |  Fafnir         |  imx-langdale-fafnir_r1.0    |
-|                |                  |  Godzilla       |  imx-langdale-godzilla_r1.0  |
-|----------------|------------------|-----------------|------------------------------|
-| 5.15.32_2.0.0  | Kirkstone        |  Ebirah         |  imx-kirkstone-ebirah_r1.0   |
-|                |                  |  Fafnir         |  imx-kirkstone-fafnir_r1.0   |
-|                |                  |  Godzilla       |  imx-kirkstone-godzilla_r1.0 |
-|                |                  |  Indrik         |  imx-kirkstone-indrik_r1.0   |
+| 5.15.32_2.0.0  | Kirkstone        |  Indrik         |  imx-kirkstone-indrik_r1.0   |
 |                |                  |  Jaculus        |  imx-kirkstone-jaculus_r1.0  |
+|                |                  |  Kraken         |  imx-kirkstone-kraken_r1.0   |
 --------------------------------------------------------------------------------------
 
 
