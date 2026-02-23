@@ -6,10 +6,10 @@ than upstream supports to handle.
 
 Upstream-Status: Inappropriate [oe specific]
 
-From 9afd3da1400d2d7d47514a7b997e6cd79808d33b Mon Sep 17 00:00:00 2001
+From c323bc643908b1f27c80e2eb2b42293786583c48 Mon Sep 17 00:00:00 2001
 From: Jameel Kareem <jkareem@murata.com>
-Date: Wed, 4 Feb 2026 12:38:01 -0800
-Subject: [PATCH 4/5] hci up
+Date: Wed, 11 Feb 2026 14:43:27 -0800
+Subject: [PATCH 4/4] Patch-for-CYW4373-hci-up-fail-issue-for-6.6.23
 
 ---
  drivers/bluetooth/btbcm.c | 39 +++++++++++++++++++++++++++++++++++++++
@@ -17,7 +17,7 @@ Subject: [PATCH 4/5] hci up
  2 files changed, 43 insertions(+)
 
 diff --git a/drivers/bluetooth/btbcm.c b/drivers/bluetooth/btbcm.c
-index a1153ada74d2..c9e20c2f49ce 100644
+index 0a60660fc8ce..319a66333fa2 100644
 --- a/drivers/bluetooth/btbcm.c
 +++ b/drivers/bluetooth/btbcm.c
 @@ -34,6 +34,18 @@
@@ -86,7 +86,7 @@ index a1153ada74d2..c9e20c2f49ce 100644
  }
  
 diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 4ccaddb46ddd..61530fffcbfa 100644
+index af2be0271806..5b44f0103ef5 100644
 --- a/drivers/bluetooth/btusb.c
 +++ b/drivers/bluetooth/btusb.c
 @@ -126,6 +126,10 @@ static const struct usb_device_id btusb_table[] = {
