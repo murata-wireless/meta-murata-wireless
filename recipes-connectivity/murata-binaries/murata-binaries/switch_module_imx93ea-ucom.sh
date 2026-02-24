@@ -139,7 +139,7 @@ function clean_up() {
 
   # Take a backup of hci_uart.ko to murata_wireless
   if [ ! -e /usr/share/murata_wireless/hci_uart.ko ]; then
-      cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless/hci_uart.ko 
+      cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless/hci_uart.ko
   fi
 
   # Delete the special file created for 2FY
@@ -359,7 +359,7 @@ function prepare_for_nxp_xl_pcie() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
+
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -393,7 +393,7 @@ function prepare_for_nxp_el_sdio() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
+
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -426,7 +426,7 @@ function prepare_for_nxp_ll_sdio() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
+
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -484,7 +484,6 @@ EOT
   # Disable Cypress service and enable NXP service
   handle_services true false
 }
-
 
 function prepare_for_cypress() {
   clean_up
@@ -549,6 +548,9 @@ function prepare_for_cypress() {
   2FY|FY)
      cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2FY.hcd /lib/firmware/brcm/BCM.hcd
     ;;
+  2GF|GF)
+     cp /lib/firmware/brcm/CYW43012C1_003.002.024.0036.0008.2GF.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
   esac
 
   depmod -a
@@ -559,13 +561,19 @@ function prepare_for_cypress() {
 
 function prepare_for_cypress_ae_usb() {
   rm -rf /lib/firmware/cypress/*
-  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2AE.bin /lib/firmware/cypress/cyfmac4373.bin
+#  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2AE.bin /lib/firmware/cypress/cyfmac4373.bin
+  echo "Refer to Murata Wi-Fi/Bluetooth (IFX) for i.MX Linux User Guide"
+  echo " - Section 8.6 on how to create the USB firmware."
+  echo "Link: https://community.murata.com/s/contentdocument/0695F00000HrYUVQA3"
   cp /usr/share/murata_wireless/cypress/cyfmac4373-sdio.2AE.clm_blob /lib/firmware/cypress/cyfmac4373.clm_blob
 }
 
 function prepare_for_cypress_bc_usb() {
   rm -rf /lib/firmware/cypress/*
-  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2BC.bin /lib/firmware/cypress/cyfmac4373.bin
+#  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2BC.bin /lib/firmware/cypress/cyfmac4373.bin
+  echo "Refer to Murata Wi-Fi/Bluetooth (IFX) for i.MX Linux User Guide"
+  echo " - Section 8.6 on how to create the USB firmware."
+  echo "Link: https://community.murata.com/s/contentdocument/0695F00000HrYUVQA3"
   cp /usr/share/murata_wireless/cypress/cyfmac4373-sdio.2BC.clm_blob /lib/firmware/cypress/cyfmac4373.clm_blob
 }
 

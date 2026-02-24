@@ -552,6 +552,9 @@ function prepare_for_cypress() {
   2FY|FY|2FY-ONBOARD)
      cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2FY.hcd /lib/firmware/brcm/BCM.hcd
     ;;
+  2GF|GF)
+     cp /lib/firmware/brcm/CYW43012C1_003.002.024.0036.0008.2GF.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
   esac
 
   depmod -a
