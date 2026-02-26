@@ -351,7 +351,8 @@ do_install () {
 #    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/wifi_mod_para.conf ${D}${nonarch_base_libdir}/firmware/nxp
     # Push Combo (sduartspi) firmware for 2LL to murata_wireless
 #	install -m 755 ${WORKDIR}/sources/wifi_mod_para.conf ${D}/usr/share/murata_wireless
-	install -m 755 ${WORKDIR}/sources/wifi_mod_para.conf ${D}${nonarch_base_libdir}/firmware/nxp
+#	install -m 755 ${WORKDIR}/sources/wifi_mod_para.conf ${D}${nonarch_base_libdir}/firmware/nxp
+    install -m 777 ${WORKDIR}/sources/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}${nonarch_base_libdir}/firmware/nxp/wifi_mod_para.conf
 
     # Install NXP Connectivity 8987 firmware
     install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8987_SD/ed_mac_ctrl_V3_8987.conf  ${D}${nonarch_base_libdir}/firmware/nxp

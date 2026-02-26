@@ -60,18 +60,24 @@ function enable_systemd_prints() {
 }
 
 function move_ko() {
-     # Check for the presence of hci_uart.ko in Kernel, if it is then move/store it to /usr/share/murata_wireless dir
+     # Check for the presence of hci_uart.ko and btbcm.ko in Kernel, 
+     # if it is present, then copy both to /usr/share/murata_wireless dir
+     # and move both from Kernel modules dir
      if [ -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
-        echo "DEBUG::store() Found hci_uart.ko. Moving it murata_wireless"
+#        echo "DEBUG::store() Found hci_uart.ko. Moving it murata_wireless"
+        cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
+        cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko /usr/share/murata_wireless
         mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
+        mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko /usr/share/murata_wireless
      fi
 }
 
 function restore_ko {
      # Check for the presence of hci_uart.ko in murata_wireless
      if [ ! -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
-        echo "DEBUG::restore() Not Found hci_uart.ko. Copying it to Kernel"
+#        echo "DEBUG::restore() Not Found hci_uart.ko. Copying it to Kernel"
         cp /usr/share/murata_wireless/hci_uart.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko
+        cp /usr/share/murata_wireless/btbcm.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko
      fi
 }
 
@@ -599,14 +605,13 @@ function switch_to_cypress_sdio() {
   if [ $cyw_module == "2EA-SDIO" ] || [ $cyw_module == "2FY" ]; then
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-2ea.dtb 2>/dev/null
      fw_setenv bt_hint cypress_2ea
-     fw_setenv cmd_custom
-     move_ko
-  else
+  else # Non 2EA/2FY
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}.dtb 2>/dev/null
      fw_setenv bt_hint cypress
-     fw_setenv cmd_custom
-     restore_ko
   fi
+
+  fw_setenv cmd_custom
+  move_ko
 
   prepare_for_cypress
 
