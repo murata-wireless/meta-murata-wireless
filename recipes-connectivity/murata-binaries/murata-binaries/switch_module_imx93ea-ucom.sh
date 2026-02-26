@@ -50,18 +50,24 @@ function enable_systemd_prints() {
 }
 
 function move_ko() {
-     # Check for the presence of hci_uart.ko in Kernel, if it is then move/store it to /usr/share/murata_wireless dir
+     # Check for the presence of hci_uart.ko and btbcm.ko in Kernel, 
+     # if it is present, then copy both to /usr/share/murata_wireless dir
+     # and move both from Kernel modules dir
      if [ -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
-        echo "DEBUG::store() Found hci_uart.ko. Moving it murata_wireless"
+#        echo "DEBUG::store() Found hci_uart.ko. Moving it murata_wireless"
+        cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
+        cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko /usr/share/murata_wireless
         mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
+        mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko /usr/share/murata_wireless
      fi
 }
 
 function restore_ko {
      # Check for the presence of hci_uart.ko in murata_wireless
      if [ ! -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
-        echo "DEBUG::restore() Not Found hci_uart.ko. Copying it to Kernel"
+#        echo "DEBUG::restore() Not Found hci_uart.ko. Copying it to Kernel"
         cp /usr/share/murata_wireless/hci_uart.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko
+        cp /usr/share/murata_wireless/btbcm.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko
      fi
 }
 
@@ -139,7 +145,7 @@ function clean_up() {
 
   # Take a backup of hci_uart.ko to murata_wireless
   if [ ! -e /usr/share/murata_wireless/hci_uart.ko ]; then
-      cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless/hci_uart.ko 
+      cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless/hci_uart.ko
   fi
 
   # Delete the special file created for 2FY
@@ -359,7 +365,7 @@ function prepare_for_nxp_xl_pcie() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
+
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -393,7 +399,7 @@ function prepare_for_nxp_el_sdio() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
+
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -426,7 +432,7 @@ function prepare_for_nxp_ll_sdio() {
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
+
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -484,7 +490,6 @@ EOT
   # Disable Cypress service and enable NXP service
   handle_services true false
 }
-
 
 function prepare_for_cypress() {
   clean_up
@@ -546,8 +551,11 @@ function prepare_for_cypress() {
   2EA-SDIO|2EA-PCIE)
      cp /lib/firmware/brcm/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd /lib/firmware/brcm/BCM.hcd
     ;;
-  2FY|FY)
+  2FY)
      cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2FY.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  2GF|GF)
+     cp /lib/firmware/brcm/CYW43012C1_003.002.024.0036.0008.2GF.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   esac
 
@@ -587,14 +595,13 @@ function switch_to_cypress_sdio() {
   if [ $cyw_module == "2EA-SDIO" ] || [ $cyw_module == "2FY" ]; then
      fw_setenv fdt_file imx93-ea-ucom-kit-2ea.dtb 2>/dev/null
      fw_setenv bt_hint cypress_2ea
-     fw_setenv cmd_custom
-     move_ko
   else
      fw_setenv fdt_file imx93-ea-ucom-kit.dtb 2>/dev/null
      fw_setenv bt_hint cypress
-     fw_setenv cmd_custom
-     restore_ko
   fi
+
+  fw_setenv cmd_custom
+  move_ko
 
   prepare_for_cypress
 
@@ -645,14 +652,13 @@ function switch_to_cypress_pcie() {
   if [ $cyw_module == "2EA-PCIE" ]; then
      fw_setenv fdt_file imx93-ea-ucom-kit-pcie-2ea.dtb 2>/dev/null
      fw_setenv bt_hint cypress_2ea
-     fw_setenv cmd_custom
-     move_ko
   else
      fw_setenv fdt_file imx93-ea-ucom-kit-pcie.dtb 2>/dev/null
      fw_setenv bt_hint cypress
-     fw_setenv cmd_custom
-     restore_ko
   fi
+
+  fw_setenv cmd_custom
+  move_ko
 
   prepare_for_cypress
   echo "Setup complete."
@@ -791,7 +797,7 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2EA-SDIO, 2EA-PCIe"
+  echo "     1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2EA-SDIO, 2EA-PCIe"
   echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2KL-SDIO, 2KL-USB, 2LL-SDIO, 2LL-USB, CURRENT or OFF"
   echo ""
 }
@@ -805,10 +811,10 @@ fi
 cyw_module=${1^^}
 
 case ${1^^} in
-  CYW-PCIE|XA|1XA|2EA-PCIE)
+  XA|1XA|2EA-PCIE)
     switch_to_cypress_pcie
     ;;
-  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ|GF|2GF|FY|2FY)
+  LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ|GF|2GF|2FY)
     switch_to_cypress_sdio
     ;;
   AE-USB|2AE-USB)
