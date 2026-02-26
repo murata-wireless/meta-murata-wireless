@@ -1,0 +1,506 @@
+Do not treat warnings as errors
+
+There are additional warnings found with musl which are
+treated as errors and fails the build, we have more combinations
+than upstream supports to handle.
+
+Upstream-Status: Inappropriate [oe specific]
+
+From dc15e9e882d28b63eda6501e17f43d3b5a625d31 Mon Sep 17 00:00:00 2001
+From: Jameel Kareem <jkareem@murata.com>
+Date: Thu, 26 Feb 2026 08:01:24 -0800
+Subject: [PATCH] ifx-bluetooth-dts-mods
+
+---
+ .../boot/dts/nxp/imx/imx6sxea-com-kit_v2.dts  | 18 ++++++++---------
+ .../boot/dts/nxp/imx/imx7dea-com-kit_v2.dts   | 18 ++++++++---------
+ .../boot/dts/nxp/imx/imx7dea-ucom-kit_v2.dts  | 18 ++++++++---------
+ .../boot/dts/freescale/imx8mm-ea-som-kit.dts  | 18 +++++++----------
+ .../freescale/imx8mm-ea-ucom-kit_v2-1mw.dts   | 12 +++++++----
+ .../dts/freescale/imx8mm-ea-ucom-kit_v2.dts   | 19 ++++++++----------
+ .../freescale/imx8mm-ea-ucom-kit_v3-1mw.dts   | 11 ++++++++++
+ .../dts/freescale/imx8mm-ea-ucom-kit_v3.dts   | 20 ++++++++-----------
+ .../freescale/imx8mn-ea-ucom-kit_v2-1mw.dts   | 12 +++++++----
+ .../dts/freescale/imx8mn-ea-ucom-kit_v2.dts   | 18 ++++++++---------
+ .../freescale/imx8mn-ea-ucom-kit_v3-1mw.dts   | 12 +++++++----
+ .../dts/freescale/imx8mn-ea-ucom-kit_v3.dts   | 18 ++++++++---------
+ .../boot/dts/freescale/imx93-ea-ucom-kit.dts  | 19 +++++++++---------
+ 13 files changed, 110 insertions(+), 103 deletions(-)
+
+diff --git a/arch/arm/boot/dts/nxp/imx/imx6sxea-com-kit_v2.dts b/arch/arm/boot/dts/nxp/imx/imx6sxea-com-kit_v2.dts
+index 1c40ec91d37c..8cf114e23462 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx6sxea-com-kit_v2.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx6sxea-com-kit_v2.dts
+@@ -34,14 +34,6 @@ chosen {
+ 		stdout-path = &uart1;
+ 	};
+ 
+-	modem_reset: modem-reset {		/* Murata -- BT_REG_ON */
+-		compatible = "gpio-reset";
+-		reset-gpios = <&gpio_buff 0 GPIO_ACTIVE_LOW>;
+-		reset-delay-us = <1000>;
+-		initially-in-reset;
+-		#reset-cells = <0>;
+-	};
+-
+ 	sii902x_reset: sii902x-reset {
+ 		compatible = "gpio-reset";
+ 		reset-gpios = <&gpio4 19 GPIO_ACTIVE_LOW>;
+@@ -388,7 +380,6 @@ &uart2 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_uart2>;
+ 	fsl,uart-has-rtscts;
+-	resets = <&modem_reset>;
+ 	status = "okay";
+ };
+ 
+@@ -938,3 +929,12 @@ MX6SX_PAD_QSPI1B_DATA3__GPIO4_IO_27	0x130b1 /* GPIO_P shared with QSPI*/
+ 		};
+ 	};
+ };
++
++/* For IFX */
++&uart2 {
++	bluetooth {
++		compatible = "brcm,bcm4329-bt";
++		shutdown-gpios = <&gpio_buff 0 GPIO_ACTIVE_HIGH>;
++		max-speed = <3000000>;
++	};
++};
+diff --git a/arch/arm/boot/dts/nxp/imx/imx7dea-com-kit_v2.dts b/arch/arm/boot/dts/nxp/imx/imx7dea-com-kit_v2.dts
+index 2edb1bbe21a9..47364fbde73e 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx7dea-com-kit_v2.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx7dea-com-kit_v2.dts
+@@ -38,14 +38,6 @@ pxp_v4l2_out {
+ 		status = "okay";
+ 	};
+ 
+-	modem_reset: modem-reset {		/* Murata -- BT_REG_ON */
+-		compatible = "gpio-reset";
+-		reset-gpios = <&gpio_buff 0 GPIO_ACTIVE_LOW>;
+-		reset-delay-us = <1000>;
+-		initially-in-reset; 
+-		#reset-cells = <0>;
+-	};
+-
+ 	sii902x_reset: sii902x-reset {
+ 		compatible = "gpio-reset";
+ 		reset-gpios = <&gpio2 27 GPIO_ACTIVE_LOW>;
+@@ -635,7 +627,6 @@ &uart2 {
+         assigned-clocks = <&clks IMX7D_UART2_ROOT_SRC>;
+         assigned-clock-parents = <&clks IMX7D_PLL_SYS_MAIN_240M_CLK>;
+ 	fsl,uart-has-rtscts;
+-	resets = <&modem_reset>;
+ 	status = "okay";
+ };
+ 
+@@ -711,3 +702,12 @@ &wdog1 {
+ 	status = "okay";
+ 	fsl,ext-reset-output;
+ };
++
++/* For IFX */
++&uart2 {
++	bluetooth {
++		compatible = "brcm,bcm4329-bt";
++		shutdown-gpios = <&gpio_buff 0 GPIO_ACTIVE_HIGH>;
++		max-speed = <3000000>;
++	};
++};
+diff --git a/arch/arm/boot/dts/nxp/imx/imx7dea-ucom-kit_v2.dts b/arch/arm/boot/dts/nxp/imx/imx7dea-ucom-kit_v2.dts
+index d3edbdacab37..fc1ce49cf8ac 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx7dea-ucom-kit_v2.dts
++++ b/arch/arm/boot/dts/nxp/imx/imx7dea-ucom-kit_v2.dts
+@@ -38,14 +38,6 @@ pxp_v4l2_out {
+ 		status = "okay";
+ 	};
+ 
+-	modem_reset: modem-reset {		/* Murata -- BT_REG_ON */
+-		compatible = "gpio-reset";
+-		reset-gpios = <&gpio_buff 0 GPIO_ACTIVE_LOW>;
+-		reset-delay-us = <1000>;
+-		initially-in-reset; 
+-		#reset-cells = <0>;
+-	};
+-
+ 	sii902x_reset: sii902x-reset {
+ 		compatible = "gpio-reset";
+ 		reset-gpios = <&gpio2 27 GPIO_ACTIVE_LOW>;
+@@ -642,7 +634,6 @@ &uart2 {
+ 	assigned-clocks = <&clks IMX7D_UART2_ROOT_SRC>;
+ 	assigned-clock-parents = <&clks IMX7D_PLL_SYS_MAIN_240M_CLK>;
+ 	fsl,uart-has-rtscts;
+-	resets = <&modem_reset>;
+ 	status = "okay";
+ };
+ 
+@@ -721,3 +712,12 @@ &wdog1 {
+ 	status = "okay";
+ 	fsl,ext-reset-output;
+ };
++
++/* For IFX */
++&uart2 {
++	bluetooth {
++		compatible = "brcm,bcm4329-bt";
++		shutdown-gpios = <&gpio_buff 0 GPIO_ACTIVE_HIGH>;
++		max-speed = <3000000>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-ea-som-kit.dts b/arch/arm64/boot/dts/freescale/imx8mm-ea-som-kit.dts
+index 3d0c36b2814c..d61b69573785 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-ea-som-kit.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-ea-som-kit.dts
+@@ -26,16 +26,6 @@ chosen {
+ 		stdout-path = &uart2;
+ 	};
+ 
+-	modem_reset: modem-reset {
+-		compatible = "gpio-reset";
+-		reset-gpios = <&pcal6524_u5 3 GPIO_ACTIVE_LOW>; /* M2E_BT_REG_ON */
+-		initially-in-reset;
+-		reset-delay-us = <2000>;
+-		reset-post-delay-ms = <100>;
+-		#reset-cells = <0>;
+-	};
+-
+-
+ 	pcie0_refclk: pcie0-refclk {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+@@ -504,7 +494,6 @@ &uart1 {
+ 	assigned-clocks = <&clk IMX8MM_CLK_UART1>;
+ 	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_80M>;
+ 
+-	resets = <&modem_reset>;
+ 	fsl,uart-has-rtscts;
+ };
+ 
+@@ -625,3 +614,10 @@ spidev0: spi@0 {
+     nvmem-cell-names = "mac-address";
+ };*/
+ 
++&uart1 {
++	bluetooth {
++		compatible = "brcm,bcm4329-bt";
++		shutdown-gpios = <&pcal6524_u5 3 GPIO_ACTIVE_HIGH>; /* M2E_BT_REG_ON */
++		max-speed = <3000000>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v2-1mw.dts b/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v2-1mw.dts
+index 08b4b4503473..69421a2a15e7 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v2-1mw.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v2-1mw.dts
+@@ -14,10 +14,6 @@
+ 
+ #include "imx8mm-ea-ucom-kit_v2.dts"
+ 
+-&modem_reset {
+-	reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
+-};
+-
+ &usdhc1_pwrseq {
+ 	reset-gpios = <&gpio2 10 GPIO_ACTIVE_LOW>; /* WL REG ON */
+ };
+@@ -88,3 +84,11 @@ bt_dev_wake_gpio { /* TODO: Could likely remove this but it needs to be verified
+ 		line-name = "BT_DEV_WAKE";
+ 	};
+ };
++
++&uart1 {
++      bluetooth {
++            compatible = "brcm,bcm4329-bt";
++            shutdown-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
++            max-speed = <3000000>;
++      };
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v2.dts b/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v2.dts
+index fca88cb5053e..a4405b9009b9 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v2.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v2.dts
+@@ -26,16 +26,6 @@ chosen {
+ 		stdout-path = &uart2;
+ 	};
+ 
+-	modem_reset: modem-reset {
+-		compatible = "gpio-reset";
+-		reset-gpios = <&gpio_buff 0 GPIO_ACTIVE_LOW>;
+-		initially-in-reset;
+-		reset-delay-us = <2000>;
+-		reset-post-delay-ms = <100>;
+-		#reset-cells = <0>;
+-	};
+-
+-
+ 	pcie0_refclk: pcie0-refclk {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+@@ -430,7 +420,6 @@ &uart1 { /* Bluetooth UART */
+ 	assigned-clocks = <&clk IMX8MM_CLK_UART1>;
+ 	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_80M>;
+ 
+-	resets = <&modem_reset>;
+ 	fsl,uart-has-rtscts;
+ };
+ 
+@@ -510,3 +499,11 @@ &pwm1 {
+ 	pinctrl-0 = <&pinctrl_pwm1>;
+ };
+ 
++/* For IFX */
++&uart1 {
++	bluetooth {
++		compatible = "brcm,bcm4329-bt";
++		shutdown-gpios = <&gpio_buff 0 GPIO_ACTIVE_HIGH>;
++		max-speed = <3000000>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v3-1mw.dts b/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v3-1mw.dts
+index b763ba9a20c2..1909ce4699ee 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v3-1mw.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v3-1mw.dts
+@@ -14,9 +14,11 @@
+ 
+ #include "imx8mm-ea-ucom-kit_v3.dts"
+ 
++/*
+ &modem_reset {
+ 	reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
+ };
++*/
+ 
+ &usdhc1_pwrseq {
+ 	reset-gpios = <&gpio2 10 GPIO_ACTIVE_LOW>; /* WL REG ON */
+@@ -50,3 +52,12 @@ bt_dev_wake_gpio { /* TODO: Could likely remove this but it needs to be verified
+ 		line-name = "BT_DEV_WAKE";
+ 	};
+ };
++
++&uart1 {
++      bluetooth {
++            compatible = "brcm,bcm4329-bt";
++            shutdown-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
++            max-speed = <3000000>;
++      };
++};
++
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v3.dts b/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v3.dts
+index f2736f97b43f..1ce568d6589e 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v3.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mm-ea-ucom-kit_v3.dts
+@@ -27,16 +27,6 @@ chosen {
+ 		stdout-path = &uart2;
+ 	};
+ 
+-	modem_reset: modem-reset {
+-		compatible = "gpio-reset";
+-		reset-gpios = <&gpio_buff 0 GPIO_ACTIVE_LOW>;
+-		initially-in-reset;
+-		reset-delay-us = <2000>;
+-		reset-post-delay-ms = <100>;
+-		#reset-cells = <0>;
+-	};
+-
+-
+ 	pcie0_refclk: pcie0-refclk {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+@@ -330,8 +320,6 @@ &uart1 { /* Bluetooth UART */
+ 
+ 	assigned-clocks = <&clk IMX8MM_CLK_UART1>;
+ 	assigned-clock-parents = <&clk IMX8MM_SYS_PLL1_80M>;
+-
+-	resets = <&modem_reset>;
+ 	fsl,uart-has-rtscts;
+ };
+ 
+@@ -429,3 +417,11 @@ spidev0: spi@0 {
+ 	};
+ };
+ 
++/* For IFX */
++&uart1 {
++	bluetooth {
++		compatible = "brcm,bcm4329-bt";
++		shutdown-gpios = <&gpio_buff 0 GPIO_ACTIVE_HIGH>;
++		max-speed = <3000000>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v2-1mw.dts b/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v2-1mw.dts
+index 31c15a39c4b4..2361c1bd46a4 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v2-1mw.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v2-1mw.dts
+@@ -14,10 +14,6 @@
+ 
+ #include "imx8mn-ea-ucom-kit_v2.dts"
+ 
+-&modem_reset {
+-	reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
+-};
+-
+ &usdhc1_pwrseq {
+ 	reset-gpios = <&gpio2 10 GPIO_ACTIVE_LOW>; /* WL REG ON */
+ };
+@@ -88,3 +84,11 @@ bt_dev_wake_gpio { /* TODO: Could likely remove this but it needs to be verified
+ 		line-name = "BT_DEV_WAKE";
+ 	};
+ };
++
++&uart1 {
++      bluetooth {
++            compatible = "brcm,bcm4329-bt";
++            shutdown-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
++            max-speed = <3000000>;
++      };
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v2.dts b/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v2.dts
+index ab471fe9c422..c03cd1d4ada5 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v2.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v2.dts
+@@ -25,15 +25,6 @@ chosen {
+ 		stdout-path = &uart2;
+ 	};
+ 
+-	modem_reset: modem-reset {
+-		compatible = "gpio-reset";
+-		reset-gpios = <&gpio_buff 0 GPIO_ACTIVE_LOW>;
+-		initially-in-reset;
+-		reset-delay-us = <2000>;
+-		reset-post-delay-ms = <100>;
+-		#reset-cells = <0>;
+-	};
+-
+ 	regulators {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+@@ -382,7 +373,6 @@ &uart1 { /* Bluetooth UART */
+ 	assigned-clocks = <&clk IMX8MN_CLK_UART1>;
+ 	assigned-clock-parents = <&clk IMX8MN_SYS_PLL1_80M>;
+ 
+-	resets = <&modem_reset>;
+ 	fsl,uart-has-rtscts;
+ };
+ 
+@@ -458,3 +448,11 @@ &pwm1 {
+ 	pinctrl-0 = <&pinctrl_pwm1>;
+ };
+ 
++/* For IFX */
++&uart1 {
++	bluetooth {
++		compatible = "brcm,bcm4329-bt";
++		shutdown-gpios = <&gpio_buff 0 GPIO_ACTIVE_HIGH>;
++		max-speed = <3000000>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v3-1mw.dts b/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v3-1mw.dts
+index f2eda1b1179a..d42ab6b7e7b7 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v3-1mw.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v3-1mw.dts
+@@ -14,10 +14,6 @@
+ 
+ #include "imx8mn-ea-ucom-kit_v3.dts"
+ 
+-&modem_reset {
+-	reset-gpios = <&gpio2 6 GPIO_ACTIVE_LOW>;
+-};
+-
+ &usdhc1_pwrseq {
+ 	reset-gpios = <&gpio2 10 GPIO_ACTIVE_LOW>; /* WL REG ON */
+ };
+@@ -50,3 +46,11 @@ bt_dev_wake_gpio { /* TODO: Could likely remove this but it needs to be verified
+ 		line-name = "BT_DEV_WAKE";
+ 	};
+ };
++
++&uart1 {
++      bluetooth {
++            compatible = "brcm,bcm4329-bt";
++            shutdown-gpios = <&gpio2 6 GPIO_ACTIVE_HIGH>;
++            max-speed = <3000000>;
++      };
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v3.dts b/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v3.dts
+index 652d68a006a9..dc9cbe3e9610 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v3.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mn-ea-ucom-kit_v3.dts
+@@ -26,15 +26,6 @@ chosen {
+ 		stdout-path = &uart2;
+ 	};
+ 
+-	modem_reset: modem-reset {
+-		compatible = "gpio-reset";
+-		reset-gpios = <&gpio_buff 0 GPIO_ACTIVE_LOW>;
+-		initially-in-reset;
+-		reset-delay-us = <2000>;
+-		reset-post-delay-ms = <100>;
+-		#reset-cells = <0>;
+-	};
+-
+ 	regulators {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+@@ -283,7 +274,6 @@ &uart1 { /* Bluetooth UART */
+ 	assigned-clocks = <&clk IMX8MN_CLK_UART1>;
+ 	assigned-clock-parents = <&clk IMX8MN_SYS_PLL1_80M>;
+ 
+-	resets = <&modem_reset>;
+ 	fsl,uart-has-rtscts;
+ };
+ 
+@@ -378,3 +368,11 @@ spidev0: spi@0 {
+ 	};
+ };
+ 
++/* For IFX */
++&uart1 {
++	bluetooth {
++		compatible = "brcm,bcm4329-bt";
++		shutdown-gpios = <&gpio_buff 0 GPIO_ACTIVE_HIGH>;
++		max-speed = <3000000>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx93-ea-ucom-kit.dts b/arch/arm64/boot/dts/freescale/imx93-ea-ucom-kit.dts
+index 1c361f080af7..f36878edcf1f 100644
+--- a/arch/arm64/boot/dts/freescale/imx93-ea-ucom-kit.dts
++++ b/arch/arm64/boot/dts/freescale/imx93-ea-ucom-kit.dts
+@@ -91,15 +91,6 @@ ethosu {
+ 		power-domains = <&mlmix>;
+ 	};
+ 
+-	modem_reset: modem-reset {
+-		compatible = "gpio-reset";
+-		reset-gpios = <&pca6416 0 GPIO_ACTIVE_LOW>;
+-		initially-in-reset;
+-		reset-delay-us = <2000>;
+-		reset-post-delay-ms = <100>;
+-		#reset-cells = <0>;
+-	};
+-
+ 	reg_can1_stby: regulator-can1-stby {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "can1-stby";
+@@ -494,7 +485,6 @@ &lpuart5 {
+ 	/delete-property/ dmas;
+ 	/delete-property/ dma-names;
+ 
+-	resets = <&modem_reset>;
+ 	fsl,uart-has-rtscts;
+ };
+ 
+@@ -850,3 +840,12 @@ mipi_csi_out: endpoint {
+ &dphy_rx {
+ 	status = "okay";
+ };
++
++/* For IFX */
++&lpuart5 {
++	bluetooth {
++		compatible = "brcm,bcm4329-bt";
++		shutdown-gpios = <&pca6416 0 GPIO_ACTIVE_HIGH>;
++		max-speed = <3000000>;
++	};
++};
+-- 
+2.25.1
+

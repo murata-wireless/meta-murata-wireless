@@ -561,7 +561,7 @@ function prepare_for_cypress() {
   2EA-SDIO|2EA-PCIE)
      cp /lib/firmware/brcm/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd /lib/firmware/brcm/BCM.hcd
     ;;
-  2FY|FY)
+  2FY)
      cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2FY.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   2GF|GF)
@@ -662,14 +662,13 @@ function switch_to_cypress_pcie() {
   if [ $cyw_module == "2EA-PCIE" ]; then
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-pcie-2ea.dtb 2>/dev/null
      fw_setenv bt_hint cypress_2ea
-     fw_setenv cmd_custom
-     move_ko
   else
      fw_setenv fdt_file imx8mm-ea-ucom-kit_${DTB_VER}-pcie.dtb 2>/dev/null
      fw_setenv bt_hint cypress
-     fw_setenv cmd_custom
-     restore_ko
   fi
+
+  fw_setenv cmd_custom
+  move_ko
 
   prepare_for_cypress
   echo "Setup complete."
@@ -808,7 +807,7 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2EA-SDIO, 2EA-PCIe"
+  echo "     1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2EA-SDIO, 2EA-PCIe"
   echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2KL-SDIO, 2KL-USB, 2LL-SDIO, 2LL-USB, CURRENT or OFF"
   echo ""
 }
@@ -822,10 +821,10 @@ fi
 cyw_module=${1^^}
 
 case ${1^^} in
-  CYW-PCIE|XA|1XA|2EA-PCIE)
+  XA|1XA|2EA-PCIE)
     switch_to_cypress_pcie
     ;;
-  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ|GF|2GF|FY|2FY)
+  LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ|GF|2GF|2FY)
     switch_to_cypress_sdio
     ;;
   AE-USB|2AE-USB)

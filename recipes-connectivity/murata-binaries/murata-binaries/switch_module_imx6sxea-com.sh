@@ -59,6 +59,28 @@ function enable_systemd_prints() {
   echo 7 > /proc/sys/kernel/printk
 }
 
+function move_ko() {
+     # Check for the presence of hci_uart.ko and btbcm.ko in Kernel, 
+     # if it is present, then copy both to /usr/share/murata_wireless dir
+     # and move both from Kernel modules dir
+     if [ -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
+#        echo "DEBUG::store() Found hci_uart.ko. Moving it murata_wireless"
+        cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
+        cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko /usr/share/murata_wireless
+        mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless
+        mv /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko /usr/share/murata_wireless
+     fi
+}
+
+function restore_ko {
+     # Check for the presence of hci_uart.ko in murata_wireless
+     if [ ! -e /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko ]; then
+#        echo "DEBUG::restore() Not Found hci_uart.ko. Copying it to Kernel"
+        cp /usr/share/murata_wireless/hci_uart.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko
+        cp /usr/share/murata_wireless/btbcm.ko /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko
+     fi
+}
+
 function handle_services() {
   enable_mlan0=$1
   enable_wlan0=$2
@@ -113,7 +135,7 @@ function clean_up() {
   fi
 
   # check for the existence of folder, "crda"
-  if [  -d "/usr/lib/crda" ]; then
+  if [ -d "/usr/lib/crda" ]; then
     rm -rf /usr/lib/crda
   fi
 
@@ -130,10 +152,29 @@ function clean_up() {
   if [ -e /usr/sbin/startup_setcountry.sh ]; then
     rm /usr/sbin/startup_setcountry.sh
   fi
+
+  # Take a backup of hci_uart.ko to murata_wireless
+  if [ ! -e /usr/share/murata_wireless/hci_uart.ko ]; then
+      cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/hci_uart.ko /usr/share/murata_wireless/hci_uart.ko
+  fi
+
+  # Delete the special file created for 2FY
+  if [ -e /etc/modprobe.d/2fy_m2.conf ]; then
+    rm /etc/modprobe.d/2fy_m2.conf
+  fi
+}
+
+function prepare_for_nxp_bt() {
+  UNAME=$(uname -r)
+  FILE="/lib/modules/${UNAME}/kernel/drivers/bluetooth/btnxpuart.ko"
+  if [ -f "${FILE}" ]; then
+    mv "${FILE}" /usr/share/murata_wireless/
+  fi
 }
 
 function prepare_for_nxp_sdio() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -165,6 +206,7 @@ EOT
 
 function prepare_for_nxp_xk_sdio() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -196,6 +238,7 @@ EOT
 
 function prepare_for_nxp_ds_sdio() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -227,6 +270,7 @@ EOT
 
 function prepare_for_nxp_ym_sdio() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -260,6 +304,7 @@ EOT
 
 function prepare_for_nxp_ym_pcie() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -292,6 +337,7 @@ EOT
 
 function prepare_for_nxp_xl_sdio() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
@@ -324,11 +370,12 @@ EOT
 
 function prepare_for_nxp_xl_pcie() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
+
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -357,11 +404,12 @@ EOT
 
 function prepare_for_nxp_el_sdio() {
   clean_up
+  prepare_for_nxp_bt
   ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
-  
+
   cat <<EOT > /etc/depmod.d/nxp_depmod.conf
 # Force modprobe to search kernel/net/wireless (where the NXP
 # version of cfg80211.ko is placed) before looking in updates/net/wireless/
@@ -387,38 +435,162 @@ EOT
   handle_services true false
 }
 
+function prepare_for_nxp_ll_sdio() {
+  clean_up
+  prepare_for_nxp_bt
+  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
+
+  cat <<EOT > /etc/depmod.d/nxp_depmod.conf
+# Force modprobe to search kernel/net/wireless (where the NXP
+# version of cfg80211.ko is placed) before looking in updates/net/wireless/
+# (where the Cypress version is)
+override cfg80211 * kernel/net/wireless
+
+EOT
+
+  cat <<EOT > /etc/modprobe.d/nxp_modules.conf
+# Prevent the Cypress version of cfg80211.ko from being loaded.
+blacklist cfg80211
+
+# Alias for the NXP modules
+alias sdio:c*v0471d0215* moal
+
+# Specify arguments to pass when loading the iw612 module
+options moal mod_para=nxp/wifi_mod_para.conf
+EOT
+
+  depmod -a
+
+  # Disable Cypress service and enable NXP service
+  handle_services true false
+}
+
+function prepare_for_nxp_ll_usb() {
+  clean_up
+  prepare_for_nxp_bt
+  ln -s /usr/sbin/wpa_supplicant.nxp /usr/sbin/wpa_supplicant
+  ln -s /usr/sbin/wpa_cli.nxp /usr/sbin/wpa_cli
+  ln -s /usr/sbin/hostapd.nxp /usr/sbin/hostapd
+  ln -s /usr/sbin/hostapd_cli.nxp /usr/sbin/hostapd_cli
+  
+  cat <<EOT > /etc/depmod.d/nxp_depmod.conf
+# Force modprobe to search kernel/net/wireless (where the NXP
+# version of cfg80211.ko is placed) before looking in updates/net/wireless/
+# (where the Cypress version is)
+override cfg80211 * kernel/net/wireless
+
+EOT
+
+  cat <<EOT > /etc/modprobe.d/nxp_modules.conf
+# Prevent the Cypress version of cfg80211.ko from being loaded.
+blacklist cfg80211
+
+# Alias for the NXP modules
+alias usb:v0471p021* moal
+
+# Specify arguments to pass when loading the iw612 module
+options moal mod_para=nxp/wifi_mod_para.conf
+EOT
+
+  depmod -a
+
+  # Disable Cypress service and enable NXP service
+  handle_services true false
+}
+
 function prepare_for_cypress() {
   clean_up
+  cp -rfp /usr/share/murata_wireless/hostapd_cli.cyw /usr/sbin
   ln -s /usr/sbin/wpa_supplicant.cyw /usr/sbin/wpa_supplicant
   ln -s /usr/sbin/wpa_cli.cyw /usr/sbin/wpa_cli
   ln -s /usr/sbin/hostapd.cyw /usr/sbin/hostapd
   ln -s /usr/sbin/hostapd_cli.cyw /usr/sbin/hostapd_cli
 
-#  echo "IFX module : $cyw_module"
+# echo "IFX module : $cyw_module"
 
-  if [ $cyw_module == "2AE" ]; then
+  #check for the presence of /usr/share/murata_wireless/cypress
+  #If there isn't cypress folder, then create one and take a backup
+  if [ ! -d "/usr/share/murata_wireless/cypress" ]; then
+     mkdir -p /usr/share/murata_wireless/cypress
+     cp -rfp /lib/firmware/cypress/* /usr/share/murata_wireless/cypress/
+  fi
+
+  # By default copy all the files back to /lib/firmware/cypress
+  cp -rfp /usr/share/murata_wireless/cypress/* /lib/firmware/cypress
+
+  # Starting from 6.1.x, "hciattach" is deprecated and will use "btbcm.ko and hci_uart.ko"
+  # It needs <module.hcd> to be renamed as "BCM.hcd" and placed in /lib/firmware/brcm
+
+  case $cyw_module in
+  DX|1DX)
+     cp /lib/firmware/brcm/BCM43430A1_001.002.009.0159.0528.1DX.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  LV|1LV)
+     cp /lib/firmware/brcm/BCM43012C0_003.001.015.0303.0267.1LV.sAnt.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  MW|1MW)
+     cp /lib/firmware/brcm/BCM4345C0_003.001.025.0187.0366.1MW.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  YN|1YN)
+     cp /lib/firmware/brcm/CYW4343A2_001.003.016.0071.0017.1YN.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  2AE-USB|AE-USB|2BC-USB|BC-USB)
+     cp /lib/firmware/brcm/murata-master/_CYW4373A0_001.001.025.0119.0000.2AE.USB_FCC.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  2AE|AE)
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
      cp /lib/firmware/cypress/cyfmac4373-sdio.2AE.clm_blob /lib/firmware/cypress/cyfmac4373-sdio.clm_blob
-  fi
-
-  if [ $cyw_module == "2BC" ]; then
+     cp /lib/firmware/brcm/BCM4373A0_001.001.025.0103.0155.FCC.CE.2AE.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  2BC|BC)
      cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.bin /lib/firmware/cypress/cyfmac4373-sdio.bin
      cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.txt /lib/firmware/cypress/cyfmac4373-sdio.txt
      cp /lib/firmware/cypress/cyfmac4373-sdio.2BC.clm_blob /lib/firmware/cypress/cyfmac4373-sdio.clm_blob
-  fi
-
-# For 2BZ, enabling only in-band interrupt and no OOB
-  if [ $cyw_module == "2BZ" ]; then
-     fw_setenv cmd_custom "fdt list mmc1/bcrmf@1\; fdt rm mmc1/bcrmf@1 interrupt-parent\; fdt rm mmc1/bcrmf@1 interrupts\; fdt rm mmc1/bcrmf@1 interrupt-names\; fdt list mmc1/bcrmf@1"
-  else
-     fw_setenv cmd_custom
-  fi
+     cp /lib/firmware/brcm/BCM4373A0_001.001.025.0103.0155.FCC.CE.2BC.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  XA|1XA)
+     cp /lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.1XA.sAnt.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  BZ|2BZ)
+     cp /lib/firmware/brcm/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  2EA-SDIO|2EA-PCIE)
+     cp /lib/firmware/brcm/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  2FY)
+     cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2FY.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  2GF|GF)
+     cp /lib/firmware/brcm/CYW43012C1_003.002.024.0036.0008.2GF.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  esac
 
   depmod -a
 
   # Disable NXP service and enable Cypress service
   handle_services false true
+}
+
+function prepare_for_cypress_ae_usb() {
+  rm -rf /lib/firmware/cypress/*
+#  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2AE.bin /lib/firmware/cypress/cyfmac4373.bin
+  echo "Refer to Murata Wi-Fi/Bluetooth (IFX) for i.MX Linux User Guide"
+  echo " - Section 8.6 on how to create the USB firmware."
+  echo "Link: https://community.murata.com/s/contentdocument/0695F00000HrYUVQA3"
+  cp /usr/share/murata_wireless/cypress/cyfmac4373-sdio.2AE.clm_blob /lib/firmware/cypress/cyfmac4373.clm_blob
+}
+
+function prepare_for_cypress_bc_usb() {
+  rm -rf /lib/firmware/cypress/*
+#  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2BC.bin /lib/firmware/cypress/cyfmac4373.bin
+  echo "Refer to Murata Wi-Fi/Bluetooth (IFX) for i.MX Linux User Guide"
+  echo " - Section 8.6 on how to create the USB firmware."
+  echo "Link: https://community.murata.com/s/contentdocument/0695F00000HrYUVQA3"
+  cp /usr/share/murata_wireless/cypress/cyfmac4373-sdio.2BC.clm_blob /lib/firmware/cypress/cyfmac4373.clm_blob
 }
 
 function off() {
@@ -428,10 +600,13 @@ function off() {
 
 function switch_to_cypress_sdio() {
   echo ""
-  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA (Cypress - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  echo "Setting up for 1DX, 1LV, 1MW, 1WZ, 1YN, 2AE, 2BC, 2BZ, 2EA, 2GF, 2FY (Cypress - SDIO)"
+
   fw_setenv fdt_file imx6sxea-com-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint cypress
+  fw_setenv cmd_custom
+  move_ko
+
   prepare_for_cypress
   echo "Setup complete."
   echo ""
@@ -440,9 +615,13 @@ function switch_to_cypress_sdio() {
 function switch_to_cypress_pcie() {
   echo ""
   echo "Setting up for 1CX, 1XA, 2EA (Cypress - PCIe)"
-  echo "Please wait for 15 seconds (one-time only)..."
+
   fw_setenv fdt_file imx6sxea-com-kit_${DTB_VER}-pcie.dtb 2>/dev/null
   fw_setenv bt_hint cypress
+
+  fw_setenv cmd_custom
+  move_ko
+
   prepare_for_cypress
   echo "Setup complete."
   echo ""
@@ -451,9 +630,10 @@ function switch_to_cypress_pcie() {
 function switch_to_nxp_sdio() {
   echo ""
   echo "Setting up for 1ZM (NXP - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx6sxea-com-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial1 bluetooth; fdt set serial1/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_sdio
   echo "Setup complete."
   echo ""
@@ -462,9 +642,10 @@ function switch_to_nxp_sdio() {
 function switch_to_nxp_xl_sdio() {
   echo ""
   echo "Setting up for 1XL, 2XS (NXP - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx6sxea-com-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial1 bluetooth; fdt set serial1/bluetooth compatible nxp,88w8987-bt; fdt set serial1/bluetooth fw-init-baudrate  <115200>"
   prepare_for_nxp_xl_sdio
   echo "Setup complete."
   echo ""
@@ -473,20 +654,47 @@ function switch_to_nxp_xl_sdio() {
 function switch_to_nxp_el_sdio() {
   echo ""
   echo "Setting up for 2EL, 2DL (NXP - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx6sxea-com-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial1 bluetooth; fdt set serial1/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_el_sdio
   echo "Setup complete."
   echo ""
 }
 
+function switch_to_nxp_ll_sdio() {
+  echo ""
+  echo "Setting up for 2KL, 2LL (NXP - SDIO)"
+  restore_ko
+  fw_setenv fdt_file imx6sxea-com-kit_${DTB_VER}.dtb 2>/dev/null
+  fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial1 bluetooth; fdt set serial1/bluetooth compatible nxp,88w8987-bt"
+  prepare_for_nxp_ll_sdio
+  echo "Setup complete."
+  echo ""
+}
+
+function switch_to_nxp_ll_usb() {
+  echo ""
+  echo "Setting up for 2KL, 2LL (NXP - USB)"
+  restore_ko
+  fw_setenv fdt_file imx6sxea-com-kit_${DTB_VER}.dtb 2>/dev/null
+  fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial1 bluetooth; fdt set serial1/bluetooth compatible nxp,88w8987-bt"
+  prepare_for_nxp_ll_usb
+  echo "Setup complete."
+  echo ""
+}
+
+
 function switch_to_nxp_xk_sdio() {
   echo ""
   echo "Setting up for 1XK, 2XK (NXP - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx6sxea-com-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial1 bluetooth; fdt set serial1/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_xk_sdio
   echo "Setup complete."
   echo ""
@@ -495,9 +703,10 @@ function switch_to_nxp_xk_sdio() {
 function switch_to_nxp_ds_sdio() {
   echo ""
   echo "Setting up for 2DS (NXP - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx6sxea-com-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp
+  fw_setenv cmd_custom "fdt mknod serial1 bluetooth; fdt set serial1/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_ds_sdio
   echo "Setup complete."
   echo ""
@@ -506,9 +715,10 @@ function switch_to_nxp_ds_sdio() {
 function switch_to_nxp_ym_sdio() {
   echo ""
   echo "Setting up for 1YM (NXP - SDIO)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx6sxea-com-kit_${DTB_VER}.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_sdio
+  fw_setenv cmd_custom "fdt mknod serial1 bluetooth; fdt set serial1/bluetooth compatible nxp,88w8997-bt"
   prepare_for_nxp_ym_sdio
   echo "Setup complete."
   echo ""
@@ -518,9 +728,10 @@ function switch_to_nxp_ym_sdio() {
 function switch_to_nxp_ym_pcie() {
   echo ""
   echo "Setting up for 1YM (NXP - PCIe)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx6sxea-com-kit_${DTB_VER}-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1ym_pcie
+  fw_setenv cmd_custom "fdt mknod serial1 bluetooth; fdt set serial1/bluetooth compatible nxp,88w8997-bt"
   prepare_for_nxp_ym_pcie
   echo "Setup complete."
   echo ""
@@ -530,9 +741,10 @@ function switch_to_nxp_ym_pcie() {
 function switch_to_nxp_xl_pcie() {
   echo ""
   echo "Setting up for 1XL, 2XS (NXP - PCIe)"
-  echo "Please wait for 15 seconds (one-time only)..."
+  restore_ko
   fw_setenv fdt_file imx6sxea-com-kit_${DTB_VER}-pcie.dtb 2>/dev/null
   fw_setenv bt_hint nxp_1xl_pcie
+  fw_setenv cmd_custom "fdt mknod serial1 bluetooth; fdt set serial1/bluetooth compatible nxp,88w8987-bt"
   prepare_for_nxp_xl_pcie
   echo "Setup complete."
   echo ""
@@ -548,8 +760,8 @@ function usage() {
   echo ""
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
-  echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 2BC, 1XA, 2BZ, 2EA-SDIO, 2EA-PCIe"
-  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2DS, CURRENT or OFF"
+  echo "     1DX, 1LV, 1MW, 1YN, 2AE, 2AE-USB, 2BC, 2BC-USB, 1XA, 2BZ, 2GF, 2FY, 2EA-SDIO, 2EA-PCIe"
+  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2KL-SDIO, 2KL-USB, 2LL-SDIO, 2LL-USB, CURRENT or OFF"
   echo ""
 }
 
@@ -562,11 +774,17 @@ fi
 cyw_module=${1^^}
 
 case ${1^^} in
-  CYW-PCIE|CX|1CX|XA|1XA|2EA-PCIE)
+  XA|1XA|2EA-PCIE)
     switch_to_cypress_pcie
     ;;
-  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ)
+  LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ|GF|2GF|2FY)
     switch_to_cypress_sdio
+    ;;
+  AE-USB|2AE-USB)
+    switch_to_cypress_ae_usb
+    ;;
+  BC-USB|2BC-USB)
+    switch_to_cypress_bc_usb
     ;;
   ZM|1ZM)
     switch_to_nxp_sdio
@@ -591,6 +809,12 @@ case ${1^^} in
     ;;
   2EL|2DL)
     switch_to_nxp_el_sdio
+    ;;
+  2KL-SDIO|2LL-SDIO)
+    switch_to_nxp_ll_sdio
+    ;;
+  2KL-USB|2LL-USB)
+    switch_to_nxp_ll_usb
     ;;
   CURRENT)
     current
