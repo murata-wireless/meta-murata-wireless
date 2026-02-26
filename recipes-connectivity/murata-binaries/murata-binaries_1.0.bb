@@ -13,7 +13,7 @@ SRC_URI = " \
         ${IMX_FIRMWARE_SRC};branch=${SRCBRANCH_imx-firmware};destsuffix=imx-firmware;name=imx-firmware \
         git://github.com/Infineon/ifx-linux-firmware;protocol=http;branch=master;destsuffix=ifx-linux-firmware-longma;name=ifx-linux-firmware-longma \
         git://github.com/Infineon/ifx-linux-firmware;protocol=http;branch=master;destsuffix=ifx-linux-firmware-drogon;name=ifx-linux-firmware-drogon \
-        git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=master;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
+        git://github.com/murata-wireless/nxp-linux-calibration;protocol=http;branch=ea-imx-6.12.3;destsuffix=nxp-linux-calibration;name=nxp-linux-calibration \
         git://github.com/murata-wireless/cyw-fmac-fw;protocol=http;branch=jaculus;destsuffix=cyw-fmac-fw;name=cyw-fmac-fw \
         git://github.com/murata-wireless/cyw-fmac-nvram;protocol=http;branch=jaculus;destsuffix=cyw-fmac-nvram;name=cyw-fmac-nvram \
         git://github.com/murata-wireless/cyw-bt-patch;protocol=http;branch=master;destsuffix=cyw-bt-patch;name=cyw-bt-patch \
@@ -63,7 +63,7 @@ SRC_URI = " \
 SRC_URI[cyw-fmac-fw-ifx.sha256sum]="34f5bfac6476d849af26f945705dc5a19965825333840405ef25dcd835d521d7"
 SRCREV_ifx-linux-firmware-longma="c6c73c37e89b088624f7970fb0a7ef535c5dee0b"
 SRCREV_ifx-linux-firmware-drogon="dc38e700612b334080e0b6df69070a88c4c2a12b"
-SRCREV_nxp-linux-calibration="df741be492748547eae8075139ca24f4faadbc2c"
+SRCREV_nxp-linux-calibration="004980ad614b9912e160df2a4792b6e8d97120cb"
 SRCREV_cyw-fmac-fw="a5cb86a5d11192ba6e7738f82b4d2dc9eeeca679"
 SRCREV_cyw-fmac-nvram="146d1438372b6c4857f92b8769b91c1801d3ede2"
 SRCREV_cyw-bt-patch="23de75a4e5384d16e8478f668b769b0d24ede0de"
@@ -351,8 +351,8 @@ do_install () {
 #    install -m 0644 ${WORKDIR}/sources/imx-firmware/nxp/wifi_mod_para.conf ${D}${nonarch_base_libdir}/firmware/nxp
     # Push Combo (sduartspi) firmware for 2LL to murata_wireless
 #	install -m 755 ${WORKDIR}/sources/wifi_mod_para.conf ${D}/usr/share/murata_wireless
-#	install -m 755 ${WORKDIR}/sources/wifi_mod_para.conf ${D}${nonarch_base_libdir}/firmware/nxp
-    install -m 777 ${WORKDIR}/sources/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}${nonarch_base_libdir}/firmware/nxp/wifi_mod_para.conf
+	install -m 755 ${WORKDIR}/sources/wifi_mod_para.conf ${D}${nonarch_base_libdir}/firmware/nxp
+
 
     # Install NXP Connectivity 8987 firmware
     install -m 0644 ${WORKDIR}/sources/imx-firmware/FwImage_8987_SD/ed_mac_ctrl_V3_8987.conf  ${D}${nonarch_base_libdir}/firmware/nxp
