@@ -25,10 +25,10 @@ SRC_URI = " \
         file://murata_test_version.sh \
         file://throughput-ifx.sh \
         file://wowl-setup.sh \
-        file://wl \
         file://brcm_patchram_plus_usb_32bit \
         file://brcm_patchram_plus_usb_64bit \
 "
+#file://wl \
 
 SRC_URI[cyw-fmac-fw-ifx.sha256sum]="54928426f0b060ed680d649cc3a4db0643f82f8c33810ee8a3359322e1e5e565"
 SRCREV_ifx-linux-firmware-longma="c6c73c37e89b088624f7970fb0a7ef535c5dee0b"
@@ -43,6 +43,7 @@ SRCREV_default = "${AUTOREV}"
 SRCREV_FORMAT = "muratabinaries"
 
 DEPENDS = " libnl wpa-supplicant linux-firmware"
+RDEPENDS:${PN} += "wl-tool"
 
 do_compile () {
 	echo "Compiling: "
@@ -194,11 +195,11 @@ do_install () {
 
 #   Copying wl tool binary to /usr/sbin
     if [ ${TARGET_ARCH} = "aarch64" ]; then
-		install -m 755 ${S}/wl ${D}/usr/share/murata_wireless/wl
-		install -m 755 ${S}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl 
+		# install -m 755 ${S}/wl ${D}/usr/share/murata_wireless/wl
+		# install -m 755 ${S}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl 
 		install -m 755 ${S}/brcm_patchram_plus_usb_64bit ${D}/usr/sbin/brcm_patchram_plus_usb_64bit
 	else
-		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
+		# install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
 		install -m 755 ${S}/brcm_patchram_plus_usb_32bit ${D}/usr/sbin/brcm_patchram_plus_usb_32bit
 	fi
 
