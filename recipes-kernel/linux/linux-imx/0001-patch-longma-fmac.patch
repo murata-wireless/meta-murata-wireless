@@ -6,10 +6,10 @@ than upstream supports to handle.
 
 Upstream-Status: Inappropriate [oe specific]
 
-From 2cf68d9ca8905412e447b578dbc65fb858121ca1 Mon Sep 17 00:00:00 2001
-From: Jameel Kareem <jkareem@murata.com>
-Date: Tue, 10 Feb 2026 09:04:39 -0800
-Subject: [PATCH 1/4] ifx-patch-for-longma-6.12.34
+From 4406faddd9bfc687ef74adb0c6db84ef247e879a Mon Sep 17 00:00:00 2001
+From: Romit Chatterjee <romit.chatterjee@murata.com>
+Date: Fri, 27 Feb 2026 02:27:36 -0600
+Subject: [PATCH] Changed for walnascar
 
 ---
  .../net/wireless/broadcom/brcm80211/Kconfig   |   22 +-
@@ -13817,5 +13817,5 @@ index 268171600087..b8112d61e03a 100644
  	spin_lock_irqsave(&wdev->event_lock, flags);
  	list_add_tail(&ev->list, &wdev->event_list);
 -- 
-2.25.1
+2.53.0
 
