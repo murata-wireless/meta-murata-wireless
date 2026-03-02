@@ -35,7 +35,7 @@ SRCREV_ifx-linux-firmware-longma="c6c73c37e89b088624f7970fb0a7ef535c5dee0b"
 SRCREV_ifx-linux-firmware-drogon="dc38e700612b334080e0b6df69070a88c4c2a12b"
 SRCREV_cyw-fmac-fw="8cdb1886852e0b5f9876654619a8371b952bf248"
 SRCREV_cyw-fmac-nvram="411c87d4cf924a1a5415273265fd54d7d7d4044f"
-SRCREV_cyw-bt-patch="23de75a4e5384d16e8478f668b769b0d24ede0de"
+SRCREV_cyw-bt-patch="64ac86708253e12d7089cf75ef8dcc9b30594958"
 SRCREV_cyw-fmac-utils-imx32="dad9ed86bf6691910197bc91d42a45ea8175180c"
 SRCREV_cyw-fmac-utils-imx64="368bd9a4163e115468d79c238192b41f6266c523"
 
@@ -89,7 +89,7 @@ do_install () {
     install -m 444 ${WORKDIR}/sources/cyw-bt-patch/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd ${D}/${base_libdir}/firmware/brcm/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd
     install -m 444 ${WORKDIR}/sources/cyw-bt-patch/CYW55560A1_001.002.087.0269.0100.FCC.2EA.sAnt.hcd ${D}/${base_libdir}/firmware/brcm/BCM.hcd
     install -m 444 ${WORKDIR}/sources/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}/${base_libdir}/firmware/brcm/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
-    install -m 444 ${WORKDIR}/sources/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033.2FY.hcd ${D}/${base_libdir}/firmware/brcm/CYW55500A1_001.002.032.0040.0033.2FY.hcd
+    install -m 444 ${WORKDIR}/sources/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033.FCC.2FY.2GY.hcd ${D}/${base_libdir}/firmware/brcm/CYW55500A1_001.002.032.0040.0033.FCC.2FY.2GY.hcd
     install -m 444 ${WORKDIR}/sources/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}/${base_libdir}/firmware/brcm/README_BT_PATCHFILE.txt
 
     install -m 444 ${WORKDIR}/sources/cyw-bt-patch/BCM4345C0_003.001.025.0187.0366.1MW.hcd   ${D}/${base_libdir}/firmware/brcm/murata-master/_BCM4345C0_003.001.025.0187.0366.1MW.hcd
@@ -106,7 +106,7 @@ do_install () {
     install -m 444 ${WORKDIR}/sources/cyw-bt-patch/BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd ${D}/${base_libdir}/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0275.2BZ.sAnt.hcd
     install -m 444 ${WORKDIR}/sources/cyw-bt-patch/BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd ${D}/${base_libdir}/firmware/brcm/murata-master/_BCM4359D0_004.001.016.0241.0274.2BZ.dAnt.hcd
     install -m 444 ${WORKDIR}/sources/cyw-bt-patch/CYW4373A0_001.001.025.0119.0000.2AE.USB_FCC.hcd ${D}/${base_libdir}/firmware/brcm/murata-master/_CYW4373A0_001.001.025.0119.0000.2AE.USB_FCC.hcd
-    install -m 444 ${WORKDIR}/sources/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033.2FY.hcd ${D}/${base_libdir}/firmware/brcm/murata-master/_CYW55500A1_001.002.032.0040.0033.2FY.hcd
+    install -m 444 ${WORKDIR}/sources/cyw-bt-patch/CYW55500A1_001.002.032.0040.0033.FCC.2FY.2GY.hcd ${D}/${base_libdir}/firmware/brcm/murata-master/_CYW55500A1_001.002.032.0040.0033.FCC.2FY.2GY.hcd
     install -m 444 ${WORKDIR}/sources/cyw-bt-patch/README_BT_PATCHFILE.txt ${D}/${base_libdir}/firmware/brcm/murata-master/README_BT_PATCHFILE.txt
 
 
@@ -144,6 +144,8 @@ do_install () {
     install -m 444 ${WORKDIR}/sources/cyw-fmac-fw/cyfmac55572-sdio.2EA.clm_blob_STAIndoor  ${D}/${base_libdir}/firmware/cypress/cyfmac55572-sdio.clm_blob
     install -m 444 ${WORKDIR}/sources/cyw-fmac-fw/cyfmac55572-pcie.2EA.clm_blob_STAIndoor  ${D}/${base_libdir}/firmware/cypress/cyfmac55572-pcie.clm_blob
     install -m 444 ${WORKDIR}/sources/cyw-fmac-fw/cyfmac43022-sdio.2GF.IndoorSTA.clm_blob  ${D}/${base_libdir}/firmware/cypress/cyfmac43022-sdio.clm_blob
+    install -m 444 ${WORKDIR}/sources/cyw-fmac-fw/cyfmac55500-sdio.2FY.STAIndoor.clm_blob  ${D}/${base_libdir}/firmware/cypress/cyfmac55500-sdio.2FY.STAIndoor.clm_blob
+    install -m 444 ${WORKDIR}/sources/cyw-fmac-fw/cyfmac55500-sdio.2GY.STAIndoor.clm_blob  ${D}/${base_libdir}/firmware/cypress/cyfmac55500-sdio.2GY.STAIndoor.clm_blob
     install -m 444 ${WORKDIR}/sources/cyw-fmac-fw/cyfmac55500-sdio.2FY.STAIndoor.clm_blob  ${D}/${base_libdir}/firmware/cypress/cyfmac55500-sdio.clm_blob
     install -m 444 ${WORKDIR}/sources/cyw-fmac-fw/README_CLM_BLOB.txt ${D}/${base_libdir}/firmware/cypress/README_CLM_BLOB.txt
     install -m 444 ${WORKDIR}/sources/cyw-fmac-fw/README_FW.txt ${D}/${base_libdir}/firmware/cypress/README_FW.txt
@@ -166,6 +168,8 @@ do_install () {
 	install -m 444 ${WORKDIR}/sources/cyw-fmac-nvram/cyfmac4373-sdio.2AE.txt ${D}/${base_libdir}/firmware/cypress/cyfmac4373-sdio.2AE.txt
 
 #   2FY has an eror with OOB
+	install -m 444 ${WORKDIR}/sources/cyw-fmac-nvram/cyfmac55500-sdio.2GY.txt ${D}/${base_libdir}/firmware/cypress/cyfmac55500-sdio.2GY.txt
+	install -m 444 ${WORKDIR}/sources/cyw-fmac-nvram/cyfmac55500-sdio.2FY.txt ${D}/${base_libdir}/firmware/cypress/cyfmac55500-sdio.2FY.txt
 	install -m 444 ${WORKDIR}/sources/cyw-fmac-nvram/cyfmac55500-sdio.2FY.txt ${D}/${base_libdir}/firmware/cypress/cyfmac55500-sdio.txt
 
 	install -m 444 ${WORKDIR}/sources/cyw-fmac-nvram/cyfmac5557x-pcie_sdio.sant.2EA_2EC.txt ${D}/${base_libdir}/firmware/cypress/cyfmac55572-sdio.txt
