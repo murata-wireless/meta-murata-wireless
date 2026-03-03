@@ -4312,7 +4312,15 @@ if [ "$PROMPT" = "n" ] || [ "$PROMPT" = "N" ]; then
 
 	if [ "$PROMPT" = "U" ] || [ "$PROMPT" = "u" ]; then
 		# For 5.4.47 onwards, as per i.MX Yocto Project Users Guide, x11 Distro is no longer supported
-		if [ ${linuxVersion} = ${LINUX_KERNEL_5_4_47_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_10_52_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_5_15_32_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_6_1_1_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_6_1_36_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_6_6_3_STR} ] || [ ${linuxVersion} = ${LINUX_KERNEL_6_6_23_STR} || [ ${linuxVersion} = ${LINUX_KERNEL_6_6_52_STR} || [ ${linuxVersion} = ${LINUX_KERNEL_6_12_3_STR} ]; then
+		if [ ${linuxVersion} = ${LINUX_KERNEL_5_4_47_STR} ] || \
+           [ ${linuxVersion} = ${LINUX_KERNEL_5_10_52_STR} ] || \
+           [ ${linuxVersion} = ${LINUX_KERNEL_5_15_32_STR} ] || \
+           [ ${linuxVersion} = ${LINUX_KERNEL_6_1_1_STR} ] || \
+           [ ${linuxVersion} = ${LINUX_KERNEL_6_1_36_STR} ] || \
+           [ ${linuxVersion} = ${LINUX_KERNEL_6_6_3_STR} ] || \
+           [ ${linuxVersion} = ${LINUX_KERNEL_6_6_23_STR} ] || \
+           [ ${linuxVersion} = ${LINUX_KERNEL_6_6_52_STR} ] || \
+           [ ${linuxVersion} = ${LINUX_KERNEL_6_12_3_STR} ]; then
 			select_supported_distros_for_5_x_onwards
 		else
 			select_previous_distros_supported
