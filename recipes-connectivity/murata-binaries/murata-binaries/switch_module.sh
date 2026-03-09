@@ -85,6 +85,10 @@ function clean_up() {
       cp /lib/modules/$(uname -r)/kernel/drivers/bluetooth/btbcm.ko /usr/share/murata_wireless/btbcm.ko 
   fi
 
+  # Delete the special file created for 2FY
+  if [ -e /etc/modprobe.d/2fy_m2.conf ]; then
+    rm /etc/modprobe.d/2fy_m2.conf
+  fi
 }
 
 
@@ -117,7 +121,7 @@ function prepare_for_cypress() {
      cp /lib/firmware/brcm/BCM4345C0_003.001.025.0187.0366.1MW.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   YN|1YN)
-     cp /lib/firmware/brcm/CYW4343A2_001.003.016.0031.0000.1YN.hcd /lib/firmware/brcm/BCM.hcd
+     cp /lib/firmware/brcm/CYW4343A2_001.003.016.0071.0017.1YN.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   2AE-USB|AE-USB|2BC-USB|BC-USB)
      cp /lib/firmware/brcm/murata-master/_CYW4373A0_001.001.025.0119.0000.2AE.USB_FCC.hcd /lib/firmware/brcm/BCM.hcd
@@ -146,14 +150,17 @@ function prepare_for_cypress() {
   2FY|FY)
      cp /lib/firmware/cypress/cyfmac55500-sdio.trxse /lib/firmware/cypress/cyfmac55500-sdio.trxse
      cp /lib/firmware/cypress/cyfmac55500-sdio.2FY.txt /lib/firmware/cypress/cyfmac55500-sdio.txt
-     cp /lib/firmware/cypress/cyfmac55500-sdio.2FY.clm_blob /lib/firmware/cypress/cyfmac55500-sdio.clm_blob
+     cp /lib/firmware/cypress/cyfmac55500-sdio.2FY.STAIndoor.clm_blob /lib/firmware/cypress/cyfmac55500-sdio.clm_blob
      cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.FCC.2FY.2GY.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   2GY|GY)
      cp /lib/firmware/cypress/cyfmac55500-sdio.trxse /lib/firmware/cypress/cyfmac55500-sdio.trxse
      cp /lib/firmware/cypress/cyfmac55500-sdio.2GY.txt /lib/firmware/cypress/cyfmac55500-sdio.txt
-     cp /lib/firmware/cypress/cyfmac55500-sdio.2GY.clm_blob /lib/firmware/cypress/cyfmac55500-sdio.clm_blob
+     cp /lib/firmware/cypress/cyfmac55500-sdio.2GY.STAIndoor.clm_blob /lib/firmware/cypress/cyfmac55500-sdio.clm_blob
      cp /lib/firmware/brcm/CYW55500A1_001.002.032.0040.0033.FCC.2FY.2GY.hcd /lib/firmware/brcm/BCM.hcd
+    ;;
+  2GF|GF)
+     cp /lib/firmware/brcm/CYW43012C1_003.002.024.0036.0008.2GF.hcd /lib/firmware/brcm/BCM.hcd
     ;;
   esac
 
@@ -165,13 +172,19 @@ function prepare_for_cypress() {
 
 function prepare_for_cypress_ae_usb() {
   rm -rf /lib/firmware/cypress/*
-  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2AE.bin /lib/firmware/cypress/cyfmac4373.bin
+#  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2AE.bin /lib/firmware/cypress/cyfmac4373.bin
+  echo "Refer to Murata Wi-Fi/Bluetooth (IFX) for i.MX Linux User Guide"
+  echo " - Section 8.6 on how to create the USB firmware."
+  echo "Link: https://community.murata.com/s/contentdocument/0695F00000HrYUVQA3"
   cp /usr/share/murata_wireless/cypress/cyfmac4373-sdio.2AE.clm_blob /lib/firmware/cypress/cyfmac4373.clm_blob
 }
 
 function prepare_for_cypress_bc_usb() {
   rm -rf /lib/firmware/cypress/*
-  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2BC.bin /lib/firmware/cypress/cyfmac4373.bin
+#  cp /usr/share/murata_wireless/cypress/cyfmac4373-usb.2BC.bin /lib/firmware/cypress/cyfmac4373.bin
+  echo "Refer to Murata Wi-Fi/Bluetooth (IFX) for i.MX Linux User Guide"
+  echo " - Section 8.6 on how to create the USB firmware."
+  echo "Link: https://community.murata.com/s/contentdocument/0695F00000HrYUVQA3"
   cp /usr/share/murata_wireless/cypress/cyfmac4373-sdio.2BC.clm_blob /lib/firmware/cypress/cyfmac4373.clm_blob
 }
 
@@ -195,6 +208,12 @@ function switch_to_cypress_sdio() {
 #     fw_setenv cmd_custom
 #     restore_ko
 #  fi
+
+  # Set sdio_idleclk_disable=1 parameter when loading brcmfmac for 2FY/2GY.
+  # The file created here is deleted in clean_up function above.
+  if [ $cyw_module == "2FY" ] || [ $cyw_module == "2GY" ]; then
+     echo "options brcmfmac sdio_idleclk_disable=1" > /etc/modprobe.d/2fy_m2.conf
+  fi
 
   prepare_for_cypress
   echo "Setup complete."
@@ -276,10 +295,10 @@ fi
 cyw_module=${1^^}
  
 case ${1^^} in
-  CYW-PCIE|XA|1XA|2EA-PCIE)
+  XA|1XA|2EA-PCIE)
     switch_to_cypress_pcie
     ;;
-  CYW-SDIO|LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ|GF|2GF|FY|2FY|GY|2GY)
+  LV|1LV|DX|1DX|MW|1MW|YN|1YN|2AE|2BC|2EA-SDIO|BZ|2BZ|GF|2GF|FY|2FY|GY|2GY)
     switch_to_cypress_sdio
     ;;
   AE-USB|2AE-USB)
