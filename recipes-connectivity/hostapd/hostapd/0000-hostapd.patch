@@ -214,7 +214,7 @@ index 3fb0597..d456d11 100644
 @@ -3187,6 +3222,32 @@ static int hostapd_config_fill(struct hostapd_config *conf,
  				   line, pos);
  			return 1;
- }
+ 		}
 +	} else if (os_strcmp(buf, "rsn_override_pairwise") == 0) {
 +		bss->rsn_override_pairwise =
 +			hostapd_config_parse_cipher(line, pos);
@@ -380,8 +380,8 @@ index 39b9ef5..c07f966 100644
  					     settings.punct_bitmap);
  	if (ret) {
 @@ -2735,6 +2769,12 @@ static int hostapd_ctrl_iface_chan_switch(struct hostapd_iface *iface,
- 	return 0;
- }
+ 		return 0;
+ 	}
  
 +	if (iface->cac_started) {
 +		wpa_printf(MSG_DEBUG,
@@ -439,7 +439,7 @@ index 39b9ef5..c07f966 100644
  	/* USD shall use both solicited and unsolicited transmissions */
 @@ -3738,6 +3809,11 @@ static int hostapd_ctrl_nan_publish(struct hostapd_data *hapd, char *cmd,
  			continue;
- 	}
+ 		}
  
 +		if (os_strcmp(token, "p2p=1") == 0) {
 +			p2p = true;
@@ -450,7 +450,7 @@ index 39b9ef5..c07f966 100644
  			params.solicited = false;
  			continue;
 @@ -3759,7 +3835,7 @@ static int hostapd_ctrl_nan_publish(struct hostapd_data *hapd, char *cmd,
- }
+ 	}
  
  	publish_id = hostapd_nan_usd_publish(hapd, service_name, srv_proto_type,
 -					     ssi, &params);
@@ -1516,7 +1516,7 @@ index eb8a383..3107770 100644
  			return -1;
 @@ -2285,6 +2320,24 @@ int main(int argc, char *argv[])
  				closedir(dir);
- 	}
+ 			}
  		}
 +
 +#ifdef CONFIG_IEEE80211BE
@@ -1573,7 +1573,7 @@ index 00e02bb..512cd89 100644
 +			return -1;
 +		}
 +		hostapd_mld_add_link(hapd);
- }
+ 	}
  #endif /* CONFIG_IEEE80211BE */
  
 @@ -748,6 +752,7 @@ static void hostapd_global_cleanup_mld(struct hapd_interfaces *interfaces)
@@ -1823,7 +1823,7 @@ index cec0c98..7d43f34 100644
 --- a/src/ap/beacon.c
 +++ b/src/ap/beacon.c
 @@ -403,6 +403,81 @@ static u8 * hostapd_get_osen_ie(struct hostapd_data *hapd, u8 *pos, size_t len)
- 	}
+ }
  
  
 +static u8 * hostapd_get_rsne_override(struct hostapd_data *hapd, u8 *pos,
@@ -1905,7 +1905,7 @@ index cec0c98..7d43f34 100644
  {
  #ifdef CONFIG_TESTING_OPTIONS
 @@ -439,6 +514,35 @@ static u8 * hostapd_eid_ecsa(struct hostapd_data *hapd, u8 *eid)
- 	}
+ }
  
  
 +static u8 * hostapd_eid_max_cs_time(struct hostapd_data *hapd, u8 *eid)
@@ -2752,7 +2752,7 @@ index cec0c98..7d43f34 100644
 +#endif /* CONFIG_IEEE80211BE */
 +
  	return 0;
- 		}
+ }
  
 diff --git a/src/ap/ctrl_iface_ap.c b/src/ap/ctrl_iface_ap.c
 index d4d73de..b93a5d2 100644
@@ -2783,7 +2783,7 @@ index d4d73de..b93a5d2 100644
 +	}
  
  	return 0;
- 		}
+ }
 @@ -723,15 +726,18 @@ int hostapd_ctrl_iface_disassociate(struct hostapd_data *hapd,
  	}
  #endif /* CONFIG_P2P_MANAGER */
@@ -3009,7 +3009,7 @@ index 8b49b53..d0021f6 100644
 +#endif /* CONFIG_IEEE80211BE */
  
  	if (!sta || !hapd->conf->disassoc_low_ack || sta->agreed_to_steer)
- 			return;
+ 		return;
 @@ -1979,50 +2054,6 @@ static int hostapd_event_new_sta(struct hostapd_data *hapd, const u8 *addr)
  }
  
@@ -3293,7 +3293,7 @@ index a05de03..512bf74 100644
 +	hostapd_free_multi_hw_info(iface->multi_hw_info);
 +	iface->multi_hw_info = NULL;
 +	iface->current_hw_info = NULL;
- 	}
+ }
  
  
 @@ -1440,7 +1453,6 @@ static int hostapd_setup_bss(struct hostapd_data *hapd, int first,
@@ -3301,15 +3301,15 @@ index a05de03..512bf74 100644
  				hapd->drv_priv = h_hapd->drv_priv;
  				hapd->interface_added = h_hapd->interface_added;
 -				hostapd_mld_add_link(hapd);
- 		wpa_printf(MSG_DEBUG,
+ 				wpa_printf(MSG_DEBUG,
  					   "Setup of non first link (%d) BSS of MLD %s",
  					   hapd->mld_link_id, hapd->conf->iface);
 @@ -1471,7 +1483,6 @@ static int hostapd_setup_bss(struct hostapd_data *hapd, int first,
  				   hapd->mld_link_id, hapd->conf->iface);
  			os_memcpy(hapd->mld->mld_addr, hapd->own_addr,
  				  ETH_ALEN);
--				hostapd_mld_add_link(hapd);
- 	}
+-			hostapd_mld_add_link(hapd);
+ 		}
  #endif /* CONFIG_IEEE80211BE */
  	}
 @@ -1486,8 +1497,13 @@ setup_mld:
@@ -3321,14 +3321,14 @@ index a05de03..512bf74 100644
 +			wpa_printf(MSG_ERROR,
 +				   "MLD: Failed to add link %d in MLD %s",
 +				   hapd->mld_link_id, hapd->conf->iface);
- 				return -1;
-+			}
+ 			return -1;
++		}
 +		hostapd_mld_add_link(hapd);
- 		}
+ 	}
  #endif /* CONFIG_IEEE80211BE */
  
 @@ -1808,12 +1824,36 @@ int hostapd_set_acl(struct hostapd_data *hapd)
- 	}
+ }
  
  
 +static int hostapd_set_ctrl_sock_iface(struct hostapd_data *hapd)
@@ -3356,7 +3356,7 @@ index a05de03..512bf74 100644
  {
  	if (!hapd->iface->interfaces ||
  	    !hapd->iface->interfaces->ctrl_iface_init)
- 	return 0;
+ 		return 0;
  
 +	if (hostapd_set_ctrl_sock_iface(hapd))
 +		return -1;
@@ -3632,12 +3632,12 @@ index c455660..02d6759 100644
 +	}
 +
  	return 0;
- 	}
+ }
  
 @@ -1391,3 +1413,34 @@ int hostapd_hw_skip_mode(struct hostapd_iface *iface,
- }
- 		return 0;
  	}
+ 	return 0;
+ }
 +
 +
 +void hostapd_free_multi_hw_info(struct hostapd_multi_hw_info *multi_hw_info)
@@ -3684,7 +3684,7 @@ index c682c6d..73663d0 100644
  hostapd_free_hw_features(struct hostapd_hw_modes *hw_features,
 @@ -103,6 +105,16 @@ static inline int hostapd_determine_mode(struct hostapd_iface *iface)
  	return 0;
- 	}
+ }
  
 +static inline
 +void hostapd_free_multi_hw_info(struct hostapd_multi_hw_info *multi_hw_info)
@@ -3766,7 +3766,7 @@ index 6c516bc..5313718 100644
 +
  	for (i = 0; groups[i] > 0; i++) {
  		if (sae->group == groups[i])
- 		break;
+ 			break;
 @@ -1247,12 +1266,18 @@ static int sae_status_success(struct hostapd_data *hapd, u16 status_code)
  
  static int sae_is_group_enabled(struct hostapd_data *hapd, int group)
@@ -3972,7 +3972,7 @@ index 6c516bc..5313718 100644
  		p = hostapd_eid_qos_map_set(hapd, p);
  
 @@ -7220,16 +7326,11 @@ u8 * hostapd_eid_txpower_envelope(struct hostapd_data *hapd, u8 *eid)
- 	}
+ }
  
  
 -u8 * hostapd_eid_wb_chsw_wrapper(struct hostapd_data *hapd, u8 *eid)
@@ -3994,14 +3994,14 @@ index 6c516bc..5313718 100644
  	 * IEEE P802.11-REVme/D4.0, 9.4.2.159 and Table 9-314. */
 @@ -7251,20 +7352,6 @@ u8 * hostapd_eid_wb_chsw_wrapper(struct hostapd_data *hapd, u8 *eid)
  		return eid;
- }
+ 	}
  
 -	freq1 = hapd->cs_freq_params.center_freq1 ?
 -		hapd->cs_freq_params.center_freq1 :
 -		hapd->cs_freq_params.freq;
 -	if (ieee80211_freq_to_chan(freq1, &chan1) !=
 -	    HOSTAPD_MODE_IEEE80211A)
--	return eid;
+-		return eid;
 -
 -	if (hapd->cs_freq_params.center_freq2 &&
 -	    ieee80211_freq_to_chan(hapd->cs_freq_params.center_freq2,
@@ -4169,7 +4169,7 @@ index b935ee8..89f8ffd 100644
  	pos += prime_len;
  
 @@ -882,6 +884,7 @@ sae_commit_skip_fixed_fields(const struct ieee80211_mgmt *mgmt, size_t len,
- }
+ 	}
  
  	if (pos - mgmt->u.auth.variable > (int) len) {
 +	truncated:
@@ -4210,11 +4210,11 @@ index b935ee8..89f8ffd 100644
 +				continue;
 +			wpa_printf(MSG_DEBUG,
 +				   "SAE: Found MLD STA for SAE confirm based on link address");
-+				break;
++			break;
 +		}
 +		if (!sta)
 +			return NULL;
- 		}
+ 	}
  
  	if (!sta->sae || sta->sae->state < SAE_COMMITTED || !sta->sae->tmp) {
 @@ -929,9 +954,12 @@ sae_confirm_skip_fixed_fields(struct hostapd_data *hapd,
@@ -4235,7 +4235,7 @@ index f90f125..4c39e40 100644
 --- a/src/ap/ieee802_11_ht.c
 +++ b/src/ap/ieee802_11_ht.c
 @@ -79,6 +79,51 @@ u8 * hostapd_eid_ht_capabilities(struct hostapd_data *hapd, u8 *eid)
- 	}
+ }
  
  
 +static void set_ht_param(struct hostapd_data *hapd,
@@ -4632,9 +4632,9 @@ index 504ecf1..0eb5eb4 100644
 +		/* MLME-DEAUTHENTICATE.request */
 +		wpa_sta_disconnect(wpa_auth, sm->addr,
 +				   WLAN_REASON_PREV_AUTH_NOT_VALID);
-+			goto out;
++		goto out;
 +
-+		}
++	}
 +
  #ifdef CONFIG_P2P
  	if (kde.ip_addr_req && kde.ip_addr_req[0] &&
@@ -4689,7 +4689,7 @@ index 504ecf1..0eb5eb4 100644
  
 -	wpa_auth->cb->get_ml_key_info(wpa_auth->cb_ctx, info);
 +	wpa_auth->cb->get_ml_key_info(wpa_auth->cb_ctx, info, rekey);
- 	}
+ }
  
  
 @@ -4288,6 +4343,7 @@ static u8 * wpa_auth_ml_group_kdes(struct wpa_state_machine *sm, u8 *pos)
@@ -4960,7 +4960,7 @@ index 504ecf1..0eb5eb4 100644
 +		wpa_auth_logger(wpa_auth, wpa_auth_get_spa(sm),
  				LOGGER_DEBUG,
  				"GUpdateStationKeys was already set when marking station for GTK rekeying");
- }
+ 	}
 @@ -5501,6 +5702,11 @@ static int wpa_group_update_sta(struct wpa_state_machine *sm, void *ctx)
  		return 0;
  
@@ -5277,7 +5277,7 @@ index e725615..cb93d3c 100644
 -						 info->beacon_prot);
 +						 info->beacon_prot,
 +						 rekey);
- 				continue;
+ 			continue;
  		}
  
 @@ -1573,7 +1624,8 @@ static int hostapd_wpa_auth_get_ml_key_info(void *ctx,
@@ -6445,7 +6445,7 @@ index 2c47bf8..bffb440 100644
 @@ -1033,3 +1033,18 @@ bool is_punct_bitmap_valid(u16 bw, u16 pri_ch_bit_pos, u16 punct_bitmap)
  
  	return false;
- 		}
+ }
 +
 +
 +bool chan_in_current_hw_info(struct hostapd_multi_hw_info *current_hw_info,
@@ -6509,7 +6509,7 @@ index ba1cb52..56d5569 100644
 @@ -391,6 +413,10 @@ static int ieee802_11_parse_extension(const u8 *pos, size_t elen,
  		elems->mbssid_known_bss = pos;
  		elems->mbssid_known_bss_len = elen;
- 			break;
+ 		break;
 +	case WLAN_EID_EXT_PASN_ENCRYPTED_DATA:
 +		elems->pasn_encrypted_data = pos;
 +		elems->pasn_encrypted_data_len = elen;
@@ -7301,7 +7301,7 @@ index 12fad31..acde4f3 100644
  		 * unsolicited Publish message. */
 @@ -873,6 +904,9 @@ static void nan_de_rx_subscribe(struct nan_de *de, struct nan_de_service *srv,
  		return;
- }
+ 	}
  
 +	if (de->offload)
 +		goto offload;
@@ -7615,7 +7615,7 @@ index 5b58ffb..ddf1966 100644
 + * @QCA_WLAN_VENDOR_ATTR_SCAN_SKIP_CHANNEL_RECENCY_PERIOD: Optional (u32). Skip
 + *	scanning channels which are scanned recently within configured time
 + *	(in ms).
- 	 */
+  */
  enum qca_wlan_vendor_attr_scan {
  	QCA_WLAN_VENDOR_ATTR_SCAN_INVALID_PARAM = 0,
 @@ -2645,6 +2741,7 @@ enum qca_wlan_vendor_attr_scan {
@@ -7646,7 +7646,7 @@ index 5b58ffb..ddf1966 100644
  	QCA_WLAN_VENDOR_ATTR_CONFIG_MAX =
 @@ -7417,6 +7525,10 @@ enum qca_wlan_vendor_attr_external_acs_event {
  	 * for External ACS
-  */
+ 	 */
  	QCA_WLAN_VENDOR_ATTR_EXTERNAL_ACS_EVENT_AFC_CAPABILITY = 15,
 +	/* Link ID attibute (u8) is used to identify a specific link affiliated
 +	 * to an AP MLD.
@@ -7656,7 +7656,7 @@ index 5b58ffb..ddf1966 100644
  	/* keep last */
  	QCA_WLAN_VENDOR_ATTR_EXTERNAL_ACS_EVENT_LAST,
 @@ -10358,6 +10470,26 @@ enum qca_wlan_vendor_attr_wifi_test_config {
-  */
+ 	 */
  	QCA_WLAN_VENDOR_ATTR_WIFI_TEST_CONFIG_EHT_SCS_TRAFFIC_SUPPORT = 73,
  
 +	/* 8-bit unsigned value to disable or not disable the channel switch
@@ -7693,7 +7693,7 @@ index 5b58ffb..ddf1966 100644
   * @QCA_WLAN_VENDOR_ATTR_TWT_SETUP_BCAST: Flag attribute.
   * Disable (flag attribute not present) - Individual TWT
 @@ -12411,6 +12544,12 @@ enum qca_wlan_vendor_attr_add_sta_node_params {
-  */
+ 	 */
  	QCA_WLAN_VENDOR_ATTR_ADD_STA_NODE_IS_ML = 3,
  
 +	/*
@@ -8261,7 +8261,7 @@ index 1cfdd9a..a8c7c41 100644
 +		return 0;
 +	}
 +
- 			return 2;
+ 	return 2;
  }
  
 @@ -4260,3 +4330,24 @@ int wpa_pasn_add_extra_ies(struct wpabuf *buf, const u8 *extra_ies, size_t len)
@@ -8747,7 +8747,7 @@ index 3e77474..155c9ad 100644
 +	 */
 +	struct hostapd_multi_hw_info *
 +	(*get_multi_hw_info)(void *priv, unsigned int *num_multi_hws);
-+
++	
 +	/**
 +	 * setup_twt - Setup a TWT session
 +	 * @params: Setup TWT params
@@ -9460,7 +9460,7 @@ index e6fbad9..d3f3989 100644
  	wpa_printf(MSG_DEBUG, "nl80211: Remove beacon (ifindex=%d)",
 @@ -3151,9 +3159,6 @@ static void wpa_driver_nl80211_deinit(struct i802_bss *bss)
  				   bss->ifname, bss->brname, strerror(errno));
- 		}
+ 	}
  
 -	if (drv->rtnl_sk)
 -		nl_socket_free(drv->rtnl_sk);
@@ -9470,7 +9470,7 @@ index e6fbad9..d3f3989 100644
  					  0) < 0)
 @@ -3173,6 +3178,9 @@ static void wpa_driver_nl80211_deinit(struct i802_bss *bss)
  		nl80211_remove_links(bss);
- }
+ 	}
  
 +	if (drv->rtnl_sk)
 +		nl_socket_free(drv->rtnl_sk);
@@ -9564,7 +9564,7 @@ index e6fbad9..d3f3989 100644
  	    nla_put_u32(msg, NL80211_ATTR_WPA_VERSIONS, ver))
  		goto fail;
 @@ -5865,13 +5909,15 @@ fail:
- 	}
+ }
  
  
 -static void rtnl_neigh_delete_fdb_entry(struct i802_bss *bss, const u8 *addr)
@@ -9803,7 +9803,7 @@ index e6fbad9..d3f3989 100644
 @@ -8458,6 +8595,12 @@ static int i802_set_wds_sta(void *priv, const u8 *addr, int aid, int val,
  			wpa_printf(MSG_ERROR, "nl80211: Failed to set WDS STA "
  				   "interface %s up", name);
- 	}
+ 		}
 +
 +		if (add_br &&
 +		    linux_br_add_if(drv->global->ioctl_sock,
@@ -9902,7 +9902,7 @@ index e6fbad9..d3f3989 100644
 +
 +		/* Notify that the MLD interface is removed */
 +		wpa_supplicant_event(bss->ctx, EVENT_MLD_INTERFACE_FREED, NULL);
- }
+ 	}
  
  	return 0;
  }
@@ -10109,7 +10109,7 @@ index e6fbad9..d3f3989 100644
 -static int wpa_driver_do_broadcom_acs(struct wpa_driver_nl80211_data *drv,
 -				      struct drv_acs_params *params)
 +static int nl80211_nan_flush(void *priv)
- 	{
+ {
 +	struct i802_bss *bss = priv;
 +	struct wpa_driver_nl80211_data *drv = bss->drv;
  	struct nl_msg *msg;
@@ -10364,7 +10364,7 @@ index e6fbad9..d3f3989 100644
 +	struct nlattr *container, *attr;
 +	int ret;
 +
-+		wpa_printf(MSG_DEBUG,
++	wpa_printf(MSG_DEBUG,
 +		   "nl80211: Start NAN USD subscribe: freq=%u, ttl=%u",
 +		   params->freq, params->ttl);
 +	wpa_hexdump_buf(MSG_MSGDUMP, "nl80211: USD elements", elems);
@@ -10498,7 +10498,7 @@ index e6fbad9..d3f3989 100644
 +		goto fail;
 +	nla_nest_end(msg, data);
 +
-+			wpa_printf(MSG_DEBUG,
++	wpa_printf(MSG_DEBUG,
 +		   "nl80211: ACS Params: HW_MODE: %d HT: %d HT40: %d VHT: %d BW: %d",
 +		   params->hw_mode, params->ht_enabled, params->ht40_enabled,
 +		   params->vht_enabled, params->ch_width);
@@ -10508,7 +10508,7 @@ index e6fbad9..d3f3989 100644
 +		wpa_printf(MSG_ERROR,
 +			   "nl80211: BRCM Failed to invoke driver ACS function: %s",
 +			   strerror(errno));
-+		}
++	}
 +
 +	msg = NULL;
 +fail:
@@ -11339,7 +11339,7 @@ index 618746e..08fee47 100644
  {
 @@ -409,5 +416,7 @@ int wpa_driver_nl80211_abort_scan(void *priv, u64 scan_cookie);
  int wpa_driver_nl80211_vendor_scan(struct i802_bss *bss,
- 				  struct wpa_driver_scan_params *params);
+ 				   struct wpa_driver_scan_params *params);
  int nl80211_set_default_scan_ies(void *priv, const u8 *ies, size_t ies_len);
 +struct hostapd_multi_hw_info *
 +nl80211_get_multi_hw_info(struct i802_bss *bss, unsigned int *num_multi_hws);
@@ -11376,7 +11376,7 @@ index dc16bd4..a29f4fb 100644
 +					drv->connect_ext_vendor_cmd_avail = 1;
 +					break;
  #endif /* CONFIG_DRIVER_NL80211_QCA */
- 		}
+ 				}
  #ifdef CONFIG_DRIVER_NL80211_BRCM
 @@ -1134,6 +1142,42 @@ static int wiphy_info_handler(struct nl_msg *msg, void *arg)
  					break;
@@ -11693,7 +11693,7 @@ index aee815e..9a0338e 100644
  		drv->scan_for_auth = 0;
 @@ -2038,13 +2054,30 @@ static void send_scan_event(struct wpa_driver_nl80211_data *drv, int aborted,
  			  ETH_ALEN);
- }
+ 	}
  
 -	wpa_supplicant_event(drv->ctx, EVENT_SCAN_RESULTS, &event);
 +	/* Need to pass to the correct link ctx during AP MLD operation */
@@ -11779,7 +11779,7 @@ index aee815e..9a0338e 100644
 +				     drv->first_bss->ctx);
  		drv->vendor_scan_cookie = 0;
  		drv->last_scan_cmd = 0;
- }
+ 	}
 @@ -3894,7 +3950,7 @@ static void do_process_drv_event(struct i802_bss *bss, int cmd,
  
  	switch (cmd) {
@@ -11791,8 +11791,8 @@ index aee815e..9a0338e 100644
  			/*
 @@ -3906,40 +3962,40 @@ static void do_process_drv_event(struct i802_bss *bss, int cmd,
  			wpa_printf(MSG_DEBUG, "nl80211: Do not indicate scan-start event due to internal scan_for_auth");
- 		break;
- }
+ 			break;
+ 		}
 -		wpa_supplicant_event(drv->ctx, EVENT_SCAN_STARTED, NULL);
 +		wpa_supplicant_event(bss->ctx, EVENT_SCAN_STARTED, NULL);
  		break;
@@ -11822,7 +11822,7 @@ index aee815e..9a0338e 100644
  			drv->last_scan_cmd = 0;
  		} else {
  			external_scan_event = 1;
- }
+ 		}
 -		send_scan_event(drv, 0, tb, external_scan_event);
 +		send_scan_event(bss, 0, tb, external_scan_event);
  		break;
@@ -11849,7 +11849,7 @@ index aee815e..9a0338e 100644
  			drv->last_scan_cmd = 0;
  		} else {
  			external_scan_event = 1;
- }
+ 		}
 -		send_scan_event(drv, 1, tb, external_scan_event);
 +		send_scan_event(bss, 1, tb, external_scan_event);
  		break;
@@ -11867,7 +11867,7 @@ index aee815e..9a0338e 100644
  				   tb[NL80211_ATTR_FILS_ERP_NEXT_SEQ_NUM],
 @@ -4031,7 +4088,7 @@ static void do_process_drv_event(struct i802_bss *bss, int cmd,
  		mlme_event_remain_on_channel(drv, 1, tb);
- 			break;
+ 		break;
  	case NL80211_CMD_NOTIFY_CQM:
 -		nl80211_cqm_event(drv, tb);
 +		nl80211_cqm_event(bss, tb);
@@ -13456,7 +13456,7 @@ index 8e0fc35..cdb443c 100644
  	case P2P_DEV_DISC_REQ:
  		p2p_process_dev_disc_req(p2p, sa, data + 1, len - 1, rx_freq);
 @@ -2968,6 +2982,52 @@ bool is_p2p_6ghz_disabled(struct p2p_data *p2p)
- 	}
+ }
  
  
 +static void p2p_pairing_info_deinit(struct p2p_data *p2p)
@@ -14192,7 +14192,7 @@ index 30901b3..ac6bbf7 100644
 +	if (!subelems) {
 +		wpabuf_free(buf);
 +		return NULL;
-+		}
++	}
 +
  	group_capab = 0;
  	if (peer->flags & P2P_DEV_PREFER_PERSISTENT_GROUP) {
@@ -14272,7 +14272,7 @@ index 30901b3..ac6bbf7 100644
 +		else if (dev->p2p2 && dev->req_bootstrap_method)
 +			config_method = WPS_NOT_READY;
  		else
- 		return -1;
+ 			return -1;
  		return p2p_prov_disc_req(p2p, dev->info.p2p_device_addr,
 @@ -291,7 +303,7 @@ static struct wpabuf * p2p_build_go_neg_resp(struct p2p_data *p2p,
  					     u8 tie_breaker)
@@ -14386,7 +14386,7 @@ index 30901b3..ac6bbf7 100644
  }
  
 @@ -799,21 +820,21 @@ void p2p_check_pref_chan(struct p2p_data *p2p, int go,
- 	}
+ }
  
  
 -void p2p_process_go_neg_req(struct p2p_data *p2p, const u8 *sa,
@@ -14622,7 +14622,7 @@ index 30901b3..ac6bbf7 100644
  		p2p_parse_free(&msg);
 -		return;
 +		return NULL;
- 		}
+ 	}
  	dev->flags &= ~P2P_DEV_WAIT_GO_NEG_RESPONSE;
  	p2p_update_peer_6ghz_capab(dev, &msg);
 @@ -1245,7 +1297,7 @@ void p2p_process_go_neg_resp(struct p2p_data *p2p, const u8 *sa,
@@ -14655,7 +14655,7 @@ index 30901b3..ac6bbf7 100644
  		p2p_dbg(p2p, "PIN from peer Display");
 @@ -1430,6 +1485,7 @@ void p2p_process_go_neg_resp(struct p2p_data *p2p, const u8 *sa,
  		goto fail;
- }
+ 	}
  
 +skip:
  	if (go && p2p_go_select_channel(p2p, dev, &status) < 0)
@@ -14991,7 +14991,7 @@ index 70a7f6f..3fd66c2 100644
  		MAC2STR(sa), rx_freq);
  
  	if (p2p_parse(data, len, &msg))
--	return;
+-		return;
 +		return NULL;
  
  	dev = p2p_get_device(p2p, sa);
@@ -15052,7 +15052,7 @@ index 70a7f6f..3fd66c2 100644
 -out:
  	wpabuf_free(resp);
 -	p2p_parse_free(&msg);
- 	}
+ }
  
  
 diff --git a/src/p2p/p2p_parse.c b/src/p2p/p2p_parse.c
@@ -15061,7 +15061,7 @@ index 07d6ca0..cd3332d 100644
 +++ b/src/p2p/p2p_parse.c
 @@ -417,6 +417,60 @@ static int p2p_parse_attribute(u8 id, const u8 *data, u16 len,
  					msg->persistent_ssid_len));
- 			break;
+ 		break;
  	}
 +	case P2P_ATTR_CAPABILITY_EXTENSION:
 +		if (len < 2) {
@@ -15117,12 +15117,12 @@ index 07d6ca0..cd3332d 100644
 +		msg->wlan_ap_info = data;
 +		msg->wlan_ap_info_len = len;
 +		break;
- 		default:
+ 	default:
  		wpa_printf(MSG_DEBUG, "P2P: Skipped unknown attribute %d "
  			   "(length %d)", id, len);
 @@ -573,6 +627,18 @@ int p2p_parse_ies(const u8 *data, size_t len, struct p2p_message *msg)
- 			return -1;
- 		}
+ 		return -1;
+ 	}
  
 +	msg->p2p2_attributes = ieee802_11_vendor_ie_concat(data, len,
 +							   P2P2_IE_VENDOR_TYPE);
@@ -15133,7 +15133,7 @@ index 07d6ca0..cd3332d 100644
 +			wpa_hexdump_buf(MSG_MSGDUMP, "P2P: P2P2 IE data",
 +					msg->p2p2_attributes);
 +		p2p_parse_free(msg);
-+			return -1;
++		return -1;
 +	}
 +
  #ifdef CONFIG_WIFI_DISPLAY
@@ -15153,7 +15153,7 @@ index 542521e..fb20313 100644
 --- a/src/p2p/p2p_pd.c
 +++ b/src/p2p/p2p_pd.c
 @@ -181,6 +181,64 @@ static void p2ps_add_pd_req_attrs(struct p2p_data *p2p, struct p2p_device *dev,
- 	}
+ }
  
  
 +static struct wpabuf * p2p_build_prov_disc_bootstrap_req(struct p2p_data *p2p,
@@ -15218,7 +15218,7 @@ index 542521e..fb20313 100644
  					       struct p2p_device *dev,
  					       int join)
 @@ -249,6 +307,42 @@ static struct wpabuf * p2p_build_prov_disc_req(struct p2p_data *p2p,
- 	}
+ }
  
  
 +static struct wpabuf *
@@ -15261,7 +15261,7 @@ index 542521e..fb20313 100644
  						struct p2p_device *dev,
  						u8 dialog_token,
 @@ -563,10 +657,232 @@ do { \
- 	}
+ }
  
  
 -void p2p_process_prov_disc_req(struct p2p_data *p2p, const u8 *sa,
@@ -15292,7 +15292,7 @@ index 542521e..fb20313 100644
 +		if (end - pos < 1) {
 +			p2p_dbg(p2p, "Truncated PCEA");
 +			return;
-+	}
++		}
 +		dev->info.reg_info = *pos++;
 +	}
 +
@@ -15375,7 +15375,7 @@ index 542521e..fb20313 100644
 +		if (msg->pbma_info_len < 1 + cookie_len) {
 +			p2p_dbg(p2p, "Truncated PBMA");
 +			return;
-+	}
++		}
 +		cookie = pos;
 +
 +		if (!dev->bootstrap_params ||
@@ -15384,7 +15384,7 @@ index 542521e..fb20313 100644
 +			      cookie_len) != 0) {
 +			status = P2P_SC_FAIL_REJECTED_BY_USER;
 +			goto out;
-+	}
++		}
 +
 +		bootstrap = dev->bootstrap_params->bootstrap_method;
 +
@@ -15556,7 +15556,7 @@ index 542521e..fb20313 100644
 -					    msg.group_id, msg.group_id_len))
 +					    msg->group_id, msg->group_id_len))
  					break;
- }
+ 			}
  			if (i == p2p->num_groups) {
 @@ -652,29 +964,29 @@ void p2p_process_prov_disc_req(struct p2p_data *p2p, const u8 *sa,
  		 * Set adv_id here, so in case of an error, a P2PS PD Response
@@ -15688,7 +15688,7 @@ index 542521e..fb20313 100644
  			p2p_dbg(p2p,
  				"No common channels - force deferred flow");
  			auto_accept = 0;
- 	}
+ 		}
  
  		if (((remote_conncap & P2PS_SETUP_GROUP_OWNER) ||
 -		     msg.persistent_dev) && msg.operating_channel) {
@@ -16039,7 +16039,7 @@ index 542521e..fb20313 100644
  					0,
 -					msg.group_id, msg.group_id_len);
 +					msg->group_id, msg->group_id_len);
- }
+ 	}
  
  	if (reject != P2P_SC_FAIL_INFO_CURRENTLY_UNAVAILABLE)
 @@ -1197,10 +1507,28 @@ out:
@@ -16380,7 +16380,7 @@ index 542521e..fb20313 100644
  out:
  	dev->req_config_methods = 0;
 @@ -1603,6 +2009,24 @@ out:
- 	}
+ }
  
  
 +void p2p_handle_prov_disc_resp(struct p2p_data *p2p, const u8 *sa,
@@ -16414,7 +16414,7 @@ index 542521e..fb20313 100644
  			if (p2p->p2ps_prov->method == WPS_CONFIG_DISPLAY)
  				dev->req_config_methods = WPS_CONFIG_KEYPAD;
 @@ -1662,7 +2086,11 @@ int p2p_send_prov_disc_req(struct p2p_data *p2p, struct p2p_device *dev,
- 		return -1;
+ 			return -1;
  	}
  
 -	req = p2p_build_prov_disc_req(p2p, dev, join);
@@ -16493,7 +16493,7 @@ index e2c6681..25e44a1 100644
  		return;
 -	pasn->rsnxe_ie = rsnxe_ie;
 +	pasn->rsnxe_ie = os_memdup(rsnxe_ie, 2 + rsnxe_ie[1]);
- 	}
+ }
  
  
 @@ -192,6 +195,14 @@ int pasn_set_extra_ies(struct pasn_data *pasn, const u8 *extra_ies,
@@ -16900,9 +16900,9 @@ index f23979c..a21bec1 100644
 @@ -601,6 +632,7 @@ int wpa_supplicant_send_2_of_4(struct wpa_sm *sm, const unsigned char *dst,
  				  &rlen, (void *) &reply);
  	if (rbuf == NULL) {
- 			os_free(rsn_ie_buf);
+ 		os_free(rsn_ie_buf);
 +		os_free(buf2);
- 			return -1;
+ 		return -1;
  	}
  
 @@ -633,6 +665,7 @@ int wpa_supplicant_send_2_of_4(struct wpa_sm *sm, const unsigned char *dst,
@@ -16916,7 +16916,7 @@ index f23979c..a21bec1 100644
 @@ -990,6 +1023,8 @@ static void wpa_supplicant_process_1_of_4(struct wpa_sm *sm,
  				"WPA: Failed to get random data for SNonce");
  			goto failed;
- 	}
+ 		}
 +		if (wpa_sm_rsn_overriding_supported(sm))
 +			rsn_set_snonce_cookie(sm->snonce);
  		sm->renew_snonce = 0;
@@ -17111,7 +17111,7 @@ index f23979c..a21bec1 100644
 +		goto fail;
  	}
  
- 		return 0;
+ 	return 0;
 +fail:
 +	wpa_sm_deauthenticate(sm, WLAN_REASON_IE_IN_4WAY_DIFFERS);
 +	return -1;
