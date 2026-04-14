@@ -149,9 +149,9 @@ function clean_up() {
   fi
 
   # Delete the special file created for 2FY
-  if [ -e /etc/modprobe.d/2fy_m2.conf ]; then
-    rm /etc/modprobe.d/2fy_m2.conf
-  fi
+#  if [ -e /etc/modprobe.d/2fy_m2.conf ]; then
+#    rm /etc/modprobe.d/2fy_m2.conf
+#  fi
 }
 
 function prepare_for_nxp_bt() {
@@ -607,9 +607,9 @@ function switch_to_cypress_sdio() {
 
   # Set sdio_idleclk_disable=1 parameter when loading brcmfmac for 2FY.
   # The file created here is deleted in clean_up function above.
-  if [ $cyw_module == "2FY" ]; then
-     echo "options brcmfmac sdio_idleclk_disable=1" > /etc/modprobe.d/2fy_m2.conf
-  fi
+#  if [ $cyw_module == "2FY" ]; then
+#     echo "options brcmfmac sdio_idleclk_disable=1" > /etc/modprobe.d/2fy_m2.conf
+#  fi
 
   echo "Setup complete."
   echo ""
