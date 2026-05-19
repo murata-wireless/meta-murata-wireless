@@ -15,6 +15,7 @@ SRC_URI =  " \
 	file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
     file://0002-yacc-flex-in-kconf-makefile.patch;apply=yes \
 	file://0003-suppress-warnings-as-errors.patch;apply=yes \
+	file://0007-SoftAP-Kernel-Dump-Fix.patch;apply=yes \
 "
 
 SRC_URI[cyw-fmac.sha256sum]="723e31febc827a2c581ad37d3ed79909b70ab781c0c401faf988680d393cc477"
