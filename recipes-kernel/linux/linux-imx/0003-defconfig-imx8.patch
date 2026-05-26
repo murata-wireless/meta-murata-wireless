@@ -7,20 +7,20 @@ than upstream supports to handle.
 Upstream-Status: Inappropriate [oe specific]
 
 
-From a2c2ba2682ad0a741f3882e02e2830db61a246d9 Mon Sep 17 00:00:00 2001
+From 6ec7fd16e7ea76a9418714f905dacd859b96b3c3 Mon Sep 17 00:00:00 2001
 From: Jameel Kareem <jkareem@murata.com>
-Date: Sat, 14 Feb 2026 15:24:33 -0800
-Subject: [PATCH] defconfig-imx8.patch
+Date: Tue, 26 May 2026 13:50:00 -0700
+Subject: [PATCH] 8 imx patch
 
 ---
- arch/arm64/configs/imx_v8_defconfig | 27 ++++++++++++++++++++++-----
- 1 file changed, 22 insertions(+), 5 deletions(-)
+ arch/arm64/configs/imx_v8_defconfig | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
-index 0855e7ff33c5..564dcc81e924 100644
+index 3dfc96a9710e..7c67f090143f 100644
 --- a/arch/arm64/configs/imx_v8_defconfig
 +++ b/arch/arm64/configs/imx_v8_defconfig
-@@ -173,16 +173,17 @@ CONFIG_BT_HIDP=y
+@@ -170,16 +170,17 @@ CONFIG_BT_HIDP=y
  CONFIG_BT_LEDS=y
  # CONFIG_BT_DEBUGFS is not set
  CONFIG_BT_HCIBTUSB=m
@@ -42,16 +42,7 @@ index 0855e7ff33c5..564dcc81e924 100644
  CONFIG_NL80211_TESTMODE=y
  CONFIG_CFG80211_WEXT=y
  CONFIG_MAC80211=y
-@@ -217,7 +218,7 @@ CONFIG_PCI_EPF_TEST=y
- CONFIG_PCI_NXP_RPMSG=y
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
--CONFIG_FW_LOADER_USER_HELPER=y
-+CONFIG_FW_LOADER_USER_HELPER=n
- CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
- CONFIG_BRCMSTB_GISB_ARB=y
- CONFIG_VEXPRESS_CONFIG=y
-@@ -1210,3 +1211,19 @@ CONFIG_MEMTEST=y
+@@ -1193,3 +1194,18 @@ CONFIG_MEMTEST=y
  CONFIG_VHOST_NET=m
  CONFIG_VIDEO_MAX9286=y
  CONFIG_VIDEO_RDACM20=y
@@ -69,7 +60,6 @@ index 0855e7ff33c5..564dcc81e924 100644
 +CONFIG_PKCS7_MESSAGE_PARSER=y
 +CONFIG_MMC_BUS_CLOCK_GATE=y
 +CONFIG_IFX_BT_SHARED_SDIO=y
-+CONFIG_BT_NXPUART=m
 +CONFIG_BRCMFMAC_USB=y
 -- 
 2.25.1
