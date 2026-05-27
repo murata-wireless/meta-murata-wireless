@@ -5,23 +5,24 @@ treated as errors and fails the build, we have more combinations
 than upstream supports to handle.
 
 Upstream-Status: Inappropriate [oe specific]
-
-From f049637927a6b0dc669676792a3761b86f853da1 Mon Sep 17 00:00:00 2001
+From b38332dce83b08a4043ccc2d06a52b1249c6a6c0 Mon Sep 17 00:00:00 2001
 From: Jameel Kareem <jkareem@murata.com>
-Date: Wed, 4 Feb 2026 12:36:56 -0800
-Subject: [PATCH 3/5] missing headers
+Date: Tue, 26 May 2026 14:16:44 -0700
+Subject: [PATCH 1/2] wifi-brcmfmac-add-missing-header-include-for-brcmf_d
 
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h | 2 ++
- 1 file changed, 2 insertions(+)
+ .../broadcom/brcm80211/brcmfmac/fwil.h        |   2 +
+ .../broadcom/brcm80211/brcmfmac/fwil.h.orig   | 229 ++++++++++++++++++
+ 2 files changed, 231 insertions(+)
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h.orig
 
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h
-index d5748f4d66c3..b15cda5d8b23 100644
+index fe550285245c..db0ae9b1f826 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h
-@@ -6,6 +6,8 @@
- #ifndef _fwil_h_
- #define _fwil_h_
+@@ -8,6 +8,8 @@
+ 
+ #include "debug.h"
  
 +/* VKJB */
 +#include "debug.h"
