@@ -6,7 +6,7 @@ index 88eeecbcac85..ea9397fc16ee 100644
  	strsep(&ptr, "\n");
  
  	/* Print fw version info */
-+	brcmf_info("Murata Customization Version: imx-scarthgap-kraken_r1.0\n", ri->chipname, buf);
++	brcmf_info("Murata Customization Version: imx-scarthgap-longma_r1.0\n", ri->chipname, buf);
  	brcmf_info("Firmware: %s %s\n", ri->chipname, buf);
  
  	/* locate firmware version number for ethtool */
