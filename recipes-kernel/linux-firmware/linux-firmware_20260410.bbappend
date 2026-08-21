@@ -118,7 +118,3 @@ do_install:append() {
 #  FILES_${PN} += "${sysconfdir}/firmware"
 #  FILES_${PN} += "/lib"
 #  #FILES_${PN} += "/etc/firmware"
-
-
-
-
