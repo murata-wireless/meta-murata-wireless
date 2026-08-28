@@ -10,6 +10,7 @@ SRC_URI:append = " file://0001-patch-longma-fmac-6-12-3.patch \
                    file://0004-wifi-brcmfmac-add-missing-header-include-for-brcmf_d.patch \
                    file://0006-disable-dma-hciuart-kernel-crash.patch \
                    file://0008-Patch-for-CYW4373-hci-up-fail-issue-for-6.6.23.patch \
+                   file://0009-SoftAP-Kernel-Dump-Fix.patch \
 "
 
 addtask copy_defconfig_after_patch after do_patch before do_configure

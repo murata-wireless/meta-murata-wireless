@@ -1,0 +1,23 @@
+Do not treat warnings as errors
+
+There are additional warnings found with musl which are
+treated as errors and fails the build, we have more combinations
+than upstream supports to handle.
+
+Upstream-Status: Inappropriate [oe specific]
+
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
+index 7259e87..f6f7ad4 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
+@@ -1954,7 +1954,9 @@ exit:
+ 	 * response frame.
+ 	 */
+ 	ch.chspec = afx_hdl->my_listen_chan;
+-	cfg->d11inf.decchspec(&ch);
++	if (ch.chspec) {
++		cfg->d11inf.decchspec(&ch);
++	}
+ 	if (ack && config_af_params.extra_listen && !p2p->block_gon_req_tx &&
+ 	    test_bit(BRCMF_P2P_STATUS_WAITING_NEXT_ACT_FRAME, &p2p->status) &&
+ 	    p2p->af_sent_channel == ch.control_ch_num) {
