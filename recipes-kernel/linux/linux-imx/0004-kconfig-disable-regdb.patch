@@ -1,16 +1,19 @@
-Do not treat warnings as errors
+From 1f38b7a4860b558f350016eea2c3aade109839a6 Mon Sep 17 00:00:00 2001
+From: Romit Chatterjee <romit@alumnux.com>
+Date: Mon, 31 Aug 2026 10:24:39 +0530
+Subject: [PATCH] cfg80211: disable signed regulatory database by default
 
-There are additional warnings found with musl which are
-treated as errors and fails the build, we have more combinations
-than upstream supports to handle.
+Upstream-Status: Inappropriate [Murata platform configuration]
 
-Upstream-Status: Inappropriate [oe specific]
+---
+ net/wireless/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/net/wireless/Kconfig b/net/wireless/Kconfig
-index 10345388ad13..596f5e76071e 100644
+index 2d67b5f2010e..605fd7d764fe 100644
 --- a/net/wireless/Kconfig
 +++ b/net/wireless/Kconfig
-@@ -91,7 +91,7 @@ config CFG80211_CERTIFICATION_ONUS
+@@ -88,7 +88,7 @@ config CFG80211_CERTIFICATION_ONUS
  
  config CFG80211_REQUIRE_SIGNED_REGDB
  	bool "require regdb signature" if CFG80211_CERTIFICATION_ONUS
@@ -19,7 +22,7 @@ index 10345388ad13..596f5e76071e 100644
  	select SYSTEM_DATA_VERIFICATION
  	help
  	  Require that in addition to the "regulatory.db" file a
-@@ -101,7 +101,7 @@ config CFG80211_REQUIRE_SIGNED_REGDB
+@@ -98,7 +98,7 @@ config CFG80211_REQUIRE_SIGNED_REGDB
  
  config CFG80211_USE_KERNEL_REGDB_KEYS
  	bool "allow regdb keys shipped with the kernel" if CFG80211_CERTIFICATION_ONUS

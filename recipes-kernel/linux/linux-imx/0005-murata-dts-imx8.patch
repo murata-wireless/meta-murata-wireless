@@ -1,13 +1,16 @@
-Do not treat warnings as errors
+From 32523f7a034dd70450aaec995ae6287ba99e9689 Mon Sep 17 00:00:00 2001
+From: Romit Chatterjee <romit@alumnux.com>
+Date: Mon, 31 Aug 2026 10:24:53 +0530
+Subject: [PATCH] arm64: dts: imx8mm-evk: describe Murata Bluetooth
 
-There are additional warnings found with musl which are
-treated as errors and fails the build, we have more combinations
-than upstream supports to handle.
+Upstream-Status: Inappropriate [Murata platform configuration]
 
-Upstream-Status: Inappropriate [oe specific]
+---
+ arch/arm64/boot/dts/freescale/imx8mm-evk-usd-wifi.dts | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-wifi.dts b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-wifi.dts
-index e660727aaa58..e4d282e3e4a2 100644
+index e660727aaa58..640e35912470 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-wifi.dts
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-evk-usd-wifi.dts
 @@ -70,3 +70,9 @@ &usdhc1 {
@@ -16,7 +19,7 @@ index e660727aaa58..e4d282e3e4a2 100644
  };
 +
 +&uart3 {
-+     bluetooth {
-+              compatible = "nxp,88w8987-bt";
-+     };
++	bluetooth {
++		compatible = "nxp,88w8987-bt";
++	};
 +};

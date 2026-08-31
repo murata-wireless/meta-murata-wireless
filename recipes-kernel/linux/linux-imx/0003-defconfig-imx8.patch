@@ -1,18 +1,21 @@
-Do not treat warnings as errors
+From 9e54109d49a57095cf7378700ff28021eba77ece Mon Sep 17 00:00:00 2001
+From: Romit Chatterjee <romit@alumnux.com>
+Date: Mon, 31 Aug 2026 10:24:26 +0530
+Subject: [PATCH] arm64: imx_v8_defconfig: disable signed regulatory database
 
-There are additional warnings found with musl which are
-treated as errors and fails the build, we have more combinations
-than upstream supports to handle.
+Upstream-Status: Inappropriate [Murata platform configuration]
 
-Upstream-Status: Inappropriate [oe specific]
+---
+ arch/arm64/configs/imx_v8_defconfig | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
-index 0e9e6dfe63d0..fc0a9ba36ebb 100644
+index 5cc0c5514dc0..3c9648a80c89 100644
 --- a/arch/arm64/configs/imx_v8_defconfig
 +++ b/arch/arm64/configs/imx_v8_defconfig
-@@ -1153,3 +1153,5 @@ CONFIG_CORESIGHT_STM=m
- CONFIG_CORESIGHT_CPU_DEBUG=m
- CONFIG_CORESIGHT_CTI=m
+@@ -1140,3 +1140,5 @@ CONFIG_CORESIGHT_CTI=m
  CONFIG_MEMTEST=y
+ CONFIG_VIDEO_MAX9286=m
+ CONFIG_IMX_CM0P_REMOTEPROC=y
 +CONFIG_CFG80211_REQUIRE_SIGNED_REGDB=n
 +CONFIG_CFG80211_USE_KERNEL_REGDB_KEYS=n
