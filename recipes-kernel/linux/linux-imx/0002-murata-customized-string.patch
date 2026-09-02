@@ -22,7 +22,7 @@ index bf7395cf10e2..ee57df7fbf34 100644
  	strsep(&ptr, "\n");
  
  	/* Print fw version info */
-+    brcmf_info("Murata Customized Version: imx-walnascar-longma_r1.0\n");
++    brcmf_info("Murata Customized Version: imx-wrynose-medusa\n");
  	brcmf_info("Firmware: %s %s\n", ri->chipname, buf);
  
  	/* locate firmware version number for ethtool */
