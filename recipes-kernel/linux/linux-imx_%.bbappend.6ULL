@@ -3,7 +3,7 @@
 
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
-SRC_URI:append = " file://0001-patch-longma-fmac.patch \
+SRC_URI:append = " file://0006-infineon-fmac-6.18.20.patch \
                    file://0001-defconfig.patch \
                    file://0002-murata-customized-string.patch \
                    file://0002-murata-dts.patch \
