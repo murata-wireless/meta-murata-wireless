@@ -9,7 +9,7 @@ Upstream-Status: Inappropriate [oe specific]
 From c323bc643908b1f27c80e2eb2b42293786583c48 Mon Sep 17 00:00:00 2001
 From: Jameel Kareem <jkareem@murata.com>
 Date: Wed, 11 Feb 2026 14:43:27 -0800
-Subject: [PATCH 4/4] Patch-for-CYW4373-hci-up-fail-issue-for-6.6.23
+Subject: [PATCH] Bluetooth: rebase CYW4373 HCI workaround for Linux 6.18
 
 ---
  drivers/bluetooth/btbcm.c | 39 +++++++++++++++++++++++++++++++++++++++
@@ -47,7 +47,7 @@ index 0a60660fc8ce..319a66333fa2 100644
 +{
 +	int i;
 +	int table_size = sizeof(disable_broken_read_transmit_power_by_chip_ver)/sizeof(disable_broken_read_transmit_power_by_chip_ver[0]);
-+	struct bcm_chip_version_table *entry = &disable_broken_read_transmit_power_by_chip_ver[0];
++	const struct bcm_chip_version_table *entry = &disable_broken_read_transmit_power_by_chip_ver[0];
 +
 +	for( i=0 ; i<table_size ; i++, entry++)
 +	{
@@ -79,7 +79,7 @@ index 0a60660fc8ce..319a66333fa2 100644
 +    /* Read DMI and disable broken Read LE Min/Max Tx Power */
 +	if ((dmi_first_match(disable_broken_read_transmit_power)) ||
 +            (btbcm_is_disable_broken_read_tx_power_by_chip_ver(chip_id, baseline)))
-+ 	    set_bit(HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER, &hdev->quirks);
++ 	    hci_set_quirk(hdev, HCI_QUIRK_BROKEN_READ_TRANSMIT_POWER);
 +
 +
  	return 0;
