@@ -30,13 +30,13 @@ SRC_URI = " \
         file://brcm_patchram_plus_usb_64bit \
 "
 
-SRCREV_ifx-linux-firmware-longma="f24790e6fa2f05a0f974236bed7da7fa493b9ad2"
-SRCREV_ifx-linux-firmware-drogon="dc38e700612b334080e0b6df69070a88c4c2a12b"
-SRCREV_cyw-fmac-fw="8cdb1886852e0b5f9876654619a8371b952bf248"
-SRCREV_cyw-fmac-nvram="254e032bad39db55bede619fdd998d88f9a80824"
-SRCREV_cyw-bt-patch="64ac86708253e12d7089cf75ef8dcc9b30594958"
-SRCREV_cyw-fmac-utils-imx32="dad9ed86bf6691910197bc91d42a45ea8175180c"
-SRCREV_cyw-fmac-utils-imx64="368bd9a4163e115468d79c238192b41f6266c523"
+SRCREV_ifx-linux-firmware-longma = "f24790e6fa2f05a0f974236bed7da7fa493b9ad2"
+SRCREV_ifx-linux-firmware-drogon = "dc38e700612b334080e0b6df69070a88c4c2a12b"
+SRCREV_cyw-fmac-fw = "8cdb1886852e0b5f9876654619a8371b952bf248"
+SRCREV_cyw-fmac-nvram = "254e032bad39db55bede619fdd998d88f9a80824"
+SRCREV_cyw-bt-patch = "64ac86708253e12d7089cf75ef8dcc9b30594958"
+SRCREV_cyw-fmac-utils-imx32 = "dad9ed86bf6691910197bc91d42a45ea8175180c"
+SRCREV_cyw-fmac-utils-imx64 = "368bd9a4163e115468d79c238192b41f6266c523"
 
 SRCREV_default = "${AUTOREV}"
 SRCREV_FORMAT = "muratabinaries"
