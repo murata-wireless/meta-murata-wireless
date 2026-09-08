@@ -1,12 +1,106 @@
-Infineon FMAC integration for NXP Linux 6.18.20
+From 520e5a20482e6a7fde83884183ce5482664e3aec Mon Sep 17 00:00:00 2001
+From: Romit Chatterjee <romit@alumnux.com>
+Date: Mon, 7 Sep 2026 08:35:10 +0530
+Subject: [PATCH] Integrate Infineon FMAC for Linux 6.18.20
 
-Baseline: NXP lf-6.18.20-2.0.0
-Vendor release: Medusa
-
-Upstream-Status: Inappropriate [vendor driver integration]
+---
+ drivers/mmc/core/Kconfig                      |   10 +
+ drivers/mmc/core/core.c                       |   69 +-
+ drivers/mmc/core/core.h                       |    4 +
+ drivers/mmc/core/mmc_ops.c                    |   10 +-
+ drivers/mmc/core/sdio.c                       |  121 +-
+ drivers/mmc/core/sdio_ops.c                   |   52 +-
+ drivers/mmc/host/sdhci-pci-core.c             |   68 +
+ drivers/mmc/host/sdhci-uhs2.c                 |    2 +-
+ drivers/mmc/host/sdhci.c                      |  123 +-
+ drivers/mmc/host/sdhci.h                      |   18 +-
+ .../net/wireless/broadcom/brcm80211/Kconfig   |   22 +-
+ .../broadcom/brcm80211/brcmfmac/Kconfig       |   16 +
+ .../broadcom/brcm80211/brcmfmac/Makefile      |   11 +-
+ .../broadcom/brcm80211/brcmfmac/bca/core.c    |    2 +-
+ .../broadcom/brcm80211/brcmfmac/bcdc.c        |   11 +-
+ .../broadcom/brcm80211/brcmfmac/bcmsdh.c      |  384 +-
+ .../brcm80211/brcmfmac/bt_shared_sdio.c       |  312 ++
+ .../brcm80211/brcmfmac/bt_shared_sdio.h       |   66 +
+ .../brcm80211/brcmfmac/bt_shared_sdio_ifx.c   | 1037 +++++
+ .../brcm80211/brcmfmac/bt_shared_sdio_ifx.h   |   87 +
+ .../broadcom/brcm80211/brcmfmac/btcoex.c      |    2 +-
+ .../broadcom/brcm80211/brcmfmac/bus.h         |   43 +-
+ .../broadcom/brcm80211/brcmfmac/cfg80211.c    | 3694 ++++++++++++++---
+ .../broadcom/brcm80211/brcmfmac/cfg80211.h    |  151 +-
+ .../broadcom/brcm80211/brcmfmac/chip.c        |  551 ++-
+ .../broadcom/brcm80211/brcmfmac/chip.h        |   53 +-
+ .../broadcom/brcm80211/brcmfmac/common.c      |  438 +-
+ .../broadcom/brcm80211/brcmfmac/common.h      |   83 +-
+ .../broadcom/brcm80211/brcmfmac/core.c        |  933 ++++-
+ .../broadcom/brcm80211/brcmfmac/core.h        |   50 +-
+ .../broadcom/brcm80211/brcmfmac/cyw/core.c    |  196 +-
+ .../broadcom/brcm80211/brcmfmac/debug.c       |  289 ++
+ .../broadcom/brcm80211/brcmfmac/debug.h       |   63 +
+ .../broadcom/brcm80211/brcmfmac/feature.c     |  203 +-
+ .../broadcom/brcm80211/brcmfmac/feature.h     |   50 +-
+ .../broadcom/brcm80211/brcmfmac/firmware.c    |   88 +-
+ .../broadcom/brcm80211/brcmfmac/firmware.h    |   30 +-
+ .../broadcom/brcm80211/brcmfmac/fweh.c        |   49 +-
+ .../broadcom/brcm80211/brcmfmac/fweh.h        |   71 +-
+ .../broadcom/brcm80211/brcmfmac/fwil.c        |   58 +-
+ .../broadcom/brcm80211/brcmfmac/fwil.h        |   27 +-
+ .../broadcom/brcm80211/brcmfmac/fwil_types.h  |  364 +-
+ .../broadcom/brcm80211/brcmfmac/fwsignal.c    |  751 +++-
+ .../broadcom/brcm80211/brcmfmac/fwsignal.h    |    4 +-
+ .../broadcom/brcm80211/brcmfmac/msgbuf.c      |  150 +-
+ .../broadcom/brcm80211/brcmfmac/msgbuf.h      |    1 +
+ .../wireless/broadcom/brcm80211/brcmfmac/of.c |   14 +-
+ .../broadcom/brcm80211/brcmfmac/p2p.c         |  343 +-
+ .../broadcom/brcm80211/brcmfmac/p2p.h         |   26 +-
+ .../broadcom/brcm80211/brcmfmac/pcie.c        |  861 +++-
+ .../broadcom/brcm80211/brcmfmac/pcie.h        |    2 +
+ .../broadcom/brcm80211/brcmfmac/pno.c         |  193 +-
+ .../broadcom/brcm80211/brcmfmac/pno.h         |   87 +
+ .../broadcom/brcm80211/brcmfmac/proto.h       |   15 +-
+ .../broadcom/brcm80211/brcmfmac/sdio.c        | 2303 ++++++++--
+ .../broadcom/brcm80211/brcmfmac/sdio.h        |  215 +-
+ .../broadcom/brcm80211/brcmfmac/trxhdr.h      |   50 +
+ .../broadcom/brcm80211/brcmfmac/twt.c         | 1239 ++++++
+ .../broadcom/brcm80211/brcmfmac/twt.h         |  359 ++
+ .../broadcom/brcm80211/brcmfmac/usb.c         |  144 +-
+ .../broadcom/brcm80211/brcmfmac/vendor.c      |  358 ++
+ .../broadcom/brcm80211/brcmfmac/vendor.h      |   26 +-
+ .../broadcom/brcm80211/brcmfmac/vendor_ifx.c  | 1558 +++++++
+ .../broadcom/brcm80211/brcmfmac/vendor_ifx.h  |  857 ++++
+ .../broadcom/brcm80211/brcmfmac/xtlv.c        |   19 +
+ .../broadcom/brcm80211/brcmfmac/xtlv.h        |    2 +
+ .../broadcom/brcm80211/brcmutil/d11.c         |   19 +-
+ .../broadcom/brcm80211/brcmutil/utils.c       |   13 +
+ .../broadcom/brcm80211/include/brcm_hw_ids.h  |   14 +-
+ .../broadcom/brcm80211/include/brcmu_d11.h    |   15 +-
+ .../broadcom/brcm80211/include/brcmu_utils.h  |   14 +
+ .../broadcom/brcm80211/include/brcmu_wifi.h   |   38 +-
+ .../broadcom/brcm80211/include/chipcommon.h   |  195 +-
+ .../broadcom/brcm80211/include/defs.h         |   38 +
+ include/linux/bcma/bcma.h                     |    1 +
+ include/linux/mmc/host.h                      |    4 +
+ include/linux/mmc/pm.h                        |    6 +
+ include/linux/mmc/sdio.h                      |    2 -
+ include/linux/mmc/sdio_ids.h                  |   14 +-
+ include/linux/pci_ids.h                       |    1 +
+ include/net/cfg80211.h                        |    9 +-
+ include/uapi/linux/nl80211.h                  |   10 +-
+ net/wireless/nl80211.c                        |   10 +-
+ net/wireless/sme.c                            |    2 +
+ 84 files changed, 18106 insertions(+), 1787 deletions(-)
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio.c
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio.h
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio_ifx.c
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio_ifx.h
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/trxhdr.h
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/twt.c
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/twt.h
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor_ifx.c
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor_ifx.h
 
 diff --git a/drivers/mmc/core/Kconfig b/drivers/mmc/core/Kconfig
-index 14d2ecbb04d33a1af002f91ee830f669ce100e51..34dddb7ba033b5471b621b90ba8381cb285d04fd 100644
+index 14d2ecbb04d3..34dddb7ba033 100644
 --- a/drivers/mmc/core/Kconfig
 +++ b/drivers/mmc/core/Kconfig
 @@ -91,3 +91,13 @@ config MMC_CRYPTO
@@ -24,7 +118,7 @@ index 14d2ecbb04d33a1af002f91ee830f669ce100e51..34dddb7ba033b5471b621b90ba8381cb
 +
 +	  If unsure, say N here.
 diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index 860378bea557b306e7a931a94302060e96528f49..9b81d3bc982869338d357086f6f9da059341242a 100644
+index 860378bea557..9b81d3bc9828 100644
 --- a/drivers/mmc/core/core.c
 +++ b/drivers/mmc/core/core.c
 @@ -60,6 +60,33 @@ static const unsigned freqs[] = { 400000, 300000, 200000, 100000 };
@@ -148,7 +242,7 @@ index 860378bea557b306e7a931a94302060e96528f49..9b81d3bc982869338d357086f6f9da05
  }
  EXPORT_SYMBOL(mmc_wait_for_req_done);
 diff --git a/drivers/mmc/core/core.h b/drivers/mmc/core/core.h
-index a028b48be1644793a885aad02e3d739dd2417ee8..bffdb11463943ef1e9b0f03cb7e1f505577e7e31 100644
+index a028b48be164..bffdb1146394 100644
 --- a/drivers/mmc/core/core.h
 +++ b/drivers/mmc/core/core.h
 @@ -90,6 +90,10 @@ int mmc_attach_sd_uhs2(struct mmc_host *host);
@@ -163,7 +257,7 @@ index a028b48be1644793a885aad02e3d739dd2417ee8..bffdb11463943ef1e9b0f03cb7e1f505
  /* Debugfs information for hosts and cards */
  #ifdef CONFIG_DEBUG_FS
 diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-index a952cc8265af8f9d9587e4f21884d5f6d2fe0369..a8271f3468271e2bcba82b9ec795353334fa711f 100644
+index a952cc8265af..a8271f346827 100644
 --- a/drivers/mmc/core/mmc_ops.c
 +++ b/drivers/mmc/core/mmc_ops.c
 @@ -438,14 +438,20 @@ int mmc_spi_set_crc(struct mmc_host *host, int use_crc)
@@ -190,7 +284,7 @@ index a952cc8265af8f9d9587e4f21884d5f6d2fe0369..a8271f3468271e2bcba82b9ec7953533
  	return 0;
  }
 diff --git a/drivers/mmc/core/sdio.c b/drivers/mmc/core/sdio.c
-index 83085e76486aa802b082685618287d2d23a8c9f2..6aaf3b9d359661b1970c91b8034592dfbdd84362 100644
+index 83085e76486a..6aaf3b9d3596 100644
 --- a/drivers/mmc/core/sdio.c
 +++ b/drivers/mmc/core/sdio.c
 @@ -105,12 +105,16 @@ static int sdio_init_func(struct mmc_card *card, unsigned int fn)
@@ -375,7 +469,7 @@ index 83085e76486aa802b082685618287d2d23a8c9f2..6aaf3b9d359661b1970c91b8034592df
  		/*
  		 * Switch to wider bus (if supported).
 diff --git a/drivers/mmc/core/sdio_ops.c b/drivers/mmc/core/sdio_ops.c
-index 4c229dd2b6e543d2318d83888e8a9d1798335dd3..a952ab148c09a85119dd7850de8ca6f801acc711 100644
+index 4c229dd2b6e5..a952ab148c09 100644
 --- a/drivers/mmc/core/sdio_ops.c
 +++ b/drivers/mmc/core/sdio_ops.c
 @@ -65,12 +65,16 @@ static int mmc_io_rw_direct_host(struct mmc_host *host, int write, unsigned fn,
@@ -483,7 +577,7 @@ index 4c229dd2b6e543d2318d83888e8a9d1798335dd3..a952ab148c09a85119dd7850de8ca6f8
  	mmc_post_req(card->host, &mrq, err);
  
 diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
-index 47a0a738862b58f490d7ff1e7ffd037674540e85..db9b64d8458595d4dbdfda82b8c443694b219b28 100644
+index 47a0a738862b..db9b64d84585 100644
 --- a/drivers/mmc/host/sdhci-pci-core.c
 +++ b/drivers/mmc/host/sdhci-pci-core.c
 @@ -43,6 +43,14 @@
@@ -599,7 +693,7 @@ index 47a0a738862b58f490d7ff1e7ffd037674540e85..db9b64d8458595d4dbdfda82b8c44369
  	 * Check if the chip needs a separate GPIO for card detect to wake up
  	 * from runtime suspend.  If it is not there, don't allow runtime PM.
 diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
-index c459a08d01da52b8129452ccc1511f7f1564399d..9f034719fd67ce39c70760d086a0808985c98a18 100644
+index c459a08d01da..9f034719fd67 100644
 --- a/drivers/mmc/host/sdhci-uhs2.c
 +++ b/drivers/mmc/host/sdhci-uhs2.c
 @@ -567,7 +567,7 @@ static void sdhci_uhs2_prepare_data(struct sdhci_host *host, struct mmc_command
@@ -612,7 +706,7 @@ index c459a08d01da52b8129452ccc1511f7f1564399d..9f034719fd67ce39c70760d086a08089
  	sdhci_writew(host, data->blksz, SDHCI_UHS2_BLOCK_SIZE);
  	sdhci_writew(host, data->blocks, SDHCI_UHS2_BLOCK_COUNT);
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index fec9329e1edbed81ced7668f4e23ac010987f5da..94c0dc6cff3bfe5ec5ee1ff2758b84cd5dbf9bad 100644
+index fec9329e1edb..94c0dc6cff3b 100644
 --- a/drivers/mmc/host/sdhci.c
 +++ b/drivers/mmc/host/sdhci.c
 @@ -837,7 +837,14 @@ static void sdhci_adma_table_pre(struct sdhci_host *host,
@@ -859,7 +953,7 @@ index fec9329e1edbed81ced7668f4e23ac010987f5da..94c0dc6cff3bfe5ec5ee1ff2758b84cd
  		mmc->max_segs = 1;
  		mmc->max_req_size = min_t(size_t, mmc->max_req_size,
 diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-index b6a571d866fa53ce2aad0105cea2909abe6bce01..f248472998675cdff71e4df5bcf953e5f95f26a0 100644
+index b6a571d866fa..f24847299867 100644
 --- a/drivers/mmc/host/sdhci.h
 +++ b/drivers/mmc/host/sdhci.h
 @@ -344,6 +344,9 @@
@@ -930,7 +1024,7 @@ index b6a571d866fa53ce2aad0105cea2909abe6bce01..f248472998675cdff71e4df5bcf953e5
  bool sdhci_enable_irq_wakeups(struct sdhci_host *host);
  void sdhci_disable_irq_wakeups(struct sdhci_host *host);
 diff --git a/drivers/net/wireless/broadcom/brcm80211/Kconfig b/drivers/net/wireless/broadcom/brcm80211/Kconfig
-index 19d0c003f62626756aebf1068c1e1274e3e9030a..8d1307e9840996199af1c9b2b856aef8730981cd 100644
+index 19d0c003f626..8d1307e98409 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/Kconfig
 +++ b/drivers/net/wireless/broadcom/brcm80211/Kconfig
 @@ -39,6 +39,26 @@ config BRCM_TRACING
@@ -962,7 +1056,7 @@ index 19d0c003f62626756aebf1068c1e1274e3e9030a..8d1307e9840996199af1c9b2b856aef8
 +	  Selecting this to enables sharing the SDIO bus interface between
 +	  Cypress BT and WiFi host drivers.
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/Kconfig b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/Kconfig
-index 32794c1eca2314ecb4739217ab426ac60160b062..43e3cc8e87e97887887289192989100eca3918ee 100644
+index 32794c1eca23..43e3cc8e87e9 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/Kconfig
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/Kconfig
 @@ -48,3 +48,19 @@ config BRCMFMAC_PCIE
@@ -987,7 +1081,7 @@ index 32794c1eca2314ecb4739217ab426ac60160b062..43e3cc8e87e97887887289192989100e
 +	  Infineon BT and WiFi host drivers.
 \ No newline at end of file
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/Makefile b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/Makefile
-index e5ca0f511822719f94e0aab528d07c96d7eed428..23ae1473e53179c7c4b3492768fedce7dfb44bf5 100644
+index e5ca0f511822..23ae1473e531 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/Makefile
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/Makefile
 @@ -5,6 +5,9 @@
@@ -1023,7 +1117,7 @@ index e5ca0f511822719f94e0aab528d07c96d7eed428..23ae1473e53179c7c4b3492768fedce7
  ifeq ($(CONFIG_BRCMFMAC),m)
  obj-m += wcc/
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/core.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/core.c
-index f471c962104aac480d4ebc2c9013bf6c14ba746d..387c0050641dccc4838b9d4233d919b0327a0288 100644
+index f471c962104a..387c0050641d 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/core.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bca/core.c
 @@ -16,7 +16,7 @@
@@ -1036,7 +1130,7 @@ index f471c962104aac480d4ebc2c9013bf6c14ba746d..387c0050641dccc4838b9d4233d919b0
  
  static int brcmf_bca_alloc_fweh_info(struct brcmf_pub *drvr)
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcdc.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcdc.c
-index 9ec0c60b6da10aa9b7dbfd39a28a9cc18dd5f3f6..cf9da000c52e6c5bfd30a0b797dc2a4eaf658e68 100644
+index 9ec0c60b6da1..cf9da000c52e 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcdc.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcdc.c
 @@ -398,9 +398,9 @@ brcmf_proto_bcdc_add_tdls_peer(struct brcmf_pub *drvr, int ifidx,
@@ -1073,7 +1167,7 @@ index 9ec0c60b6da10aa9b7dbfd39a28a9cc18dd5f3f6..cf9da000c52e6c5bfd30a0b797dc2a4e
  	drvr->proto->debugfs_create = brcmf_proto_bcdc_debugfs_create;
  	drvr->proto->pd = bcdc;
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
-index 13952dfeb3e30cde82c3f0ae4f7a170f16528622..e4f21d701d2fc8139813b9e96c05a3abeaddb901 100644
+index 13952dfeb3e3..e4f21d701d2f 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bcmsdh.c
 @@ -36,6 +36,8 @@
@@ -1793,7 +1887,7 @@ index 13952dfeb3e30cde82c3f0ae4f7a170f16528622..e4f21d701d2fc8139813b9e96c05a3ab
  	if (!sdiodev->wowl_enabled && cap_power_off) {
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..33bbda484413f533fdac3963f57c738454e2aef4
+index 000000000000..33bbda484413
 --- /dev/null
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio.c
 @@ -0,0 +1,312 @@
@@ -2111,7 +2205,7 @@ index 0000000000000000000000000000000000000000..33bbda484413f533fdac3963f57c7384
 +EXPORT_SYMBOL(brcmf_bus_reset_bt_use_count);
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio.h
 new file mode 100644
-index 0000000000000000000000000000000000000000..fe29577513794da68d2f1f3ff133aa95a363a105
+index 000000000000..fe2957751379
 --- /dev/null
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio.h
 @@ -0,0 +1,66 @@
@@ -2183,7 +2277,7 @@ index 0000000000000000000000000000000000000000..fe29577513794da68d2f1f3ff133aa95
 +#endif /* CONFIG_BRCMFMAC_BT_SHARED_SDIO */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio_ifx.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio_ifx.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..6cdb564a62b3fb6e5d93487639aeb5266ee45139
+index 000000000000..6cdb564a62b3
 --- /dev/null
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio_ifx.c
 @@ -0,0 +1,1037 @@
@@ -3226,7 +3320,7 @@ index 0000000000000000000000000000000000000000..6cdb564a62b3fb6e5d93487639aeb526
 +}
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio_ifx.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio_ifx.h
 new file mode 100644
-index 0000000000000000000000000000000000000000..09a2e241422da49a57dba7af3e99a603cbd236e3
+index 000000000000..09a2e241422d
 --- /dev/null
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio_ifx.h
 @@ -0,0 +1,87 @@
@@ -3318,7 +3412,7 @@ index 0000000000000000000000000000000000000000..09a2e241422da49a57dba7af3e99a603
 +
 +#endif /* BT_SHARED_SDIO_IFX */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/btcoex.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/btcoex.c
-index 67c0c5a92f9985437906d2fa420c9c73e8aed1ad..d47d11a9e02fcfeb6288d52b8bacdb30a7bc151e 100644
+index 67c0c5a92f99..d47d11a9e02f 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/btcoex.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/btcoex.c
 @@ -110,7 +110,7 @@ static s32 brcmf_btcoex_params_write(struct brcmf_if *ifp, u32 addr, u32 data)
@@ -3331,7 +3425,7 @@ index 67c0c5a92f9985437906d2fa420c9c73e8aed1ad..d47d11a9e02fcfeb6288d52b8bacdb30
  
  /**
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bus.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bus.h
-index fe31051a9e11b1df64f0d560301a9bc5adc7ce2b..597f2000dc2009a09210caecd82e62fa02154c66 100644
+index fe31051a9e11..597f2000dc20 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bus.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/bus.h
 @@ -10,6 +10,7 @@
@@ -3437,7 +3531,7 @@ index fe31051a9e11b1df64f0d560301a9bc5adc7ce2b..597f2000dc2009a09210caecd82e62fa
  #ifdef CONFIG_BRCMFMAC_SDIO
  void brcmf_sdio_exit(void);
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
-index bb96b87b2a6e56c7166af5572f568ffdef59ffb3..5057163725e4d9549368c5edb46b8798dff62812 100644
+index bb96b87b2a6e..5057163725e4 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.c
 @@ -9,6 +9,8 @@
@@ -9034,7 +9128,7 @@ index bb96b87b2a6e56c7166af5572f568ffdef59ffb3..5057163725e4d9549368c5edb46b8798
 +}
 +BRCMF_EXPORT_SYMBOL_GPL(brcmf_cfg80211_delay);
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.h
-index 273c80f2d483a37f2d4a242b86142c4aeac06de6..6e9db7cbc5fde4cd1fbfbb403ae6eaf3c8e4d408 100644
+index 273c80f2d483..6e9db7cbc5fd 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cfg80211.h
 @@ -12,9 +12,14 @@
@@ -9295,7 +9389,7 @@ index 273c80f2d483a37f2d4a242b86142c4aeac06de6..6e9db7cbc5fde4cd1fbfbb403ae6eaf3
 +bool brcmf_ieee80211_is_gas_action(void *frame, u32 frame_len);
  #endif /* BRCMFMAC_CFG80211_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
-index 4239f2b21e5423c16ebb6021c51d2ed7b4891655..09ffcdfb97782529fce55b2abad13718057a7d46 100644
+index 4239f2b21e54..09ffcdfb9778 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.c
 @@ -216,6 +216,72 @@ struct sbsocramregs {
@@ -9973,7 +10067,7 @@ index 4239f2b21e5423c16ebb6021c51d2ed7b4891655..09ffcdfb97782529fce55b2abad13718
 +	}
 +}
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.h
-index d69f101f583449f3213b416e4db34cde8fd967ea..23d1c87960df0e6039fffdc1ce5ceb1b48c94c16 100644
+index d69f101f5834..23d1c87960df 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/chip.h
 @@ -8,7 +8,12 @@
@@ -10071,9 +10165,7 @@ index d69f101f583449f3213b416e4db34cde8fd967ea..23d1c87960df0e6039fffdc1ce5ceb1b
  
  #endif /* BRCMF_AXIDMP_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
-old mode 100644
-new mode 100755
-index 688f16c513192d113691830578ae9dbd459447f2..fba564dd1aba317d75e2fe2cd37cd1594ebfcb37
+index 688f16c51319..fba564dd1aba 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.c
 @@ -20,10 +20,21 @@
@@ -10715,7 +10807,7 @@ index 688f16c513192d113691830578ae9dbd459447f2..fba564dd1aba317d75e2fe2cd37cd159
  		platform_driver_unregister(&brcmf_pd);
  }
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.h
-index 3bdb6984b2dd4b12f149f58d8b2619ff4d06e697..499b2f57267775587fc92b0bc6f746eefc191b52 100644
+index 3bdb6984b2dd..499b2f572677 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/common.h
 @@ -10,6 +10,28 @@
@@ -10846,7 +10938,7 @@ index 3bdb6984b2dd4b12f149f58d8b2619ff4d06e697..499b2f57267775587fc92b0bc6f746ee
 +
  #endif /* BRCMFMAC_COMMON_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
-index 862a0336a0b59156a4ef77a5fe64fa241c4724fb..23ce36bc5f73accd61445d473884f672a8d79e8b 100644
+index 862a0336a0b5..23ce36bc5f73 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.c
 @@ -5,9 +5,11 @@
@@ -12171,7 +12263,7 @@ index 862a0336a0b59156a4ef77a5fe64fa241c4724fb..23ce36bc5f73accd61445d473884f672
 +	return sta;
 +}
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.h
-index 399b6810e394de121d6cf20e9d1d55f0f4d3d1ac..414d89d2b8fd762512ef92a4cfcc7e8a512ed635 100644
+index 399b6810e394..414d89d2b8fd 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/core.h
 @@ -12,6 +12,8 @@
@@ -12287,7 +12379,7 @@ index 399b6810e394de121d6cf20e9d1d55f0f4d3d1ac..414d89d2b8fd762512ef92a4cfcc7e8a
 +void brcmf_wlanregon_gpio_toggle(u8 gpio_on);
  #endif /* BRCMFMAC_CORE_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cyw/core.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cyw/core.c
-index 4f0ea4347840b5133b5c30a98f122718c540f1b8..2489f4f78350efcccb7bd1ee193ff98f848952f1 100644
+index 4f0ea4347840..2489f4f78350 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cyw/core.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/cyw/core.c
 @@ -4,11 +4,15 @@
@@ -12591,7 +12683,7 @@ index 4f0ea4347840b5133b5c30a98f122718c540f1b8..2489f4f78350efcccb7bd1ee193ff98f
  
  const struct brcmf_fwvid_ops brcmf_cyw_ops = {
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.c
-index eecf8a38d94aa43c502083ad3464b29dfbb98563..e342257ede52440fd86fd39453c10b0f4fa34c68 100644
+index eecf8a38d94a..e342257ede52 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.c
 @@ -6,6 +6,14 @@
@@ -12922,7 +13014,7 @@ index eecf8a38d94aa43c502083ad3464b29dfbb98563..e342257ede52440fd86fd39453c10b0f
 +#endif
 \ No newline at end of file
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h
-index 9bb5f709d41a27c1f427044ecdf27c7ff306e610..e031bf382cc503f8ce0ed12b70395451505aba41 100644
+index 9bb5f709d41a..e031bf382cc5 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/debug.h
 @@ -29,6 +29,32 @@
@@ -13025,7 +13117,7 @@ index 9bb5f709d41a27c1f427044ecdf27c7ff306e610..e031bf382cc503f8ce0ed12b70395451
 +#define MSGTRACE_HDRLEN		sizeof(struct msgtrace_hdr)
  #endif /* BRCMFMAC_DEBUG_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.c
-index 488364ef8ff2a1f2dfd92386cec9f50b4f90c5cd..94a6e39a32f3c047f850693e6ffccdbef1394ec6 100644
+index 488364ef8ff2..94a6e39a32f3 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.c
 @@ -16,8 +16,9 @@
@@ -13382,7 +13474,7 @@ index 488364ef8ff2a1f2dfd92386cec9f50b4f90c5cd..94a6e39a32f3c047f850693e6ffccdbe
 +	return false;
 +}
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.h
-index 31f8695ca41765befad013a9f1653b97e088e1ff..505078ae123a4e0b0462ece6d2eb6e091abe6f95 100644
+index 31f8695ca417..505078ae123a 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.h
 @@ -17,7 +17,7 @@
@@ -13462,7 +13554,7 @@ index 31f8695ca41765befad013a9f1653b97e088e1ff..505078ae123a4e0b0462ece6d2eb6e09
 +
  #endif /* _BRCMF_FEATURE_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
-index ef79924fd8f4de067eaab4eb36e518605659025a..37a580ff8757b32d5e52ddf4fb9c045ef6996af6 100644
+index ef79924fd8f4..37a580ff8757 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.c
 @@ -527,7 +527,9 @@ static void brcmf_fw_free_request(struct brcmf_fw_request *req)
@@ -13606,7 +13698,7 @@ index ef79924fd8f4de067eaab4eb36e518605659025a..37a580ff8757b32d5e52ddf4fb9c045e
  	} else {
  		ret = request_firmware_nowait(THIS_MODULE, true, first->path,
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.h
-index 4002d326fd21beca64c71134744cbc3621f324bb..216ac26bfabbb8304f27f59a0759944cb1bb14f3 100644
+index 4002d326fd21..216ac26bfabb 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/firmware.h
 @@ -13,6 +13,8 @@
@@ -13666,7 +13758,7 @@ index 4002d326fd21beca64c71134744cbc3621f324bb..216ac26bfabbb8304f27f59a0759944c
 +
  #endif /* BRCMFMAC_FIRMWARE_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c
-index c2d98ee6652f3a2d5d1e4172893990c17e85d06e..ac5e3a91e62a6d8ef8f58795b7f315123185d50c 100644
+index c2d98ee6652f..ac5e3a91e62a 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.c
 @@ -69,11 +69,47 @@ const char *brcmf_fweh_event_name(enum brcmf_fweh_event_code code)
@@ -13752,7 +13844,7 @@ index c2d98ee6652f3a2d5d1e4172893990c17e85d06e..ac5e3a91e62a6d8ef8f58795b7f31512
  		bphy_err(fweh->drvr, "Set event_msgs error (%d)\n", err);
  	return err;
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.h
-index e327dd58d29c950675ffa3c92759970879da18ea..79137cf0dce9bf7bbfa806f60ef75ed4d850080c 100644
+index e327dd58d29c..79137cf0dce9 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fweh.h
 @@ -93,19 +93,34 @@ struct brcmf_cfg80211_info;
@@ -13863,7 +13955,7 @@ index e327dd58d29c950675ffa3c92759970879da18ea..79137cf0dce9bf7bbfa806f60ef75ed4
  				    const struct brcmf_event_msg *evtmsg,
  				    void *data);
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.c
-index 6385a7db7f7d774b12a71fa6879c6a0024b903a9..2ad76c304789151bd11a23de0667f2489fcb59cc 100644
+index 6385a7db7f7d..2ad76c304789 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.c
 @@ -21,6 +21,7 @@
@@ -14034,7 +14126,7 @@ index 6385a7db7f7d774b12a71fa6879c6a0024b903a9..2ad76c304789151bd11a23de0667f248
  			memcpy(data, drvr->proto_buf, len);
  	} else {
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h
-index ab3d6cfcb02bde668ec7b68b016fba913f445bdc..7e942033ed3b77afaba50c9b419a6bad60cd768b 100644
+index ab3d6cfcb02b..7e942033ed3b 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil.h
 @@ -67,12 +67,14 @@
@@ -14137,7 +14229,7 @@ index ab3d6cfcb02bde668ec7b68b016fba913f445bdc..7e942033ed3b77afaba50c9b419a6bad
  		*data = le16_to_cpu(data_le);
  	return err;
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
-index e74a23e11830c171d8acbac252c5b6e056b2cfb1..4a6ea5be0541da45fa257f7bad95255a04f41ed9 100644
+index e74a23e11830..4a6ea5be0541 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwil_types.h
 @@ -12,13 +12,21 @@
@@ -14633,7 +14725,7 @@ index e74a23e11830c171d8acbac252c5b6e056b2cfb1..4a6ea5be0541da45fa257f7bad95255a
 +
  #endif /* FWIL_TYPES_H_ */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c
-index b70d20128f98fb7a026f92b6d69f9049aa47f7d7..abc295918662a523e82499b80f7ab34b387f9a47 100644
+index b70d20128f98..abc295918662 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.c
 @@ -72,6 +72,9 @@ enum brcmf_fws_tlv_type {
@@ -15824,7 +15916,7 @@ index b70d20128f98fb7a026f92b6d69f9049aa47f7d7..abc295918662a523e82499b80f7ab34b
 +	brcmf_fws_unlock(fws);
 +}
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.h
-index f9c36cd8f1de101b7faf4db4e8866678b2e46648..87606687505c1b0875c9c67514d08a7ad2db06e1 100644
+index f9c36cd8f1de..87606687505c 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/fwsignal.h
 @@ -43,6 +43,8 @@ void brcmf_fws_del_interface(struct brcmf_if *ifp);
@@ -15838,7 +15930,7 @@ index f9c36cd8f1de101b7faf4db4e8866678b2e46648..87606687505c1b0875c9c67514d08a7a
  
  #endif /* FWSIGNAL_H_ */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
-index 45fbcbdc7d9e4b23dc4f892992165e1967c3d9eb..b88c60dc51c2eba73aa498577cc427c9e8126273 100644
+index 45fbcbdc7d9e..b88c60dc51c2 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.c
 @@ -11,6 +11,8 @@
@@ -16142,7 +16234,7 @@ index 45fbcbdc7d9e4b23dc4f892992165e1967c3d9eb..b88c60dc51c2eba73aa498577cc427c9
  		  msgbuf->max_rxbufpost, msgbuf->max_eventbuf,
  		  msgbuf->max_ioctlrespbuf);
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.h
-index 6a849f4a94dd7f9e8fedc0c7235fe7957ee0cd06..99359a152345184d57fc7992ae8e4c608ec47437 100644
+index 6a849f4a94dd..99359a152345 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/msgbuf.h
 @@ -39,5 +39,6 @@ static inline int brcmf_proto_msgbuf_attach(struct brcmf_pub *drvr)
@@ -16153,7 +16245,7 @@ index 6a849f4a94dd7f9e8fedc0c7235fe7957ee0cd06..99359a152345184d57fc7992ae8e4c60
  
  #endif /* BRCMFMAC_MSGBUF_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-index 1681ad00f82ecd4653a3d5afc7b5d73e9cab0a21..769264b255b4fb2cc03c5a1606ec2637f8b99e81 100644
+index 1681ad00f82e..769264b255b4 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
 @@ -77,7 +77,8 @@ int brcmf_of_probe(struct device *dev, enum brcmf_bus_type bus_type,
@@ -16185,7 +16277,7 @@ index 1681ad00f82ecd4653a3d5afc7b5d73e9cab0a21..769264b255b4fb2cc03c5a1606ec2637
  	/* make sure there are interrupts defined in the node */
  	if (of_irq_parse_one(np, 0, &oirq))
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
-index e1752a513c733d2d268f593ae143abce79ccaa44..2f04de861c15d7af8990821c29662455cffc2cf4 100644
+index e1752a513c73..2f04de861c15 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.c
 @@ -18,6 +18,7 @@
@@ -17044,7 +17136,7 @@ index e1752a513c733d2d268f593ae143abce79ccaa44..2f04de861c15d7af8990821c29662455
  	init_completion(&p2p->send_af_done);
  
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.h
-index d3137ebd7158251993787319ae80311427828bfc..1b929844f43892a28053e8ab3a7375172f181985 100644
+index d3137ebd7158..1b929844f438 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/p2p.h
 @@ -9,6 +9,26 @@
@@ -17102,7 +17194,7 @@ index d3137ebd7158251993787319ae80311427828bfc..1b929844f43892a28053e8ab3a737517
  					   struct brcmf_bss_info_le *bi);
  s32 brcmf_p2p_notify_rx_mgmt_p2p_probereq(struct brcmf_if *ifp,
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
-index 6327f4eca50078561f34a152128d5c8847c7ccee..cdafb001f6ca415e0ce185b660419ab3da85aafe 100644
+index 6327f4eca500..cdafb001f6ca 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.c
 @@ -42,6 +42,8 @@
@@ -18523,7 +18615,7 @@ index 6327f4eca50078561f34a152128d5c8847c7ccee..cdafb001f6ca415e0ce185b660419ab3
  {
  	brcmf_dbg(PCIE, "Enter\n");
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h
-index 8e6c227e8315c8372720ae5df9c7dca121ca1ae3..8e4f486378944fe7055ffd803cfdd69bca07441a 100644
+index 8e6c227e8315..8e4f48637894 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pcie.h
 @@ -11,4 +11,6 @@ struct brcmf_pciedev {
@@ -18534,7 +18626,7 @@ index 8e6c227e8315c8372720ae5df9c7dca121ca1ae3..8e4f486378944fe7055ffd803cfdd69b
 +
  #endif /* BRCMFMAC_PCIE_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pno.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pno.c
-index 05f66ab13bed6d22dde6bb7443af50cd02c2c293..f8968906844c5c5363c184d0aa7ee60ae68b9bfd 100644
+index 05f66ab13bed..f8968906844c 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pno.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pno.c
 @@ -12,6 +12,9 @@
@@ -18812,7 +18904,7 @@ index 05f66ab13bed6d22dde6bb7443af50cd02c2c293..f8968906844c5c5363c184d0aa7ee60a
 +	return 0;
 +}
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pno.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pno.h
-index 25d406019ac34072a75119aa7b3b20b64dea2826..fb0a59b4685635515aca632c5f243a09381db936 100644
+index 25d406019ac3..fb0a59b46856 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pno.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/pno.h
 @@ -9,6 +9,91 @@
@@ -18915,7 +19007,7 @@ index 25d406019ac34072a75119aa7b3b20b64dea2826..fb0a59b4685635515aca632c5f243a09
 +			     struct wireless_dev *wdev);
  #endif /* _BRCMF_PNO_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/proto.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/proto.h
-index bd08d3aaa8f4a16a2baeccf8c5bc9d1c8ac004b5..00c8633d10d1007dfe07f40ed358bd88d5d1a3b5 100644
+index bd08d3aaa8f4..00c8633d10d1 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/proto.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/proto.h
 @@ -32,10 +32,11 @@ struct brcmf_proto {
@@ -18959,7 +19051,7 @@ index bd08d3aaa8f4a16a2baeccf8c5bc9d1c8ac004b5..00c8633d10d1007dfe07f40ed358bd88
  brcmf_proto_init_done(struct brcmf_pub *drvr)
  {
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-index 4e6ed02c159134f2684eb859c87ae30f7617a2e0..d5a18b9068c4925ece61842a8789fb8e0fc4c0cd 100644
+index 4e6ed02c1591..d5a18b9068c4 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
 @@ -3,6 +3,7 @@
@@ -22187,7 +22279,7 @@ index 4e6ed02c159134f2684eb859c87ae30f7617a2e0..d5a18b9068c4925ece61842a8789fb8e
 +	return ret;
 +}
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.h
-index 80180d5c6c879aebb53adc6107e74a0db3ddc778..bb842b6274211c8f12810ee55f90b71b1f5f982f 100644
+index 80180d5c6c87..bb842b627421 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.h
 @@ -10,6 +10,14 @@
@@ -22512,7 +22604,7 @@ index 80180d5c6c879aebb53adc6107e74a0db3ddc778..bb842b6274211c8f12810ee55f90b71b
  #endif /* BRCMFMAC_SDIO_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/trxhdr.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/trxhdr.h
 new file mode 100644
-index 0000000000000000000000000000000000000000..14c327ef856e6fb351c9543c23aebd2592fddf02
+index 000000000000..14c327ef856e
 --- /dev/null
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/trxhdr.h
 @@ -0,0 +1,50 @@
@@ -22568,7 +22660,7 @@ index 0000000000000000000000000000000000000000..14c327ef856e6fb351c9543c23aebd25
 +#endif /* BRCMFMAC_TRXHDR_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/twt.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/twt.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..5be4d42860bc1b4561084eccb6b8774cf934a8ba
+index 000000000000..5be4d42860bc
 --- /dev/null
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/twt.c
 @@ -0,0 +1,1239 @@
@@ -23813,7 +23905,7 @@ index 0000000000000000000000000000000000000000..5be4d42860bc1b4561084eccb6b8774c
 +}
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/twt.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/twt.h
 new file mode 100644
-index 0000000000000000000000000000000000000000..9f137c03dea0eb75c6e43ae77b0f3a766804127e
+index 000000000000..9f137c03dea0
 --- /dev/null
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/twt.h
 @@ -0,0 +1,359 @@
@@ -24177,7 +24269,7 @@ index 0000000000000000000000000000000000000000..9f137c03dea0eb75c6e43ae77b0f3a76
 +
 +#endif /* BRCMF_TWT_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
-index f0129d10d2b952adfd53114809738d634f86fd31..c674b8100f9668c5156da29005f7dbb4a8b25020 100644
+index f0129d10d2b9..c674b8100f96 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/usb.c
 @@ -19,6 +19,8 @@
@@ -24456,7 +24548,7 @@ index f0129d10d2b952adfd53114809738d634f86fd31..c674b8100f9668c5156da29005f7dbb4
  
  static const struct usb_device_id brcmf_usb_devid_table[] = {
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor.c
-index d07e7c7355d9d29db0b43fd70618ab8c6188b275..15b9d6a5324dff157792ff5ae3a59d7f2d5672a3 100644
+index d07e7c7355d9..15b9d6a5324d 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor.c
 @@ -15,6 +15,8 @@
@@ -24844,7 +24936,7 @@ index d07e7c7355d9d29db0b43fd70618ab8c6188b275..15b9d6a5324dff157792ff5ae3a59d7f
 +	return num;
 +}
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor.h
-index 418f33ea6fd3f9ccfd25503e3d2d22f3cb2d9931..3029cc5ec09f72b1256e1c56722d4d4155293591 100644
+index 418f33ea6fd3..3029cc5ec09f 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor.h
 @@ -11,9 +11,15 @@
@@ -24902,7 +24994,7 @@ index 418f33ea6fd3f9ccfd25503e3d2d22f3cb2d9931..3029cc5ec09f72b1256e1c56722d4d41
  #endif /* _vendor_h_ */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor_ifx.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor_ifx.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..52c4cb201cf657a5bdc71c770e4511a0c41d9f4a
+index 000000000000..52c4cb201cf6
 --- /dev/null
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor_ifx.c
 @@ -0,0 +1,1558 @@
@@ -26466,7 +26558,7 @@ index 0000000000000000000000000000000000000000..52c4cb201cf657a5bdc71c770e4511a0
 +}
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor_ifx.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor_ifx.h
 new file mode 100644
-index 0000000000000000000000000000000000000000..d25b57aca98db2dbc04543c1da97ab7da0b71981
+index 000000000000..d25b57aca98d
 --- /dev/null
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor_ifx.h
 @@ -0,0 +1,857 @@
@@ -27328,7 +27420,7 @@ index 0000000000000000000000000000000000000000..d25b57aca98db2dbc04543c1da97ab7d
 +				   const void *data, int len);
 +#endif /* IFX_VENDOR_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/xtlv.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/xtlv.c
-index 08841b9a5b81f4463850e54bfea981b1d31b680e..f7bffd55510fd01d824679ea31cdda7b91945f2d 100644
+index 08841b9a5b81..f7bffd55510f 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/xtlv.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/xtlv.c
 @@ -82,3 +82,22 @@ void brcmf_xtlv_pack_header(struct brcmf_xtlv *xtlv, u16 id, u16 len,
@@ -27355,7 +27447,7 @@ index 08841b9a5b81f4463850e54bfea981b1d31b680e..f7bffd55510fd01d824679ea31cdda7b
 +	return iolen;
 +}
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/xtlv.h b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/xtlv.h
-index b2c7ae8966a1025d6b2af36bd793627b248340ba..b713c6caf91a4993ade5b37944d4171bd4d06f7a 100644
+index b2c7ae8966a1..b713c6caf91a 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/xtlv.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/xtlv.h
 @@ -27,5 +27,7 @@ enum brcmf_xtlv_option {
@@ -27367,7 +27459,7 @@ index b2c7ae8966a1025d6b2af36bd793627b248340ba..b713c6caf91a4993ade5b37944d4171b
  
  #endif /* __BRCMF_XTLV_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmutil/d11.c b/drivers/net/wireless/broadcom/brcm80211/brcmutil/d11.c
-index 1e2b1e487eb76e7354d08c2a486703a37946c713..5effa27542e95c65a0f1ac542672e84152c78f5c 100644
+index 1e2b1e487eb7..5effa27542e9 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmutil/d11.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmutil/d11.c
 @@ -87,10 +87,20 @@ static void brcmu_d11ac_encchspec(struct brcmu_chan *ch)
@@ -27405,7 +27497,7 @@ index 1e2b1e487eb76e7354d08c2a486703a37946c713..5effa27542e95c65a0f1ac542672e841
  		ch->band = BRCMU_CHAN_BAND_5G;
  		break;
 diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmutil/utils.c b/drivers/net/wireless/broadcom/brcm80211/brcmutil/utils.c
-index fe94db0ba3f33c01dc04c58f8f79d012feca7f26..f2db507a42bcd0c29b46d881a97599887bc065fe 100644
+index fe94db0ba3f3..f2db507a42bc 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/brcmutil/utils.c
 +++ b/drivers/net/wireless/broadcom/brcm80211/brcmutil/utils.c
 @@ -292,6 +292,19 @@ char *brcmu_dotrev_str(u32 dotrev, char *buf)
@@ -27429,7 +27521,7 @@ index fe94db0ba3f33c01dc04c58f8f79d012feca7f26..f2db507a42bcd0c29b46d881a9759988
  /* pretty hex print a pkt buffer chain */
  void brcmu_prpkt(const char *msg, struct sk_buff *p0)
 diff --git a/drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h b/drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h
-index df3b67ba4db29083f99992e3954b67bf298645da..4e304f65fb91adcbc1b7f921fae30912dcbdb8e9 100644
+index df3b67ba4db2..4e304f65fb91 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/include/brcm_hw_ids.h
 @@ -14,6 +14,7 @@
@@ -27478,7 +27570,7 @@ index df3b67ba4db29083f99992e3954b67bf298645da..4e304f65fb91adcbc1b7f921fae30912
  /* brcmsmac IDs */
  #define BCM4313_D11N2G_ID	0x4727	/* 4313 802.11n 2.4G device */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/include/brcmu_d11.h b/drivers/net/wireless/broadcom/brcm80211/include/brcmu_d11.h
-index f6344023855c3696ad4153a5b21ecd8b845b947d..3d7655c9c0586f8e0c4ad2a1f88c69abf5070f0d 100644
+index f6344023855c..3d7655c9c058 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/include/brcmu_d11.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/include/brcmu_d11.h
 @@ -82,11 +82,18 @@
@@ -27505,7 +27597,7 @@ index f6344023855c3696ad4153a5b21ecd8b845b947d..3d7655c9c0586f8e0c4ad2a1f88c69ab
  enum brcmu_chan_bw {
  	BRCMU_CHAN_BW_20,
 diff --git a/drivers/net/wireless/broadcom/brcm80211/include/brcmu_utils.h b/drivers/net/wireless/broadcom/brcm80211/include/brcmu_utils.h
-index 9465323286673c6c1f8046bcab9e65833ae507c8..1b4f43c817450f80ca2e414fdfc71fc9deeedcc4 100644
+index 946532328667..1b4f43c81745 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/include/brcmu_utils.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/include/brcmu_utils.h
 @@ -21,6 +21,19 @@
@@ -27537,7 +27629,7 @@ index 9465323286673c6c1f8046bcab9e65833ae507c8..1b4f43c817450f80ca2e414fdfc71fc9
  /* Empty the queue at particular precedence level */
  /* callback function fn(pkt, arg) returns true if pkt belongs to if */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/include/brcmu_wifi.h b/drivers/net/wireless/broadcom/brcm80211/include/brcmu_wifi.h
-index 7552bdb91991ce38d4d88b2f0276da40c87559d4..0dfaf2eacb90329f3ecc0a0d26c3bf65d1b6aedc 100644
+index 7552bdb91991..0dfaf2eacb90 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/include/brcmu_wifi.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/include/brcmu_wifi.h
 @@ -92,7 +92,8 @@
@@ -27605,7 +27697,7 @@ index 7552bdb91991ce38d4d88b2f0276da40c87559d4..0dfaf2eacb90329f3ecc0a0d26c3bf65
 +
  #endif				/* _BRCMU_WIFI_H_ */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/include/chipcommon.h b/drivers/net/wireless/broadcom/brcm80211/include/chipcommon.h
-index 0340bba968688f14af710ca491378c857f8dba43..39cd34c226281f0d77b7a7e6a485ff6c87fa30ac 100644
+index 0340bba96868..39cd34c22628 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/include/chipcommon.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/include/chipcommon.h
 @@ -214,8 +214,197 @@ struct chipcregs {
@@ -27816,7 +27908,7 @@ index 0340bba968688f14af710ca491378c857f8dba43..39cd34c226281f0d77b7a7e6a485ff6c
 +
  #endif				/* _SBCHIPC_H */
 diff --git a/drivers/net/wireless/broadcom/brcm80211/include/defs.h b/drivers/net/wireless/broadcom/brcm80211/include/defs.h
-index 9e7e6116eb74e977a78f1ac23aec420080b15eac..fb25bdf54c6688d5d1ff659f16ea7c3aad6a16d2 100644
+index 9e7e6116eb74..fb25bdf54c66 100644
 --- a/drivers/net/wireless/broadcom/brcm80211/include/defs.h
 +++ b/drivers/net/wireless/broadcom/brcm80211/include/defs.h
 @@ -35,6 +35,44 @@
@@ -27865,7 +27957,7 @@ index 9e7e6116eb74e977a78f1ac23aec420080b15eac..fb25bdf54c6688d5d1ff659f16ea7c3a
  
  #define BRCM_CNTRY_BUF_SZ	4	/* Country string is 3 bytes + NUL */
 diff --git a/include/linux/bcma/bcma.h b/include/linux/bcma/bcma.h
-index 60b94b944e9f1fb0814ca08c3120fc0de75ece93..fe1cb2aeaef3873ed896a72d7cb3edc610fe96a9 100644
+index 60b94b944e9f..fe1cb2aeaef3 100644
 --- a/include/linux/bcma/bcma.h
 +++ b/include/linux/bcma/bcma.h
 @@ -154,6 +154,7 @@ struct bcma_host_ops {
@@ -27877,7 +27969,7 @@ index 60b94b944e9f1fb0814ca08c3120fc0de75ece93..fe1cb2aeaef3873ed896a72d7cb3edc6
  #define BCMA_CORE_ARM_CA7		0x847
  #define BCMA_CORE_SYS_MEM		0x849
 diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
-index ba84f02c2a101e8e906a29bb3ddef2938d33626c..cd416fa5ebac8fb2b8e4685a4ed5c5156bc238c9 100644
+index ba84f02c2a10..cd416fa5ebac 100644
 --- a/include/linux/mmc/host.h
 +++ b/include/linux/mmc/host.h
 @@ -272,6 +272,10 @@ struct mmc_host_ops {
@@ -27892,7 +27984,7 @@ index ba84f02c2a101e8e906a29bb3ddef2938d33626c..cd416fa5ebac8fb2b8e4685a4ed5c515
  
  struct mmc_cqe_ops {
 diff --git a/include/linux/mmc/pm.h b/include/linux/mmc/pm.h
-index 3549f804578462a4fe8f44579226db4f2d917e6c..6b19c21e1438b1df29b2088cf9e7f06f02a31645 100644
+index 3549f8045784..6b19c21e1438 100644
 --- a/include/linux/mmc/pm.h
 +++ b/include/linux/mmc/pm.h
 @@ -24,4 +24,10 @@ typedef unsigned int mmc_pm_flag_t;
@@ -27907,7 +27999,7 @@ index 3549f804578462a4fe8f44579226db4f2d917e6c..6b19c21e1438b1df29b2088cf9e7f06f
 +
  #endif /* LINUX_MMC_PM_H */
 diff --git a/include/linux/mmc/sdio.h b/include/linux/mmc/sdio.h
-index 1ef400f28642ef393e670dcbe6bb14b82eeade58..97d0b94c531267c1c5f699f03771c0c4f541ad79 100644
+index 1ef400f28642..97d0b94c5312 100644
 --- a/include/linux/mmc/sdio.h
 +++ b/include/linux/mmc/sdio.h
 @@ -101,8 +101,6 @@
@@ -27920,7 +28012,7 @@ index 1ef400f28642ef393e670dcbe6bb14b82eeade58..97d0b94c531267c1c5f699f03771c0c4
  
  #define SDIO_CCCR_CAPS		0x08
 diff --git a/include/linux/mmc/sdio_ids.h b/include/linux/mmc/sdio_ids.h
-index 673cbdf4345330a1a474922216f2acb310b579ef..a802431d8bac48787fc16ea799d9675264d1d721 100644
+index 673cbdf43453..a802431d8bac 100644
 --- a/include/linux/mmc/sdio_ids.h
 +++ b/include/linux/mmc/sdio_ids.h
 @@ -63,11 +63,13 @@
@@ -27956,7 +28048,7 @@ index 673cbdf4345330a1a474922216f2acb310b579ef..a802431d8bac48787fc16ea799d96752
  #define SDIO_VENDOR_ID_MARVELL			0x02df
  #define SDIO_DEVICE_ID_MARVELL_LIBERTAS		0x9103
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 8eebe1b1fd7264d0bdd4e54c34a8308ab874d89b..14f749aa64cd540d54efb7455ae87f7f7da07a1a 100644
+index 8eebe1b1fd72..14f749aa64cd 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
 @@ -2175,6 +2175,7 @@
@@ -27968,7 +28060,7 @@ index 8eebe1b1fd7264d0bdd4e54c34a8308ab874d89b..14f749aa64cd540d54efb7455ae87f7f
  #define PCI_DEVICE_ID_TIGON3_5752M	0x1601
  #define PCI_DEVICE_ID_NX2_5709		0x1639
 diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index 820e299f06b5ee88606918f2bdb6d4d5c431c682..2bb3ce2a368a5a98e39aea20c40666b2d5e9896d 100644
+index 820e299f06b5..2bb3ce2a368a 100644
 --- a/include/net/cfg80211.h
 +++ b/include/net/cfg80211.h
 @@ -8532,6 +8532,8 @@ struct cfg80211_fils_resp_params {
@@ -28023,7 +28115,7 @@ index 820e299f06b5ee88606918f2bdb6d4d5c431c682..2bb3ce2a368a5a98e39aea20c40666b2
  
  /**
 diff --git a/include/uapi/linux/nl80211.h b/include/uapi/linux/nl80211.h
-index 8134f10e4e6c02d48a9089d6c8c8be52f73881a5..4ccde7f01933713bd0897c9af843e9ad6d391ea9 100644
+index 8134f10e4e6c..4ccde7f01933 100644
 --- a/include/uapi/linux/nl80211.h
 +++ b/include/uapi/linux/nl80211.h
 @@ -2623,7 +2623,10 @@ enum nl80211_commands {
@@ -28058,7 +28150,7 @@ index 8134f10e4e6c02d48a9089d6c8c8be52f73881a5..4ccde7f01933713bd0897c9af843e9ad
  	NUM_NL80211_EXT_FEATURES,
  	MAX_NL80211_EXT_FEATURES = NUM_NL80211_EXT_FEATURES - 1
 diff --git a/net/wireless/nl80211.c b/net/wireless/nl80211.c
-index 03d07b54359a45c05c45628808aaebf79e38920e..bb2a24deb3fa18bb1d910324893b9130167c86df 100644
+index 03d07b54359a..bb2a24deb3fa 100644
 --- a/net/wireless/nl80211.c
 +++ b/net/wireless/nl80211.c
 @@ -16914,7 +16914,9 @@ static int nl80211_set_pmk(struct sk_buff *skb, struct genl_info *info)
@@ -28093,7 +28185,7 @@ index 03d07b54359a45c05c45628808aaebf79e38920e..bb2a24deb3fa18bb1d910324893b9130
  
  	if (info->valid_links) {
 diff --git a/net/wireless/sme.c b/net/wireless/sme.c
-index 4e629ca305bcc30ee845cb45172b67fb35bfe9ed..1d8acb78fcc4f929efb8bacedd703b9069647336 100644
+index 4e629ca305bc..1d8acb78fcc4 100644
 --- a/net/wireless/sme.c
 +++ b/net/wireless/sme.c
 @@ -1066,6 +1066,7 @@ void cfg80211_connect_done(struct net_device *dev,
@@ -28112,3 +28204,6 @@ index 4e629ca305bcc30ee845cb45172b67fb35bfe9ed..1d8acb78fcc4f929efb8bacedd703b90
  
  	spin_lock_irqsave(&wdev->event_lock, flags);
  	list_add_tail(&ev->list, &wdev->event_list);
+-- 
+2.34.1
+
