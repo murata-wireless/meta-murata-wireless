@@ -18,7 +18,7 @@ SRC_URI =  " \
 	file://0007-SoftAP-Kernel-Dump-Fix.patch;apply=yes \
 "
 
-SRC_URI[cyw-fmac.sha256sum]="723e31febc827a2c581ad37d3ed79909b70ab781c0c401faf988680d393cc477"
+SRC_URI[cyw-fmac.sha256sum]="8164e971bb3f4ea40249ca830d40f67a9bf31056e862cc536d1f2d6a97c45333"
 S = "${WORKDIR}/ifx-backports-release-v6.1.145-2026_0108/v6.1.145-backports"
 
 
