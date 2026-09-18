@@ -46,11 +46,14 @@ do_install () {
     install -d ${D}/${base_libdir}/firmware/nxp/murata
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/1XK
+    install -d ${D}/${base_libdir}/firmware/nxp/murata/files/1XL
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/1ZM
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/1YM
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2DS
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2DL
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2EL
+    install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2KL
+    install -d ${D}/${base_libdir}/firmware/nxp/murata/files/2LL
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/32_bit
     install -d ${D}/${base_libdir}/firmware/nxp/murata/files/64_bit
 
@@ -59,11 +62,14 @@ do_install () {
 
 #	Install nxp linux calibration files
     install -m 444 ${S}/nxp-linux-calibration/murata/files/1XK/* ${D}/${base_libdir}/firmware/nxp/murata/files/1XK
+    install -m 444 ${S}/nxp-linux-calibration/murata/files/1XL/* ${D}/${base_libdir}/firmware/nxp/murata/files/1XL
     install -m 444 ${S}/nxp-linux-calibration/murata/files/1YM/* ${D}/${base_libdir}/firmware/nxp/murata/files/1YM
     install -m 444 ${S}/nxp-linux-calibration/murata/files/1ZM/* ${D}/${base_libdir}/firmware/nxp/murata/files/1ZM
     install -m 444 ${S}/nxp-linux-calibration/murata/files/2DS/* ${D}/${base_libdir}/firmware/nxp/murata/files/2DS
     install -m 444 ${S}/nxp-linux-calibration/murata/files/2DL/* ${D}/${base_libdir}/firmware/nxp/murata/files/2DL
     install -m 444 ${S}/nxp-linux-calibration/murata/files/2EL/* ${D}/${base_libdir}/firmware/nxp/murata/files/2EL
+    install -m 444 ${S}/nxp-linux-calibration/murata/files/2KL/* ${D}/${base_libdir}/firmware/nxp/murata/files/2KL
+    install -m 444 ${S}/nxp-linux-calibration/murata/files/2LL/* ${D}/${base_libdir}/firmware/nxp/murata/files/2LL
 
     install -m 444 ${S}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/${base_libdir}/firmware/nxp/murata/files
     install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/${base_libdir}/firmware/nxp/murata/files
