@@ -1,7 +1,7 @@
 From abcd0821683dff71ed060af7f50a1e4fb4b8d911 Mon Sep 17 00:00:00 2001
 From: Romit Chatterjee <romit@alumnux.com>
 Date: Mon, 31 Aug 2026 10:24:13 +0530
-Subject: [PATCH] ARM: imx_v7_defconfig: disable signed regulatory database
+Subject: [PATCH] ARM: imx_v7_defconfig: enable signed regulatory database
 
 Upstream-Status: Inappropriate [Murata platform configuration]
 
@@ -17,5 +17,5 @@ index b4106aab616e..391dca74d564 100644
  CONFIG_DEBUG_FS=y
  # CONFIG_SLUB_DEBUG is not set
  # CONFIG_FTRACE is not set
-+CONFIG_CFG80211_REQUIRE_SIGNED_REGDB=n
-+CONFIG_CFG80211_USE_KERNEL_REGDB_KEYS=n
++CONFIG_CFG80211_REQUIRE_SIGNED_REGDB=y
++CONFIG_CFG80211_USE_KERNEL_REGDB_KEYS=y
