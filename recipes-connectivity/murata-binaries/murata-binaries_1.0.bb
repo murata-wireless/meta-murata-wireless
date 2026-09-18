@@ -74,7 +74,7 @@ do_install () {
     install -m 444 ${S}/nxp-linux-calibration/murata/files/bt_power_config_1.sh ${D}/${base_libdir}/firmware/nxp/murata/files
     install -m 777 ${S}/nxp-linux-calibration/murata/files/wifi_mod_para_murata.conf ${D}/${base_libdir}/firmware/nxp/murata/files
     install -m 755 ${S}/nxp-linux-calibration/murata/switch_regions.sh ${D}/usr/sbin/switch_regions.sh
-    install -m 444 ${S}/nxp-linux-calibration/murata/README.txt ${D}/${base_libdir}/firmware/nxp/murata/README.txt
+    install -m 444 ${S}/nxp-linux-calibration/README.txt ${D}/${base_libdir}/firmware/nxp/murata/README.txt
 }
 
 PACKAGES =+ "${PN}-mfgtest"
