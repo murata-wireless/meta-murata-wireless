@@ -1,7 +1,7 @@
 From 9e54109d49a57095cf7378700ff28021eba77ece Mon Sep 17 00:00:00 2001
 From: Romit Chatterjee <romit@alumnux.com>
 Date: Mon, 31 Aug 2026 10:24:26 +0530
-Subject: [PATCH] arm64: imx_v8_defconfig: disable signed regulatory database
+Subject: [PATCH] arm64: imx_v8_defconfig: enable signed regulatory database
 
 Upstream-Status: Inappropriate [Murata platform configuration]
 
@@ -17,5 +17,5 @@ index 5cc0c5514dc0..3c9648a80c89 100644
  CONFIG_MEMTEST=y
  CONFIG_VIDEO_MAX9286=m
  CONFIG_IMX_CM0P_REMOTEPROC=y
-+CONFIG_CFG80211_REQUIRE_SIGNED_REGDB=n
-+CONFIG_CFG80211_USE_KERNEL_REGDB_KEYS=n
++CONFIG_CFG80211_REQUIRE_SIGNED_REGDB=y
++CONFIG_CFG80211_USE_KERNEL_REGDB_KEYS=y
