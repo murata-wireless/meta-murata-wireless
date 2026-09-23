@@ -13,8 +13,8 @@ Date: Tue, 26 May 2026 13:50:00 -0700
 Subject: [PATCH] 8 imx patch
 
 ---
- arch/arm64/configs/imx_v8_defconfig | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ arch/arm64/configs/imx_v8_defconfig | 28 ++++++++++++++++++++++------
+ 1 file changed, 22 insertions(+), 6 deletions(-)
 
 diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
 index 3dfc96a9710e..7c67f090143f 100644
@@ -42,6 +42,16 @@ index 3dfc96a9710e..7c67f090143f 100644
  CONFIG_NL80211_TESTMODE=y
  CONFIG_CFG80211_WEXT=y
  CONFIG_MAC80211=y
+@@ -209,7 +210,7 @@ CONFIG_PCI_EPF_TEST=y
+ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+-CONFIG_FW_LOADER_USER_HELPER=y
+-CONFIG_FW_LOADER_USER_HELPER_FALLBACK=y
++CONFIG_FW_LOADER_USER_HELPER=n
++CONFIG_FW_LOADER_USER_HELPER_FALLBACK=n
+ CONFIG_IMX_AIPSTZ=y
+ CONFIG_VEXPRESS_CONFIG=y
+ CONFIG_ARM_SCMI_PROTOCOL=y
 @@ -1140,3 +1141,18 @@ CONFIG_CORESIGHT_CTI=m
  CONFIG_MEMTEST=y
  CONFIG_VIDEO_MAX9286=m
@@ -63,4 +73,3 @@ index 3dfc96a9710e..7c67f090143f 100644
 +CONFIG_BRCMFMAC_USB=y
 -- 
 2.25.1
-
