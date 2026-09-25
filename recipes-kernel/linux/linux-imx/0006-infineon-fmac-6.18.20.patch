@@ -1,11 +1,11 @@
 PLACEHOLDER: Infineon FMAC for NXP Linux 6.18.20
 
-The in-progress Infineon FMAC patch is not publicly released and has been
-removed from the current branch contents pending Infineon's official release.
+The Infineon FMAC patch is not publicly released and has not been
+included in the current branch contents pending Infineon's official release.
 
 This file contains no driver code and is not an applicable kernel patch.
 The kernel recipe still references this filename; kernel patching will fail
 until this placeholder is replaced with the officially released patch.
 
-After Infineon's public release, restore the released patch at this path
-and validate it against NXP Linux 6.18.20 before building the image.
+After Infineon's public release, Murata will restore the released patch
+at this path and validate it against NXP Linux 6.18.20 before building the image.
