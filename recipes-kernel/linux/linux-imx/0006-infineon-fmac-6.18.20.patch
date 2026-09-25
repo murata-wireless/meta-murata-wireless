@@ -1,4 +1,15 @@
-PLACEHOLDER: Infineon FMAC for NXP Linux 6.18.20
+Do not treat warnings as errors
+
+There are additional warnings found with musl which are
+treated as errors and fails the build, we have more combinations
+than upstream supports to handle.
+
+Upstream-Status: Inappropriate [oe specific]
+
+From 520e5a20482e6a7fde83884183ce5482664e3aec Mon Sep 17 00:00:00 2001
+From: Romit Chatterjee <romit@alumnux.com>
+Date: Mon, 7 Sep 2026 08:35:10 +0530
+Subject: [PATCH] Integrate Infineon FMAC for Linux 6.18.20
 
 The Infineon FMAC patch is not publicly released and has not been
 included in the current branch contents pending Infineon's official release.
