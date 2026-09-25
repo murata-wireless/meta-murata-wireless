@@ -10,8 +10,7 @@ SRC_URI = "file://hostap_cs.modalias \
 
 inherit allarch
 
-S = "${WORKDIR}/sources"
-UNPACKDIR = "${S}"
+S = "${UNPACKDIR}"
 
 do_compile() {
 }
@@ -19,6 +18,6 @@ do_compile() {
 do_install() {
 	install -d ${D}${sysconfdir}/modprobe.d
 
-	install -m 0644 ${WORKDIR}/sources/hostap_cs.modalias ${D}${sysconfdir}/modprobe.d/hostap_cs.conf
+	install -m 0644 ${S}/hostap_cs.modalias ${D}${sysconfdir}/modprobe.d/hostap_cs.conf
 }
 

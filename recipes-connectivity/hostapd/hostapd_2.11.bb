@@ -18,8 +18,8 @@ SRC_URI = " \
 
 SRC_URI[sha256sum] = "2b3facb632fd4f65e32f4bf82a76b4b72c501f995a4f62e330219fe7aed1747a"
 
-S = "${WORKDIR}/hostapd-${PV}"
-B = "${WORKDIR}/hostapd-${PV}/hostapd"
+S = "${UNPACKDIR}/hostapd-${PV}"
+B = "${UNPACKDIR}/hostapd-${PV}/hostapd"
 
 inherit update-rc.d systemd pkgconfig features_check
 
