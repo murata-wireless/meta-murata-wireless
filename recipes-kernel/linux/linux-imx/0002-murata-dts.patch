@@ -266,12 +266,14 @@ new file mode 100644
 index 000000000000..8da2a49ef54a
 --- /dev/null
 +++ b/arch/arm/boot/dts/nxp/imx/imx6ull-14x14-evk-btwifi-m2-oob-uhs.dts
-@@ -0,0 +1,21 @@
+@@ -0,0 +1,23 @@
 +#include "imx6ull-14x14-evk-btwifi-m2-uhs.dts"
 +#include "imx6ul-evk-btwifi-m2-oob.dtsi"
 +
 +&fec2 {
 +	status="disabled";
++	/delete-property/ phy-handle;
++	/delete-node/ mdio;
 +};
 +
 +&fec1 {

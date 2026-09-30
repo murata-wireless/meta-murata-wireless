@@ -4,17 +4,17 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/${PN}:"
 
 SRC_URI:append = " file://0006-infineon-fmac-6.18.20.patch \
+                   file://0001-defconfig.patch \
                    file://0002-murata-customized-string.patch \
-                   file://0003-defconfig-imx8.patch \
-                   file://0004-murata-dts-imx8.patch \
-                   file://0006-disable-dma-hciuart-kernel-crash.patch \
+                   file://0002-murata-dts.patch \
+		   file://0006-disable-dma-hciuart-kernel-crash.patch \
                    file://0008-Patch-for-CYW4373-hci-up-fail-issue.patch \
                    file://0009-SoftAP-Kernel-Dump-Fix.patch \
 "
 
 addtask copy_defconfig_after_patch after do_patch before do_configure
 do_copy_defconfig_after_patch () {
-    # copy latest imx_v8_defconfig to use
-    cp ${S}/arch/arm64/configs/imx_v8_defconfig ${B}/.config
-    cp ${S}/arch/arm64/configs/imx_v8_defconfig ${B}/../defconfig
+    # copy latest imx_v7_defconfig to use
+    cp ${S}/arch/arm/configs/imx_v7_defconfig ${B}/.config
+    cp ${S}/arch/arm/configs/imx_v7_defconfig ${B}/../defconfig
 }
