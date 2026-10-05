@@ -195,7 +195,7 @@ do_install () {
 	install -m 444 ${WORKDIR}/sources/wpa_supplicant-wifi6.conf         ${D}${sysconfdir}/wpa_supplicant-wifi6.conf
 
 
-#   Copying wl tool binary to /usr/sbin
+#   Copying patchram to /usr/sbin
     if [ ${TARGET_ARCH} = "aarch64" ]; then
 		install -m 755 ${S}/brcm_patchram_plus_usb_64bit ${D}/usr/sbin/brcm_patchram_plus_usb_64bit
 	else
@@ -227,10 +227,6 @@ FILES:${PN} += "${sbindir}"
 FILES:${PN} += "${sysconfdir}/firmware"
 FILES:${PN} += "${base_libdir}"
 FILES:${PN} += "usr/share/murata_wireless"
-
-#FILES:${PN}-mfgtest = " \
-#	/usr/bin/wl \
-#"
 
 INSANE_SKIP:${PN} += "build-deps"
 INSANE_SKIP:${PN} += "file-rdeps"
