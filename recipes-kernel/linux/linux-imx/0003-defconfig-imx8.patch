@@ -1,18 +1,28 @@
 From 9e54109d49a57095cf7378700ff28021eba77ece Mon Sep 17 00:00:00 2001
 From: Romit Chatterjee <romit@alumnux.com>
 Date: Mon, 31 Aug 2026 10:24:26 +0530
-Subject: [PATCH] arm64: imx_v8_defconfig: enable signed regulatory database
+Subject: [PATCH] arm64: imx_v8_defconfig: modularize cfg80211 and enable
+ signed regulatory database
 
 Upstream-Status: Inappropriate [Murata platform configuration]
 
 ---
- arch/arm64/configs/imx_v8_defconfig | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/configs/imx_v8_defconfig | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm64/configs/imx_v8_defconfig b/arch/arm64/configs/imx_v8_defconfig
 index 5cc0c5514dc0..3c9648a80c89 100644
 --- a/arch/arm64/configs/imx_v8_defconfig
 +++ b/arch/arm64/configs/imx_v8_defconfig
+@@ -173,7 +173,7 @@ CONFIG_BT_HCIUART_BCM=y
+ CONFIG_BT_HCIUART_QCA=y
+ CONFIG_BT_HCIVHCI=y
+ CONFIG_BT_NXPUART=m
+-CONFIG_CFG80211=y
++CONFIG_CFG80211=m
+ CONFIG_NL80211_TESTMODE=y
+ CONFIG_CFG80211_WEXT=y
+ CONFIG_MAC80211=y
 @@ -1140,3 +1140,5 @@ CONFIG_CORESIGHT_CTI=m
  CONFIG_MEMTEST=y
  CONFIG_VIDEO_MAX9286=m
