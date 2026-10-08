@@ -28,7 +28,6 @@ SRC_URI = " \
         file://brcm_patchram_plus_usb_32bit \
         file://brcm_patchram_plus_usb_64bit \
 "
-#file://wl \
 
 SRCREV_ifx-linux-firmware-longma="f24790e6fa2f05a0f974236bed7da7fa493b9ad2"
 SRCREV_ifx-linux-firmware-drogon="dc38e700612b334080e0b6df69070a88c4c2a12b"
@@ -231,10 +230,6 @@ FILES:${PN} += "${sbindir}"
 FILES:${PN} += "${sysconfdir}/firmware"
 FILES:${PN} += "${base_libdir}"
 FILES:${PN} += "usr/share/murata_wireless"
-
-#FILES:${PN}-mfgtest = " \
-#	/usr/bin/wl \
-#"
 
 INSANE_SKIP:${PN} += "build-deps"
 INSANE_SKIP:${PN} += "file-rdeps"
