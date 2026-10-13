@@ -1,0 +1,27 @@
+From 39dcdc23e318c1fe17459c59bc12b0b69367ec76 Mon Sep 17 00:00:00 2001
+From: Jameel kareem <jkareem@murata.com>
+Date: Mon, 12 Oct 2026 12:13:45 -0400
+Subject: [PATCH] wlu-fix-inttypes.patch
+
+Upstream-Status: Inappropriate [proprietary vendor code, no upstream]
+
+---
+ wl/src/wlu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/wl/src/wlu.c b/wl/src/wlu.c
+index 01b28d1..f36161c 100644
+--- a/wl/src/wlu.c
++++ b/wl/src/wlu.c
+@@ -123,7 +123,7 @@
+ #include <sys/time.h>
+ #endif   /* defined(WLBSSLOAD_REPORT) && defined(linux) */
+ 
+-#ifdef LINUX
++#if defined(linux)
+ #include <inttypes.h>
+ #endif // endif
+ #include <miniopt.h>
+-- 
+2.34.1
+

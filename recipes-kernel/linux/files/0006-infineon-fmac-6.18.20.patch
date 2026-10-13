@@ -1,0 +1,110 @@
+Do not treat warnings as errors
+
+There are additional warnings found with musl which are
+treated as errors and fails the build, we have more combinations
+than upstream supports to handle.
+
+Upstream-Status: Inappropriate [oe specific]
+
+From 520e5a20482e6a7fde83884183ce5482664e3aec Mon Sep 17 00:00:00 2001
+From: Romit Chatterjee <romit@alumnux.com>
+Date: Mon, 7 Sep 2026 08:35:10 +0530
+Subject: [PATCH] Integrate Infineon FMAC for Linux 6.18.20
+
+---
+ drivers/mmc/core/Kconfig                      |   10 +
+ drivers/mmc/core/core.c                       |   69 +-
+ drivers/mmc/core/core.h                       |    4 +
+ drivers/mmc/core/mmc_ops.c                    |   10 +-
+ drivers/mmc/core/sdio.c                       |  121 +-
+ drivers/mmc/core/sdio_ops.c                   |   52 +-
+ drivers/mmc/host/sdhci-pci-core.c             |   68 +
+ drivers/mmc/host/sdhci-uhs2.c                 |    2 +-
+ drivers/mmc/host/sdhci.c                      |  123 +-
+ drivers/mmc/host/sdhci.h                      |   18 +-
+ .../net/wireless/broadcom/brcm80211/Kconfig   |   22 +-
+ .../broadcom/brcm80211/brcmfmac/Kconfig       |   16 +
+ .../broadcom/brcm80211/brcmfmac/Makefile      |   11 +-
+ .../broadcom/brcm80211/brcmfmac/bca/core.c    |    2 +-
+ .../broadcom/brcm80211/brcmfmac/bcdc.c        |   11 +-
+ .../broadcom/brcm80211/brcmfmac/bcmsdh.c      |  384 +-
+ .../brcm80211/brcmfmac/bt_shared_sdio.c       |  312 ++
+ .../brcm80211/brcmfmac/bt_shared_sdio.h       |   66 +
+ .../brcm80211/brcmfmac/bt_shared_sdio_ifx.c   | 1037 +++++
+ .../brcm80211/brcmfmac/bt_shared_sdio_ifx.h   |   87 +
+ .../broadcom/brcm80211/brcmfmac/btcoex.c      |    2 +-
+ .../broadcom/brcm80211/brcmfmac/bus.h         |   43 +-
+ .../broadcom/brcm80211/brcmfmac/cfg80211.c    | 3694 ++++++++++++++---
+ .../broadcom/brcm80211/brcmfmac/cfg80211.h    |  151 +-
+ .../broadcom/brcm80211/brcmfmac/chip.c        |  551 ++-
+ .../broadcom/brcm80211/brcmfmac/chip.h        |   53 +-
+ .../broadcom/brcm80211/brcmfmac/common.c      |  438 +-
+ .../broadcom/brcm80211/brcmfmac/common.h      |   83 +-
+ .../broadcom/brcm80211/brcmfmac/core.c        |  933 ++++-
+ .../broadcom/brcm80211/brcmfmac/core.h        |   50 +-
+ .../broadcom/brcm80211/brcmfmac/cyw/core.c    |  196 +-
+ .../broadcom/brcm80211/brcmfmac/debug.c       |  289 ++
+ .../broadcom/brcm80211/brcmfmac/debug.h       |   63 +
+ .../broadcom/brcm80211/brcmfmac/feature.c     |  203 +-
+ .../broadcom/brcm80211/brcmfmac/feature.h     |   50 +-
+ .../broadcom/brcm80211/brcmfmac/firmware.c    |   88 +-
+ .../broadcom/brcm80211/brcmfmac/firmware.h    |   30 +-
+ .../broadcom/brcm80211/brcmfmac/fweh.c        |   49 +-
+ .../broadcom/brcm80211/brcmfmac/fweh.h        |   71 +-
+ .../broadcom/brcm80211/brcmfmac/fwil.c        |   58 +-
+ .../broadcom/brcm80211/brcmfmac/fwil.h        |   27 +-
+ .../broadcom/brcm80211/brcmfmac/fwil_types.h  |  364 +-
+ .../broadcom/brcm80211/brcmfmac/fwsignal.c    |  751 +++-
+ .../broadcom/brcm80211/brcmfmac/fwsignal.h    |    4 +-
+ .../broadcom/brcm80211/brcmfmac/msgbuf.c      |  150 +-
+ .../broadcom/brcm80211/brcmfmac/msgbuf.h      |    1 +
+ .../wireless/broadcom/brcm80211/brcmfmac/of.c |   14 +-
+ .../broadcom/brcm80211/brcmfmac/p2p.c         |  343 +-
+ .../broadcom/brcm80211/brcmfmac/p2p.h         |   26 +-
+ .../broadcom/brcm80211/brcmfmac/pcie.c        |  861 +++-
+ .../broadcom/brcm80211/brcmfmac/pcie.h        |    2 +
+ .../broadcom/brcm80211/brcmfmac/pno.c         |  193 +-
+ .../broadcom/brcm80211/brcmfmac/pno.h         |   87 +
+ .../broadcom/brcm80211/brcmfmac/proto.h       |   15 +-
+ .../broadcom/brcm80211/brcmfmac/sdio.c        | 2303 ++++++++--
+ .../broadcom/brcm80211/brcmfmac/sdio.h        |  215 +-
+ .../broadcom/brcm80211/brcmfmac/trxhdr.h      |   50 +
+ .../broadcom/brcm80211/brcmfmac/twt.c         | 1239 ++++++
+ .../broadcom/brcm80211/brcmfmac/twt.h         |  359 ++
+ .../broadcom/brcm80211/brcmfmac/usb.c         |  144 +-
+ .../broadcom/brcm80211/brcmfmac/vendor.c      |  358 ++
+ .../broadcom/brcm80211/brcmfmac/vendor.h      |   26 +-
+ .../broadcom/brcm80211/brcmfmac/vendor_ifx.c  | 1558 +++++++
+ .../broadcom/brcm80211/brcmfmac/vendor_ifx.h  |  857 ++++
+ .../broadcom/brcm80211/brcmfmac/xtlv.c        |   19 +
+ .../broadcom/brcm80211/brcmfmac/xtlv.h        |    2 +
+ .../broadcom/brcm80211/brcmutil/d11.c         |   19 +-
+ .../broadcom/brcm80211/brcmutil/utils.c       |   13 +
+ .../broadcom/brcm80211/include/brcm_hw_ids.h  |   14 +-
+ .../broadcom/brcm80211/include/brcmu_d11.h    |   15 +-
+ .../broadcom/brcm80211/include/brcmu_utils.h  |   14 +
+ .../broadcom/brcm80211/include/brcmu_wifi.h   |   38 +-
+ .../broadcom/brcm80211/include/chipcommon.h   |  195 +-
+ .../broadcom/brcm80211/include/defs.h         |   38 +
+ include/linux/bcma/bcma.h                     |    1 +
+ include/linux/mmc/host.h                      |    4 +
+ include/linux/mmc/pm.h                        |    6 +
+ include/linux/mmc/sdio.h                      |    2 -
+ include/linux/mmc/sdio_ids.h                  |   14 +-
+ include/linux/pci_ids.h                       |    1 +
+ include/net/cfg80211.h                        |    9 +-
+ include/uapi/linux/nl80211.h                  |   10 +-
+ net/wireless/nl80211.c                        |   10 +-
+ net/wireless/sme.c                            |    2 +
+ 84 files changed, 18106 insertions(+), 1787 deletions(-)
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio.c
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio.h
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio_ifx.c
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/bt_shared_sdio_ifx.h
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/trxhdr.h
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/twt.c
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/twt.h
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor_ifx.c
+ create mode 100644 drivers/net/wireless/broadcom/brcm80211/brcmfmac/vendor_ifx.h
+
+

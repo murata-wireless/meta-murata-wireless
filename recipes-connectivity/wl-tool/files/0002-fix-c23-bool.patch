@@ -1,0 +1,15 @@
+Upstream-Status: Inappropriate [proprietary vendor code, no upstream]
+
+
+--- a/wl/src/include/typedefs.h
++++ b/wl/src/include/typedefs.h
+@@ -200,7 +200,9 @@
+ #endif /* _TYPEDEFS_H_ */
+
+ /* This macro protects the bool type from being redefined */
+-#ifndef _TYPEDEFS_BOOL_TYPE_
++#if !defined(_TYPEDEFS_BOOL_TYPE_) && !defined(__bool_true_false_are_defined) && (!defined(__STDC_VERSION__) || __STDC_VERSION__ < 202311L)
+ #define _TYPEDEFS_BOOL_TYPE_
+ typedef /* @abstract@ */ unsigned char  bool;
+ #endif
+

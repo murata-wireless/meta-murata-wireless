@@ -12,7 +12,7 @@ SRC_URI = "https://w1.fi/releases/hostap-utils-${PV}.tar.gz \
            file://hostap-fw-load.patch \
            file://0001-Define-_u32-__s32-__u16-__s16-__u8-in-terms-of-c99-t.patch \
 "
-S = "${WORKDIR}/hostap-utils-${PV}"
+S = "${UNPACKDIR}/hostap-utils-${PV}"
 
 BINARIES = "hostap_crypt_conf hostap_diag hostap_fw_load hostap_io_debug \
 	    hostap_rid prism2_param prism2_srec split_combined_hex"

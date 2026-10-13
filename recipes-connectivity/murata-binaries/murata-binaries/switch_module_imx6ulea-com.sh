@@ -564,7 +564,7 @@ function usage() {
   echo "Where:"
   echo "  <module> is one of (case insensitive):"
   echo "     CYW-SDIO, CYW-PCIe, 1CX, 1DX, 1LV, 1MW, 1YN, 2AE, 2BC, 1XA, 2BZ, 2EA-SDIO, 2EA-PCIe"
-  echo "     1ZM, 1YM-SDIO, 1YM-PCIe, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2DS, CURRENT or OFF"
+  echo "     1ZM, 1XK, 2XK, 1XL-SDIO, 1XL-PCIe, 2XS-SDIO, 2XS-PCIe, 2EL, 2DL, 2DS, CURRENT or OFF"
   echo ""
 }
 
