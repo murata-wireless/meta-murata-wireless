@@ -25,7 +25,6 @@ SRC_URI = " \
         file://murata_test_version.sh \
         file://throughput-ifx.sh \
         file://wowl-setup.sh \
-        file://wl \
         file://brcm_patchram_plus_usb_32bit \
         file://brcm_patchram_plus_usb_64bit \
 "
@@ -42,6 +41,7 @@ SRCREV_default = "${AUTOREV}"
 SRCREV_FORMAT = "muratabinaries"
 
 DEPENDS = " libnl wpa-supplicant linux-firmware"
+RDEPENDS:${PN} += "wl-tool"
 
 do_compile () {
 	echo "Compiling: "
@@ -192,13 +192,10 @@ do_install () {
 	install -m 444 ${S}/wpa_supplicant-wifi6.conf         ${D}${sysconfdir}/wpa_supplicant-wifi6.conf
 
 
-#   Copying wl tool binary to /usr/sbin
+#   Copying patchram to /usr/sbin
     if [ ${TARGET_ARCH} = "aarch64" ]; then
-		install -m 755 ${S}/wl ${D}/usr/share/murata_wireless/wl
-		install -m 755 ${S}/cyw-fmac-utils-imx64/wl ${D}/usr/sbin/wl 
 		install -m 755 ${S}/brcm_patchram_plus_usb_64bit ${D}/usr/sbin/brcm_patchram_plus_usb_64bit
 	else
-		install -m 755 ${S}/cyw-fmac-utils-imx32/wl ${D}/usr/sbin/wl
 		install -m 755 ${S}/brcm_patchram_plus_usb_32bit ${D}/usr/sbin/brcm_patchram_plus_usb_32bit
 	fi
 
@@ -227,10 +224,6 @@ FILES:${PN} += "${sbindir}"
 FILES:${PN} += "${sysconfdir}/firmware"
 FILES:${PN} += "${base_libdir}"
 FILES:${PN} += "usr/share/murata_wireless"
-
-#FILES:${PN}-mfgtest = " \
-#	/usr/bin/wl \
-#"
 
 INSANE_SKIP:${PN} += "build-deps"
 INSANE_SKIP:${PN} += "file-rdeps"
