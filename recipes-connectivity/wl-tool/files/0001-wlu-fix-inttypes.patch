@@ -1,18 +1,18 @@
-From 1c341dba65b9ba2585a74a9c47799f80d29e7c4c Mon Sep 17 00:00:00 2001
-From: Romit Chatterjee <romit.chatterjee@murata.com>
-Date: Wed, 25 Feb 2026 08:17:31 -0600
-Subject: [PATCH] wlu: fix inttypes.h include guard for Linux build
+From 39dcdc23e318c1fe17459c59bc12b0b69367ec76 Mon Sep 17 00:00:00 2001
+From: Jameel kareem <jkareem@murata.com>
+Date: Mon, 12 Oct 2026 12:13:45 -0400
+Subject: [PATCH] wlu-fix-inttypes.patch
 
 Upstream-Status: Inappropriate [proprietary vendor code, no upstream]
 
 ---
- wlu.c | 2 +-
+ wl/src/wlu.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/wl/src/wlu.c b/wl/src/wlu.c
 index 01b28d1..f36161c 100644
---- a/wlu.c
-+++ b/wlu.c
+--- a/wl/src/wlu.c
++++ b/wl/src/wlu.c
 @@ -123,7 +123,7 @@
  #include <sys/time.h>
  #endif   /* defined(WLBSSLOAD_REPORT) && defined(linux) */
@@ -23,5 +23,5 @@ index 01b28d1..f36161c 100644
  #endif // endif
  #include <miniopt.h>
 -- 
-2.53.0
+2.34.1
 

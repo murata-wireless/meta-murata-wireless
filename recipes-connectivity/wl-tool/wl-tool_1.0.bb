@@ -4,13 +4,12 @@ LICENSE = "CLOSED"
 LIC_FILES_CHKSUM = "file://Makefile;md5=5c4c235684aa751e990632f19cb3f25d"
 
 SRC_URI = "git://github.com/Infineon/wl_tool.git;protocol=https;branch=main \
-           file://0001-wlu-fix-inttypes.patch \
 "
 
 SRCREV = "f52bf6b8b41e84d0329720a85f1711d573c4cd70"
 PV = "1.0+git${SRCPV}"
 
-S = "${WORKDIR}/git/wl/src"
+S = "${UNPACKDIR}/${BP}/wl/src"
 
 inherit pkgconfig
 DEPENDS += "libnl pkgconfig-native"
@@ -28,18 +27,30 @@ B_ARCH = "${@'arm64' if d.getVar('TARGET_ARCH') == 'aarch64' else 'arm'}"
 # 2. Re-stabilize EXTRA_OEMAKE back to its basic arguments without CFLAGS/CPPFLAGS overrides
 EXTRA_OEMAKE = "TARGETARCH=${B_ARCH} APPLY_PREFIX=false NL80211=1"
 
-# 1. Clean compiler variable wrapper with header paths
-EXTRA_OEMAKE += "CC='${CC} -I${STAGING_INCDIR}/libnl3'"
-
 # 2. Force the libraries directly into the Linker tool command
-EXTRA_OEMAKE += "LD='${CC} ${LDFLAGS} -lnl-3 -lnl-genl-3'"
+EXTRA_OEMAKE += "CC='${CC}' LD='${CC}'"
 
+# 3. Inject the include paths and libraries through the standard Yocto flag variables
+TARGET_CFLAGS += "-I${STAGING_INCDIR}/libnl3"
+TARGET_LDFLAGS += "-lnl-3 -lnl-genl-3"
+
+# Force the compiler to use an older standard so it accepts the custom 'bool' typedef
+TARGET_CFLAGS += "-std=gnu89"
+
+# Your existing flags can remain safely underneath
 TARGET_CFLAGS += "-Wno-error=incompatible-pointer-types -Wno-error=implicit-function-declaration -Wno-error=stringop-truncation"
-
 TARGET_CFLAGS += "-D_GNU_SOURCE -Dipv6_hdr=ipv6hdr"
 
 do_compile:prepend() {
 
+#    echo "Jameel:: UNPACKDIR : ${UNPACKDIR}"
+#    echo "Jameel:: S : ${S}"
+    # Bulletproof removal of the legacy bool typedef regardless of formatting/spaces
+    if [ -f "${S}/include/typedefs.h" ]; then
+        sed -i '/unsigned char[[:space:]]\+bool;/d' "${S}/include/typedefs.h"
+    fi
+
+    
     # Dynamically inject the missing layout right into bcmutils.c before compilation starts
     if [ "${B_ARCH}" = "arm" ]; then
         sed -i '/#include <bcmutils.h>/a struct ipv6_hdr { unsigned char p:4, v:4; unsigned char f[3]; unsigned short payload_len; unsigned char nexthdr; unsigned char h; struct { unsigned char addr[16]; } saddr; struct { unsigned char addr[16]; } daddr; };' ${S}/bcmutils.c
@@ -50,6 +61,7 @@ do_compile:prepend() {
 }
 
 do_compile() {
+# Use sed to safely eliminate the conflicting raw 'bool' typedef from the unpacked source
     oe_runmake -f linux_external.mk
 }
 
