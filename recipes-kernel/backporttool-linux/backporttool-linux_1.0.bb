@@ -11,15 +11,15 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=6bc538ed5bd9a7fc9398086aedcd7e46"
 
 
 SRC_URI =  " \
-    https://github.com/Infineon/ifx-backports/archive/refs/tags/release-v6.1.145-2026_0108.tar.gz;protocol=http;destsuffix=cyw-fmac;name=cyw-fmac \
+    https://github.com/Infineon/ifx-backports/archive/refs/tags/release-v6.1.145-2026_0407.tar.gz;protocol=http;destsuffix=cyw-fmac;name=cyw-fmac \
 	file://0001-kernel_change_for_fmac_log_string.patch;apply=yes \
     file://0002-yacc-flex-in-kconf-makefile.patch;apply=yes \
 	file://0003-suppress-warnings-as-errors.patch;apply=yes \
 	file://0004-SoftAP-Kernel-Dump-Fix.patch;apply=yes \
 "
 
-SRC_URI[cyw-fmac.sha256sum]="8164e971bb3f4ea40249ca830d40f67a9bf31056e862cc536d1f2d6a97c45333"
-S = "${WORKDIR}/ifx-backports-release-v6.1.145-2026_0108/v6.1.145-backports"
+SRC_URI[cyw-fmac.sha256sum]="a6c0954a8bf4fe49b92705820daf9cc77ee5efdc4a24feb2406dc1d6154e6230"
+S = "${WORKDIR}/ifx-backports-release-v6.1.145-2026_0407/v6.1.145-backports"
 
 
 EXTRA_OEMAKE = "KLIB_BUILD=${STAGING_KERNEL_DIR} KLIB=${D} DESTDIR=${D}"
