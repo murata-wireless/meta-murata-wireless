@@ -26,7 +26,7 @@ SRC_URI = " \
         file://brcm_patchram_plus_usb_64bit \
 "
 
-SRCREV_ifx-linux-firmware-longma="f24790e6fa2f05a0f974236bed7da7fa493b9ad2"
+SRCREV_ifx-linux-firmware-longma="d24c95cce5e77b04736972ba05ccd06da6cc377f"
 SRCREV_ifx-linux-firmware-drogon="dc38e700612b334080e0b6df69070a88c4c2a12b"
 SRCREV_cyw-fmac-fw="8cdb1886852e0b5f9876654619a8371b952bf248"
 SRCREV_cyw-fmac-nvram="254e032bad39db55bede619fdd998d88f9a80824"
