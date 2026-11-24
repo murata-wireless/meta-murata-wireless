@@ -1,5 +1,5 @@
 diff --git a/Makefile b/Makefile
-index c484516..f086668 100644
+index 548d813..4f8c9be 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -3,7 +3,6 @@
@@ -8,24 +8,27 @@ index c484516..f086668 100644
  ifeq ($(KERNELRELEASE),)
 -
  MAKEFLAGS += --no-print-directory
- SHELL := /usr/bin/env bash
+ SHELL := /bin/bash
  BACKPORT_DIR := $(shell pwd)
 diff --git a/Makefile.real b/Makefile.real
-index d0a8c20..502aa42 100644
+index 6550802..338af69 100644
 --- a/Makefile.real
 +++ b/Makefile.real
-@@ -20,10 +20,10 @@ menuconfig:
+@@ -19,11 +19,12 @@ menuconfig:
+ .PHONY: listnewconfig oldaskconfig oldconfig \
  	silentoldconfig olddefconfig oldnoconfig \
  	allnoconfig allyesconfig allmodconfig \
- 	alldefconfig randconfig
+-	alldefconfig randconfig
 -listnewconfig oldaskconfig oldconfig \
 -silentoldconfig olddefconfig oldnoconfig \
 -allnoconfig allyesconfig allmodconfig \
 -alldefconfig randconfig:
++	alldefconfig randconfig \
 +	listnewconfig oldaskconfig oldconfig \
 +	silentoldconfig olddefconfig oldnoconfig \
 +	allnoconfig allyesconfig allmodconfig \
-+	alldefconfig randconfig:
++	alldefconfig
++randconfig:
  	@$(MAKE) -C kconf conf
  	@./kconf/conf --$@ Kconfig
  
